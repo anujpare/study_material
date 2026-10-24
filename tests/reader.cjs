@@ -14,9 +14,9 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
       const errors = [];
       page.on('pageerror', error => errors.push(error.message));
       await page.goto(base);
-      assert.equal(await page.locator('.card').count(), 2);
+      assert.equal(await page.locator('.card').count(), 4);
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-      for (const [chapter, count] of [['commitment', 85], ['zero-knowledge', 62]]) {
+      for (const [chapter, count] of [['commitment', 85], ['zero-knowledge', 62], ['hw1', 22], ['hw2', 20]]) {
         await page.goto(`${base}/${chapter}/`);
         const slider = page.locator('#pet-card-slider');
         async function check(n) {
@@ -73,7 +73,7 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
         await check(count);
         for (const [hash, expected] of [['#lesson-999', count], ['#lesson-0', 1], ['#unknown', 1]]) {
           await page.evaluate(hash => { location.hash = hash; }, hash);
-          await page.waitForFunction(n => document.querySelector('input').value === String(n), expected);
+          await page.waitForFunction(n => document.querySelector('#pet-card-slider').value === String(n), expected);
           await check(expected);
         }
         // Opening a solution and resizing keeps its content and math present.
@@ -83,16 +83,17 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
         assert(await page.locator('.slide:visible details').first().getAttribute('open') !== null);
         await page.setViewportSize({width, height: 390});
         const geometry = await page.evaluate(() => {
-          const home = document.querySelector('.deck-home').getBoundingClientRect();
-          const head = document.querySelector('.pet-active .head').getBoundingClientRect();
-          const slider = document.querySelector('input').getBoundingClientRect();
+          const home = document.querySelector('.chapter-menu summary').getBoundingClientRect();
+          const head = document.querySelector('.pet-active .section').getBoundingClientRect();
+          const slider = document.querySelector('#pet-card-slider').getBoundingClientRect();
           const nav = document.querySelector('.pet-active .nav').getBoundingClientRect();
-          return {homeBottom: home.bottom, headTop: head.top, sliderRight: slider.right, navLeft: nav.left, navBottom: nav.bottom, height: innerHeight};
+          return {menuLeft: home.left, headingRight: head.right, sliderRight: slider.right, navLeft: nav.left, navBottom: nav.bottom, height: innerHeight};
         });
-        assert(geometry.homeBottom <= geometry.headTop);
+        assert(geometry.headingRight <= geometry.menuLeft);
         assert(geometry.sliderRight <= geometry.navLeft);
         assert(geometry.navBottom <= geometry.height);
-        await page.locator('.deck-home').click();
+        await page.locator('.chapter-menu summary').click();
+        await page.getByRole('link', {name: 'Deck overview'}).click();
         await page.waitForURL(`${base}/`);
         await page.setViewportSize({width, height: 844});
         console.log(`PASS ${chapter}: ${count} cards, slider, history, math, solutions, mobile ${width}px`);
@@ -101,7 +102,7 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
       await page.close();
     }
     const fallback = await browser.newPage({javaScriptEnabled: false, viewport: {width: 320, height: 640}});
-    for (const chapter of ['commitment', 'zero-knowledge']) {
+    for (const chapter of ['commitment', 'zero-knowledge', 'hw1', 'hw2']) {
       await fallback.goto(`${base}/${chapter}/`);
       assert.equal(await fallback.locator('.slide:visible').count(), 1);
       await fallback.locator('.slide:visible [aria-label="Next card"]').click();
