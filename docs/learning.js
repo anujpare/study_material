@@ -38,7 +38,7 @@
     throw new Error('No modular inverse');
   };
   function lab(card, key, title, intro, content, setup) {
-    const homeworkMap = {hw1: {3:32}, hw2: {21:39, 38:38, 43:43}};
+    const homeworkMap = {hw1: {29:32}, hw2: {21:39, 38:38, 43:43}};
     const mapped = homeworkMap[root.dataset.chapter]?.[card];
     const reader = root.dataset.chapter.startsWith('hw')
       ? (mapped ? root.querySelector(`[data-source-card="${mapped}"] .reading`) : null)
@@ -49,7 +49,8 @@
     panel.dataset.lab = key;
     panel.setAttribute('aria-labelledby', `${key}-title`);
     panel.innerHTML = `<h3 id="${key}-title">${title}</h3><p>${intro}</p>${content}`;
-    (reader.querySelector('.homework-prep') || reader.querySelector('.beginner-context') || reader.querySelector('p')).after(panel);
+    const solution=reader.querySelector('.solution-content');
+    if(solution)solution.append(panel);else reader.append(panel);
     setup(panel);
   }
   const result = '<output class="lab-result" aria-live="polite" aria-atomic="true"></output>';
@@ -68,7 +69,7 @@
   const line = (a, b, cls = 'edge') => `<line class="${cls}" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}"/>`;
 
   if (['commitment','hw1'].includes(root.dataset.chapter)) {
-    lab(3, 'guessing', 'How likely is a guess to work?', 'Each square represents one possible secret, and each secret is equally likely. Move the guesses control to check more squares. Each guess checks a different possibility.',
+    lab(29, 'guessing', 'How likely is a guess to work?', 'Each square represents one possible secret, and each secret is equally likely. Move the guesses control to check more squares. Each guess checks a different possibility.',
       range('secret-bits', 'Number of bits in the secret', 1, 6, 4) + range('guess-count', 'Number of guesses', 1, 16, 3) +
       '<div class="lab-grid" aria-hidden="true"></div><div class="lab-metric" aria-hidden="true"></div>' + result, panel => {
         const draw = () => {

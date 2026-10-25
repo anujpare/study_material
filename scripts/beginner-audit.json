@@ -1,3076 +1,1245 @@
 {
   "counts": {
-    "commitment": 95,
-    "zero-knowledge": 73,
-    "hw1": 33,
-    "hw2": 31
+    "commitment": 58,
+    "zero-knowledge": 46,
+    "hw1": 15,
+    "hw2": 13
   },
-  "original_cards_reviewed": 189,
   "cards": [
     {
       "deck": "commitment",
       "id": "lesson-1",
-      "source": 1,
-      "new_terms": [],
-      "available_terms": [],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-2",
-      "source": 2,
-      "new_terms": [
-        "polynomial"
-      ],
-      "available_terms": [
-        "polynomial"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-3",
-      "source": 3,
-      "new_terms": [],
-      "available_terms": [
-        "distribution",
-        "independent",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-4",
-      "source": 4,
-      "new_terms": [],
-      "available_terms": [
-        "conditional",
-        "independent",
-        "union"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-5",
-      "source": 5,
-      "new_terms": [],
-      "available_terms": [
-        "independent",
-        "union"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-6",
-      "source": 6,
-      "new_terms": [],
-      "available_terms": [],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-7",
-      "source": 7,
-      "new_terms": [],
-      "available_terms": [
-        "np",
-        "polynomial",
-        "witness"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-8",
-      "source": 8,
-      "new_terms": [
-        "language",
-        "prover"
-      ],
-      "available_terms": [
-        "language",
-        "np",
-        "polynomial",
-        "ppt",
-        "prover",
-        "witness"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-9",
-      "source": 9,
-      "new_terms": [
-        "circuit"
-      ],
-      "available_terms": [
-        "circuit",
-        "np",
-        "polynomial",
-        "prover",
-        "witness"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "start-notation"
+      ]
     },
     {
       "deck": "commitment",
       "id": "lesson-10",
-      "source": 10,
-      "new_terms": [],
-      "available_terms": [
-        "adversary",
-        "lambda",
-        "polynomial",
-        "ppt"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-2",
+        "start-powers",
+        "start-algorithms"
+      ]
     },
     {
       "deck": "commitment",
-      "id": "lesson-11",
-      "source": 11,
-      "new_terms": [
-        "computational",
-        "pspace"
-      ],
-      "available_terms": [
-        "computational",
-        "language",
-        "polynomial",
-        "prover",
-        "pspace"
-      ],
-      "worked_solution_rewritten": false
+      "id": "lesson-7",
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-8",
+        "lesson-11"
+      ]
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-9",
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-12",
-      "source": 12,
-      "new_terms": [
-        "advantage",
-        "inverse"
-      ],
-      "available_terms": [
-        "advantage",
-        "adversary",
-        "inverse",
-        "negligible",
-        "polynomial"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-13",
-      "source": 13,
-      "new_terms": [],
-      "available_terms": [
-        "negligible",
-        "polynomial"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-15"
+      ]
     },
     {
       "deck": "commitment",
       "id": "lesson-14",
-      "source": 14,
-      "new_terms": [],
-      "available_terms": [
-        "lambda",
-        "negligible",
-        "polynomial"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-15",
-      "source": 15,
-      "new_terms": [],
-      "available_terms": [
-        "advantage",
-        "adversary",
-        "distribution",
-        "negligible",
-        "polynomial",
-        "ppt"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-16",
-      "source": 16,
-      "new_terms": [
-        "commitment",
-        "indistinguishable",
-        "information",
-        "stat_distance",
-        "statistical"
-      ],
-      "available_terms": [
-        "advantage",
-        "commitment",
-        "computational",
-        "distribution",
-        "independent",
-        "indistinguishable",
-        "information",
-        "negligible",
-        "ppt",
-        "stat_distance",
-        "statistical"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-17",
-      "source": 17,
-      "new_terms": [
-        "randomizer"
-      ],
-      "available_terms": [
-        "commitment",
-        "computational",
-        "randomizer",
-        "statistical",
-        "uniform",
-        "xor"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-18",
-      "source": 18,
-      "new_terms": [],
-      "available_terms": [
-        "advantage",
-        "adversary",
-        "computational",
-        "distribution",
-        "indistinguishable",
-        "lambda",
-        "negligible"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-19",
-      "source": 19,
-      "new_terms": [],
-      "available_terms": [
-        "computational",
-        "distribution",
-        "stat_distance",
-        "statistical"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-20",
-      "source": 20,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "hash",
-        "independent",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-21",
-      "source": 21,
-      "new_terms": [],
-      "available_terms": [
-        "advantage",
-        "adversary",
-        "computational",
-        "distribution",
-        "indistinguishable",
-        "lambda",
-        "negligible",
-        "polynomial",
-        "ppt",
-        "statistical"
-      ],
-      "worked_solution_rewritten": false
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-22",
-      "source": 22,
-      "new_terms": [],
-      "available_terms": [
-        "advantage",
-        "adversary",
-        "computational",
-        "distribution",
-        "lambda",
-        "negligible",
-        "polynomial",
-        "ppt"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-21"
+      ]
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-18",
+      "action": "reviewed worked solution",
+      "aliases": []
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-19",
+      "action": "rewritten explanation",
+      "aliases": []
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-16",
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-17"
+      ]
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-20",
+      "action": "rewritten explanation",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-23",
-      "source": 23,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "computational",
-        "distribution",
-        "independent",
-        "indistinguishable",
-        "negligible",
-        "ppt",
-        "statistical",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "start-commit"
+      ]
     },
     {
       "deck": "commitment",
       "id": "lesson-24",
-      "source": 24,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "computational",
-        "negligible",
-        "statistical"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-25",
-      "source": 25,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "prime",
-        "randomizer",
-        "uniform",
-        "xor"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-26",
-      "source": 26,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "computational",
-        "distribution",
-        "lambda",
-        "randomizer",
-        "statistical",
-        "uniform",
-        "xor"
-      ],
-      "worked_solution_rewritten": true
+      "action": "reviewed worked solution",
+      "aliases": [
+        "lesson-25"
+      ]
     },
     {
       "deck": "commitment",
       "id": "lesson-27",
-      "source": 27,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "hash",
-        "oracle"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "start-bits"
+      ]
     },
     {
       "deck": "commitment",
       "id": "lesson-28",
-      "source": 28,
-      "new_terms": [
-        "simulation"
-      ],
-      "available_terms": [
-        "hash",
-        "independent",
-        "oracle",
-        "simulation",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "start-oracle"
+      ]
     },
     {
       "deck": "commitment",
       "id": "lesson-29",
-      "source": 29,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "computational",
-        "distribution",
-        "negligible",
-        "oracle",
-        "polynomial",
-        "ppt",
-        "uniform",
-        "union"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-3",
+        "lesson-4",
+        "start-chance"
+      ]
     },
     {
       "deck": "commitment",
       "id": "lesson-30",
-      "source": 30,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "conditional",
-        "lambda",
-        "negligible",
-        "oracle",
-        "randomizer",
-        "uniform",
-        "union"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-5"
+      ]
     },
     {
       "deck": "commitment",
       "id": "lesson-31",
-      "source": 31,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "computational",
-        "hash",
-        "independent",
-        "negligible",
-        "oracle",
-        "polynomial",
-        "uniform",
-        "union"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-32",
-      "source": 32,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "lambda",
-        "negligible",
-        "oracle",
-        "randomizer",
-        "union"
-      ],
-      "worked_solution_rewritten": true
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-33",
-      "source": 33,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "hash",
-        "oracle"
-      ],
-      "worked_solution_rewritten": true
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-34",
-      "source": 34,
-      "new_terms": [],
-      "available_terms": [
-        "inverse",
-        "modular",
-        "prime"
-      ],
-      "worked_solution_rewritten": false
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-35",
-      "source": 35,
-      "new_terms": [],
-      "available_terms": [
-        "inverse",
-        "modular",
-        "prime"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-36",
-      "source": 36,
-      "new_terms": [],
-      "available_terms": [
-        "generator",
-        "group",
-        "identity",
-        "modular"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-34"
+      ]
     },
     {
       "deck": "commitment",
       "id": "lesson-37",
-      "source": 37,
-      "new_terms": [],
-      "available_terms": [
-        "inverse",
-        "modular",
-        "prime"
-      ],
-      "worked_solution_rewritten": false
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-38",
-      "source": 38,
-      "new_terms": [],
-      "available_terms": [
-        "group",
-        "identity",
-        "inverse",
-        "modular",
-        "prime"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "start-group"
+      ]
     },
     {
       "deck": "commitment",
       "id": "lesson-39",
-      "source": 39,
-      "new_terms": [],
-      "available_terms": [
-        "computational",
-        "generator",
-        "group",
-        "identity",
-        "modular",
-        "prime"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-40",
-      "source": 40,
-      "new_terms": [],
-      "available_terms": [
-        "discrete",
-        "generator",
-        "group",
-        "negligible",
-        "ppt",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-41",
-      "source": 41,
-      "new_terms": [
-        "reduction"
-      ],
-      "available_terms": [
-        "computational",
-        "group",
-        "identity",
-        "modular",
-        "reduction",
-        "statistical"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-36"
+      ]
     },
     {
       "deck": "commitment",
       "id": "lesson-42",
-      "source": 42,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "group",
-        "identity",
-        "modular",
-        "prime"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-43",
-      "source": 43,
-      "new_terms": [],
-      "available_terms": [
-        "discrete",
-        "negligible",
-        "reduction"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-44",
-      "source": 44,
-      "new_terms": [
-        "hybrid"
-      ],
-      "available_terms": [
-        "distribution",
-        "group",
-        "hybrid",
-        "independent",
-        "indistinguishable",
-        "negligible",
-        "oracle",
-        "polynomial",
-        "reduction",
-        "simulation",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-45",
-      "source": 45,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "discrete",
-        "reduction"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-46",
-      "source": 46,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "generator",
-        "group",
-        "identity",
-        "inverse",
-        "modular",
-        "oracle",
-        "prime"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-47",
-      "source": 47,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "group",
-        "homomorphic",
-        "modular"
-      ],
-      "worked_solution_rewritten": false
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-48",
-      "source": 48,
-      "new_terms": [],
-      "available_terms": [
-        "adversary",
-        "discrete",
-        "generator",
-        "group",
-        "negligible",
-        "ppt",
-        "prime",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-40"
+      ]
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-43",
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-6",
+        "lesson-44"
+      ]
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-45",
+      "action": "reviewed worked solution",
+      "aliases": []
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-46",
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-41"
+      ]
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-47",
+      "action": "rewritten explanation",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-49",
-      "source": 49,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "computational",
-        "distribution",
-        "generator",
-        "group",
-        "inverse",
-        "modular",
-        "prime",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-50",
-      "source": 50,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "discrete",
-        "modular",
-        "reduction"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-51",
-      "source": 51,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "discrete",
-        "group",
-        "inverse",
-        "modular",
-        "negligible",
-        "prime",
-        "reduction"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-50"
+      ]
     },
     {
       "deck": "commitment",
       "id": "lesson-52",
-      "source": 52,
-      "new_terms": [],
-      "available_terms": [
-        "discrete",
-        "generator",
-        "group",
-        "inverse",
-        "modular",
-        "prime",
-        "reduction"
-      ],
-      "worked_solution_rewritten": false
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-53",
-      "source": 53,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "discrete",
-        "generator",
-        "group",
-        "hash",
-        "identity",
-        "independent",
-        "modular",
-        "oracle",
-        "prime",
-        "randomizer",
-        "statistical",
-        "uniform"
-      ],
-      "worked_solution_rewritten": true
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-54",
-      "source": 54,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "discrete",
-        "generator",
-        "group",
-        "independent",
-        "inverse",
-        "modular",
-        "statistical",
-        "uniform"
-      ],
-      "worked_solution_rewritten": true
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-55",
-      "source": 55,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "computational",
-        "discrete",
-        "generator",
-        "group",
-        "inverse",
-        "modular",
-        "statistical"
-      ],
-      "worked_solution_rewritten": true
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-56",
-      "source": 56,
-      "new_terms": [],
-      "available_terms": [
-        "adversary",
-        "prf",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-57",
-      "source": 57,
-      "new_terms": [],
-      "available_terms": [
-        "advantage",
-        "adversary",
-        "indistinguishable",
-        "negligible",
-        "ppt",
-        "prf",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-57"
+      ]
     },
     {
       "deck": "commitment",
       "id": "lesson-58",
-      "source": 58,
-      "new_terms": [
-        "blackbox"
-      ],
-      "available_terms": [
-        "blackbox",
-        "independent",
-        "oracle",
-        "prf"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-59",
-      "source": 59,
-      "new_terms": [],
-      "available_terms": [
-        "circuit",
-        "commitment",
-        "np",
-        "polynomial",
-        "witness"
-      ],
-      "worked_solution_rewritten": false
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-60",
-      "source": 60,
-      "new_terms": [],
-      "available_terms": [
-        "independent",
-        "np",
-        "polynomial",
-        "prf",
-        "union",
-        "witness"
-      ],
-      "worked_solution_rewritten": true
+      "action": "reviewed worked solution",
+      "aliases": [
+        "lesson-59"
+      ]
     },
     {
       "deck": "commitment",
       "id": "lesson-61",
-      "source": 61,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "fhe",
-        "homomorphic"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-62",
-      "source": 62,
-      "new_terms": [],
-      "available_terms": [
-        "fhe"
-      ],
-      "worked_solution_rewritten": true
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-63",
-      "source": 63,
-      "new_terms": [],
-      "available_terms": [
-        "ddh",
-        "group",
-        "hash",
-        "oracle",
-        "ppt",
-        "prf",
-        "prime"
-      ],
-      "worked_solution_rewritten": false
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-64",
-      "source": 64,
-      "new_terms": [],
-      "available_terms": [
-        "advantage",
-        "ddh",
-        "distribution",
-        "generator",
-        "group",
-        "independent",
-        "negligible",
-        "ppt",
-        "prime",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "start-ddh"
+      ]
     },
     {
       "deck": "commitment",
       "id": "lesson-65",
-      "source": 65,
-      "new_terms": [],
-      "available_terms": [
-        "advantage",
-        "ddh",
-        "distribution",
-        "group",
-        "independent",
-        "modular",
-        "negligible",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
+      "action": "reviewed worked solution",
+      "aliases": []
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-63",
+      "action": "rewritten explanation",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-66",
-      "source": 66,
-      "new_terms": [],
-      "available_terms": [
-        "ddh",
-        "group",
-        "oracle",
-        "prf",
-        "reduction",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-67",
-      "source": 67,
-      "new_terms": [],
-      "available_terms": [
-        "ddh",
-        "distribution",
-        "oracle",
-        "prf",
-        "simulation",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-67"
+      ]
     },
     {
       "deck": "commitment",
       "id": "lesson-68",
-      "source": 68,
-      "new_terms": [],
-      "available_terms": [
-        "advantage",
-        "ddh",
-        "independent",
-        "prf",
-        "simulation",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-69",
-      "source": 69,
-      "new_terms": [],
-      "available_terms": [
-        "advantage",
-        "ddh",
-        "independent",
-        "negligible",
-        "oracle",
-        "polynomial",
-        "prf",
-        "reduction",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-69"
+      ]
     },
     {
       "deck": "commitment",
       "id": "lesson-70",
-      "source": 70,
-      "new_terms": [],
-      "available_terms": [
-        "advantage",
-        "adversary",
-        "conditional",
-        "ddh",
-        "lambda",
-        "negligible",
-        "oracle",
-        "polynomial",
-        "prf",
-        "reduction",
-        "simulation",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-71",
-      "source": 71,
-      "new_terms": [],
-      "available_terms": [
-        "adversary",
-        "ddh",
-        "distribution",
-        "independent",
-        "oracle",
-        "prf",
-        "reduction",
-        "simulation",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-72",
-      "source": 72,
-      "new_terms": [],
-      "available_terms": [
-        "advantage",
-        "adversary",
-        "ddh",
-        "distribution",
-        "group",
-        "hash",
-        "independent",
-        "oracle",
-        "ppt",
-        "prf",
-        "prime",
-        "reduction",
-        "simulation",
-        "uniform"
-      ],
-      "worked_solution_rewritten": true
+      "action": "reviewed worked solution",
+      "aliases": [
+        "lesson-71"
+      ]
     },
     {
       "deck": "commitment",
       "id": "lesson-73",
-      "source": 73,
-      "new_terms": [],
-      "available_terms": [
-        "conditional",
-        "ddh",
-        "group",
-        "independent",
-        "modular",
-        "uniform"
-      ],
-      "worked_solution_rewritten": true
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-74",
-      "source": 74,
-      "new_terms": [],
-      "available_terms": [
-        "ddh",
-        "distribution",
-        "independent",
-        "modular",
-        "negligible",
-        "oracle",
-        "simulation",
-        "stat_distance",
-        "statistical",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-75",
-      "source": 75,
-      "new_terms": [],
-      "available_terms": [
-        "adversary",
-        "ddh",
-        "distribution",
-        "group",
-        "hash",
-        "independent",
-        "prf",
-        "reduction",
-        "simulation",
-        "uniform"
-      ],
-      "worked_solution_rewritten": true
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-76",
-      "source": 76,
-      "new_terms": [],
-      "available_terms": [
-        "ddh",
-        "distribution",
-        "independent",
-        "oracle",
-        "prf"
-      ],
-      "worked_solution_rewritten": false
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-77",
-      "source": 77,
-      "new_terms": [],
-      "available_terms": [
-        "advantage",
-        "ddh",
-        "determinant",
-        "distribution",
-        "independent",
-        "modular",
-        "oracle",
-        "prf",
-        "prime",
-        "prover",
-        "uniform"
-      ],
-      "worked_solution_rewritten": true
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-78",
-      "source": 78,
-      "new_terms": [],
-      "available_terms": [
-        "ddh",
-        "distribution",
-        "independent",
-        "negligible",
-        "oracle",
-        "prf",
-        "reduction",
-        "simulation",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
+      "action": "reviewed worked solution",
+      "aliases": [
+        "lesson-74",
+        "lesson-76",
+        "lesson-78",
+        "start-linear"
+      ]
     },
     {
       "deck": "commitment",
       "id": "lesson-79",
-      "source": 79,
-      "new_terms": [
-        "merkle"
-      ],
-      "available_terms": [
-        "commitment",
-        "merkle",
-        "vector"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "commitment",
-      "id": "lesson-80",
-      "source": 80,
-      "new_terms": [],
-      "available_terms": [
-        "adversary",
-        "commitment",
-        "hash",
-        "oracle",
-        "ppt",
-        "vector"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-80"
+      ]
     },
     {
       "deck": "commitment",
       "id": "lesson-81",
-      "source": 81,
-      "new_terms": [
-        "big_o"
-      ],
-      "available_terms": [
-        "big_o",
-        "commitment",
-        "hash",
-        "lambda",
-        "oracle",
-        "polynomial",
-        "prover",
-        "vector"
-      ],
-      "worked_solution_rewritten": true
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-82",
-      "source": 82,
-      "new_terms": [],
-      "available_terms": [
-        "big_o",
-        "commitment",
-        "hash",
-        "lambda",
-        "prover",
-        "vector"
-      ],
-      "worked_solution_rewritten": true
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-83",
-      "source": 83,
-      "new_terms": [],
-      "available_terms": [
-        "hash"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": []
     },
     {
       "deck": "commitment",
       "id": "lesson-84",
-      "source": 84,
-      "new_terms": [],
-      "available_terms": [
-        "big_o",
-        "commitment",
-        "hash",
-        "lambda",
-        "merkle",
-        "prover",
-        "vector"
-      ],
-      "worked_solution_rewritten": true
+      "action": "reviewed worked solution",
+      "aliases": [
+        "lesson-85"
+      ]
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-2",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-10"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-3",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-29"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-4",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-29"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-5",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-30"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-6",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-43"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-8",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-7"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-11",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-7"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-15",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-13"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-17",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-16"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-21",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-22"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-25",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-26"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-34",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-35"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-36",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-39"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-40",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-48"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-41",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-46"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-44",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-43"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-50",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-51"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-57",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-56"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-59",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-60"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-67",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-66"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-69",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-68"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-71",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-72"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-74",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-77"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-76",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-77"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-78",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-77"
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-80",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-79"
     },
     {
       "deck": "commitment",
       "id": "lesson-85",
-      "source": 85,
-      "new_terms": [],
-      "available_terms": [
-        "computational",
-        "hash",
-        "merkle",
-        "oracle"
-      ],
-      "worked_solution_rewritten": false
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-84"
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-1",
-      "source": 1,
-      "new_terms": [],
-      "available_terms": [
-        "language",
-        "prime",
-        "prover"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-3",
+        "start-notation",
+        "start-powers",
+        "start-bits",
+        "start-proof",
+        "start-circuit"
+      ]
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-2",
-      "source": 2,
-      "new_terms": [],
-      "available_terms": [
-        "completeness",
-        "prover",
-        "soundness"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "zero-knowledge",
-      "id": "lesson-3",
-      "source": 3,
-      "new_terms": [],
-      "available_terms": [
-        "circuit",
-        "np",
-        "polynomial",
-        "prover",
-        "witness",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-12",
+        "start-chance"
+      ]
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-4",
-      "source": 4,
-      "new_terms": [
-        "pspace"
-      ],
-      "available_terms": [
-        "np",
-        "ppt",
-        "prover",
-        "pspace",
-        "soundness",
-        "witness"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "zero-knowledge",
-      "id": "lesson-5",
-      "source": 5,
-      "new_terms": [],
-      "available_terms": [
-        "conditional",
-        "negligible",
-        "polynomial",
-        "prover"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "start-algorithms"
+      ]
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-7",
-      "source": 7,
-      "new_terms": [],
-      "available_terms": [
-        "circuit",
-        "completeness",
-        "prover",
-        "soundness",
-        "witness",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "zero-knowledge",
-      "id": "lesson-8",
-      "source": 8,
-      "new_terms": [],
-      "available_terms": [
-        "prover",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-8"
+      ]
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-9",
-      "source": 9,
-      "new_terms": [
-        "indistinguishable"
-      ],
-      "available_terms": [
-        "indistinguishable",
-        "prover",
-        "simulation",
-        "transcript",
-        "witness",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-14"
+      ]
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-10",
-      "source": 10,
-      "new_terms": [
-        "advantage",
-        "computational"
-      ],
-      "available_terms": [
-        "advantage",
-        "computational",
-        "distribution",
-        "indistinguishable",
-        "negligible",
-        "ppt",
-        "prover",
-        "simulation",
-        "witness",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-11",
-      "source": 11,
-      "new_terms": [],
-      "available_terms": [
-        "completeness",
-        "prover",
-        "witness",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "zero-knowledge",
-      "id": "lesson-12",
-      "source": 12,
-      "new_terms": [
-        "commitment",
-        "information"
-      ],
-      "available_terms": [
-        "commitment",
-        "completeness",
-        "computational",
-        "information",
-        "ppt",
-        "prover",
-        "soundness",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-15"
+      ]
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-13",
-      "source": 13,
-      "new_terms": [
-        "extractor"
-      ],
-      "available_terms": [
-        "advantage",
-        "distribution",
-        "extractor",
-        "independent",
-        "indistinguishable",
-        "negligible",
-        "prover",
-        "simulation",
-        "transcript",
-        "witness",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "zero-knowledge",
-      "id": "lesson-14",
-      "source": 14,
-      "new_terms": [],
-      "available_terms": [
-        "computational",
-        "distribution",
-        "indistinguishable",
-        "prover",
-        "simulation",
-        "transcript",
-        "witness",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "zero-knowledge",
-      "id": "lesson-15",
-      "source": 15,
-      "new_terms": [],
-      "available_terms": [
-        "circuit",
-        "completeness",
-        "language",
-        "prover",
-        "simulation",
-        "soundness",
-        "witness",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-16",
-      "source": 16,
-      "new_terms": [],
-      "available_terms": [
-        "completeness",
-        "conditional",
-        "language",
-        "np",
-        "prover",
-        "simulation",
-        "soundness",
-        "transcript",
-        "witness",
-        "zk"
-      ],
-      "worked_solution_rewritten": true
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-17",
-      "source": 17,
-      "new_terms": [],
-      "available_terms": [
-        "completeness",
-        "language",
-        "prover",
-        "soundness",
-        "zk"
-      ],
-      "worked_solution_rewritten": true
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-18",
-      "source": 18,
-      "new_terms": [],
-      "available_terms": [
-        "completeness",
-        "language",
-        "prover",
-        "soundness",
-        "witness",
-        "zk"
-      ],
-      "worked_solution_rewritten": true
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-19",
-      "source": 19,
-      "new_terms": [
-        "reduction"
-      ],
-      "available_terms": [
-        "hamiltonian",
-        "np",
-        "polynomial",
-        "prover",
-        "reduction"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "start-graph"
+      ]
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-20",
-      "source": 20,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "permutation",
-        "prover"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "start-commit"
+      ]
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-21",
-      "source": 21,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "hamiltonian",
-        "permutation",
-        "prover",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-22",
-      "source": 22,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "completeness",
-        "hamiltonian",
-        "permutation",
-        "prover",
-        "soundness"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-6",
-      "source": 6,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "completeness",
-        "hamiltonian",
-        "independent",
-        "prover",
-        "soundness",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-23",
-      "source": 23,
-      "new_terms": [
-        "rewind"
-      ],
-      "available_terms": [
-        "commitment",
-        "hamiltonian",
-        "permutation",
-        "prover",
-        "rewind",
-        "simulation",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-24",
-      "source": 24,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "completeness",
-        "computational",
-        "distribution",
-        "hamiltonian",
-        "independent",
-        "negligible",
-        "prover",
-        "rewind",
-        "simulation",
-        "soundness",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "zero-knowledge",
-      "id": "lesson-25",
-      "source": 25,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "computational",
-        "distribution",
-        "hamiltonian",
-        "independent",
-        "indistinguishable",
-        "polynomial",
-        "prover",
-        "rewind",
-        "simulation",
-        "transcript",
-        "uniform",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-25"
+      ]
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-26",
-      "source": 26,
-      "new_terms": [],
-      "available_terms": [
-        "extractor",
-        "generator",
-        "group",
-        "prover",
-        "rewind",
-        "soundness",
-        "witness"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "zero-knowledge",
-      "id": "lesson-27",
-      "source": 27,
-      "new_terms": [],
-      "available_terms": [
-        "discrete",
-        "extractor",
-        "prover",
-        "rewind",
-        "transcript",
-        "witness",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-28",
-      "source": 28,
-      "new_terms": [],
-      "available_terms": [
-        "extractor",
-        "negligible",
-        "prover",
-        "soundness",
-        "witness"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-29",
-      "source": 29,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "extractor",
-        "hamiltonian",
-        "permutation",
-        "prover",
-        "rewind",
-        "witness"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-27"
+      ]
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-30",
-      "source": 30,
-      "new_terms": [],
-      "available_terms": [
-        "extractor",
-        "prime",
-        "prover",
-        "soundness",
-        "transcript",
-        "witness"
-      ],
-      "worked_solution_rewritten": false
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-31",
-      "source": 31,
-      "new_terms": [
-        "sigma"
-      ],
-      "available_terms": [
-        "commitment",
-        "prover",
-        "sigma",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-32",
-      "source": 32,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "completeness",
-        "extractor",
-        "prover",
-        "soundness",
-        "transcript",
-        "witness"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-33",
-      "source": 33,
-      "new_terms": [
-        "vector"
-      ],
-      "available_terms": [
-        "hvzk",
-        "independent",
-        "indistinguishable",
-        "prover",
-        "sigma",
-        "simulation",
-        "transcript",
-        "vector",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-34",
-      "source": 34,
-      "new_terms": [],
-      "available_terms": [
-        "prover",
-        "sigma",
-        "soundness",
-        "uniform",
-        "witness"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "zero-knowledge",
-      "id": "lesson-35",
-      "source": 35,
-      "new_terms": [],
-      "available_terms": [
-        "computational",
-        "distribution",
-        "hvzk",
-        "independent",
-        "indistinguishable",
-        "polynomial",
-        "prover",
-        "simulation",
-        "transcript",
-        "uniform",
-        "vector",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-36",
-      "source": 36,
-      "new_terms": [],
-      "available_terms": [
-        "extractor",
-        "prime",
-        "prover",
-        "sigma",
-        "soundness",
-        "transcript",
-        "uniform",
-        "witness"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "zero-knowledge",
-      "id": "lesson-37",
-      "source": 37,
-      "new_terms": [],
-      "available_terms": [
-        "completeness",
-        "hvzk",
-        "indistinguishable",
-        "prover",
-        "sigma",
-        "simulation",
-        "soundness",
-        "transcript",
-        "witness",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-38",
-      "source": 38,
-      "new_terms": [],
-      "available_terms": [
-        "conditional",
-        "prover",
-        "simulation",
-        "soundness",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-5",
+        "lesson-35",
+        "lesson-37",
+        "lesson-40"
+      ]
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-39",
-      "source": 39,
-      "new_terms": [],
-      "available_terms": [
-        "completeness",
-        "conditional",
-        "hamiltonian",
-        "prover",
-        "simulation",
-        "soundness",
-        "zk"
-      ],
-      "worked_solution_rewritten": true
-    },
-    {
-      "deck": "zero-knowledge",
-      "id": "lesson-40",
-      "source": 40,
-      "new_terms": [],
-      "available_terms": [
-        "independent",
-        "lambda",
-        "negligible",
-        "polynomial",
-        "prover",
-        "simulation",
-        "soundness",
-        "transcript",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-41",
-      "source": 41,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "independent",
-        "prover",
-        "simulation",
-        "vector",
-        "zk"
-      ],
-      "worked_solution_rewritten": true
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-42",
-      "source": 42,
-      "new_terms": [],
-      "available_terms": [
-        "computational",
-        "distribution",
-        "hvzk",
-        "independent",
-        "indistinguishable",
-        "polynomial",
-        "prover",
-        "sigma",
-        "simulation",
-        "transcript",
-        "witness",
-        "zk"
-      ],
-      "worked_solution_rewritten": true
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-43",
-      "source": 43,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "discrete",
-        "inverse",
-        "modular",
-        "prover",
-        "soundness",
-        "transcript"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "start-mod",
+        "start-group"
+      ]
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-44",
-      "source": 44,
-      "new_terms": [],
-      "available_terms": [
-        "completeness",
-        "discrete",
-        "generator",
-        "group",
-        "identity",
-        "modular",
-        "prime",
-        "prover"
-      ],
-      "worked_solution_rewritten": true
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-45",
-      "source": 45,
-      "new_terms": [],
-      "available_terms": [
-        "distribution",
-        "group",
-        "hvzk",
-        "independent",
-        "inverse",
-        "prover",
-        "simulation",
-        "transcript",
-        "uniform",
-        "zk"
-      ],
-      "worked_solution_rewritten": true
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-46",
-      "source": 46,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "discrete",
-        "extractor",
-        "generator",
-        "independent",
-        "inverse",
-        "modular",
-        "prime",
-        "prover",
-        "uniform",
-        "witness"
-      ],
-      "worked_solution_rewritten": true
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-47",
-      "source": 47,
-      "new_terms": [],
-      "available_terms": [
-        "extractor",
-        "group",
-        "inverse",
-        "modular",
-        "prime",
-        "prover",
-        "witness"
-      ],
-      "worked_solution_rewritten": false
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-48",
-      "source": 48,
-      "new_terms": [
-        "crs",
-        "oracle"
-      ],
-      "available_terms": [
-        "completeness",
-        "crs",
-        "language",
-        "np",
-        "oracle",
-        "prover",
-        "simulation",
-        "soundness",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-49",
-      "source": 49,
-      "new_terms": [],
-      "available_terms": [
-        "fiat",
-        "hash",
-        "oracle",
-        "prover",
-        "pspace",
-        "sigma"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "zero-knowledge",
-      "id": "lesson-50",
-      "source": 50,
-      "new_terms": [],
-      "available_terms": [
-        "fiat",
-        "oracle",
-        "prover",
-        "pspace",
-        "sigma",
-        "simulation",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-50"
+      ]
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-51",
-      "source": 51,
-      "new_terms": [],
-      "available_terms": [
-        "adversary",
-        "extractor",
-        "fiat",
-        "oracle",
-        "prover",
-        "pspace",
-        "rewind",
-        "sigma",
-        "soundness",
-        "transcript",
-        "witness"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "zero-knowledge",
-      "id": "lesson-52",
-      "source": 52,
-      "new_terms": [],
-      "available_terms": [
-        "completeness",
-        "fiat",
-        "hash",
-        "negligible",
-        "oracle",
-        "prover",
-        "pspace",
-        "sigma",
-        "soundness"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-52"
+      ]
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-53",
-      "source": 53,
-      "new_terms": [],
-      "available_terms": [
-        "extractor",
-        "fiat",
-        "independent",
-        "oracle",
-        "prover",
-        "pspace",
-        "sigma"
-      ],
-      "worked_solution_rewritten": false
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-54",
-      "source": 54,
-      "new_terms": [],
-      "available_terms": [
-        "completeness",
-        "language",
-        "np",
-        "oracle",
-        "prover",
-        "simulation",
-        "soundness",
-        "transcript",
-        "witness",
-        "zk"
-      ],
-      "worked_solution_rewritten": true
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-55",
-      "source": 55,
-      "new_terms": [],
-      "available_terms": [
-        "circuit",
-        "commitment",
-        "prover",
-        "sigma",
-        "xor"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "zero-knowledge",
-      "id": "lesson-56",
-      "source": 56,
-      "new_terms": [],
-      "available_terms": [
-        "circuit",
-        "commitment",
-        "computational",
-        "language",
-        "prover",
-        "sigma",
-        "xor"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": [
+        "lesson-56"
+      ]
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-57",
-      "source": 57,
-      "new_terms": [],
-      "available_terms": [
-        "circuit",
-        "commitment",
-        "independent",
-        "prover",
-        "sigma",
-        "xor"
-      ],
-      "worked_solution_rewritten": true
+      "action": "reviewed worked solution",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-58",
-      "source": 58,
-      "new_terms": [],
-      "available_terms": [
-        "circuit",
-        "commitment",
-        "negligible",
-        "polynomial",
-        "prover",
-        "reduction",
-        "sigma",
-        "soundness"
-      ],
-      "worked_solution_rewritten": true
-    },
-    {
-      "deck": "zero-knowledge",
-      "id": "lesson-59",
-      "source": 59,
-      "new_terms": [],
-      "available_terms": [
-        "circuit",
-        "commitment",
-        "prover",
-        "reduction",
-        "sigma",
-        "soundness",
-        "xor"
-      ],
-      "worked_solution_rewritten": false
+      "action": "reviewed worked solution",
+      "aliases": [
+        "lesson-59"
+      ]
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-60",
-      "source": 60,
-      "new_terms": [
-        "hybrid"
-      ],
-      "available_terms": [
-        "circuit",
-        "computational",
-        "hvzk",
-        "hybrid",
-        "indistinguishable",
-        "polynomial",
-        "prover",
-        "sigma",
-        "simulation",
-        "transcript"
-      ],
-      "worked_solution_rewritten": false
+      "action": "rewritten explanation",
+      "aliases": []
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-61",
-      "source": 61,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "hvzk",
-        "hybrid",
-        "prover",
-        "simulation",
-        "transcript",
-        "xor",
-        "zk"
-      ],
-      "worked_solution_rewritten": true
+      "action": "reviewed worked solution",
+      "aliases": [
+        "lesson-62"
+      ]
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-3",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-1"
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-5",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-38"
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-8",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-7"
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-12",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-2"
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-14",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-9"
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-15",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-11"
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-25",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-24"
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-27",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-29"
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-35",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-38"
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-37",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-38"
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-40",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-38"
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-50",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-49"
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-52",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-51"
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-56",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-55"
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-59",
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-58"
     },
     {
       "deck": "zero-knowledge",
       "id": "lesson-62",
-      "source": 62,
-      "new_terms": [],
-      "available_terms": [
-        "circuit",
-        "commitment",
-        "hvzk",
-        "hybrid",
-        "prover",
-        "simulation",
-        "transcript",
-        "xor",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
+      "action": "merged; repeated or elementary explanation removed",
+      "target": "lesson-61"
     },
     {
       "deck": "hw1",
       "id": "lesson-1",
-      "source": 32,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "lambda",
-        "negligible",
-        "oracle",
-        "polynomial",
-        "randomizer",
-        "union"
-      ],
-      "worked_solution_rewritten": true
-    },
-    {
-      "deck": "hw1",
-      "id": "lesson-2",
-      "source": 59,
-      "new_terms": [
-        "circuit",
-        "witness"
-      ],
-      "available_terms": [
-        "circuit",
-        "commitment",
-        "np",
-        "polynomial",
-        "witness"
-      ],
-      "worked_solution_rewritten": false
+      "action": "shared reviewed solution",
+      "source": "commitment/lesson-32",
+      "aliases": [
+        "start-notation",
+        "start-powers",
+        "start-bits",
+        "start-chance",
+        "start-algorithms",
+        "start-commit",
+        "start-oracle",
+        "start-mod",
+        "start-group",
+        "start-ddh",
+        "start-linear"
+      ]
     },
     {
       "deck": "hw1",
       "id": "lesson-3",
-      "source": 60,
-      "new_terms": [
-        "prf",
-        "reduction"
-      ],
-      "available_terms": [
-        "independent",
-        "np",
-        "polynomial",
-        "prf",
-        "reduction",
-        "union",
-        "witness"
-      ],
-      "worked_solution_rewritten": true
-    },
-    {
-      "deck": "hw1",
-      "id": "lesson-4",
-      "source": 61,
-      "new_terms": [
-        "homomorphic"
-      ],
-      "available_terms": [
-        "commitment",
-        "fhe",
-        "homomorphic"
-      ],
-      "worked_solution_rewritten": false
+      "action": "shared reviewed solution",
+      "source": "commitment/lesson-60",
+      "aliases": [
+        "lesson-2"
+      ]
     },
     {
       "deck": "hw1",
       "id": "lesson-5",
-      "source": 62,
-      "new_terms": [],
-      "available_terms": [
-        "fhe"
-      ],
-      "worked_solution_rewritten": true
+      "action": "shared reviewed solution",
+      "source": "commitment/lesson-62",
+      "aliases": [
+        "lesson-4"
+      ]
     },
     {
       "deck": "hw1",
       "id": "lesson-6",
-      "source": 33,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "hash",
-        "oracle"
-      ],
-      "worked_solution_rewritten": true
+      "action": "shared reviewed solution",
+      "source": "commitment/lesson-33",
+      "aliases": []
     },
     {
       "deck": "hw1",
       "id": "lesson-7",
-      "source": 53,
-      "new_terms": [
-        "statistical"
-      ],
-      "available_terms": [
-        "commitment",
-        "discrete",
-        "distribution",
-        "generator",
-        "group",
-        "hash",
-        "identity",
-        "independent",
-        "modular",
-        "oracle",
-        "prime",
-        "randomizer",
-        "statistical",
-        "uniform"
-      ],
-      "worked_solution_rewritten": true
+      "action": "shared reviewed solution",
+      "source": "commitment/lesson-53",
+      "aliases": []
     },
     {
       "deck": "hw1",
       "id": "lesson-8",
-      "source": 26,
-      "new_terms": [
-        "computational"
-      ],
-      "available_terms": [
-        "commitment",
-        "computational",
-        "distribution",
-        "lambda",
-        "randomizer",
-        "statistical",
-        "uniform",
-        "xor"
-      ],
-      "worked_solution_rewritten": true
+      "action": "shared reviewed solution",
+      "source": "commitment/lesson-26",
+      "aliases": []
     },
     {
       "deck": "hw1",
       "id": "lesson-9",
-      "source": 54,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "discrete",
-        "distribution",
-        "generator",
-        "group",
-        "independent",
-        "inverse",
-        "modular",
-        "statistical",
-        "uniform"
-      ],
-      "worked_solution_rewritten": true
+      "action": "shared reviewed solution",
+      "source": "commitment/lesson-54",
+      "aliases": []
     },
     {
       "deck": "hw1",
       "id": "lesson-10",
-      "source": 55,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "computational",
-        "discrete",
-        "generator",
-        "group",
-        "inverse",
-        "modular",
-        "statistical"
-      ],
-      "worked_solution_rewritten": true
-    },
-    {
-      "deck": "hw1",
-      "id": "lesson-11",
-      "source": 71,
-      "new_terms": [
-        "simulation"
-      ],
-      "available_terms": [
-        "adversary",
-        "ddh",
-        "distribution",
-        "independent",
-        "oracle",
-        "prf",
-        "reduction",
-        "simulation",
-        "uniform"
-      ],
-      "worked_solution_rewritten": false
+      "action": "shared reviewed solution",
+      "source": "commitment/lesson-55",
+      "aliases": []
     },
     {
       "deck": "hw1",
       "id": "lesson-12",
-      "source": 72,
-      "new_terms": [
-        "advantage"
-      ],
-      "available_terms": [
-        "advantage",
-        "adversary",
-        "ddh",
-        "distribution",
-        "group",
-        "hash",
-        "independent",
-        "oracle",
-        "ppt",
-        "prf",
-        "prime",
-        "reduction",
-        "simulation",
-        "uniform"
-      ],
-      "worked_solution_rewritten": true
+      "action": "shared reviewed solution",
+      "source": "commitment/lesson-72",
+      "aliases": [
+        "lesson-11"
+      ]
     },
     {
       "deck": "hw1",
       "id": "lesson-13",
-      "source": 73,
-      "new_terms": [],
-      "available_terms": [
-        "conditional",
-        "ddh",
-        "group",
-        "independent",
-        "modular",
-        "uniform"
-      ],
-      "worked_solution_rewritten": true
+      "action": "shared reviewed solution",
+      "source": "commitment/lesson-73",
+      "aliases": []
     },
     {
       "deck": "hw1",
       "id": "lesson-14",
-      "source": 75,
-      "new_terms": [],
-      "available_terms": [
-        "adversary",
-        "ddh",
-        "distribution",
-        "group",
-        "hash",
-        "independent",
-        "oracle",
-        "prf",
-        "reduction",
-        "simulation",
-        "uniform"
-      ],
-      "worked_solution_rewritten": true
-    },
-    {
-      "deck": "hw1",
-      "id": "lesson-15",
-      "source": 76,
-      "new_terms": [],
-      "available_terms": [
-        "ddh",
-        "distribution",
-        "independent",
-        "oracle",
-        "prf"
-      ],
-      "worked_solution_rewritten": false
+      "action": "shared reviewed solution",
+      "source": "commitment/lesson-75",
+      "aliases": []
     },
     {
       "deck": "hw1",
       "id": "lesson-16",
-      "source": 77,
-      "new_terms": [],
-      "available_terms": [
-        "advantage",
-        "ddh",
-        "determinant",
-        "distribution",
-        "independent",
-        "modular",
-        "oracle",
-        "prf",
-        "prime",
-        "prover",
-        "uniform"
-      ],
-      "worked_solution_rewritten": true
-    },
-    {
-      "deck": "hw1",
-      "id": "lesson-17",
-      "source": 79,
-      "new_terms": [
-        "merkle"
-      ],
-      "available_terms": [
-        "commitment",
-        "merkle",
-        "vector"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "hw1",
-      "id": "lesson-18",
-      "source": 80,
-      "new_terms": [],
-      "available_terms": [
-        "adversary",
-        "commitment",
-        "hash",
-        "oracle",
-        "ppt",
-        "vector"
-      ],
-      "worked_solution_rewritten": false
+      "action": "shared reviewed solution",
+      "source": "commitment/lesson-77",
+      "aliases": [
+        "lesson-15"
+      ]
     },
     {
       "deck": "hw1",
       "id": "lesson-19",
-      "source": 81,
-      "new_terms": [
-        "big_o"
-      ],
-      "available_terms": [
-        "big_o",
-        "commitment",
-        "hash",
-        "lambda",
-        "oracle",
-        "polynomial",
-        "prover",
-        "vector"
-      ],
-      "worked_solution_rewritten": true
+      "action": "shared reviewed solution",
+      "source": "commitment/lesson-81",
+      "aliases": [
+        "lesson-17",
+        "lesson-18"
+      ]
     },
     {
       "deck": "hw1",
       "id": "lesson-20",
-      "source": 82,
-      "new_terms": [],
-      "available_terms": [
-        "big_o",
-        "commitment",
-        "hash",
-        "lambda",
-        "prover",
-        "vector"
-      ],
-      "worked_solution_rewritten": true
-    },
-    {
-      "deck": "hw1",
-      "id": "lesson-21",
-      "source": 83,
-      "new_terms": [],
-      "available_terms": [
-        "hash"
-      ],
-      "worked_solution_rewritten": false
+      "action": "shared reviewed solution",
+      "source": "commitment/lesson-82",
+      "aliases": []
     },
     {
       "deck": "hw1",
       "id": "lesson-22",
-      "source": 84,
-      "new_terms": [],
-      "available_terms": [
-        "big_o",
-        "commitment",
-        "hash",
-        "lambda",
-        "merkle",
-        "prover",
-        "vector"
-      ],
-      "worked_solution_rewritten": true
-    },
-    {
-      "deck": "hw2",
-      "id": "lesson-1",
-      "source": 15,
-      "new_terms": [],
-      "available_terms": [
-        "circuit",
-        "completeness",
-        "language",
-        "prover",
-        "simulation",
-        "soundness",
-        "witness",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
+      "action": "shared reviewed solution",
+      "source": "commitment/lesson-84",
+      "aliases": [
+        "lesson-21"
+      ]
     },
     {
       "deck": "hw2",
       "id": "lesson-2",
-      "source": 16,
-      "new_terms": [],
-      "available_terms": [
-        "completeness",
-        "conditional",
-        "language",
-        "np",
-        "prover",
-        "simulation",
-        "soundness",
-        "transcript",
-        "witness",
-        "zk"
-      ],
-      "worked_solution_rewritten": true
+      "action": "shared reviewed solution",
+      "source": "zero-knowledge/lesson-16",
+      "aliases": [
+        "lesson-1",
+        "start-notation",
+        "start-powers",
+        "start-bits",
+        "start-chance",
+        "start-algorithms",
+        "start-proof",
+        "start-circuit",
+        "start-commit",
+        "start-graph",
+        "start-mod",
+        "start-group"
+      ]
     },
     {
       "deck": "hw2",
       "id": "lesson-3",
-      "source": 17,
-      "new_terms": [],
-      "available_terms": [
-        "completeness",
-        "language",
-        "prover",
-        "soundness",
-        "zk"
-      ],
-      "worked_solution_rewritten": true
+      "action": "shared reviewed solution",
+      "source": "zero-knowledge/lesson-17",
+      "aliases": []
     },
     {
       "deck": "hw2",
       "id": "lesson-4",
-      "source": 18,
-      "new_terms": [],
-      "available_terms": [
-        "completeness",
-        "language",
-        "prover",
-        "soundness",
-        "witness",
-        "zk"
-      ],
-      "worked_solution_rewritten": true
+      "action": "shared reviewed solution",
+      "source": "zero-knowledge/lesson-18",
+      "aliases": []
     },
     {
       "deck": "hw2",
       "id": "lesson-5",
-      "source": 54,
-      "new_terms": [
-        "oracle"
-      ],
-      "available_terms": [
-        "completeness",
-        "language",
-        "np",
-        "oracle",
-        "prover",
-        "simulation",
-        "soundness",
-        "transcript",
-        "witness",
-        "zk"
-      ],
-      "worked_solution_rewritten": true
-    },
-    {
-      "deck": "hw2",
-      "id": "lesson-6",
-      "source": 37,
-      "new_terms": [
-        "hvzk",
-        "indistinguishable",
-        "sigma"
-      ],
-      "available_terms": [
-        "completeness",
-        "hvzk",
-        "indistinguishable",
-        "prover",
-        "sigma",
-        "simulation",
-        "soundness",
-        "transcript",
-        "witness",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "hw2",
-      "id": "lesson-7",
-      "source": 38,
-      "new_terms": [],
-      "available_terms": [
-        "conditional",
-        "prover",
-        "simulation",
-        "soundness",
-        "zk"
-      ],
-      "worked_solution_rewritten": false
+      "action": "shared reviewed solution",
+      "source": "zero-knowledge/lesson-54",
+      "aliases": []
     },
     {
       "deck": "hw2",
       "id": "lesson-8",
-      "source": 39,
-      "new_terms": [],
-      "available_terms": [
-        "completeness",
-        "conditional",
-        "hamiltonian",
-        "prover",
-        "simulation",
-        "soundness",
-        "zk"
-      ],
-      "worked_solution_rewritten": true
+      "action": "shared reviewed solution",
+      "source": "zero-knowledge/lesson-39",
+      "aliases": [
+        "lesson-6",
+        "lesson-7"
+      ]
     },
     {
       "deck": "hw2",
       "id": "lesson-9",
-      "source": 41,
-      "new_terms": [
-        "vector"
-      ],
-      "available_terms": [
-        "commitment",
-        "independent",
-        "prover",
-        "simulation",
-        "vector",
-        "zk"
-      ],
-      "worked_solution_rewritten": true
+      "action": "shared reviewed solution",
+      "source": "zero-knowledge/lesson-41",
+      "aliases": []
     },
     {
       "deck": "hw2",
       "id": "lesson-10",
-      "source": 42,
-      "new_terms": [
-        "computational"
-      ],
-      "available_terms": [
-        "computational",
-        "distribution",
-        "hvzk",
-        "independent",
-        "indistinguishable",
-        "polynomial",
-        "prover",
-        "sigma",
-        "simulation",
-        "soundness",
-        "transcript",
-        "witness",
-        "zk"
-      ],
-      "worked_solution_rewritten": true
-    },
-    {
-      "deck": "hw2",
-      "id": "lesson-11",
-      "source": 43,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "discrete",
-        "inverse",
-        "modular",
-        "prover",
-        "soundness",
-        "transcript"
-      ],
-      "worked_solution_rewritten": false
+      "action": "shared reviewed solution",
+      "source": "zero-knowledge/lesson-42",
+      "aliases": []
     },
     {
       "deck": "hw2",
       "id": "lesson-12",
-      "source": 44,
-      "new_terms": [],
-      "available_terms": [
-        "completeness",
-        "discrete",
-        "generator",
-        "group",
-        "identity",
-        "modular",
-        "prime",
-        "prover"
-      ],
-      "worked_solution_rewritten": true
+      "action": "shared reviewed solution",
+      "source": "zero-knowledge/lesson-44",
+      "aliases": [
+        "lesson-11"
+      ]
     },
     {
       "deck": "hw2",
       "id": "lesson-13",
-      "source": 45,
-      "new_terms": [],
-      "available_terms": [
-        "distribution",
-        "generator",
-        "group",
-        "hvzk",
-        "independent",
-        "inverse",
-        "prover",
-        "simulation",
-        "transcript",
-        "uniform",
-        "zk"
-      ],
-      "worked_solution_rewritten": true
+      "action": "shared reviewed solution",
+      "source": "zero-knowledge/lesson-45",
+      "aliases": []
     },
     {
       "deck": "hw2",
       "id": "lesson-14",
-      "source": 46,
-      "new_terms": [
-        "extractor"
-      ],
-      "available_terms": [
-        "commitment",
-        "discrete",
-        "extractor",
-        "generator",
-        "independent",
-        "inverse",
-        "modular",
-        "prime",
-        "prover",
-        "transcript",
-        "uniform",
-        "witness"
-      ],
-      "worked_solution_rewritten": true
-    },
-    {
-      "deck": "hw2",
-      "id": "lesson-15",
-      "source": 55,
-      "new_terms": [],
-      "available_terms": [
-        "circuit",
-        "commitment",
-        "prover",
-        "sigma",
-        "xor"
-      ],
-      "worked_solution_rewritten": false
-    },
-    {
-      "deck": "hw2",
-      "id": "lesson-16",
-      "source": 56,
-      "new_terms": [],
-      "available_terms": [
-        "circuit",
-        "commitment",
-        "computational",
-        "language",
-        "prover",
-        "sigma",
-        "xor"
-      ],
-      "worked_solution_rewritten": false
+      "action": "shared reviewed solution",
+      "source": "zero-knowledge/lesson-46",
+      "aliases": []
     },
     {
       "deck": "hw2",
       "id": "lesson-17",
-      "source": 57,
-      "new_terms": [],
-      "available_terms": [
-        "circuit",
-        "commitment",
-        "independent",
-        "prover",
-        "sigma",
-        "xor"
-      ],
-      "worked_solution_rewritten": true
+      "action": "shared reviewed solution",
+      "source": "zero-knowledge/lesson-57",
+      "aliases": [
+        "lesson-15",
+        "lesson-16"
+      ]
     },
     {
       "deck": "hw2",
       "id": "lesson-18",
-      "source": 58,
-      "new_terms": [
-        "reduction"
-      ],
-      "available_terms": [
-        "circuit",
-        "commitment",
-        "negligible",
-        "polynomial",
-        "prover",
-        "reduction",
-        "sigma",
-        "soundness"
-      ],
-      "worked_solution_rewritten": true
-    },
-    {
-      "deck": "hw2",
-      "id": "lesson-19",
-      "source": 60,
-      "new_terms": [
-        "hybrid"
-      ],
-      "available_terms": [
-        "circuit",
-        "computational",
-        "hvzk",
-        "hybrid",
-        "indistinguishable",
-        "polynomial",
-        "prover",
-        "sigma",
-        "simulation",
-        "transcript"
-      ],
-      "worked_solution_rewritten": false
+      "action": "shared reviewed solution",
+      "source": "zero-knowledge/lesson-58",
+      "aliases": []
     },
     {
       "deck": "hw2",
       "id": "lesson-20",
-      "source": 61,
-      "new_terms": [],
-      "available_terms": [
-        "commitment",
-        "hvzk",
-        "hybrid",
-        "prover",
-        "simulation",
-        "transcript",
-        "xor",
-        "zk"
-      ],
-      "worked_solution_rewritten": true
+      "action": "shared reviewed solution",
+      "source": "zero-knowledge/lesson-61",
+      "aliases": [
+        "lesson-19"
+      ]
     }
   ]
 }

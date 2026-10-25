@@ -1,0 +1,34 @@
+/* Protocol figures use the shared diagram size; no independent size scale. */
+.protocol figcaption,.concept-path figcaption,.graph-example figcaption {font-weight:700;margin-bottom:14px}
+.protocol-parties {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:12px 0 20px}
+.protocol-parties>div {text-align:center;border:1px solid #c4d0c7;border-radius:10px;padding:12px 8px;background:#fff;overflow-wrap:anywhere}
+.protocol-person {display:flex;align-items:center;justify-content:center;width:36px;height:36px;margin:0 auto 8px;border:2px solid #487a5c;border-radius:50%;background:#deede4;font-weight:700}
+.protocol-parties strong {display:block}
+.protocol-parties p {margin:8px 0 0}
+.protocol-steps {list-style:none;padding:0!important;margin:0!important}
+.protocol-step {padding:12px 0 12px 12px;border-left:3px solid #c4d0c7;margin:0 0 12px!important;transition:background .12s}
+.protocol-step>p {margin:8px 0 0}
+.protocol-action {display:grid;gap:7px}
+.protocol-message {padding:10px;border:1px solid #bccdc1;background:#fff;border-radius:7px;overflow-wrap:anywhere}
+.protocol-arrow {display:block;position:relative;height:22px;margin:0 8px;color:transparent}
+.protocol-arrow::before {content:"";position:absolute;top:10px;left:0;right:0;border-top:2px solid #365871}
+.protocol-arrow::after {content:"";position:absolute;top:5px;width:10px;height:10px;border-top:2px solid #365871;border-right:2px solid #365871}
+.protocol-step.left .protocol-arrow::after {right:1px;transform:rotate(45deg)}
+.protocol-step.right .protocol-arrow::after {left:1px;transform:rotate(-135deg)}
+.protocol-step.local-left .protocol-action {margin-right:14%}
+.protocol-step.local-right .protocol-action {margin-left:14%}
+.protocol-step.right .protocol-action>strong,.protocol-step.local-right .protocol-action>strong {text-align:right}
+.protocol-step.is-current {background:#e5efe6;border-color:#487a5c;border-radius:0 7px 7px 0}
+.protocol-controls {display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.protocol-controls button {min-height:44px;border:1px solid #8a998d;border-radius:6px;background:white;padding:8px 12px;color:#243c2b}
+.protocol-controls button:focus-visible {outline:2px solid #456f96;outline-offset:2px}
+.protocol-controls button:disabled {opacity:.45}
+.protocol-status {display:block;margin:10px 0}
+.graph-example svg {display:block;width:100%;max-width:330px;height:auto;margin:auto}
+.graph-example svg text {font-size:var(--text-box)}
+.concept-path ol {padding-left:23px}
+.concept-path li {margin:12px 0}
+.card-alias {display:block;height:0;overflow:hidden}
+#lessons:not(.pet-js-ready):has(.card-alias:target) .slide:first-of-type:not(:has(.card-alias:target)) {display:none}
+#lessons:not(.pet-js-ready) .slide:has(.card-alias:target) {display:flex}
+@media(prefers-reduced-motion:reduce){.protocol-step{transition:none}}

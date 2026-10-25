@@ -291,5 +291,8 @@ card('construction-map', 'Assemble the argument and state its scope', r'''
 <p>The lecture sketches this route to PLONK. A complete implementation additionally specifies its permutation protocol, all challenge rounds, degree enforcement and security assumptions. Zero knowledge requires suitable blinding, meaning randomization that conceals witness information while preserving the checked constraints. Knowledge extraction requires a separate proof-of-knowledge argument. Neither follows just from short proofs.</p>
 ''', '11–12', ['fast-vanishing'])
 
+from later_teaching import revise
+revise('snarks',CARDS)
+
 assert len([c for c in CARDS if c['kind']=='theory']) == 36
 assert len(CARDS) == 48

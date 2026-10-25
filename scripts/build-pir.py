@@ -39,11 +39,12 @@ for deck,cards,title in [('pir',CARDS,'PIR'),('hw4',[dict(HW[k],origin='hw4:'+k)
  for i,c in enumerate(cards):
   title_escaped=html.escape(c['title'],quote=True)
   content=math(body(c))
+  aliases=''.join(f'<span class="card-alias" id="{a}"></span>' for a in c.get('aliases',[]))
   if deck=='hw4':
    prerequisites=' · '.join(f'<a href="../pir/#{key}">{next(x["title"] for x in CARDS if x["id"]==key)}</a>' for key in c['requires'])
    content+='<p class="prerequisite-link">Review the preparation: '+prerequisites+'</p>'
-  sections.append(f'<section class="slide {c["kind"]}" id="{c["id"]}" data-source="{html.escape(c["source"],quote=True)}" data-exercise="{c.get("origin","")}" data-requires="{" ".join(c["requires"])}" aria-label="{title_escaped}"><header class="head"><div class="section">{title_escaped}</div></header><article class="reading">{content}</article>{nav(ids,i)}</section>')
- footer=f'<div aria-label="Card navigation slider" class="deck-jump" role="group"><output class="deck-position" for="pet-card-slider" id="pet-card-position">1 / {count}</output><input aria-label="Jump to card" aria-valuetext="Card 1 of {count}" class="deck-slider" id="pet-card-slider" max="{count}" min="1" step="1" type="range" value="1"/></div></main><script src="../reader.js" defer></script><script src="../learning.js" defer></script><script src="../snarks.js" defer></script><script src="../pir.js" defer></script></body></html>'
+  sections.append(f'<section class="slide {c["kind"]}" id="{c["id"]}" data-source="{html.escape(c["source"],quote=True)}" data-exercise="{c.get("origin","")}" data-requires="{" ".join(c["requires"])}" aria-label="{title_escaped}"><header class="head"><div class="section">{title_escaped}</div></header><article class="reading">{aliases}{content}</article>{nav(ids,i)}</section>')
+ footer=f'<div aria-label="Card navigation slider" class="deck-jump" role="group"><output class="deck-position" for="pet-card-slider" id="pet-card-position">1 / {count}</output><input aria-label="Jump to card" aria-valuetext="Card 1 of {count}" class="deck-slider" id="pet-card-slider" max="{count}" min="1" step="1" type="range" value="1"/></div></main><script src="../teaching.js" defer></script><script src="../reader.js" defer></script><script src="../learning.js" defer></script><script src="../snarks.js" defer></script><script src="../pir.js" defer></script></body></html>'
  target=ROOT/'docs'/deck;target.mkdir(exist_ok=True)
  (target/'index.html').write_text(head.replace('{title}',title)+f'<body><main id="lessons" data-chapter="{deck}">'+menu+''.join(sections)+footer)
  print(deck,count,'cards')

@@ -3,12 +3,12 @@ import re
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DECKS = {
- 'commitment': ('Chapter 1', 'Commitment', 95),
- 'zero-knowledge': ('Chapter 2', 'Zero Knowledge', 73),
+ 'commitment': ('Chapter 1', 'Commitment', 58),
+ 'zero-knowledge': ('Chapter 2', 'Zero Knowledge', 46),
  'snarks': ('Chapter 3', 'SNARKs', 48),
- 'pir': ('Chapter 4', 'PIR', 45),
- 'hw1': ('Homework 1', 'HW1', 33),
- 'hw2': ('Homework 2', 'HW2', 31),
+ 'pir': ('Chapter 4', 'PIR', 44),
+ 'hw1': ('Homework 1', 'HW1', 15),
+ 'hw2': ('Homework 2', 'HW2', 13),
  'hw3': ('Homework 3', 'HW3', 12),
  'hw4': ('Homework 4', 'HW4', 15),
 }

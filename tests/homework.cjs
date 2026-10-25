@@ -7,28 +7,20 @@ const base=process.env.PETS_TEST_URL||'http://127.0.0.1:8765';
  try{
   const page=await browser.newPage({viewport:{width:320,height:844},hasTouch:true});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  for(const [deck,count,exercises] of [['hw1',33,15],['hw2',31,13]]){
+  for(const [deck,count,exercises] of [['hw1',15,15],['hw2',13,13]]){
    await page.goto(`${base}/${deck}/`);
    assert.equal(await page.locator('.slide').count(),count);
    assert.equal(await page.locator('.homework-prep').count(),0);
-   assert.equal(await page.locator('.homework-check').count(),exercises);
+   assert.equal(await page.locator('.homework-check').count(),0);
    assert.equal(await page.locator('.chapter-panel a[aria-current=page]').count(),1);
    assert.equal(await page.locator('details.solution').count(),exercises);
-   const checkpoints=await page.locator('.homework-check').evaluateAll(els=>els.map(e=>({id:e.closest('.slide').id,correct:e.dataset.correct})));
-   for(const {id,correct}of checkpoints){
-    await page.evaluate(id=>{location.hash=id;},id);
-    const check=page.locator('.pet-active .homework-check');
-    await check.locator(`[data-answer="${(Number(correct)+1)%3}"]`).click();
-    assert.match(await check.locator('output').textContent(),/try again/);
-    await check.locator(`[data-answer="${correct}"]`).click();
-    assert.match(await check.locator('output').textContent(),/^Correct\./);
-   }
-   console.log(`PASS ${deck}: ${count} cards, ${exercises} worked solutions and checkpoints`);
+   console.log(`PASS ${deck}: ${count} cards, ${exercises} self-contained worked solutions`);
   }
   const visit=async(deck,source,key)=>{
    await page.goto(`${base}/${deck}/`);
    const id=await page.locator(`[data-source-card="${source}"]`).getAttribute('id');
    await page.evaluate(id=>{location.hash=id;},id);
+   await page.locator('.pet-active details.solution').evaluateAll(es=>es.forEach(e=>e.open=true));
    return page.locator(`[data-lab="${key}"]`);
   };
   let lab=await visit('hw1',26,'xor-openings');
@@ -52,7 +44,7 @@ const base=process.env.PETS_TEST_URL||'http://127.0.0.1:8765';
    lab=await visit('hw2',source,`circuit-${source}`);await lab.locator('[data-control=b]').fill('1');await lab.locator('[data-control=tamper]').fill('1');assert.match(await lab.locator('output').textContent(),/XOR statement is false/);
   }
   // Inspect every equation, including expanded solutions, in all eight decks.
-  for(const [deck,count]of [['commitment',95],['zero-knowledge',73],['hw1',33],['hw2',31],['snarks',48],['hw3',12],['pir',45],['hw4',15]]){
+  for(const [deck,count]of [['commitment',58],['zero-knowledge',46],['hw1',15],['hw2',13],['snarks',48],['hw3',12],['pir',44],['hw4',15]]){
    const source=fs.readFileSync(`docs/${deck}/index.html`,'utf8');
    assert(!/fill="red"|data-mjx-error|data-mml-node="merror"|\\parallelr/.test(source));
    await page.goto(`${base}/${deck}/`);
@@ -78,10 +70,11 @@ const base=process.env.PETS_TEST_URL||'http://127.0.0.1:8765';
    await page.setViewportSize({width,height:640});await page.goto(`${base}/${deck}/`);
    const ids=await page.locator('.slide:has(.learning)').evaluateAll(els=>els.map(e=>e.id));
    for(const id of ids){await page.evaluate(id=>{location.hash=id;},id);await page.waitForFunction(id=>document.querySelector('.pet-active').id===id,id);
+    await page.locator('.pet-active details.solution').evaluateAll(es=>es.forEach(e=>e.open=true));
     const bad=await page.locator('.pet-active .learning').evaluateAll(els=>els.filter(e=>e.scrollWidth>e.clientWidth+1).map(e=>e.dataset.lab||'checkpoint'));
     assert.deepEqual(bad,[],`${deck} ${id} width ${width}`);
    }
   }
-  assert.deepEqual(errors,[]);console.log('PASS homework experiments, checkpoints, equation rendering and mobile layout');
+  assert.deepEqual(errors,[]);console.log('PASS homework experiments, equation rendering and mobile layout');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

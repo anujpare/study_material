@@ -8,7 +8,7 @@ SOLUTIONS={
 'Now test binding separately. Keep c = 1001 but change the message to m′ = 1100. Choose r′ = 0101. The new pair still gives 1001. In general choose r′ = c ⊕ m′.',
 'Both different messages pass the opening check. The sender can compute this change efficiently, so even computational binding fails. Perfect hiding did not imply binding.']),
 32:('True in the random-oracle model, with sufficiently long randomizers and outputs.',[
-'A random oracle is the ideal answer box described in the prerequisite lesson. Set c = H(m ∥ r), where ∥ joins the message m with a secret fresh randomizer r. Later reveal m and r to open c.',
+'A random oracle assigns independent uniform outputs to distinct inputs and remembers its answers for repeated inputs. Set c = H(m ∥ r), where ∥ joins the message m with a secret fresh randomizer r. Later reveal m and r to open c.',
 'If r contains λ random bits, it has 2<sup>λ</sup> possibilities. Testing Q distinct candidates covers at most Q of them, giving the hidden-input guessing bound min(1, Q/2<sup>λ</sup>). For λ = 4 and Q = 2, that is 2/16. These small numbers illustrate the counting, not real security.',
 'For binding, the attacker needs two different message openings with the same output. Among Q queried input pairs there are Q(Q−1)/2 pairs to compare. If each output has λ bits, a particular pair collides with probability 1/2<sup>λ</sup>. The union bound is therefore at most min(1, Q(Q−1)/(2·2<sup>λ</sup>)).',
 'The collision bound counts all collisions, including some with the same message, so it is still a valid upper bound for the binding attack.',
@@ -71,10 +71,10 @@ SOLUTIONS={
 77:('Use two independent random numbers per input so that both output exponents can vary independently.',[
 'For each new message mᵢ choose independent uniform uᵢ,vᵢ in Z_q. Store H(mᵢ)=X<sup>uᵢ</sup>g<sup>vᵢ</sup> and f(mᵢ)=Z<sup>uᵢ</sup>Y<sup>vᵢ</sup>. Return stored values on repeats. The symbols u and v here name random exponents, not protocol messages.',
 'In the real DDH case, the exponent of the first value is aᵢ=αuᵢ+vᵢ. The second exponent is αβuᵢ+βvᵢ=βaᵢ. Hence every answer satisfies f(mᵢ)=H(mᵢ)<sup>β</sup>, all under one key β.',
-'In the random case, the exponent pair is aᵢ=αuᵢ+vᵢ and bᵢ=γuᵢ+βvᵢ. Use the preceding linear-map lesson: its determinant is αβ−γ. If nonzero modulo prime q, each possible pair (aᵢ,bᵢ) comes from exactly one pair (uᵢ,vᵢ).',
+'In the random case, the exponent pair is aᵢ=αuᵢ+vᵢ and bᵢ=γuᵢ+βvᵢ. The map from (uᵢ,vᵢ) to (aᵢ,bᵢ) has matrix [[α,1],[γ,β]] over Z_q and determinant αβ−γ. A matrix with nonzero determinant over a field is invertible, so every output pair has exactly one input pair.',
 'Therefore independent uniform input pairs give independent uniform output pairs. Fresh uᵢ,vᵢ for distinct messages also make those pairs independent across messages. This is the joint distribution that a random oracle and independent random function require.',
 'The exceptional event γ=αβ occurs with probability 1/q when γ is uniformly random. On that event the output exponents are related, so we cannot claim exact random-world equality. Allowing this event gives advantage loss at most 1/q, rather than a multiplicative loss for guessing one query.',
-'The key point is not simply “add more randomness”. It is proving that the resulting map covers every pair equally often, which removes the detectable correlation.']),
+'Invertibility is what makes the simulation work: every pair is produced equally often, so the answers have the joint distribution required by the random experiment.']),
 81:('Publish one hash value per position.',[
 'For vector (m₁,…,mₙ), publish c=(H(m₁),…,H(mₙ)). Each hash has λ bits, so n of them use nλ bits. The index determines which coordinate is being claimed.',
 'To open index i, supply the message mᵢ. The verifier computes H(mᵢ) and compares it with the stored coordinate cᵢ. No additional hash path or other proof data is required: the extra proof π is empty.',
@@ -85,7 +85,7 @@ SOLUTIONS={
 'Encode the ordered messages so their boundaries are clear, then publish c=H(encode(m₁,…,mₙ)). For fixed-length messages simple concatenation works; for variable lengths include lengths or another unambiguous encoding.',
 'One hash output uses λ bits, whatever the vector length. That makes the commitment short.',
 'To check a particular index, the straightforward verifier needs the full vector. Supply all messages as the opening information, recompute the complete digest, and check both that digest and the claimed index value.',
-'If each message has |m| bits, this opening contains O(n|m|) bits. Big-O describes growth up to a constant factor; it is not an exact byte count.',
+'If each message has |m| bits, this opening contains O(n|m|) bits. The claimed value can be omitted from the auxiliary proof if the verifier already receives it separately; the asymptotic bound is unchanged.',
 'If different values at the same index both verify, the two complete encodings differ but have the same hash. That gives a collision. The construction trades a short commitment for a long opening; it does not hide the other messages when opened.']),
 84:('Use a balanced binary Merkle tree and reveal one sibling hash per level.',[
 'Hash each message to form a leaf. Hash every ordered pair of neighboring child hashes to form a parent. Continue until the root, and publish that one λ-bit value. Fix the tree shape, index range and leaf/internal-node encoding so verification is unambiguous.',
@@ -108,7 +108,7 @@ SOLUTIONS={
 'This does not break the definition: the definition never promised acceptance by arbitrary dishonest verifiers. Soundness error 1/3 is about cheating provers on false statements and does not change this counterexample.']),
 18:('False: a malicious prover may deliberately reveal its witness.',[
 'The zero-knowledge promise describes information obtained from the prescribed honest prover. It does not force every possible program playing the prover role to keep secrets.',
-'Consider a malicious prover that sends its full witness as an extra message. For a puzzle statement, it could send the completed solution in plain text.',
+'Consider a malicious prover that sends its full witness as an extra message. For a circuit-satisfiability statement, it could send the entire satisfying assignment in plain text.',
 'The honest verifier can now learn that witness. There is no contradiction: the prover voluntarily departed from the behavior protected by the privacy guarantee.',
 'Keep the quantifiers separate: zero knowledge protects the honest prover against the specified class of verifiers; soundness protects an honest verifier against cheating provers.']),
 54:('True: for a language in P, the verifier can decide the claim itself.',[

@@ -7,8 +7,8 @@ from pir_content import CARDS
 from hw4_content import HW
 from deck_catalog import DECKS
 
-assert len(CARDS)==45 and len(HW)==15
-assert sum(c['kind']=='theory' for c in CARDS)==28
+assert len(CARDS)==44 and len(HW)==15
+assert sum(c['kind']=='theory' for c in CARDS)==27
 assert {c.get('origin') for c in CARDS if c['kind']=='homework'}=={'hw4:'+k for k in HW}|{'hw3:1a','hw3:1c'}
 seen=set();last=None
 for c in CARDS:

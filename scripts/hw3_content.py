@@ -102,3 +102,7 @@ exercise('4b', 'Remove the PCP challenge message',
  r'''Fixing the root before hashing prevents tailoring the committed proof to a challenge already known. An attacker can try several roots, but the amplified per-attempt error is exponentially small; a polynomial number of attempts still gives negligible error in the intended random-oracle argument. The Merkle hash and challenge hash need distinct domain labels so the two roles are not confused.''',
  r'''The proof stays short and is now one message: a succinct non-interactive argument, or SNARG, in the communication sense established in 4(a). Neither zero knowledge nor knowledge extraction was established by this construction. “Non-interactive” alone supplies neither property.'''
  ], ['pcp-fiat-shamir'], '5')
+
+from homework_visuals import LATER_VISUALS
+for key,figure in LATER_VISUALS['hw3'].items():
+ HW[key]['visual'] += figure

@@ -16,7 +16,7 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
       await page.goto(base);
       assert.equal(await page.locator('.card').count(), 8);
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-      for (const [chapter, count] of [['commitment', 95], ['zero-knowledge', 73], ['hw1', 33], ['hw2', 31], ['snarks', 48], ['hw3', 12], ['pir', 45], ['hw4', 15]]) {
+      for (const [chapter, count] of [['commitment', 58], ['zero-knowledge', 46], ['hw1', 15], ['hw2', 13], ['snarks', 48], ['hw3', 12], ['pir', 44], ['hw4', 15]]) {
         await page.goto(`${base}/${chapter}/`);
         const slider = page.locator('#pet-card-slider');
         const ids = await page.locator('.slide').evaluateAll(slides => slides.map(slide => slide.id));

@@ -17,7 +17,7 @@
     const reader=root.querySelector(`[data-source-card="${source}"] .reading`);if(!reader)return;
     const panel=document.createElement('aside');panel.className='learning';panel.dataset.lab=key;panel.setAttribute('aria-label',title);
     panel.innerHTML=`<h3>${title}</h3><p>${intro}</p>`+fields.map(([name,label,min,max,value])=>`<label for="${key}-${name}">${label}<span data-value="${name}">${value}</span></label><input id="${key}-${name}" data-control="${name}" type="range" min="${min}" max="${max}" value="${value}">`).join('')+content+'<output class="lab-result" aria-live="polite"></output>';
-    const prep=reader.querySelector('.beginner-context');(prep||reader.querySelector('p')).after(panel);
+    (reader.querySelector('.solution-content')||reader).append(panel);
     const update=()=>{const values={};panel.querySelectorAll('[data-control]').forEach(input=>{values[input.dataset.control]=Number(input.value);panel.querySelector(`[data-value="${input.dataset.control}"]`).textContent=input.value;});draw(panel,values);};
     panel.addEventListener('input',update);panel.addEventListener('change',update);update();
     return {panel,update};
