@@ -13,6 +13,7 @@ This is an editable agreement about how PETS teaches. Read it before changing a 
 - **S5 — Use pre-training and manageable segments. [Research-informed]** Introduce the names and roles of key components before combining them. Let the learner control the pace of a multi-step visual. These are the *pre-training* and *segmenting* principles; they support a dependency-first sequence, not a universal card-length limit. See [Mayer and Fiorella, managing essential processing](https://doi.org/10.1017/9781108894333.025).
 - **S6 — Place homework just in time. [Learner preference]** Insert an actual homework subquestion immediately after its final required concept. Keep a separate homework-only deck, generated from the same question and solution. Preserve the assignment's identifiers; do not invent questions and label them as assigned homework.
 - **S7 — Budget cards by conceptual need. [Learner preference]** Avoid extra cards that merely restate earlier ones. Do not meet a small card budget by skipping a prerequisite, an inference, or a necessary assumption. Keep existing card URLs stable when reorganizing material.
+- **S8 — Connect midterm review deliberately. [Learner preference]** Reuse earlier homework only where its concepts support the next topic, retaining its original assignment label and canonical solution. When a new homework sheet spans an earlier chapter, give that material a clearly signposted review sequence and supply its prerequisites before the questions.
 
 ## 2. Explanatory coherence and explicit reasoning
 
@@ -50,6 +51,7 @@ This is an editable agreement about how PETS teaches. Read it before changing a 
 - **Q3 — Keep explanations maintainable. [Authoring rule]** Generate chapter/homework copies from one source. Keep this guide and source corrections on GitHub with reviewable changes. Do not let a generator reintroduce a removed paragraph or a misleading diagram.
 - **Q4 — Diagnose feedback, then change the rule or its enforcement. [Learner preference]** When the learner identifies a failure, locate the relevant bullet and classify it as **missing guidance**, **guidance ignored**, or **guidance too weak/ambiguous**. Add or strengthen the relevant bullet only when needed; otherwise fix the implementation and its review check. Record a concrete example and corrective action below. Never treat the learner's confusion as lack of effort.
 - **Q5 — Do not promise what was not checked. [Authoring rule]** Keep source coverage, mathematical verification, layout tests and teaching judgment separate. Passing a browser test cannot establish that a proof is correct or that every learner understands it.
+- **Q6 — Audit each claimed cost and arithmetic domain. [Authoring rule]** Distinguish bits, ciphertext counts and lengths, computation, and offline versus online work. Check non-power-of-two indexing, empty coefficient ranges and zero group exponents. Do not treat a hidden setup point as an independent random challenge to an adaptive prover.
 
 **Feedback record (editable):**
 

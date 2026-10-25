@@ -37,7 +37,7 @@ async function checkText(page, label) {
       await page.setViewportSize({width, height: 844});
       await page.goto(base);
       await checkText(page, `overview at ${width}px`);
-      for (const deck of ['commitment', 'zero-knowledge', 'hw1', 'hw2', 'snarks', 'hw3']) {
+      for (const deck of ['commitment', 'zero-knowledge', 'hw1', 'hw2', 'snarks', 'hw3', 'pir', 'hw4']) {
         await page.goto(`${base}/${deck}/`);
         const count = await page.locator('.slide').count();
         for (let n = 1; n <= count; n++) {
@@ -54,7 +54,7 @@ async function checkText(page, label) {
         await page.locator('.chapter-menu summary').click();
         await checkText(page, `${deck} menu at ${width}px`);
       }
-      console.log(`PASS two text sizes: overview, all 292 cards, expanded solutions, menus and diagram labels at ${width}px`);
+      console.log(`PASS two text sizes: overview, all 352 cards, expanded solutions, menus and diagram labels at ${width}px`);
     }
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

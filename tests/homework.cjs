@@ -51,8 +51,8 @@ const base=process.env.PETS_TEST_URL||'http://127.0.0.1:8765';
   for(const source of [57,58,61]){
    lab=await visit('hw2',source,`circuit-${source}`);await lab.locator('[data-control=b]').fill('1');await lab.locator('[data-control=tamper]').fill('1');assert.match(await lab.locator('output').textContent(),/XOR statement is false/);
   }
-  // Inspect every equation, including expanded solutions, in all six decks.
-  for(const [deck,count]of [['commitment',95],['zero-knowledge',73],['hw1',33],['hw2',31],['snarks',48],['hw3',12]]){
+  // Inspect every equation, including expanded solutions, in all eight decks.
+  for(const [deck,count]of [['commitment',95],['zero-knowledge',73],['hw1',33],['hw2',31],['snarks',48],['hw3',12],['pir',45],['hw4',15]]){
    const source=fs.readFileSync(`docs/${deck}/index.html`,'utf8');
    assert(!/fill="red"|data-mjx-error|data-mml-node="merror"|\\parallelr/.test(source));
    await page.goto(`${base}/${deck}/`);

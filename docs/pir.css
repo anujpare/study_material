@@ -1,0 +1,39 @@
+/* All text inherits PETS's standard or .learning box size, including chart labels. */
+.pir-flow {display:grid;gap:9px;margin:12px 0}
+.pir-flow > span,.pir-equation {display:block;padding:10px;border:1px solid #c4d0c7;border-radius:7px;background:#fff;line-height:1.5;overflow-wrap:anywhere}
+.pir-controls {display:grid;gap:10px;margin:12px 0}
+.pir-controls label {display:flex;flex-wrap:wrap;align-items:center;gap:8px;line-height:1.5}
+.pir-controls select {width:100%;min-height:44px;padding:7px;background:white;border:1px solid #8a998d;border-radius:5px;color:#212321}
+.pir-controls input[type=range] {width:100%;min-height:44px}
+.pir-controls input[type=checkbox] {width:24px;height:24px;margin:10px}
+.pir-controls label:has(input[type=checkbox]) {display:grid;grid-template-columns:24px minmax(0,1fr);min-height:44px;align-items:start}
+.pir-controls label input[type=checkbox] {margin:0}
+[data-pir-lab=matrix] .pir-controls {grid-template-columns:repeat(2,minmax(0,1fr))}
+[data-pir-lab=matrix] .pir-controls label:last-child {grid-column:1/-1}
+[data-pir-lab=recursion] .pir-controls {grid-template-columns:repeat(3,minmax(0,1fr))}
+.pir-lab output {display:block;line-height:1.5;margin-top:12px}
+.pir-stepper {display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}
+.pir-stepper button {min-height:44px;padding:8px 12px;background:#fff;border:1px solid #8a998d;border-radius:6px;color:#243c2b}
+.pir-stepper button:disabled {opacity:.45}
+.pir-controls :focus-visible,.pir-stepper button:focus-visible {outline:2px solid #456f96;outline-offset:3px}
+.pir-strip,.pir-distribution {display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:6px;margin:12px 0}
+.pir-strip>span,.pir-distribution>span {display:block;padding:7px 4px;background:#fff;border:1px solid #c4d0c7;border-radius:6px;text-align:center;overflow-wrap:anywhere}
+.pir-lab .is-hit {background:#deede4;border-color:#487a5c;font-weight:700}
+.pir-lab .is-fail {background:#f8e8de;border-color:#ab6543;font-weight:700}
+.pir-lab table {table-layout:fixed}
+.pir-lab th,.pir-lab td {overflow-wrap:anywhere;text-align:center}
+.pir-product-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin-top:12px}
+.pir-product-grid>span {padding:8px 4px;background:white;border:1px solid #c4d0c7;border-radius:5px;text-align:center;overflow-wrap:anywhere;line-height:1.5}
+.pir-plot {display:grid;gap:10px;margin:14px 0}
+.pir-bar-label {display:flex;justify-content:space-between;gap:8px;line-height:1.45}
+.pir-bar-track {height:13px;background:#e0e5df;border-radius:6px;overflow:hidden;margin:4px 0}
+.pir-bar {height:100%;background:#6586a1;min-width:1px}
+.pir-bar.best,.pir-bar.additive {background:#4d8060}
+.pir-legend {line-height:1.5;margin:10px 0}
+.pir-step-state {padding:9px 0;line-height:1.5}
+.pir-recursion-grid {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.pir-recursion-grid>span {padding:8px 3px;border:1px solid #c4d0c7;background:white;border-radius:5px;text-align:center;overflow-wrap:anywhere;line-height:1.45}
+.pir-recursion-grid.records {grid-template-columns:repeat(2,minmax(0,1fr))}
+.pir-matrix td.is-query {background:#ecf1eb}
+.pir-matrix td.is-target {background:#deede4;box-shadow:inset 0 0 0 2px #487a5c;font-weight:700}
+.pir-stage-note {border-left:3px solid #8da391;padding-left:12px;margin:12px 0}
