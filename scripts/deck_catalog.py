@@ -6,9 +6,11 @@ DECKS = {
  'commitment': ('Chapter 1', 'Commitment', 95),
  'zero-knowledge': ('Chapter 2', 'Zero Knowledge', 73),
  'snarks': ('Chapter 3', 'SNARKs', 48),
+ 'pir': ('Chapter 4', 'PIR', 45),
  'hw1': ('Homework 1', 'HW1', 33),
  'hw2': ('Homework 2', 'HW2', 31),
  'hw3': ('Homework 3', 'HW3', 12),
+ 'hw4': ('Homework 4', 'HW4', 15),
 }
 def links(current):
  return ''.join(f'<a href="../{key}/"'+(' aria-current="page"' if key==current else '')+f'><small>{kind} · {count} cards</small>{title}</a>' for key,(kind,title,count) in DECKS.items())

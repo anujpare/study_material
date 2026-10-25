@@ -2,7 +2,7 @@
 
 Chapter 3 is based on **lecture9-10-11-12_snarks.pdf** (12 pages). Its exercises and the standalone HW3 deck use **hw3_sol.pdf**, Exercise Sheet 3 version 1.1 (5 pages). Document instructions such as “write at most one sentence” describe the assignment's submission format; they do not override the requested step-by-step teaching format.
 
-The site numbers its chapters 1: Commitment, 2: Zero Knowledge, 3: SNARKs. Existing Commitment and Zero Knowledge URLs and lesson IDs remain valid. The labels do not renumber the original course lectures.
+The site numbers its chapters 1: Commitment, 2: Zero Knowledge, 3: SNARKs, 4: PIR. Existing Commitment and Zero Knowledge URLs and lesson IDs remain valid. The labels do not renumber the original course lectures.
 
 ## Coverage and placement
 
@@ -64,3 +64,38 @@ The original 189-card audit and all existing IDs are retained. Chapter 1/2 and H
 - Distinguish plain-model limitations from CRS-based standard-model NIZKs before Chapter 3 uses that distinction.
 
 The executable audit verifies stable links, prerequisite order and source coverage. Browser checks verify navigation, displayed math, interactions and the two font sizes. These checks complement mathematical review; they cannot prove that an explanation is sufficient for every learner.
+
+## Chapter 4: PIR and the HW4 midterm bridge
+
+Sources are **lecture13-14_pir.pdf** (8 pages, lecture header FS2026) and **hw4_sol.pdf** (5 pages, Exercise Sheet 4 version 1, header FS2025). The differing course-year headers are retained as source facts; they are not used to infer an exam syllabus beyond the supplied material.
+
+Chapter 4 contains **28 teaching cards and 17 assigned subquestions**: all 15 HW4 questions, plus HW3 1(a) and 1(c). The first part develops PIR; the second is explicitly labelled as a midterm bridge back to polynomial proofs and commitments, since ten HW4 questions concern those earlier topics. HW4 is a separate 15-card deck in assignment order. Both decks use the same HW4 source, and the two HW3 reviews reuse the existing canonical question and solution. `scripts/pir-audit.json` records card order, prerequisites and source pages.
+
+| Source | Teaching path and exercise placement |
+| --- | --- |
+| PIR pp. 1–3 | Goal, indexed retrieval, correctness/privacy distinction, cost model |
+| PIR pp. 3–5 | Bit arithmetic, secret shares, flat and matrix protocols, correctness, privacy, communication balance → HW4 1(c) |
+| PIR pp. 5–6 | Randomized encryption, LHE operations, encrypted matrix selector → HW4 1(b) |
+| PIR pp. 6–7 | Recursive selection, ciphertext encodings, expansion, limits of direct two-server reuse |
+| HW4 pp. 4–5 | Binary addresses and Boolean gates → 4(a); FHE lookup → 4(b); gate noise and powers → 4(c) |
+| PIR pp. 7–8 | Server work, batching, offline/online preprocessing and scope of cited results |
+| HW3 1(c); HW4 pp. 1–3 | Field/root-bound review → HW3 1(c); coefficient shifts → HW4 2(a); coefficient split → 2(b); product coefficient → 2(c) |
+| HW3 1(a); HW4 p. 1 | Proof guarantees and oracle models → HW3 1(a), HW4 1(a); succinct verifier cost → HW4 1(d) |
+| HW4 pp. 3–4 | Groups and encoded setup powers → 3(a–b); quotient/remainder → 3(c); product-check interface → 3(d–e) |
+
+### Clarifications needed for a sound beginner derivation
+
+1. **Malicious servers versus correctness.** Non-collusion protects query privacy in the displayed two-server protocol; it does not stop a malicious server from returning a wrong answer. Correctness uses honest answering. Ordinary PIR also does not guarantee database privacy from the client, anonymity, or concealment of timing.
+2. **Reconstruction keeps client state.** The matrix client retains its row index; the encrypted client retains its secret key. The terse algorithm signatures should not imply that this information is unnecessary.
+3. **Dimensions and cost units.** For an R×C matrix, two-server communication is exactly 2C+2R bits for the basic scheme. Nonsquare databases can be padded. Single-server communication counts ciphertexts first, then multiplies by their lengths; O(λ√n) uses the lecture's ciphertext-size simplification. Setup/evaluation material must be accounted for separately when reused.
+4. **Homomorphism is a decryption relation.** The lecture's Enc(m₁)+Enc(m₂)=Enc(m₁+m₂) shorthand does not promise byte-for-byte equality to a fresh randomized encryption. Distinguish encrypted addition, multiplication by a known scalar, and multiplication of hidden plaintexts.
+5. **Recursive PIR.** Intermediate ciphertext encodings become plaintext data for the outer selection, possibly in suitable blocks. This does not grant LHE arbitrary multiplication of hidden plaintexts. Counting O(n^(1/3)) objects alone omits their lengths; the cited polylogarithmic construction needs a suitable low-expansion scheme and recursive encoding. The expansion chart is an illustrative size model, not an implementation benchmark.
+6. **Two-server recursion.** The naive recursion loses the replicated-database precondition because the intermediate answers are different shares. This is not a general impossibility result for all recursive or more efficient multi-server PIR.
+7. **Online-work intuition.** The raw-database scan argument does not rule out preprocessing models. Batching and preprocessing results cited in the notes are separate constructions with their own assumptions; they are not performance guarantees for the simple examples on these cards.
+8. **HW4 1(d).** P = NP supplies a polynomial-time decider and hence an empty proof, but does not by itself supply the lecture's nearly linear-plus-polylogarithmic verification bound. The supplied solution's “unlikely” is not an unconditional impossibility theorem. The deck states the intended negative inference and distinguishes a definition requiring only short communication.
+9. **HW4 2(a–c).** Fix polynomials before the relevant random challenge, and enforce all degree bounds. At coefficient endpoints, an empty side is the zero polynomial. In 2(c), use z consistently for the claimed inner product; the sheet switches to “a” once. The 4d/|F| union bound is conservative, and probabilities are capped at 1.
+10. **HW4 3(b).** For d≥1, an unbounded attacker can recover α and produce f′=f+t(X−α). For d=0, constants have an injective encoding. Computational binding needs the appropriate PCS hardness assumptions: the existence of collisions, unknown α, or a bare assertion of small collision-finding probability is not a security proof. No hiding claim is implied.
+11. **HW4 3(d).** The stated VerifProd interface restricts exponents to nonzero field values, but legitimate openings can have zero exponents. Handle identity-element cases before calling the nonzero interface. The setup α precedes the adversary's choices and is exposed through encoded powers; a fresh-challenge root-bound proof cannot simply be applied to it. Negligible evaluation-binding error needs the intended PCS theorem and assumptions.
+12. **HW4 3(e).** c/g^y′ is a group element g^x, not the exponent x. Apply the assumed exponent-division algorithm to that element without taking a discrete logarithm. Division requires z≠α. A forged group element need not represent a genuine quotient polynomial to satisfy the verifier under this extra capability.
+13. **HW4 4(a–b).** Use m for the equality-string length and n for database size. Encode record i by i−1 in ℓ=ceil(log₂ n) bits, avoiding the off-by-one problem when n is a power of two. The secret-key construction supplies encrypted constants; compactness and correct evaluation for the circuit are required. One response ciphertext does not mean one server operation.
+14. **HW4 4(c).** The exact stated-circuit noise is 2n·8^ceil(log₂ n); it is 2n⁴ when n is a power of two. The result uses the full equality circuit with encrypted constants and the sheet's stipulated gate rules. Other optimizations or schemes need a separate calculation; no decryption threshold is specified.

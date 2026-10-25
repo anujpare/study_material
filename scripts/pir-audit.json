@@ -1,0 +1,406 @@
+[
+  {
+    "position": 1,
+    "id": "pir-goal",
+    "kind": "theory",
+    "source": "PIR pp. 1\u20132",
+    "requires": []
+  },
+  {
+    "position": 2,
+    "id": "pir-contract",
+    "kind": "theory",
+    "source": "PIR p. 3",
+    "requires": [
+      "pir-goal"
+    ]
+  },
+  {
+    "position": 3,
+    "id": "bit-selection",
+    "kind": "theory",
+    "source": "PIR pp. 3\u20134",
+    "requires": [
+      "pir-contract"
+    ]
+  },
+  {
+    "position": 4,
+    "id": "query-shares",
+    "kind": "theory",
+    "source": "PIR pp. 3\u20134",
+    "requires": [
+      "bit-selection"
+    ]
+  },
+  {
+    "position": 5,
+    "id": "flat-pir",
+    "kind": "theory",
+    "source": "PIR p. 4",
+    "requires": [
+      "query-shares"
+    ]
+  },
+  {
+    "position": 6,
+    "id": "matrix-layout",
+    "kind": "theory",
+    "source": "PIR pp. 4\u20135",
+    "requires": [
+      "flat-pir"
+    ]
+  },
+  {
+    "position": 7,
+    "id": "matrix-proof",
+    "kind": "theory",
+    "source": "PIR p. 5",
+    "requires": [
+      "matrix-layout"
+    ]
+  },
+  {
+    "position": 8,
+    "id": "communication-balance",
+    "kind": "theory",
+    "source": "PIR pp. 4\u20135",
+    "requires": [
+      "matrix-proof"
+    ]
+  },
+  {
+    "position": 9,
+    "id": "pir-assumptions",
+    "kind": "theory",
+    "source": "PIR pp. 2\u20135; HW4 1",
+    "requires": [
+      "communication-balance"
+    ]
+  },
+  {
+    "position": 10,
+    "id": "hw4-1c",
+    "kind": "homework",
+    "source": "HW4 pp. 1",
+    "requires": [
+      "pir-assumptions"
+    ]
+  },
+  {
+    "position": 11,
+    "id": "homomorphic-operations",
+    "kind": "theory",
+    "source": "PIR p. 5",
+    "requires": [
+      "pir-assumptions"
+    ]
+  },
+  {
+    "position": 12,
+    "id": "single-server",
+    "kind": "theory",
+    "source": "PIR pp. 5\u20136",
+    "requires": [
+      "homomorphic-operations"
+    ]
+  },
+  {
+    "position": 13,
+    "id": "hw4-1b",
+    "kind": "homework",
+    "source": "HW4 pp. 1",
+    "requires": [
+      "single-server"
+    ]
+  },
+  {
+    "position": 14,
+    "id": "recursive-selection",
+    "kind": "theory",
+    "source": "PIR pp. 6\u20137",
+    "requires": [
+      "single-server"
+    ]
+  },
+  {
+    "position": 15,
+    "id": "recursive-size",
+    "kind": "theory",
+    "source": "PIR pp. 6\u20137",
+    "requires": [
+      "recursive-selection"
+    ]
+  },
+  {
+    "position": 16,
+    "id": "replication-limit",
+    "kind": "theory",
+    "source": "PIR p. 7",
+    "requires": [
+      "recursive-size",
+      "matrix-proof"
+    ]
+  },
+  {
+    "position": 17,
+    "id": "binary-gates",
+    "kind": "theory",
+    "source": "HW4 4(a\u2013b), prerequisite to PIR from FHE",
+    "requires": [
+      "single-server"
+    ]
+  },
+  {
+    "position": 18,
+    "id": "hw4-4a",
+    "kind": "homework",
+    "source": "HW4 pp. 4",
+    "requires": [
+      "binary-gates"
+    ]
+  },
+  {
+    "position": 19,
+    "id": "fhe-selection",
+    "kind": "theory",
+    "source": "HW4 4(b); PIR p. 5 encryption background",
+    "requires": [
+      "binary-gates"
+    ]
+  },
+  {
+    "position": 20,
+    "id": "hw4-4b",
+    "kind": "homework",
+    "source": "HW4 pp. 4\u20135",
+    "requires": [
+      "fhe-selection"
+    ]
+  },
+  {
+    "position": 21,
+    "id": "noise-model",
+    "kind": "theory",
+    "source": "HW4 4(c)",
+    "requires": [
+      "fhe-selection"
+    ]
+  },
+  {
+    "position": 22,
+    "id": "hw4-4c",
+    "kind": "homework",
+    "source": "HW4 pp. 5",
+    "requires": [
+      "noise-model"
+    ]
+  },
+  {
+    "position": 23,
+    "id": "server-work",
+    "kind": "theory",
+    "source": "PIR p. 7",
+    "requires": [
+      "noise-model"
+    ]
+  },
+  {
+    "position": 24,
+    "id": "offline-online",
+    "kind": "theory",
+    "source": "PIR pp. 7\u20138",
+    "requires": [
+      "server-work"
+    ]
+  },
+  {
+    "position": 25,
+    "id": "field-review",
+    "kind": "theory",
+    "source": "Chapter 3 prerequisite; HW3 1(c); HW4 2",
+    "requires": [
+      "offline-online"
+    ]
+  },
+  {
+    "position": 26,
+    "id": "hw3-1c",
+    "kind": "homework",
+    "source": "HW3 pp. 1",
+    "requires": [
+      "field-review"
+    ]
+  },
+  {
+    "position": 27,
+    "id": "coefficient-shift",
+    "kind": "theory",
+    "source": "HW4 2(a); Chapter 3 random identity test",
+    "requires": [
+      "field-review"
+    ]
+  },
+  {
+    "position": 28,
+    "id": "hw4-2a",
+    "kind": "homework",
+    "source": "HW4 pp. 1\u20132",
+    "requires": [
+      "coefficient-shift"
+    ]
+  },
+  {
+    "position": 29,
+    "id": "coefficient-split",
+    "kind": "theory",
+    "source": "HW4 2(b)",
+    "requires": [
+      "coefficient-shift"
+    ]
+  },
+  {
+    "position": 30,
+    "id": "hw4-2b",
+    "kind": "homework",
+    "source": "HW4 pp. 2",
+    "requires": [
+      "coefficient-split"
+    ]
+  },
+  {
+    "position": 31,
+    "id": "product-coefficient",
+    "kind": "theory",
+    "source": "HW4 2(c)",
+    "requires": [
+      "coefficient-split"
+    ]
+  },
+  {
+    "position": 32,
+    "id": "hw4-2c",
+    "kind": "homework",
+    "source": "HW4 pp. 2\u20133",
+    "requires": [
+      "product-coefficient"
+    ]
+  },
+  {
+    "position": 33,
+    "id": "proof-models",
+    "kind": "theory",
+    "source": "Chapter 3 prerequisite; HW3 1(a); HW4 1(a)",
+    "requires": [
+      "product-coefficient"
+    ]
+  },
+  {
+    "position": 34,
+    "id": "hw3-1a",
+    "kind": "homework",
+    "source": "HW3 pp. 1",
+    "requires": [
+      "proof-models"
+    ]
+  },
+  {
+    "position": 35,
+    "id": "hw4-1a",
+    "kind": "homework",
+    "source": "HW4 pp. 1",
+    "requires": [
+      "proof-models"
+    ]
+  },
+  {
+    "position": 36,
+    "id": "succinctness-review",
+    "kind": "theory",
+    "source": "Chapter 3 succinctness; HW4 1(d)",
+    "requires": [
+      "proof-models"
+    ]
+  },
+  {
+    "position": 37,
+    "id": "hw4-1d",
+    "kind": "homework",
+    "source": "HW4 pp. 1",
+    "requires": [
+      "succinctness-review"
+    ]
+  },
+  {
+    "position": 38,
+    "id": "powers-setup",
+    "kind": "theory",
+    "source": "HW4 3(a\u2013b); Chapter 1 group prerequisites",
+    "requires": [
+      "succinctness-review"
+    ]
+  },
+  {
+    "position": 39,
+    "id": "hw4-3a",
+    "kind": "homework",
+    "source": "HW4 pp. 3",
+    "requires": [
+      "powers-setup"
+    ]
+  },
+  {
+    "position": 40,
+    "id": "hw4-3b",
+    "kind": "homework",
+    "source": "HW4 pp. 3",
+    "requires": [
+      "powers-setup"
+    ]
+  },
+  {
+    "position": 41,
+    "id": "point-quotient",
+    "kind": "theory",
+    "source": "HW4 3(c); Chapter 3 ZeroTest",
+    "requires": [
+      "powers-setup"
+    ]
+  },
+  {
+    "position": 42,
+    "id": "hw4-3c",
+    "kind": "homework",
+    "source": "HW4 pp. 3",
+    "requires": [
+      "point-quotient"
+    ]
+  },
+  {
+    "position": 43,
+    "id": "exponent-product",
+    "kind": "theory",
+    "source": "HW4 3(d\u2013e)",
+    "requires": [
+      "point-quotient"
+    ]
+  },
+  {
+    "position": 44,
+    "id": "hw4-3d",
+    "kind": "homework",
+    "source": "HW4 pp. 3\u20134",
+    "requires": [
+      "exponent-product"
+    ]
+  },
+  {
+    "position": 45,
+    "id": "hw4-3e",
+    "kind": "homework",
+    "source": "HW4 pp. 4",
+    "requires": [
+      "exponent-product"
+    ]
+  }
+]

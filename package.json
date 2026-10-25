@@ -2,9 +2,9 @@
   "name": "pets-study-material",
   "private": true,
   "scripts": {
-    "build": "python3 scripts/revise-beginner.py && python3 scripts/build-snarks.py",
-    "test:content": "python3 tests/beginner_content.py && python3 tests/snarks_content.py",
-    "test:browser": "node tests/reader.cjs && node tests/learning.cjs && node tests/homework.cjs && node tests/typography.cjs && node tests/concepts.cjs && node tests/snarks.cjs"
+    "build": "python3 scripts/revise-beginner.py && python3 scripts/build-snarks.py && python3 scripts/build-pir.py",
+    "test:content": "python3 tests/beginner_content.py && python3 tests/snarks_content.py && python3 tests/pir_content.py",
+    "test:browser": "node tests/reader.cjs && node tests/learning.cjs && node tests/homework.cjs && node tests/typography.cjs && node tests/concepts.cjs && node tests/snarks.cjs && node tests/pir.cjs"
   },
   "devDependencies": {
     "mathjax-full": "3.2.2",
