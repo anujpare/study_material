@@ -1,0 +1,438 @@
+[
+  {
+    "position": 1,
+    "id": "snarg-goal",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 1",
+    "requires": []
+  },
+  {
+    "position": 2,
+    "id": "proof-properties",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 1\u20132",
+    "requires": [
+      "snarg-goal"
+    ]
+  },
+  {
+    "position": 3,
+    "id": "hw-1a",
+    "kind": "homework",
+    "source": "HW3 pp. 1",
+    "requires": [
+      "proof-properties"
+    ]
+  },
+  {
+    "position": 4,
+    "id": "setup-models",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 1\u20132; model clarification for HW3",
+    "requires": [
+      "proof-properties"
+    ]
+  },
+  {
+    "position": 5,
+    "id": "hw-1b",
+    "kind": "homework",
+    "source": "HW3 pp. 1",
+    "requires": [
+      "setup-models"
+    ]
+  },
+  {
+    "position": 6,
+    "id": "schnorr-recap",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 1; prerequisite from Chapter 2",
+    "requires": [
+      "setup-models"
+    ]
+  },
+  {
+    "position": 7,
+    "id": "fiat-shamir",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 1, 7\u20138",
+    "requires": [
+      "schnorr-recap"
+    ]
+  },
+  {
+    "position": 8,
+    "id": "hw-2a",
+    "kind": "homework",
+    "source": "HW3 pp. 2",
+    "requires": [
+      "schnorr-recap",
+      "fiat-shamir"
+    ]
+  },
+  {
+    "position": 9,
+    "id": "hw-2b",
+    "kind": "homework",
+    "source": "HW3 pp. 2",
+    "requires": [
+      "fiat-shamir"
+    ]
+  },
+  {
+    "position": 10,
+    "id": "hw-1d",
+    "kind": "homework",
+    "source": "HW3 pp. 1",
+    "requires": [
+      "fiat-shamir"
+    ]
+  },
+  {
+    "position": 11,
+    "id": "transferability",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 1; HW3 prerequisite",
+    "requires": [
+      "fiat-shamir"
+    ]
+  },
+  {
+    "position": 12,
+    "id": "hw-2d",
+    "kind": "homework",
+    "source": "HW3 pp. 2",
+    "requires": [
+      "transferability"
+    ]
+  },
+  {
+    "position": 13,
+    "id": "challenge-search",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 1; HW3 prerequisite",
+    "requires": [
+      "fiat-shamir"
+    ]
+  },
+  {
+    "position": 14,
+    "id": "hw-2c",
+    "kind": "homework",
+    "source": "HW3 pp. 2",
+    "requires": [
+      "challenge-search"
+    ]
+  },
+  {
+    "position": 15,
+    "id": "hw-3a",
+    "kind": "homework",
+    "source": "HW3 pp. 3",
+    "requires": [
+      "challenge-search"
+    ]
+  },
+  {
+    "position": 16,
+    "id": "parallel-amplification",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 2; HW3 prerequisite",
+    "requires": [
+      "schnorr-recap",
+      "challenge-search"
+    ]
+  },
+  {
+    "position": 17,
+    "id": "hw-3b",
+    "kind": "homework",
+    "source": "HW3 pp. 3",
+    "requires": [
+      "parallel-amplification"
+    ]
+  },
+  {
+    "position": 18,
+    "id": "two-routes",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 2\u20133",
+    "requires": [
+      "parallel-amplification"
+    ]
+  },
+  {
+    "position": 19,
+    "id": "pcp",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 2\u20133",
+    "requires": [
+      "two-routes"
+    ]
+  },
+  {
+    "position": 20,
+    "id": "merkle-oracle",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 2\u20133; HW1 prerequisite",
+    "requires": [
+      "pcp"
+    ]
+  },
+  {
+    "position": 21,
+    "id": "pcp-protocol",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 2\u20133",
+    "requires": [
+      "merkle-oracle"
+    ]
+  },
+  {
+    "position": 22,
+    "id": "pcp-cost",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 1\u20133",
+    "requires": [
+      "pcp-protocol"
+    ]
+  },
+  {
+    "position": 23,
+    "id": "hw-4a",
+    "kind": "homework",
+    "source": "HW3 pp. 3\u20135",
+    "requires": [
+      "pcp-cost"
+    ]
+  },
+  {
+    "position": 24,
+    "id": "pcp-fiat-shamir",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 3, 7\u20138",
+    "requires": [
+      "pcp-cost",
+      "fiat-shamir"
+    ]
+  },
+  {
+    "position": 25,
+    "id": "hw-4b",
+    "kind": "homework",
+    "source": "HW3 pp. 5",
+    "requires": [
+      "pcp-fiat-shamir"
+    ]
+  },
+  {
+    "position": 26,
+    "id": "finite-fields",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 4\u20136; algebra prerequisites",
+    "requires": [
+      "two-routes"
+    ]
+  },
+  {
+    "position": 27,
+    "id": "polynomial-language",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 4\u20136",
+    "requires": [
+      "finite-fields"
+    ]
+  },
+  {
+    "position": 28,
+    "id": "root-bound",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 5",
+    "requires": [
+      "polynomial-language"
+    ]
+  },
+  {
+    "position": 29,
+    "id": "hw-1c",
+    "kind": "homework",
+    "source": "HW3 pp. 1",
+    "requires": [
+      "root-bound"
+    ]
+  },
+  {
+    "position": 30,
+    "id": "polynomial-equality",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 5",
+    "requires": [
+      "root-bound"
+    ]
+  },
+  {
+    "position": 31,
+    "id": "schwartz-zippel",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 5",
+    "requires": [
+      "polynomial-equality"
+    ]
+  },
+  {
+    "position": 32,
+    "id": "interpolation",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 4, 9",
+    "requires": [
+      "polynomial-equality"
+    ]
+  },
+  {
+    "position": 33,
+    "id": "vanishing-polynomial",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 6",
+    "requires": [
+      "interpolation"
+    ]
+  },
+  {
+    "position": 34,
+    "id": "zero-test",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 6",
+    "requires": [
+      "vanishing-polynomial"
+    ]
+  },
+  {
+    "position": 35,
+    "id": "fibonacci-iop",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 4, 6",
+    "requires": [
+      "zero-test"
+    ]
+  },
+  {
+    "position": 36,
+    "id": "polynomial-commitment",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 7",
+    "requires": [
+      "fibonacci-iop"
+    ]
+  },
+  {
+    "position": 37,
+    "id": "polynomial-compiler",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 7\u20138",
+    "requires": [
+      "polynomial-commitment",
+      "fiat-shamir"
+    ]
+  },
+  {
+    "position": 38,
+    "id": "arithmetic-circuit",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 8\u20139",
+    "requires": [
+      "polynomial-compiler"
+    ]
+  },
+  {
+    "position": 39,
+    "id": "execution-trace",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 9",
+    "requires": [
+      "arithmetic-circuit"
+    ]
+  },
+  {
+    "position": 40,
+    "id": "roots-of-unity",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 9",
+    "requires": [
+      "execution-trace",
+      "interpolation"
+    ]
+  },
+  {
+    "position": 41,
+    "id": "trace-polynomial",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 9",
+    "requires": [
+      "roots-of-unity"
+    ]
+  },
+  {
+    "position": 42,
+    "id": "four-obligations",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 9\u201311",
+    "requires": [
+      "trace-polynomial"
+    ]
+  },
+  {
+    "position": 43,
+    "id": "boundary-conditions",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 9\u201310",
+    "requires": [
+      "four-obligations",
+      "zero-test"
+    ]
+  },
+  {
+    "position": 44,
+    "id": "gate-selector",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 10",
+    "requires": [
+      "boundary-conditions"
+    ]
+  },
+  {
+    "position": 45,
+    "id": "gate-polynomial",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 10",
+    "requires": [
+      "gate-selector"
+    ]
+  },
+  {
+    "position": 46,
+    "id": "wire-permutation",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 11",
+    "requires": [
+      "gate-polynomial"
+    ]
+  },
+  {
+    "position": 47,
+    "id": "fast-vanishing",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 6, 10\u201311",
+    "requires": [
+      "wire-permutation"
+    ]
+  },
+  {
+    "position": 48,
+    "id": "construction-map",
+    "kind": "theory",
+    "source": "Lectures 9\u201312 pp. 11\u201312",
+    "requires": [
+      "fast-vanishing"
+    ]
+  }
+]

@@ -22,13 +22,13 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
       await menu.locator('summary').focus();await page.keyboard.press('Enter');
       assert(await menu.getAttribute('open')!==null);
       await page.keyboard.press('Tab');
-      assert(await page.getByRole('link',{name:/Chapter 2/}).evaluate(el=>el===document.activeElement));
+      assert(await page.getByRole('link',{name:/Chapter 1/}).evaluate(el=>el===document.activeElement));
       await page.keyboard.press('Escape');
       assert.equal(await menu.getAttribute('open'),null);
       assert(await menu.locator('summary').evaluate(el=>el===document.activeElement));
       await menu.locator('summary').click();await page.locator('.pet-active .head').click({position:{x:10,y:10}});
       assert.equal(await menu.getAttribute('open'),null);
-      await menu.locator('summary').click();await page.getByRole('link',{name:/Chapter 3/}).click();
+      await menu.locator('summary').click();await page.getByRole('link',{name:/Chapter 2/}).click();
       await page.waitForURL(`${base}/zero-knowledge/`);
       assert.equal(await page.locator('.learning[data-lab]').count(),4);
       await menu.locator('summary').click();
@@ -131,7 +131,7 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
     }
     const fallback=await browser.newPage({javaScriptEnabled:false});
     await fallback.goto(`${base}/commitment/`);await fallback.locator('.chapter-menu summary').click();
-    await fallback.getByRole('link',{name:/Chapter 3/}).click();await fallback.waitForURL(`${base}/zero-knowledge/`);
+    await fallback.getByRole('link',{name:/Chapter 2/}).click();await fallback.waitForURL(`${base}/zero-knowledge/`);
     assert.equal(await fallback.locator('.slide:visible').getAttribute('id'),'start-notation');
     console.log('PASS chapter popup and original content without JavaScript');
   } finally {await browser.close();}

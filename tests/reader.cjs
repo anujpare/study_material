@@ -14,9 +14,9 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
       const errors = [];
       page.on('pageerror', error => errors.push(error.message));
       await page.goto(base);
-      assert.equal(await page.locator('.card').count(), 4);
+      assert.equal(await page.locator('.card').count(), 6);
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-      for (const [chapter, count] of [['commitment', 95], ['zero-knowledge', 73], ['hw1', 33], ['hw2', 31]]) {
+      for (const [chapter, count] of [['commitment', 95], ['zero-knowledge', 73], ['hw1', 33], ['hw2', 31], ['snarks', 48], ['hw3', 12]]) {
         await page.goto(`${base}/${chapter}/`);
         const slider = page.locator('#pet-card-slider');
         const ids = await page.locator('.slide').evaluateAll(slides => slides.map(slide => slide.id));
@@ -104,11 +104,12 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
       await page.close();
     }
     const fallback = await browser.newPage({javaScriptEnabled: false, viewport: {width: 320, height: 640}});
-    for (const chapter of ['commitment', 'zero-knowledge', 'hw1', 'hw2']) {
+    for (const chapter of ['commitment', 'zero-knowledge', 'hw1', 'hw2', 'snarks', 'hw3']) {
       await fallback.goto(`${base}/${chapter}/`);
       assert.equal(await fallback.locator('.slide:visible').count(), 1);
+      const nextId = await fallback.locator('.slide').nth(1).getAttribute('id');
       await fallback.locator('.slide:visible [aria-label="Next card"]').click();
-      assert.equal(await fallback.locator('.slide:visible').getAttribute('id'), 'start-powers');
+      assert.equal(await fallback.locator('.slide:visible').getAttribute('id'), nextId);
       assert.equal(await fallback.locator('#pet-card-slider:visible').count(), 0);
     }
     console.log('PASS no-JavaScript card navigation');

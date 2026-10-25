@@ -1,0 +1,34 @@
+/* Inherit the two PETS text sizes. Figures use the existing .learning size. */
+.snark-flow {display:grid;gap:9px;margin:12px 0}
+.snark-flow > span {display:block;padding:9px 10px;border:1px solid #cbd4ce;border-radius:8px;background:#fff;line-height:1.5}
+figure.learning {margin:18px 0;padding:14px}
+.learning figcaption {font-weight:700;margin-bottom:12px;line-height:1.45}
+.snark-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:6px;margin:12px 0}
+.snark-grid > span {border:1px solid #cad2cc;border-radius:6px;padding:7px 5px;text-align:center;background:#fff;overflow-wrap:anywhere}
+.snark-grid .is-hit {background:#deede4;border-color:#487a5c;font-weight:700}
+.snark-grid .is-fail {background:#f8e8de;border-color:#ab6543;font-weight:700}
+.snark-controls {display:grid;gap:9px;margin:12px 0}
+.snark-controls label {display:flex;gap:9px;align-items:center;flex-wrap:wrap;line-height:1.5}
+.snark-controls select,.snark-controls input[type=number] {max-width:100%;min-height:44px;padding:6px;border:1px solid #8a998d;border-radius:5px;background:white;color:#212321}
+.snark-controls select {width:100%;white-space:normal}
+.snark-controls input[type=checkbox] {width:24px;height:24px;margin:10px}
+.snark-controls input[type=range] {width:100%;min-height:44px}
+.snark-equation {padding:12px;border:1px solid #becbc1;border-radius:6px;line-height:1.5;background:#fff}
+.snark-lab output {display:block;line-height:1.5;margin-top:12px}
+.snark-scatter {display:grid;gap:4px;max-width:100%;margin:12px 0}
+.snark-scatter-row {display:flex;align-items:center;gap:8px;min-height:24px}
+.snark-scatter-row > span:first-child {width:40px;flex:none}
+.snark-track {position:relative;flex:1;height:14px;background:#e6e9e5;border-radius:7px}
+.snark-dot {position:absolute;top:0;transform:translateX(-50%);width:14px;height:14px;border-radius:50%;background:#456f96}
+.snark-dot.is-hit {background:#39714b}
+.snark-scatter-row > span:last-child {width:22px;text-align:right;flex:none}
+.snark-lab button:focus-visible,.snark-controls :focus-visible {outline:2px solid #456f96;outline-offset:3px}
+.snark-lab .lab-actions {flex-wrap:wrap}
+.prerequisite-link {margin-top:20px!important}
+.circuit-map {display:block;width:100%;height:auto;overflow:visible}
+.circuit-wire {fill:none;stroke:#65796a;stroke-width:2}
+.circuit-node {fill:#fff;stroke:#456b55;stroke-width:2}
+.circuit-layout {position:relative;margin:15px 0}
+.circuit-labels {position:absolute;inset:0;pointer-events:none}
+.circuit-labels span {position:absolute;transform:translate(-50%,-50%);white-space:nowrap}
+[data-obligation-result] {grid-template-columns:repeat(2,minmax(0,1fr))}

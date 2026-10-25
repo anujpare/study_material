@@ -74,9 +74,7 @@
       "deck": "commitment",
       "id": "lesson-7",
       "source": 7,
-      "new_terms": [
-        "witness"
-      ],
+      "new_terms": [],
       "available_terms": [
         "np",
         "polynomial",
@@ -498,9 +496,7 @@
       "deck": "commitment",
       "id": "lesson-34",
       "source": 34,
-      "new_terms": [
-        "modular"
-      ],
+      "new_terms": [],
       "available_terms": [
         "inverse",
         "modular",
@@ -687,9 +683,7 @@
       "deck": "commitment",
       "id": "lesson-47",
       "source": 47,
-      "new_terms": [
-        "homomorphic"
-      ],
+      "new_terms": [],
       "available_terms": [
         "commitment",
         "group",
@@ -840,9 +834,7 @@
       "deck": "commitment",
       "id": "lesson-56",
       "source": 56,
-      "new_terms": [
-        "prf"
-      ],
+      "new_terms": [],
       "available_terms": [
         "adversary",
         "prf",
@@ -914,9 +906,7 @@
       "deck": "commitment",
       "id": "lesson-61",
       "source": 61,
-      "new_terms": [
-        "fhe"
-      ],
+      "new_terms": [],
       "available_terms": [
         "commitment",
         "fhe",
@@ -1221,8 +1211,7 @@
       "id": "lesson-79",
       "source": 79,
       "new_terms": [
-        "merkle",
-        "vector"
+        "merkle"
       ],
       "available_terms": [
         "commitment",
@@ -1499,7 +1488,6 @@
         "extractor",
         "independent",
         "indistinguishable",
-        "lambda",
         "negligible",
         "prover",
         "simulation",
@@ -1838,7 +1826,6 @@
       "id": "lesson-33",
       "source": 33,
       "new_terms": [
-        "hvzk",
         "vector"
       ],
       "available_terms": [
@@ -1874,10 +1861,13 @@
       "source": 35,
       "new_terms": [],
       "available_terms": [
+        "computational",
         "distribution",
+        "hvzk",
         "independent",
+        "indistinguishable",
+        "polynomial",
         "prover",
-        "sigma",
         "simulation",
         "transcript",
         "uniform",
@@ -1991,9 +1981,12 @@
       "source": 42,
       "new_terms": [],
       "available_terms": [
+        "computational",
         "distribution",
         "hvzk",
         "independent",
+        "indistinguishable",
+        "polynomial",
         "prover",
         "sigma",
         "simulation",
@@ -2096,10 +2089,12 @@
       "id": "lesson-48",
       "source": 48,
       "new_terms": [
+        "crs",
         "oracle"
       ],
       "available_terms": [
         "completeness",
+        "crs",
         "language",
         "np",
         "oracle",
@@ -2114,9 +2109,7 @@
       "deck": "zero-knowledge",
       "id": "lesson-49",
       "source": 49,
-      "new_terms": [
-        "fiat"
-      ],
+      "new_terms": [],
       "available_terms": [
         "fiat",
         "hash",
@@ -2407,7 +2400,6 @@
       "id": "lesson-4",
       "source": 61,
       "new_terms": [
-        "fhe",
         "homomorphic"
       ],
       "available_terms": [
@@ -2617,9 +2609,7 @@
       "deck": "hw1",
       "id": "lesson-16",
       "source": 77,
-      "new_terms": [
-        "prover"
-      ],
+      "new_terms": [],
       "available_terms": [
         "advantage",
         "ddh",
@@ -2640,8 +2630,7 @@
       "id": "lesson-17",
       "source": 79,
       "new_terms": [
-        "merkle",
-        "vector"
+        "merkle"
       ],
       "available_terms": [
         "commitment",
@@ -2885,11 +2874,16 @@
       "deck": "hw2",
       "id": "lesson-10",
       "source": 42,
-      "new_terms": [],
+      "new_terms": [
+        "computational"
+      ],
       "available_terms": [
+        "computational",
         "distribution",
         "hvzk",
         "independent",
+        "indistinguishable",
+        "polynomial",
         "prover",
         "sigma",
         "simulation",
@@ -2994,9 +2988,7 @@
       "deck": "hw2",
       "id": "lesson-16",
       "source": 56,
-      "new_terms": [
-        "computational"
-      ],
+      "new_terms": [],
       "available_terms": [
         "circuit",
         "commitment",

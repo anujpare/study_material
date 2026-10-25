@@ -60,7 +60,7 @@ for deck,(source,order) in DECKS.items():
  path=ROOT/'docs'/deck;path.mkdir(exist_ok=True);(path/'index.html').write_text(prefix+''.join(cards)+suffix)
  print(deck,len(cards),'cards',len(NOTES[deck]),'self-contained exercises')
 # One consistent menu across chapters and homework, including local visual shortcuts.
-TITLES={'commitment':('Chapter 2','Commitment',85),'zero-knowledge':('Chapter 3','Zero Knowledge',62),'hw1':('Homework 1','HW1',22),'hw2':('Homework 2','HW2',20)}
+TITLES={'commitment':('Chapter 1','Commitment',85),'zero-knowledge':('Chapter 2','Zero Knowledge',62),'hw1':('Homework 1','HW1',22),'hw2':('Homework 2','HW2',20)}
 SHORTCUTS={
  'commitment':[(2,'Growth rates'),(3,'Guessing probability'),(13,'Negligible probabilities'),(20,'Hiding vs binding'),(22,'Telling worlds apart'),(31,'Collision pairs'),(34,'Modular clock'),(49,'Pedersen hiding'),(51,'Binding proof')],
  'zero-knowledge':[(21,'Graph challenges'),(24,'Simulator retries'),(38,'Soundness'),(43,'Schnorr transcripts')],
@@ -73,3 +73,6 @@ for deck in TITLES:
  links+='<div class="menu-experiments"><span class="menu-brand">Explore visually</span>'+''.join(f'<a href="#lesson-{n}">{title}<small>Card {n}</small></a>' for n,title in SHORTCUTS[deck])+'</div><a href="../" class="all-chapters">Deck overview</a>'
  text=re.sub(r'<nav aria-label="Chapters" class="chapter-panel">.*?</nav>', '<nav aria-label="Chapters" class="chapter-panel"><span class="menu-brand">PETS</span>'+links+'</nav>',text,count=1,flags=re.S)
  f.write_text(text)
+
+from deck_catalog import refresh_menus
+refresh_menus()
