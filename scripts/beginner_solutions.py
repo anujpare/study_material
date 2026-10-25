@@ -47,7 +47,7 @@ SOLUTIONS={
 62:('False if the statement requires identical ciphertexts.',[
 'Enc(m) means encrypt message m, producing a ciphertext c. Dec(c) means decrypt it. Eval(f,c) computes a new encrypted representation intended to represent f(m).',
 'Encryption normally uses randomness. Two encryptions of the same message can therefore have different bytes while decrypting to the same value.',
-'For a simple analogy, two sealed envelopes can contain the same number without being the same physical envelope. Equality of hidden contents does not imply equality of representations.',
+'Write the randomness explicitly: c₁ = Enc(pk,3;r₁) and c₂ = Enc(pk,3;r₂), where pk is the public encryption key. Different random choices r₁ and r₂ may produce c₁ ≠ c₂ while both decrypt to 3.',
 'The correctness requirement is Dec(Eval(f,c)) = f(m), for a valid encryption c of m and functions supported by the scheme. If m=3 and f doubles its input, the evaluated ciphertext must decrypt to 6.',
 'It need not equal a newly sampled Enc(6) byte for byte. The missing distinction in the proposed equality is between the encrypted representation and its decrypted content.']),
 72:('The proposed simulation is not the random-oracle experiment, so the claimed advantage transfer is unjustified.',[
@@ -130,10 +130,10 @@ SOLUTIONS={
 'We therefore cannot reuse this sequential simulator to conclude general ZK for the parallel protocol. The failure is a gap in that proof method, not a proof that every parallel protocol necessarily leaks information.',
 'The next part imposes an honest verifier, whose independent challenge choices allow a different, direct simulation.']),
 42:('Honest-verifier zero knowledge is preserved by independently simulating the copies.',[
-'For one copy, an honest-verifier simulator produces a transcript (a,e,z) with the same distribution as a real honest execution, without knowing a witness.',
+'For one copy, an honest-verifier simulator produces a transcript (a,e,z) indistinguishable from a real honest execution, without knowing a witness. For perfect HVZK the distributions agree exactly; for computational HVZK efficient tests cannot distinguish them.',
 'Run that simulator independently k times, obtaining (a₁,e₁,z₁), …, (aₖ,eₖ,zₖ). Independent runs mean using fresh random choices each time.',
 'Arrange the results in the parallel order: the batch of first messages, the batch of challenges, and the batch of responses.',
-'The honest parallel verifier samples the challenges independently according to the protocol. Thus its joint view has the product of the same single-copy distributions that these independent simulator runs generate.',
+'The honest parallel verifier samples the challenges independently according to the protocol. The independently simulated copies match the honest joint distribution in the perfect case. In the computational case, replace one real copy by its simulated version at a time. Each change is indistinguishable; polynomially many such changes preserve that guarantee.',
 'This conclusion is HVZK: it is specifically about the honest verifier. A malicious verifier choosing correlated challenges is outside this argument.']),
 44:('Perfect completeness follows by substituting the honest response.',[
 'The public values are g and h=g<sup>x</sup>. The prover knows secret exponent x, chooses random r, and sends u=g<sup>r</sup>. The verifier chooses challenge c. The response is z=r+cx modulo q.',

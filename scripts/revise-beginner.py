@@ -6,6 +6,7 @@ from html.parser import HTMLParser
 import html,json,re,subprocess,sys
 from beginner_content import TERMS,PATTERNS,PRIMERS,AIMS
 from beginner_solutions import SOLUTIONS
+from earlier_review import refine,SELF_DEFINED
 ROOT=Path(__file__).resolve().parents[1]
 class Prose(HTMLParser):
  def __init__(self):super().__init__();self.parts=[];self.skip=0
@@ -39,7 +40,7 @@ PROSE_EDITS={
   3:[('A distribution describes','A <strong>distribution</strong> lists the possible values and their probabilities. For a fair coin, the values are heads and tails, each with probability 1/2.')],
   4:[('This lets us prove statements like','For example, suppose an attacker makes Q guesses and each fixed guess has success probability at most 1/2<sup>n</sup>. Adding these Q probabilities gives an upper bound of Q/2<sup>n</sup> for any guess succeeding. A probability cannot exceed 1, so use 1 if that expression is larger.')],
   6:[('In cryptography, we often want','For example, consider the claim “if n² is even, then n is even.” Its contrapositive is “if n is odd, then n² is odd.” Proving the second statement proves the first, because an odd n could never produce an even square.')],
-  7:[('Example: “Does this Boolean circuit','For example, a completed puzzle can be checked by testing its rules. That may be much easier than searching for a solution from scratch. The supplied solution is the witness. NP does not mean “not polynomial.”')]
+  7:[('Example: “Does this Boolean circuit','For a cryptographic example, suppose we ask whether one secret key explains a list of observed input/output pairs. A proposed key is a witness: evaluate the keyed function on each input and compare the outputs. Checking a proposed key does not require searching all keys. NP does not mean “not polynomial.”')]
  },
  'zero-knowledge':{
   5:[('Caution for later:','')],
@@ -75,7 +76,8 @@ def revise(deck):
    assert count==1,(deck,n)
   # Use one name consistently after teaching it. Do not change mathematical SVGs.
   c=re.sub(r'(?<=>)[^<>]+(?=<)',lambda m:re.sub(r'\bsalts?\b',lambda t:'randomizers' if t[0].endswith('s') else 'randomizer',m[0],flags=re.I),c)
-  used=terms(re.search(r'<article\b.*?</article>',c,re.S)[0]);new=used-seen
+  c=refine(source,source_id,c)
+  used=terms(re.search(r'<article\b.*?</article>',c,re.S)[0]);new=used-seen-SELF_DEFINED.get((source,source_id),set())
   definitions=''.join('<dt>'+html.escape(TERMS[t][0])+'</dt><dd>'+html.escape(TERMS[t][1])+'</dd>' for t in TERMS if t in new)
   context='<aside class="beginner-context" data-source="'+source+'-'+str(source_id)+'"'+('' if definitions else ' hidden')+'>'
   if definitions:context+='<div class="new-terms"><h3>New words for this lesson</h3><dl>'+definitions+'</dl></div>'
