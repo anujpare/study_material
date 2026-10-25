@@ -36,7 +36,13 @@ function resolveGlyphs(){
 resolveGlyphs();
 
 function clamp(value){let n=Number(value);return Number.isFinite(n)?Math.max(1,Math.min(count,Math.round(n))):1;}
-function fromHash(){const m=/^#lesson-(\d+)$/.exec(location.hash);return m?clamp(m[1]):1;}
+function fromHash(){
+  const index=slides.findIndex(slide=>'#'+slide.id===location.hash);
+  if(index>=0)return index+1;
+  // Retain the previous numeric out-of-range fallback for old links.
+  const match=/^#lesson-(\d+)$/.exec(location.hash);
+  return match?clamp(match[1]):1;
+}
 
 // Inspect actual rendered formula width. When a formula is wider than its text
 // column, put it on a full-width line and resize the vector proportionately.
@@ -77,15 +83,15 @@ function render(n){
   fitMath(slides[current-1]);
 }
 function go(value,replace){
-  let n=clamp(value);let hash='#lesson-'+n;
+  let n=clamp(value);let hash='#'+slides[n-1].id;
   if(location.hash!==hash){if(replace)history.replaceState(null,'',hash);else history.pushState(null,'',hash);}
   render(n);
 }
 document.addEventListener('click',event=>{
   const node=event.target;if(!(node instanceof Element))return;
-  const link=node.closest('#lessons .navbtn[href^="#lesson-"]');if(!link)return;
-  const match=/^#lesson-(\d+)$/.exec(link.getAttribute('href'));if(!match)return;
-  event.preventDefault();event.stopImmediatePropagation();go(match[1],false);
+  const link=node.closest('#lessons .navbtn[href^="#"]');if(!link)return;
+  const index=slides.findIndex(slide=>'#'+slide.id===link.getAttribute('href'));if(index<0)return;
+  event.preventDefault();event.stopImmediatePropagation();go(index+1,false);
 },true);
 slider.addEventListener('input',()=>go(slider.value,true));
 slider.addEventListener('change',()=>go(slider.value,true));

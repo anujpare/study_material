@@ -16,15 +16,17 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
       await page.goto(base);
       assert.equal(await page.locator('.card').count(), 4);
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-      for (const [chapter, count] of [['commitment', 85], ['zero-knowledge', 62], ['hw1', 22], ['hw2', 20]]) {
+      for (const [chapter, count] of [['commitment', 95], ['zero-knowledge', 73], ['hw1', 33], ['hw2', 31]]) {
         await page.goto(`${base}/${chapter}/`);
         const slider = page.locator('#pet-card-slider');
+        const ids = await page.locator('.slide').evaluateAll(slides => slides.map(slide => slide.id));
+        assert.equal(ids.length, count);
         async function check(n) {
           assert.equal(await slider.inputValue(), String(n));
           assert.equal(await page.locator('#pet-card-position').textContent(), `${n} / ${count}`);
           assert.equal(await slider.getAttribute('aria-valuetext'), `Card ${n} of ${count}`);
           assert.equal(await page.locator('.slide:visible').count(), 1);
-          assert.equal(await page.locator('.slide:visible').getAttribute('id'), `lesson-${n}`);
+          assert.equal(await page.locator('.slide:visible').getAttribute('id'), ids[n-1]);
         }
         await check(1);
         assert.equal(await slider.getAttribute('max'), String(count));
@@ -67,7 +69,7 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
         assert(Number(await slider.inputValue()) > count / 2);
         await check(Number(await slider.inputValue()));
         await touch.detach();
-        await page.goto(`${base}/${chapter}/#lesson-${count}`);
+        await page.goto(`${base}/${chapter}/#${ids[count-1]}`);
         await check(count);
         await page.reload();
         await check(count);
@@ -77,10 +79,10 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
           await check(expected);
         }
         // Opening a solution and resizing keeps its content and math present.
-        const detailCard = await page.locator('.slide:has(details)').first().getAttribute('id');
+        const detailCard = await page.locator('.slide:has(details.solution)').first().getAttribute('id');
         await page.evaluate(id => { location.hash = id; }, detailCard);
-        await page.locator('.slide:visible details summary').first().click();
-        assert(await page.locator('.slide:visible details').first().getAttribute('open') !== null);
+        await page.locator('.slide:visible details.solution summary').first().click();
+        assert(await page.locator('.slide:visible details.solution').first().getAttribute('open') !== null);
         await page.setViewportSize({width, height: 390});
         const geometry = await page.evaluate(() => {
           const home = document.querySelector('.chapter-menu summary').getBoundingClientRect();
@@ -106,7 +108,7 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
       await fallback.goto(`${base}/${chapter}/`);
       assert.equal(await fallback.locator('.slide:visible').count(), 1);
       await fallback.locator('.slide:visible [aria-label="Next card"]').click();
-      assert.equal(await fallback.locator('.slide:visible').getAttribute('id'), 'lesson-2');
+      assert.equal(await fallback.locator('.slide:visible').getAttribute('id'), 'start-powers');
       assert.equal(await fallback.locator('#pet-card-slider:visible').count(), 0);
     }
     console.log('PASS no-JavaScript card navigation');
