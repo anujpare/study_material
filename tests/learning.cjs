@@ -40,7 +40,9 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
       lab=await visit('commitment',3,'guessing');
       await lab.locator('#secret-bits').focus();await page.keyboard.press('ArrowRight');
       assert.equal(await lab.locator('#secret-bits').inputValue(),'5');
+      await lab.locator('#secret-bits').evaluate(el=>el.scrollIntoView({block:'center'}));
       const box=await lab.locator('#secret-bits').boundingBox();
+      assert(box.y >= 0 && box.y + box.height < 760, 'touch target must be clear of the footer');
       const touch=await page.context().newCDPSession(page);
       await touch.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:box.x+10,y:box.y+20}]});
       for(let step=1;step<=8;step++)await touch.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:box.x+10+(box.width-20)*step/8,y:box.y+20}]});
@@ -130,7 +132,7 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
     const fallback=await browser.newPage({javaScriptEnabled:false});
     await fallback.goto(`${base}/commitment/`);await fallback.locator('.chapter-menu summary').click();
     await fallback.getByRole('link',{name:/Chapter 3/}).click();await fallback.waitForURL(`${base}/zero-knowledge/`);
-    assert.equal(await fallback.locator('.slide:visible').getAttribute('id'),'lesson-1');
+    assert.equal(await fallback.locator('.slide:visible').getAttribute('id'),'start-notation');
     console.log('PASS chapter popup and original content without JavaScript');
   } finally {await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;});

@@ -11,44 +11,44 @@
     *{box-sizing:border-box} html,body{margin:0} body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,system-ui,Arial,sans-serif}
     .wrap{max-width:920px;margin:0 auto;padding:28px 18px 40px}
     .hero{padding:18px 2px 24px}
-    .eyebrow{font-size:calc(12px + 1pt);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
-    h1{font-size:calc(clamp(34px,6vw,56px) + 1pt);line-height:1.02;margin:0 0 12px}
-    .sub{max-width:720px;font-size:calc(18px + 1pt);line-height:1.55;color:#353835;margin:0}
+    .eyebrow{font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+    h1{line-height:1.02;margin:0 0 12px}
+    .sub{max-width:720px;line-height:1.55;color:#353835;margin:0}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:18px;margin-top:28px}
     .card{display:flex;flex-direction:column;gap:16px;text-decoration:none;color:inherit;background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:0 8px 28px rgba(0,0,0,.05)}
     .card:hover{transform:translateY(-1px);box-shadow:0 12px 32px rgba(0,0,0,.08)}
-    .tag{display:inline-flex;width:max-content;padding:6px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:calc(12px + 1pt);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-    .card h2{font-size:calc(28px + 1pt);line-height:1.1;margin:0}
-    .meta{font-size:calc(14px + 1pt);color:var(--muted);font-weight:600}
-    .card p{margin:0;font-size:calc(16px + 1pt);line-height:1.55;color:#2d302e}
+    .tag{display:inline-flex;width:max-content;padding:6px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+    .card h2{line-height:1.1;margin:0}
+    .meta{color:var(--muted);font-weight:600}
+    .card p{margin:0;line-height:1.55;color:#2d302e}
     .cta{margin-top:auto;font-weight:700}
-    .foot{margin-top:24px;color:var(--muted);font-size:calc(14px + 1pt);line-height:1.5}
+    .foot{margin-top:24px;color:var(--muted);line-height:1.5}
   </style>
-</head>
+<link rel="stylesheet" href="./typography.css"/></head>
 <body>
   <main class="wrap">
     <section class="hero">
       <div class="eyebrow">PETS</div>
       <h1>Choose a deck</h1>
-      <p class="sub">Explore Commitment and Zero Knowledge, or work through the dedicated HW1 and HW2 decks. Follow the explanations, try the interactive visualizations, and reveal each solution step by step.</p>
+      <p class="sub">Explore Commitment and Zero Knowledge, or work through the dedicated HW1 and HW2 decks. Each deck starts from the basics and introduces new concepts before using them. Try the interactive visualizations and follow each worked solution step by step.</p>
     </section>
     <section class="grid" aria-label="Deck selection">
       <a class="card" href="./commitment/">
         <span class="tag">Chapter 2</span>
         <h2>Commitment</h2>
-        <div class="meta">85 cards</div>
+        <div class="meta">95 cards</div>
         <p>Foundations needed for commitments, commitment schemes, random oracles, Pedersen commitments, pseudorandom functions, and the relevant HW1 material.</p>
         <div class="cta">Open deck →</div>
       </a>
       <a class="card" href="./zero-knowledge/">
         <span class="tag">Chapter 3</span>
         <h2>Zero Knowledge</h2>
-        <div class="meta">62 cards</div>
+        <div class="meta">73 cards</div>
         <p>Interactive proofs, zero-knowledge proofs, proofs of knowledge, sigma protocols, non-interactive zero knowledge, and the relevant HW2 material.</p>
         <div class="cta">Open deck →</div>
       </a>
-      <a class="card" href="./hw1/"><span class="tag">Homework 1</span><h2>HW1</h2><div class="meta">22 cards · 15 exercises</div><p>Commitments, random oracles, PRFs and vector commitments. Local prerequisites, worked solutions, and interactive experiments.</p><div class="cta">Work through HW1 →</div></a>
-      <a class="card" href="./hw2/"><span class="tag">Homework 2</span><h2>HW2</h2><div class="meta">20 cards · 13 exercises</div><p>Zero knowledge, repetition, Schnorr and circuit proofs. Build the required understanding as you solve each exercise.</p><div class="cta">Work through HW2 →</div></a>
+      <a class="card" href="./hw1/"><span class="tag">Homework 1</span><h2>HW1</h2><div class="meta">33 cards · 15 exercises</div><p>Commitments, random oracles, PRFs and vector commitments. Local prerequisites, worked solutions, and interactive experiments.</p><div class="cta">Work through HW1 →</div></a>
+      <a class="card" href="./hw2/"><span class="tag">Homework 2</span><h2>HW2</h2><div class="meta">31 cards · 13 exercises</div><p>Zero knowledge, repetition, Schnorr and circuit proofs. Build the required understanding as you solve each exercise.</p><div class="cta">Work through HW2 →</div></a>
     </section>
     <p class="foot">Homework remains integrated in the chapter decks. The dedicated homework decks add prerequisite notes and reasoning checks, organized by problem number.</p>
   </main>

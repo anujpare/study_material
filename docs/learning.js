@@ -6,7 +6,7 @@
   const trigger = menu.querySelector('summary');
   let chapterJump = false;
   menu.addEventListener('click', event => {
-    const link = event.target.closest('a[href^="#lesson-"]');
+    const link = event.target.closest('a[href^="#"]');
     if (!link) return;
     if (link.hash === location.hash) { menu.open = false; trigger.focus(); }
     else chapterJump = true;
@@ -48,8 +48,8 @@
     panel.className = 'learning';
     panel.dataset.lab = key;
     panel.setAttribute('aria-labelledby', `${key}-title`);
-    panel.innerHTML = `<div class="lab-eyebrow">Explore the idea</div><h3 id="${key}-title">${title}</h3><p>${intro}</p>${content}`;
-    (reader.querySelector('.homework-prep') || reader.querySelector('p')).after(panel);
+    panel.innerHTML = `<h3 id="${key}-title">${title}</h3><p>${intro}</p>${content}`;
+    (reader.querySelector('.homework-prep') || reader.querySelector('.beginner-context') || reader.querySelector('p')).after(panel);
     setup(panel);
   }
   const result = '<output class="lab-result" aria-live="polite" aria-atomic="true"></output>';
@@ -68,10 +68,9 @@
   const line = (a, b, cls = 'edge') => `<line class="${cls}" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}"/>`;
 
   if (['commitment','hw1'].includes(root.dataset.chapter)) {
-    lab(3, 'guessing', 'How much does one more bit buy?', 'Drag the controls. Dark tiles are distinct guesses; each tile is an equally likely secret.',
-      range('secret-bits', 'Secret length · bits', 1, 6, 4) + range('guess-count', 'Distinct guesses', 1, 16, 3) +
-      '<div class="lab-grid" aria-hidden="true"></div><div class="lab-metric"></div>' + result +
-      '<p class="lab-note">One fixed, uniformly random secret; guesses never repeat. Here the success probability is exactly Q / 2ⁿ, capped at 1. Repeated guesses do not add coverage.</p>', panel => {
+    lab(3, 'guessing', 'How likely is a guess to work?', 'Each square represents one possible secret, and each secret is equally likely. Move the guesses control to check more squares. Each guess checks a different possibility.',
+      range('secret-bits', 'Number of bits in the secret', 1, 6, 4) + range('guess-count', 'Number of guesses', 1, 16, 3) +
+      '<div class="lab-grid" aria-hidden="true"></div><div class="lab-metric" aria-hidden="true"></div>' + result, panel => {
         const draw = () => {
           const n = value(panel, 'secret-bits'), total = 2 ** n;
           const guesses = panel.querySelector('#guess-count');
@@ -79,13 +78,13 @@
           const q = value(panel, 'guess-count');
           panel.querySelector('.lab-grid').innerHTML = Array.from({length: total}, (_, i) => `<span class="lab-cell ${i < q ? 'is-hit' : ''}"></span>`).join('');
           panel.querySelector('.lab-metric').textContent = `${(100 * q / total).toFixed(2)}%`;
-          panel.querySelector('output').textContent = `${q} guesses cover ${q} of ${total} secrets. With the same guesses, one extra bit doubles the space and halves the chance of success.`;
+          panel.querySelector('output').textContent = `You have checked ${q} of the ${total} possible secrets. Your chance of finding the secret is therefore ${q}/${total}, or ${(100 * q / total).toFixed(2)}%.`;
         };
         panel.addEventListener('input', draw); draw();
       });
-    lab(20, 'hiding-binding', 'Hidden is not the same as fixed', 'A sender has already sent c = 1. Try opening it as a different move. Does the receiver accept?',
-      '<label for="commit-mode">What was sent?</label><select id="commit-mode"><option value="pad">One-time pad: c = m + r mod 3</option><option value="plain">The message itself: c = m</option></select><div class="lab-actions"><button data-move="0" aria-pressed="false">Rock · 0</button><button data-move="1" aria-pressed="true">Paper · 1</button><button data-move="2" aria-pressed="false">Scissors · 2</button></div><div class="lab-equation"></div>' + result +
-      '<p class="lab-note">This compares two intentionally incomplete schemes. A secure commitment needs both hiding and binding.</p>', panel => {
+    lab(20, 'hiding-binding', 'Hidden is not the same as fixed', 'The sender has already sent c = 1. Try opening it as a different move. The first rule adds a randomizer and keeps the remainder after dividing by 3; this is what “mod 3” means. The second rule simply sends the move itself.',
+      '<label for="commit-mode">Rule for computing c</label><select id="commit-mode"><option value="pad">Add a randomizer: c = m + r mod 3</option><option value="plain">Send the message: c = m</option></select><div class="lab-actions"><button data-move="0" aria-pressed="false">Rock · 0</button><button data-move="1" aria-pressed="true">Paper · 1</button><button data-move="2" aria-pressed="false">Scissors · 2</button></div><div class="lab-equation"></div>' + result +
+      '', panel => {
         let message = 1;
         function draw() {
           const pad = panel.querySelector('select').value === 'pad';
@@ -93,12 +92,12 @@
           panel.querySelectorAll('[data-move]').forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.move) === message)));
           panel.querySelector('.lab-equation').textContent = pad ? `${message} + ${randomizer} ≡ 1 (mod 3) ✓` : `${message} ${accepted ? '=' : '≠'} 1 ${accepted ? '✓' : '✕'}`;
           const out = panel.querySelector('output'); out.dataset.error = !accepted;
-          out.textContent = pad ? `Accepted with r = ${randomizer}. Every move has a compatible opening for c = 1. A uniform pad hides the move, but the sender can change it: binding fails.` : `${accepted ? 'Accepted.' : 'Rejected.'} Only Paper opens c = 1. The sender is bound, but the receiver already knows the move: hiding fails.`;
+          out.textContent = pad ? `Accepted: choosing r = ${randomizer} makes your new move produce the value 1 that was already sent. Try another move: you can still find a value of r that works. This lets the sender change the message, so the rule is not binding.` : `${accepted ? 'Accepted.' : 'Rejected.'} With c = m, only Paper matches the value 1 that was sent. This fixes the move, but the receiver can read it immediately, so the rule is not hiding.`;
         }
         panel.addEventListener('click', event => { const button = event.target.closest('[data-move]'); if (button) { message = Number(button.dataset.move); draw(); } });
         panel.addEventListener('change', draw); draw();
       });
-    lab(34, 'modular', 'Walk around a modular clock', 'Choose a starting residue and a signed step. A full lap brings you back to the same residue.',
+    lab(34, 'modular', 'Walk around a modular clock', 'Choose where to start and how many steps to move. Positive steps go clockwise; negative steps go backwards. After a full lap, you return to the same number.',
       range('modulus', 'Modulus q', 3, 11, 5) + range('start-residue', 'Start a', 0, 4, 4) + range('mod-step', 'Add b', -12, 12, 3) + '<div class="clock-diagram"></div><div class="lab-equation"></div>' + result, panel => {
         const draw = () => {
           const q = value(panel, 'modulus'); panel.querySelector('#start-residue').max = q - 1;
@@ -113,21 +112,21 @@
           panel.querySelector('output').textContent = `${a + b} = ${Math.floor((a + b) / q)} × ${q} + ${end}. The highlighted residue is always between 0 and ${q - 1}, even when the sum is negative.`;
         }; panel.addEventListener('input', draw); draw();
       });
-    lab(49, 'pedersen', 'Change the message. Keep the distribution.', 'For every message, sweep all 11 equally likely randomizers. Watch the highlighted commitment move while every outcome stays equally likely.',
+    lab(49, 'pedersen', 'Why the commitment hides the message', 'This small example uses g = 2 and h = 8, with multiplication modulo 23. There are eleven possible randomizers, from 0 to 10. Change the message and see whether the possible commitment values change.',
       range('pedersen-m', 'Message m', 0, 10, 2) + range('pedersen-r', 'Randomizer r', 0, 10, 3) + '<div class="lab-equation"></div><div class="distribution" aria-label="Commitment probabilities"></div>' + result +
-      '<p class="lab-note">Toy group: powers of 2 modulo 23, with order q = 11; g = 2 and h = 8. Tiny parameters are not secure. This illustrates perfect hiding; binding additionally needs the logarithm between g and h to be hard to find.</p>', panel => {
+      '<p class="lab-note">These small numbers let us list every outcome. Real commitments use much larger groups.</p>', panel => {
         function draw() {
           const m = value(panel, 'pedersen-m'), r = value(panel, 'pedersen-r');
           const outcomes = Array.from({length: 11}, (_, k) => power(2, m) * power(8, k) % 23);
           const c = outcomes[r];
           panel.querySelector('.lab-equation').innerHTML = `c = 2<sup>${m}</sup> · 8<sup>${r}</sup> mod 23 = <b>${c}</b>`;
           panel.querySelector('.distribution').innerHTML = [...outcomes].sort((a,b) => a-b).map(n => `<span class="${n === c ? 'is-hit' : ''}"><b>${n}</b><small>1 / 11</small></span>`).join('');
-          panel.querySelector('output').textContent = `For m = ${m}, all 11 group elements occur exactly once as r runs from 0 to 10. Seeing c = ${c} cannot favor this message over any other when r is uniform and fresh.`;
+          panel.querySelector('output').textContent = `For message ${m}, each of the eleven commitment values is produced by exactly one randomizer. If we choose the randomizer with equal probability each time, every value has probability 1/11. Changing the message leaves these probabilities unchanged, so the commitment does not reveal which message was chosen.`;
         } panel.addEventListener('input', draw); draw();
       });
   } else if (['zero-knowledge','hw2'].includes(root.dataset.chapter)) {
-    lab(21, 'graph-proof', 'Two checks. One committed graph.', 'The prover has committed to a renamed graph. Choose which evidence the verifier requests in this round.',
-      '<div class="graph-diagram"></div><div class="lab-actions"><button data-challenge="0">0 · Check renaming</button><button data-challenge="1">1 · Check cycle</button></div><button data-new-round>New round</button>' + result + '<p class="lab-note">Small illustration of the disclosure rules, not a cryptographic implementation. The protocol samples the challenge randomly; here you choose it to explore. Only the requested openings are revealed.</p>', panel => {
+    lab(21, 'graph-proof', 'What does each challenge reveal?', 'The prover has hidden a renamed graph in commitments. In the protocol, the verifier randomly chooses one of two checks. Here you can choose a check yourself to see what it reveals.',
+      '<div class="graph-diagram"></div><div class="lab-actions"><button data-challenge="0">0 · Check renaming</button><button data-challenge="1">1 · Check cycle</button></div><button data-new-round>New round</button>' + result, panel => {
         let challenge = null, round = 0;
         function draw() {
           const permutation = [2,4,1,0,3].map(n => (n + round) % 5);
@@ -146,27 +145,27 @@
         }
         panel.addEventListener('click', event => { const button = event.target.closest('button'); if (!button) return; if (button.hasAttribute('data-new-round')) {round = (round+1)%5; challenge = null;} else if (button.hasAttribute('data-challenge') && challenge === null) challenge = Number(button.dataset.challenge); draw(); }); draw();
       });
-    lab(38, 'soundness', 'Make cheating exponentially unlikely', 'A fixed cheating strategy can answer only one of the two challenge bits per round. Count the challenge strings on which every round accepts.',
+    lab(38, 'soundness', 'Why repeating the check catches cheating', 'Imagine a cheater who can answer challenge 0 but cannot answer challenge 1. Each round uses a fresh, fair challenge bit. The verifier accepts only if the cheater passes every round.',
       range('proof-rounds', 'Fresh challenge rounds k', 1, 12, 4) + '<div class="lab-metric"></div><div class="lab-bar" aria-hidden="true"><span></span></div><div class="lab-equation"></div><div class="lab-actions"><button data-add-round>Add one round</button><button data-random-challenge>Try random challenges</button></div>' + result +
-      '<p class="lab-note">The bound requires cheating success ≤ 1/2 conditioned on the previous history in every round, with fresh challenges and acceptance only if all rounds pass. Parallel repetition does not automatically preserve zero knowledge.</p>', panel => {
+      '', panel => {
         function draw() {
           const k = value(panel, 'proof-rounds'), total = 2 ** k;
           panel.querySelector('.lab-metric').textContent = `${(100 / total).toFixed(k > 9 ? 4 : 2)}%`;
           panel.querySelector('.lab-bar span').style.width = `${100/total}%`;
-          panel.querySelector('.lab-equation').textContent = `Pr[all accept] ≤ (1/2)^${k} = 1 / ${total}`;
+          panel.querySelector('.lab-equation').innerHTML = `(1/2)<sup>${k}</sup> = 1 / ${total}`;
           panel.querySelector('[data-add-round]').disabled = k === 12;
-          panel.querySelector('output').textContent = `At most 1 of ${total} equally likely challenge strings succeeds. One more round halves this upper bound. The bar shows the bound, not a measured success rate.`;
+          panel.querySelector('output').textContent = `With ${k} rounds there are ${total} equally likely sequences of challenges. Only the sequence containing all zeros lets this cheater pass. That gives a success probability of 1/${total}.`;
         }
         panel.addEventListener('input', draw);
         panel.querySelector('[data-add-round]').addEventListener('click', () => {panel.querySelector('input').stepUp();draw();});
         panel.querySelector('[data-random-challenge]').addEventListener('click', () => {
           const k = Number(panel.querySelector('input').value), bits = Array.from(crypto.getRandomValues(new Uint8Array(k)), n => n % 2);
           const accepted = bits.every(n => n === 0);
-          panel.querySelector('output').textContent = `Challenges: ${bits.join(' ')}. ${accepted ? 'This time every challenge was 0: the cheater got lucky.' : 'At least one challenge was 1: the cheater was caught.'} This example cheater can answer only 0; the theoretical bound above covers any strategy satisfying the per-round condition.`;
+          panel.querySelector('output').textContent = `Challenges: ${bits.join(' ')}. ${accepted ? 'Every challenge was 0, so the cheater passed this time.' : 'A challenge was 1, so the cheater could not answer it and the verifier rejected.'}`;
         }); draw();
       });
-    lab(43, 'schnorr', 'Build, verify, then extract a transcript', 'Follow the three messages. Then tamper with the response or reuse the first message to see why fresh randomness matters.',
-      '<div class="lab-steps"><span>1 · Commit</span><span>2 · Challenge</span><span>3 · Respond</span></div><div class="lab-transcript"></div>' + range('schnorr-e', 'Verifier challenge e', 0, 10, 2) + '<div class="lab-actions"><button data-next-step>Send challenge</button><button data-reset-proof>Restart</button></div><div class="tamper-controls" hidden>' + range('schnorr-offset', 'Tamper: add to response', 0, 10, 0) + '<button data-extract>Reuse a → extract the secret</button></div>' + result + '<div class="extraction"></div><p class="lab-note">Toy parameters: p = 23, prime group order q = 11, g = 2. The public key is y = 16. Exponents use mod 11; group elements use mod 23. This is a teaching example, not secure cryptography.</p>', panel => {
+    lab(43, 'schnorr', 'Follow the three messages of a Schnorr proof', 'We use the small group from the earlier example: g = 2, with multiplication modulo 23 and exponents modulo 11. The prover knows x = 4, so the public value is y = 2⁴ = 16. For this run the prover chooses r = 3 and sends a = 2³ = 8. Now choose the verifier’s challenge and follow the reply.',
+      '<div class="lab-steps"><span>1 · Commit</span><span>2 · Challenge</span><span>3 · Respond</span></div><div class="lab-transcript"></div>' + range('schnorr-e', 'Verifier challenge e', 0, 10, 2) + '<div class="lab-actions"><button data-next-step>Send challenge</button><button data-reset-proof>Restart</button></div><div class="tamper-controls" hidden>' + range('schnorr-offset', 'Tamper: add to response', 0, 10, 0) + '<button data-extract>Show why reusing r reveals x</button></div>' + result + '<div class="extraction"></div>', panel => {
         let stage = 0, e = 2;
         function draw() {
           const z = mod(3 + e * 4, 11), offset = value(panel, 'schnorr-offset'), sent = mod(z + offset, 11);
@@ -188,7 +187,7 @@
         panel.querySelector('[data-reset-proof]').addEventListener('click', () => {stage=0;panel.querySelector('#schnorr-offset').value=0;draw();});
         panel.querySelector('[data-extract]').addEventListener('click', () => {
           const e2 = mod(e + 1, 11), z = mod(3 + e*4,11), z2 = mod(3 + e2*4,11), delta = mod(e-e2,11), inv = inverse(delta,11), x = mod((z-z2)*inv,11);
-          panel.querySelector('.extraction').innerHTML = `<div class="lab-equation">(a, e, z) = (8, ${e}, ${z})<br>(a, e′, z′) = (8, ${e2}, ${z2})</div><p>Subtracting cancels the reused r: z − z′ = (e − e′)x mod 11.</p><div class="lab-equation">x = (${z} − ${z2}) · ${inv}<br>mod 11 = <b>${x}</b></div><p class="lab-note">${delta}⁻¹ = ${inv} mod 11. Both transcripts accept and share a, but their challenges differ. A single transcript does not give this pair of equations. Real provers must never reuse r.</p>`;
+          panel.querySelector('.extraction').innerHTML = `<p>Suppose the prover uses the same r again but answers a different challenge. These two accepted conversations then have the same first message a:</p><div class="lab-equation">(a, e, z) = (8, ${e}, ${z})<br>(a, e′, z′) = (8, ${e2}, ${z2})</div><p>Each response follows z = r + ex. Subtract the two responses: the repeated r cancels, leaving z − z′ = (e − e′)x modulo 11.</p><p>To recover x, undo multiplication by e − e′. Its remainder is ${delta}, whose inverse is ${inv}, because ${delta} × ${inv} has remainder 1 modulo 11.</p><div class="lab-equation">x = (${z} − ${z2}) · ${inv}<br>mod 11 = <b>${x}</b></div><p>We recovered the secret from the two conversations. This is why the prover must choose a fresh r for each proof.</p>`;
         }); draw();
       });
   }

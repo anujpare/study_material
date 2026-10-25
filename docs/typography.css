@@ -1,0 +1,24 @@
+/* Two text sizes throughout PETS. Mathematical notation keeps its own geometry. */
+:root {
+  --text-standard: calc(18.32px + 1pt);
+  --text-box: calc(var(--text-standard) - 2pt);
+  font-size: var(--text-standard);
+}
+*, *::before, *::after { font-size: inherit; }
+body { font-size: var(--text-standard); }
+button, input, select, textarea { font-family: inherit; }
+h1, h2, h3, h4, h5, h6 { font-weight: 700; line-height: 1.4; }
+.chapter-menu, .deck-jump, .nav, .count,
+.learning, .beginner-context, .homework-prep,
+.guide, .reasoning-link, .reading blockquote, .reading table, .reading .math,
+.reading details.solution > summary,
+.card, .foot {
+  font-size: var(--text-box);
+}
+/* Keep boxes nested inside other boxes at the same size. */
+.learning *, .beginner-context *, .homework-prep *, .chapter-menu * {
+  font-size: inherit;
+}
+.learning svg text { font-family: system-ui, sans-serif; }
+/* Exponents retain their raised position without a third text size. */
+sup, sub { font-size: inherit; }

@@ -1,95 +1,63 @@
-# study_material
+# PETS
 
-Interactive PETS study decks.
+Learn the concepts in order, then work through the exercises with explanations and interactive examples.
 
-## Published structure
+## Open the website
 
-- `docs/index.html` — landing page with chapter selection
-- `docs/commitment/index.html` — Chapter 2 deck
-- `docs/zero-knowledge/index.html` — Chapter 3 deck
-- `docs/hw1/index.html` — standalone HW1 exercises and prerequisites
-- `docs/hw2/index.html` — standalone HW2 exercises and prerequisites
+- [All PETS decks](https://anujpare.github.io/study_material/)
+- [Commitment — Chapter 2](https://anujpare.github.io/study_material/commitment/)
+- [Zero Knowledge — Chapter 3](https://anujpare.github.io/study_material/zero-knowledge/)
+- [HW1 — exercises and worked solutions](https://anujpare.github.io/study_material/hw1/)
+- [HW2 — exercises and worked solutions](https://anujpare.github.io/study_material/hw2/)
 
-## Notes
+Start at the first card of a deck. The three-line menu also has **Start from the basics** and shortcuts to visual lessons. Homework remains integrated in the chapters as well as available separately.
 
-- The site uses plain static HTML and works with GitHub Pages.
-- The original single PETS deck has been split into two chapter-specific decks.
-- Homework was placed with the deck where it fits best topically.
+## Beginner learning order
 
-## Reader and browser checks
+Every deck introduces notation, powers, bits and probability before using them. Further prerequisites appear where needed: running time, commitments and extra randomizers, random oracles, modular arithmetic, groups, graphs, DDH, two-input linear maps, and circuits.
 
-Both decks load `docs/reader.js`. The reader derives slider bounds from the
-chapter's cards, synchronizes the URL and counter, and preserves the SVG math.
-Previous/next links also work when JavaScript is unavailable.
+All 189 original cards have been reviewed for prerequisite terminology. New terms are explained at their first use in each deck, without adding repeated summaries and glossaries to every card. All 28 homework solutions have been rewritten as reasoned steps, with concrete examples where helpful. The informal circuit-simulation argument explicitly identifies the extra assumption it needs.
 
-To run the browser regression checks (Node.js and Python 3 required):
+| Deck | Total cards | Included exercises |
+| --- | ---: | ---: |
+| Commitment | 95 | Integrated chapter practice and HW1 |
+| Zero Knowledge | 73 | Integrated chapter practice and HW2 |
+| HW1 | 33 | 15 homework exercises |
+| HW2 | 31 | 13 homework exercises |
+
+The totals include 43 new prerequisite cards across the four decks. Existing `#lesson-N` links still identify their original cards. The slider shows position in the learning sequence, which can differ from that stable lesson ID. The original SVG math, card controls and interactive experiments remain available; examples with tiny cryptographic parameters are explicitly for learning.
+
+## Maintain the material
+
+- `docs/commitment/index.html` and `docs/zero-knowledge/index.html` hold the chapter material.
+- `scripts/beginner_content.py` holds the prerequisite lessons, editorial learning aims and definitions.
+- `scripts/beginner_solutions.py` holds the beginner worked solutions.
+- `scripts/build-homework.py` supplies homework selection, exercise guides and checkpoints.
+- `docs/learning.js` and `docs/homework.js` supply the interactive examples.
+- `docs/typography.css` defines the two text sizes: the original enlarged card-body size, and exactly 2 pt smaller for boxes and diagrams. Headings use weight, not a larger size.
+
+After editing the chapter material or editorial sources, run:
+
+```sh
+python3 scripts/revise-beginner.py
+```
+
+This applies the explanations, regenerates both homework decks, inserts prerequisites, rebuilds previous/next links, and refreshes menus and counts. `scripts/beginner-audit.json` records coverage for each original card. Run the complete pipeline rather than the core homework generator alone.
+
+## Browser checks
+
+The site is static HTML/CSS/JavaScript, served from `docs/` by GitHub Pages. It does not need a network math renderer.
 
 ```sh
 npm install --no-save playwright
 npx playwright install chromium
 python3 -m http.server 8765 --directory docs
 # In another terminal:
+python3 tests/beginner_content.py
 node tests/reader.cjs
+node tests/learning.cjs
+node tests/homework.cjs
+node tests/typography.cjs
 ```
 
-Set `CHROMIUM_PATH` to use an existing Chromium executable, or `PETS_TEST_URL`
-to check a server at a different URL. The checks cover both complete decks,
-320/390/768px layouts, slider dragging and keyboard input, history, deep links,
-solutions, mathematical glyphs, chapter links, and navigation without JavaScript.
-
-## Interactive learning
-
-The three-line chapter picker includes links to both decks and shortcuts to the
-selected interactive cards. It works without JavaScript; Escape and outside clicks
-also dismiss it when JavaScript is enabled. Reading type is 1 pt larger.
-
-`docs/learning.js` and `docs/learning.css` add seven experiments alongside the
-original explanations, without changing card numbering or mathematical markup:
-
-| Chapter | Card | Experiment |
-| --- | --- | --- |
-| Commitment | 3 | Distinct guesses and uniform-secret probability |
-| Commitment | 20 | Hiding versus binding with a one-time pad |
-| Commitment | 34 | Modular clock with signed steps |
-| Commitment | 49 | Pedersen commitment distributions over all randomizers |
-| Zero Knowledge | 21 | Graph proof challenge disclosures |
-| Zero Knowledge | 38 | Soundness amplification with fresh challenges |
-| Zero Knowledge | 43 | Schnorr transcript verification, tampering, and extraction |
-
-The group examples use tiny parameters explicitly labeled as teaching examples.
-Random challenge trials illustrate the theoretical bound; they do not estimate it.
-All original explanations remain readable without JavaScript.
-
-With the local server running, run `node tests/learning.cjs` as well as
-`node tests/reader.cjs`. The learning checks cover expected numerical results,
-menu keyboard/touch behavior, +1 pt text sizing, disclosure rules, and mobile
-portrait/landscape layouts. Both scripts support `CHROMIUM_PATH` and `PETS_TEST_URL`.
-
-## Dedicated homework decks and math repairs
-
-- `docs/hw1/index.html`: 22 cards, including all 15 HW1 exercises.
-- `docs/hw2/index.html`: 20 cards, including all 13 HW2 exercises.
-
-Each exercise has its original statement and worked solution, local prerequisite
-notes, a reasoning route, and an interactive checkpoint with explanatory feedback.
-Additional experiments illustrate XOR openings, the zero-message hiding test,
-known-log Pedersen openings, DDH shifts and joint distributions, vector commitment
-sizes, Merkle paths, parallel simulation, reverse Schnorr simulation, and circuit
-wire consistency. The chapter decks keep their integrated homework.
-
-`python3 scripts/build-homework.py` regenerates the homework HTML from the corrected
-chapter cards and the exercise notes in that script, then updates all four menus.
-Update chapter content and the notes there before regenerating the homework decks.
-`docs/homework.js` contains the homework experiment logic.
-
-The formula repairs restore the concatenation operator in the oracle-guessing card,
-five missing sampling domains, and protocol instructions accidentally rendered as
-math. Repaired equations are self-contained SVGs; no network math renderer is needed.
-The oracle-guessing explanation now distinguishes conditional from overall success
-probability, the statistical-binding counterexample uses two distinct hash bases,
-and the single-query PRF reduction states its exact distribution match.
-
-Run `node tests/homework.cjs` to check all 28 homework checkpoints, numerical
-experiments, responsive layouts, and every mathematical SVG across all 189 cards
-with solutions expanded. The scripts test Chromium; Safari/iOS device testing is
-not included.
+Set `CHROMIUM_PATH` to use an installed Chromium executable, or `PETS_TEST_URL` to use a different server. Checks cover prerequisite ordering, all cards and expanded formulas, stable deep links, mouse/touch/keyboard navigation, popup behavior, homework feedback, numerical experiments, mobile layouts and navigation without JavaScript. Browser coverage is Chromium; physical Safari/iOS device testing is not included.

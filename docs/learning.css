@@ -5,20 +5,20 @@
 .chapter-menu>summary::-webkit-details-marker{display:none}
 .chapter-menu>summary svg{width:22px;height:22px;stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round}
 .chapter-menu[open]>summary,.chapter-menu>summary:hover{background:#e0e3df;color:#273f36}
-.chapter-panel{position:absolute;right:0;top:49px;width:min(280px,calc(100vw - 24px));padding:12px;background:#fafbf8;border:1px solid #d6dcd5;border-radius:16px;box-shadow:0 14px 40px #263c3026;font-size:calc(15px + 1pt)}
-.menu-brand{display:block;padding:4px 10px 10px;font-size:.75em;font-weight:700;letter-spacing:.14em;color:#69766c}
+.chapter-panel{position:absolute;right:0;top:49px;width:min(280px,calc(100vw - 24px));padding:12px;background:#fafbf8;border:1px solid #d6dcd5;border-radius:16px;box-shadow:0 14px 40px #263c3026;}
+.menu-brand{display:block;padding:4px 10px 10px;font-weight:700;letter-spacing:.14em;color:#69766c}
 .chapter-panel a{display:block;padding:12px 10px;border-radius:9px;text-decoration:none;color:#253d33;font-weight:650}
-.chapter-panel a small{display:block;color:#68736c;font-size:.75em;font-weight:500;margin-bottom:4px}
+.chapter-panel a small{display:block;color:#68736c;font-weight:500;margin-bottom:4px}
 .chapter-panel a[aria-current=page]{background:#e7eee6}
 .chapter-panel a:hover{background:#edf1eb}
-.chapter-panel .all-chapters{font-size:.85em;border-top:1px solid #dce2d9;border-radius:0;margin-top:8px;font-weight:500}
+.chapter-panel .all-chapters{border-top:1px solid #dce2d9;border-radius:0;margin-top:8px;font-weight:500}
 .chapter-menu :focus-visible,.learning :focus-visible{outline:2px solid #356753;outline-offset:3px}
 /* Each experiment is embedded next to the relevant original explanation. */
-.learning{--lab-ink:#254d3d;--lab-accent:#357559;--lab-soft:#e4eddf;display:block;margin:20px 0 24px;padding:16px;border:1px solid #cbd8c6;border-radius:16px;background:#f5f7ef;color:#273c31;font-size:calc(15px + 1pt);line-height:1.5;overflow:hidden}
-.reading .learning h3{font-size:1.12em;line-height:1.3;margin:5px 0 10px;color:#254d3d}
-.learning .lab-eyebrow{font-size:.66em;font-weight:750;letter-spacing:.13em;text-transform:uppercase;color:#64775b}
-.reading .learning p{font-size:1em;line-height:1.5;letter-spacing:normal;margin:0 0 12px}
-.reading .learning .lab-note{font-size:.82em;color:#5c695c;margin-top:12px}
+.learning{--lab-ink:#254d3d;--lab-accent:#357559;--lab-soft:#e4eddf;display:block;margin:20px 0 24px;padding:16px;border:1px solid #cbd8c6;border-radius:16px;background:#f5f7ef;color:#273c31;line-height:1.5;overflow:hidden}
+.reading .learning h3{line-height:1.3;margin:5px 0 10px;color:#254d3d}
+.learning .lab-eyebrow{font-weight:750;letter-spacing:.13em;text-transform:uppercase;color:#64775b}
+.reading .learning p{line-height:1.5;letter-spacing:normal;margin:0 0 12px}
+.reading .learning .lab-note{color:#5c695c;margin-top:12px}
 .learning label{display:block;font-weight:600;margin:12px 0 6px}
 .learning label span{float:right;font-variant-numeric:tabular-nums}
 .learning input[type=range]{display:block;width:100%;height:40px;margin:0;accent-color:var(--lab-accent);touch-action:pan-y}
@@ -34,11 +34,11 @@
 .learning .lab-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;margin:12px 0}
 .learning .lab-cell{height:15px;border-radius:3px;background:#dce3d3}
 .learning .lab-cell.is-hit{background:#427258}
-.learning .lab-metric{font-size:1.9em;font-weight:700;letter-spacing:-.04em;color:#2f6248;font-variant-numeric:tabular-nums}
+.learning .lab-metric{font-weight:700;letter-spacing:-.04em;color:#2f6248;font-variant-numeric:tabular-nums}
 .learning .lab-bar{height:18px;border-radius:5px;background:#dce3d3;overflow:hidden;margin:8px 0}
 .learning .lab-bar>span{display:block;height:100%;background:#427258;min-width:1px}
 .learning svg.lab-diagram{display:block;width:100%;height:auto;max-height:260px;margin:12px auto;overflow:visible}
-.learning svg text{font:14px system-ui,sans-serif;fill:#334f3e;text-anchor:middle;dominant-baseline:middle}
+.learning svg text{font-family:system-ui,sans-serif;fill:#334f3e;text-anchor:middle;dominant-baseline:middle}
 .learning svg .edge{stroke:#c1cdb8;stroke-width:2;fill:none}
 .learning svg .cycle{stroke:#3b7657;stroke-width:4;fill:none}
 .learning svg .node{fill:#fafff6;stroke:#819e77;stroke-width:1.5}
@@ -46,26 +46,25 @@
 .learning svg text.selected-label{fill:white;font-weight:700}
 .learning .distribution{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;margin:12px 0}
 .learning .distribution span{display:flex;flex-direction:column;text-align:center;border:1px solid #d5dfcc;background:#fff;border-radius:7px;padding:5px 0;font-variant-numeric:tabular-nums}
-.learning .distribution b{font-size:1.1em}
-.learning .distribution small{font-size:.68em;color:#6d7c64}
+.learning .distribution small{color:#6d7c64}
 .learning .distribution .is-hit{border:2px solid #376447;background:#e1ebd7}
 .learning .lab-steps{display:flex;gap:5px;margin:12px 0}
-.learning .lab-steps span{flex:1;text-align:center;font-size:.72em;border-bottom:3px solid #d5dfcc;padding:6px 0}
+.learning .lab-steps span{flex:1;text-align:center;border-bottom:3px solid #d5dfcc;padding:6px 0}
 .learning .lab-steps .is-done{border-color:#427258;color:#315f48;font-weight:700}
 .learning .lab-transcript{display:grid;gap:8px;margin:12px 0}
 .learning .lab-message{background:#fff;border:1px solid #d5dfcc;border-radius:9px;padding:10px 12px;font-variant-numeric:tabular-nums}
-.learning .lab-message small{display:block;color:#718065;font-size:.75em}
-.learning .lab-summary{display:block;margin-top:8px;font-size:.85em;color:#4d634d}
+.learning .lab-message small{display:block;color:#718065;}
+.learning .lab-summary{display:block;margin-top:8px;color:#4d634d}
 .chapter-panel{max-height:calc(100vh - 76px - env(safe-area-inset-top,0px));max-height:calc(100dvh - 76px - env(safe-area-inset-top,0px));overflow-y:auto;overscroll-behavior:contain}
 .menu-experiments{border-top:1px solid #dce2d9;margin-top:8px;padding-top:12px}
-.menu-experiments a{font-size:.85em;padding:8px 10px;min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:500}
+.menu-experiments a{padding:8px 10px;min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:500}
 .menu-experiments a small{margin:0;white-space:nowrap}
 .homework-prep{padding:14px 16px;border:1px solid #d2d9cd;border-radius:12px;background:#f4f5ee;margin:12px 0 20px}
 .reading .homework-prep h3{margin:0 0 10px}
-.reading .homework-prep p{font-size:calc(16px + 1pt);line-height:1.5;margin:0 0 10px}
+.reading .homework-prep p{line-height:1.5;margin:0 0 10px}
 .reading .homework-prep p:last-child{margin:0}
 .homework-check .lab-actions{flex-direction:column}
-.checkpoint-explanation{font-size:.9em;margin-top:12px}
+.checkpoint-explanation{margin-top:12px}
 .checkpoint-explanation summary{cursor:pointer;min-height:44px;padding:10px 0;font-weight:600}
 .homework-check [data-answer][aria-pressed=true]{background:#315f48;color:#fff}
 .learning .mini-circuit{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:14px 0}
@@ -75,3 +74,13 @@
 .learning .matrix i.seen{background:#437558}
 .learning .tree-path{stroke:#397a55;stroke-width:3}
 .learning .tree-sibling{fill:#f3dcaa;stroke:#977b3e;stroke-width:1.5}
+.beginner-context{margin:5px 0 20px;padding:14px 16px;border-left:3px solid #8a9f83;background:#f4f6ef;border-radius:0 10px 10px 0}
+.reading .beginner-context p{line-height:1.5;margin:0 0 12px}
+.reading .beginner-context .symbol-key{color:#4f5c4e;margin-bottom:8px}
+.reading .beginner-context h3{margin:16px 0 10px}
+.beginner-context dl{margin:10px 0;line-height:1.5}
+.beginner-context dt{font-weight:700;margin-top:12px;color:#315442}
+.beginner-context dd{margin:4px 0 12px}
+.term-reminder summary{min-height:44px;padding:10px 0;color:#4e6653;cursor:pointer}
+.beginner-lesson .reading p{margin-bottom:22px}
+.chapter-panel .beginner-start{border-top:1px solid #dce2d9;border-radius:0;margin-top:8px;color:#315f48;}
