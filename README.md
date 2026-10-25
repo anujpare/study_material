@@ -27,13 +27,25 @@ All 189 original cards have been reviewed for prerequisite terminology. New term
 
 The totals include 43 new prerequisite cards across the four decks. Existing `#lesson-N` links still identify their original cards. The slider shows position in the learning sequence, which can differ from that stable lesson ID. The original SVG math, card controls and interactive experiments remain available; examples with tiny cryptographic parameters are explicitly for learning.
 
+## Explore difficult ideas
+
+Selected cards offer **Explore visually** and **Read explanation** views of the same lesson. This keeps the deck lengths unchanged and avoids stacking another explanation onto the page. Without JavaScript, the original written lesson appears normally.
+
+- Plot polynomial and exponential growth, then compare negligible functions against increasingly strict thresholds.
+- Choose an observer’s test and see its distinguishing advantage as selected tickets in two distributions.
+- Count query pairs to understand the birthday bound; follow a double opening through the steps of a security reduction.
+- Inspect a simulator’s successful and discarded attempts. In HW2, switch between a real Schnorr proof and its simulator while keeping the recorded conversation unchanged.
+- In HW1, tap DDH output pairs to inspect their inputs, and rebuild a Merkle root one sibling hash at a time.
+
+The chapter popup includes shortcuts to these visual lessons. All labels, controls and diagrams follow the same two text sizes as the rest of PETS.
+
 ## Maintain the material
 
 - `docs/commitment/index.html` and `docs/zero-knowledge/index.html` hold the chapter material.
 - `scripts/beginner_content.py` holds the prerequisite lessons, editorial learning aims and definitions.
 - `scripts/beginner_solutions.py` holds the beginner worked solutions.
 - `scripts/build-homework.py` supplies homework selection, exercise guides and checkpoints.
-- `docs/learning.js` and `docs/homework.js` supply the interactive examples.
+- `docs/learning.js`, `docs/homework.js` and `docs/concepts.js` supply the interactive examples and alternate visual views.
 - `docs/typography.css` defines the two text sizes: the original enlarged card-body size, and exactly 2 pt smaller for boxes and diagrams. Headings use weight, not a larger size.
 
 After editing the chapter material or editorial sources, run:
@@ -58,6 +70,7 @@ node tests/reader.cjs
 node tests/learning.cjs
 node tests/homework.cjs
 node tests/typography.cjs
+node tests/concepts.cjs
 ```
 
 Set `CHROMIUM_PATH` to use an installed Chromium executable, or `PETS_TEST_URL` to use a different server. Checks cover prerequisite ordering, all cards and expanded formulas, stable deep links, mouse/touch/keyboard navigation, popup behavior, homework feedback, numerical experiments, mobile layouts and navigation without JavaScript. Browser coverage is Chromium; physical Safari/iOS device testing is not included.
