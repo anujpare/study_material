@@ -20,6 +20,7 @@
     const prep=reader.querySelector('.beginner-context');(prep||reader.querySelector('p')).after(panel);
     const update=()=>{const values={};panel.querySelectorAll('[data-control]').forEach(input=>{values[input.dataset.control]=Number(input.value);panel.querySelector(`[data-value="${input.dataset.control}"]`).textContent=input.value;});draw(panel,values);};
     panel.addEventListener('input',update);panel.addEventListener('change',update);update();
+    return {panel,update};
   }
   if(root.dataset.chapter==='hw1'){
     lab(26,'xor-openings','Open one commitment as any message','Keep the sent commitment c fixed. Change the claimed message; XOR gives a compatible opening every time.',[['c','Commitment c · 4 bits',0,15,9],['m','Claimed message m′',0,15,3]],'<div class="mini-circuit"></div><div class="lab-equation"></div>',(panel,{c,m})=>{
@@ -45,33 +46,60 @@
       panel.querySelector('.lab-equation').textContent=`γ′ = 2 + 2·${r} ≡ ${z} = ${a}·2 mod 5`;
       panel.querySelector('output').textContent=`After the shift, the first exponent is ${a} and the third is ${z}. Multiplying the first by β = 2 also gives ${z} modulo 5. The values changed together, so they still satisfy the real DDH relationship.`;
     });
-    lab(77,'ddh-plane','See when the exponent pairs are independent','Enumerate all 25 pairs (u,v) in Z₅². Dark squares are reachable pairs (a,b) under a = u + v and b = γu + 2v.',[['gamma','Challenge exponent γ',0,4,3]],'<div class="matrix" aria-label="Reachable output exponent pairs"></div>',(panel,{gamma})=>{
-      const counts=Array(25).fill(0);for(let u=0;u<5;u++)for(let v=0;v<5;v++)counts[mod(u+v,5)*5+mod(gamma*u+2*v,5)]++;
-      panel.querySelector('.matrix').innerHTML=counts.map((n,i)=>`<i class="${n?'seen':''}" title="a=${Math.floor(i/5)}, b=${i%5}: ${n}/25"></i>`).join('');
-      panel.querySelector('output').textContent=gamma===2?'When γ = 2, the second rule becomes b = 2u + 2v = 2a. Once you know a, you know b too. Only five output pairs are possible, so only five squares are colored.':'Every square is colored because each of the 25 output pairs is produced by exactly one input pair. Choosing input pairs with equal probability therefore makes all output pairs equally likely. Knowing a does not narrow down b.';
+    let selectedPair=0;
+    const plane=lab(77,'ddh-plane','Follow an input pair to its output','Use α = 1 and β = 2 in a small example modulo 5. Choose u and v from 0 to 4, then compute a = u + v and b = γu + 2v. Each grid cell counts how many of the 25 equally likely inputs land there. Tap a cell to see its inputs.',[['gamma','Challenge exponent γ',0,4,3]],'<div class="matrix-labels"><span>Rows: a</span><span>Columns: b</span></div><div class="matrix coordinate-grid" role="group" aria-label="Output pairs and their input counts"></div><div class="mapping-detail"></div>',(panel,{gamma})=>{
+      const inputs=Array.from({length:25},()=>[]);
+      for(let u=0;u<5;u++)for(let v=0;v<5;v++)inputs[mod(u+v,5)*5+mod(gamma*u+2*v,5)].push([u,v]);
+      panel.querySelector('.matrix').innerHTML='<span></span>'+[0,1,2,3,4].map(b=>`<b>${b}</b>`).join('')+Array.from({length:5},(_,a)=>`<b>${a}</b>`+Array.from({length:5},(_,b)=>{const i=a*5+b,n=inputs[i].length;return `<button type="button" data-pair="${i}" class="${n?'seen':''}" aria-label="a = ${a}, b = ${b}: ${n} input pairs" aria-pressed="${i===selectedPair}">${n}</button>`;}).join('')).join('');
+      const a=Math.floor(selectedPair/5),b=selectedPair%5,preimages=inputs[selectedPair];
+      panel.querySelector('.mapping-detail').textContent=preimages.length?`Output (a,b) = (${a},${b}) receives these input pairs (u,v): ${preimages.map(([u,v])=>`(${u},${v})`).join(', ')}. Its probability is ${preimages.length}/25.`:`No input pair produces (a,b) = (${a},${b}) for this γ. Its probability is 0.`;
+      panel.querySelector('output').textContent=gamma===2?'With γ = 2, the second rule becomes b = 2(u + v) = 2a. Each row has just one possible b: knowing a determines b. The outputs are therefore dependent.':'Every cell has count 1. For any chosen a, all five values of b remain equally likely. Knowing a gives no information about b: the outputs are independent.';
     });
+    plane.panel.addEventListener('click',event=>{const cell=event.target.closest('[data-pair]');if(cell){selectedPair=Number(cell.dataset.pair);plane.update();plane.panel.querySelector(`[data-pair="${selectedPair}"]`).focus({preventScroll:true});}});
     for(const source of [81,82])lab(source,`vector-size-${source}`,'Trade commitment size for opening size','Compare the two direct constructions. Here each hash and message is 256 bits; index and target message costs are excluded from the proof size.',[['depth','Vector size n = 2ᵈ · choose d',1,10,3]],'<div class="lab-transcript"></div>',(panel,{depth})=>{
       const n=2**depth;
       panel.querySelector('.lab-transcript').innerHTML=`<div class="lab-message">Per-entry hashes: commitment ${n*256} bits · extra proof 0 bits</div><div class="lab-message">Whole-vector hash: commitment 256 bits · full-vector opening ${n*256} bits</div><div class="lab-message">Merkle tree: commitment 256 bits · sibling hashes ${depth*256} bits</div>`;
       panel.querySelector('output').textContent=`For n = ${n}, a Merkle path has ${depth} sibling hashes. A short digest alone does not guarantee a short opening: the verification method determines what must be revealed.`;
     });
-    lab(84,'merkle-path','Follow one opening to the root','Choose a leaf in an eight-leaf tree. Green is the computed path; gold nodes are the only sibling hashes the proof must supply.',[['leaf','Leaf index · starting at 1',1,8,4]],'<div class="merkle-tree"></div>',(panel,{leaf})=>{
+    let treeStep=0;
+    const tree=lab(84,'merkle-path','Rebuild the root one hash at a time','Choose a leaf. Green marks its path to the root; gold marks the sibling hashes supplied with the opening. Follow the steps to see where each sibling is used.',[['leaf','Leaf index · starting at 1',1,8,4]],'<div class="merkle-tree"></div><div class="lab-actions"><button type="button" data-tree-back>Previous step</button><button type="button" data-tree-next>Next hash</button></div>',(panel,{leaf})=>{
       const path=[],siblings=[];let i=leaf-1;for(let level=3;level>=0;level--){path.push([level,i]);if(level>0)siblings.push([level,i^1]);i=Math.floor(i/2);}
       const pos=(level,index)=>[20+(index+.5)*280/(2**level),25+level*55];let svg='';
-      for(let level=1;level<=3;level++)for(let j=0;j<2**level;j++){const [x,y]=pos(level,j),[px,py]=pos(level-1,Math.floor(j/2));svg+=`<line x1="${x}" y1="${y}" x2="${px}" y2="${py}" class="${path.some(([l,k])=>l===level&&k===j)?'tree-path':'edge'}"/>`;}
+      for(let level=1;level<=3;level++)for(let j=0;j<2**level;j++){const [x,y]=pos(level,j),[px,py]=pos(level-1,Math.floor(j/2));const active=path.some(([l,k])=>l===level&&k===j);svg+=`<line x1="${x}" y1="${y}" x2="${px}" y2="${py}" class="${active?'tree-path':'edge'} ${active&&level===4-treeStep?'tree-current':''}"/>`;}
       for(let level=0;level<=3;level++)for(let j=0;j<2**level;j++){const [x,y]=pos(level,j),gold=siblings.some(([l,k])=>l===level&&k===j),green=path.some(([l,k])=>l===level&&k===j);svg+=`<circle cx="${x}" cy="${y}" r="12" class="${gold?'tree-sibling':green?'selected':'node'}"/><text x="${x}" y="${y}" class="${green?'selected-label':''}">${level===3?j+1:level===0?'R':''}</text>`;}
       panel.querySelector('.merkle-tree').innerHTML=`<svg class="lab-diagram" viewBox="0 0 320 215" role="img" aria-label="Leaf ${leaf}: computed path and three supplied sibling hashes">${svg}</svg>`;
-      panel.querySelector('output').textContent=`Leaf ${leaf} needs exactly 3 sibling hashes. From bottom to top the sibling goes on the ${siblings.map(([,j])=>j%2?'right':'left').join(', ')}. Preserve this order while hashing to reproduce the root. The picture shows dependency paths, not actual hash values.`;
+      panel.querySelector('[data-tree-back]').disabled=treeStep===0;panel.querySelector('[data-tree-next]').disabled=treeStep===3;
+      const describe=(level,index)=>{const first=index*2**(3-level)+1,last=(index+1)*2**(3-level);return first===last?`leaf ${first}`:`leaves ${first}–${last}`;};
+      if(treeStep===0)panel.querySelector('output').textContent=`Start by hashing the message at leaf ${leaf}. The opening supplies three sibling hashes. Press Next hash to use the first one.`;
+      else{
+        const level=4-treeStep,index=Math.floor((leaf-1)/2**(treeStep-1)),sibling=index^1;
+        panel.querySelector('output').textContent=`Step ${treeStep}: combine the hash for ${describe(level,index)} with the supplied hash for ${describe(level,sibling)} on its ${sibling%2?'right':'left'}. Hashing this ordered pair produces the parent for ${describe(level-1,Math.floor(index/2))}.${treeStep===3?' Now compare the computed root with the published root. A matching root passes the check.':''}`;
+      }
     });
+    tree.panel.querySelector('[data-control=leaf]').addEventListener('input',()=>{treeStep=0;tree.update();});
+    tree.panel.querySelector('[data-tree-back]').addEventListener('click',()=>{treeStep=Math.max(0,treeStep-1);tree.update();});
+    tree.panel.querySelector('[data-tree-next]').addEventListener('click',()=>{treeStep=Math.min(3,treeStep+1);tree.update();});
   }else{
     lab(41,'composition','Why parallel guessing becomes expensive','Compare a simulator that retries one challenge bit at a time with one that must guess a whole challenge vector.',[['k','Number of copies k',1,12,4]],'<div class="lab-transcript"></div>',(panel,{k})=>{
       panel.querySelector('.lab-transcript').innerHTML=`<div class="lab-message">Sequential: ${k} rounds × 2 expected attempts = ${2*k}</div><div class="lab-message">Guess all ${k} bits together: success 1/${2**k} · ${2**k} expected vector attempts</div>`;
       panel.querySelector('output').textContent=`Guessing one fair bit takes two attempts on average. If we finish each of the ${k} rounds before starting the next, those attempts add up. If we must guess all ${k} bits at once, there are ${2**k} possible sequences and only one correct guess, so this strategy takes ${2**k} attempts on average.`;
     });
-    lab(45,'reverse-simulator','Generate an accepting view without x','Use public g = 2 and h = 16 in the order-11 subgroup modulo 23. Choose the challenge c and response z first, then solve for the first message u.',[['c','Challenge c',0,10,2],['z','Response z',0,10,7]],'<div class="lab-transcript"></div>',(panel,{c,z})=>{
+    let proofOrder='simulator';
+    const reverse=lab(45,'reverse-simulator','The same view, built in a different order','Use g = 2 and h = 16, with multiplication modulo 23 and exponents modulo 11. Switch between the honest proof and the simulator. The displayed conversation stays the same; the order used to create it changes.',[['c','Challenge c',0,10,2],['z','Response z',0,10,7]],'<div class="order-choice" role="group" aria-label="How to build the view"><button type="button" data-order="honest" aria-pressed="false">Honest proof</button><button type="button" data-order="simulator" aria-pressed="true">Simulator</button></div><div class="lab-transcript"></div>',(panel,{c,z:knob})=>{
+      const z=proofOrder==='simulator'?knob:mod(knob+4*c,11),r=mod(z-4*c,11);
       const u=pow(2,z)*pow(16,mod(-c,11))%23,left=pow(2,z),right=u*pow(16,c)%23;
-      panel.querySelector('.lab-transcript').innerHTML=`<div class="lab-message">1. Choose c = ${c}, z = ${z}</div><div class="lab-message">2. Compute u = 2<sup>${z}</sup> · 16<sup>−${c}</sup> mod 23 = ${u}</div><div class="lab-message">3. Output (u,c,z) = (${u},${c},${z})</div>`;
-      panel.querySelector('output').textContent=`The verifier gets ${left} on the left of its equation and ${right} on the right, so it accepts. We made that happen by solving the equation for u after choosing c and z; we never needed the secret x. A simulator chooses c and z independently with equal probability to match the probabilities of an honest conversation.`;
+      panel.querySelectorAll('[data-order]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.order===proofOrder)));
+      panel.querySelector('label[for="reverse-simulator-z"]').firstChild.textContent=proofOrder==='simulator'?'Response z':'Randomizer r';
+      panel.querySelector('.lab-transcript').innerHTML=(proofOrder==='simulator'
+        ?`<div class="lab-message">1. Choose c = ${c} and z = ${z} first</div><div class="flow-arrow" aria-hidden="true">↓</div><div class="lab-message">2. Solve for u:<br>2<sup>${z}</sup> · 16<sup>−${c}</sup> mod 23 = ${u}</div>`
+        :`<div class="lab-message">1. Prover chooses r = ${r} and sends u = 2<sup>${r}</sup> mod 23 = ${u}</div><div class="flow-arrow" aria-hidden="true">↓</div><div class="lab-message">2. Verifier sends c = ${c}; prover uses secret x = 4 to compute z = ${r} + ${c}·4 mod 11 = ${z}</div>`)+`<div class="flow-arrow" aria-hidden="true">↓</div><div class="lab-message">Recorded view (u,c,z):<br>(${u}, ${c}, ${z})</div>`;
+      panel.querySelector('output').textContent=`The verifier gets ${left} on the left of its equation and ${right} on the right, so it accepts. `+(proofOrder==='simulator'?'The simulator chooses c and z before calculating u. It can build a complete view without x because it does not have to send u before learning a real verifier’s challenge.':'The real prover sends u before learning c, then uses x to answer. For each fixed c, the rule z = r + 4c modulo 11 rearranges the eleven possible r values. Uniform r therefore gives uniform z, matching the simulator’s choices.');
+    });
+    reverse.panel.addEventListener('click',event=>{
+      const button=event.target.closest('[data-order]');if(!button||button.dataset.order===proofOrder)return;
+      const c=Number(reverse.panel.querySelector('[data-control=c]').value),control=reverse.panel.querySelector('[data-control=z]');
+      control.value=mod(Number(control.value)+(proofOrder==='simulator'?-4*c:4*c),11);
+      proofOrder=button.dataset.order;reverse.update();
     });
     for(const source of [57,58,61])lab(source,`circuit-${source}`,'A shared wire must tell one story','Evaluate t = a XOR b, then out = t AND a. Try claiming that t = 1 regardless of the first gate; both gates must use the same committed t.',[['a','Input a',0,1,1],['b','Input b',0,1,0],['tamper','Force shared t to 1',0,1,0]],'<div class="mini-circuit"></div>',(panel,{a,b,tamper})=>{
       const actual=a^b,t=tamper?1:actual,out=t&a;

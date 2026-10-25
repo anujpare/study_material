@@ -59,6 +59,8 @@ const base=process.env.PETS_TEST_URL||'http://127.0.0.1:8765';
    assert.equal(await page.locator('svg use[href^="#pet-math-glyph-"]').count(),0);
    for(let n=1;n<=count;n++){
     await page.locator('#pet-card-slider').fill(String(n));
+    const readView=page.locator('.pet-active [data-view="reading"]');
+    if(await readView.count())await readView.click();
     const problems=await page.locator('.pet-active').evaluate(slide=>{
      slide.querySelectorAll('details').forEach(d=>{d.open=true;});
      return [...slide.querySelectorAll('mjx-container>svg')].flatMap((svg,i)=>{

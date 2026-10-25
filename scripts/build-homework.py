@@ -61,7 +61,12 @@ for deck,(source,order) in DECKS.items():
  print(deck,len(cards),'cards',len(NOTES[deck]),'self-contained exercises')
 # One consistent menu across chapters and homework, including local visual shortcuts.
 TITLES={'commitment':('Chapter 2','Commitment',85),'zero-knowledge':('Chapter 3','Zero Knowledge',62),'hw1':('Homework 1','HW1',22),'hw2':('Homework 2','HW2',20)}
-SHORTCUTS={'commitment':[(3,'Guessing probability'),(20,'Hiding vs binding'),(34,'Modular clock'),(49,'Pedersen hiding')],'zero-knowledge':[(21,'Graph challenges'),(38,'Soundness'),(43,'Schnorr transcripts')],'hw1':[(1,'Guessing probability'),(8,'XOR openings'),(13,'DDH re-randomization'),(22,'Merkle paths')],'hw2':[(8,'Graph challenges'),(9,'Parallel simulation'),(13,'Schnorr simulator'),(17,'Circuit gates')]}
+SHORTCUTS={
+ 'commitment':[(2,'Growth rates'),(3,'Guessing probability'),(13,'Negligible probabilities'),(20,'Hiding vs binding'),(22,'Telling worlds apart'),(31,'Collision pairs'),(34,'Modular clock'),(49,'Pedersen hiding'),(51,'Binding proof')],
+ 'zero-knowledge':[(21,'Graph challenges'),(24,'Simulator retries'),(38,'Soundness'),(43,'Schnorr transcripts')],
+ 'hw1':[(1,'Collision pairs'),(8,'XOR openings'),(13,'DDH re-randomization'),(16,'DDH input–output map'),(22,'Merkle paths')],
+ 'hw2':[(8,'Graph challenges'),(9,'Parallel simulation'),(13,'Real proof and simulator'),(17,'Circuit gates')]}
+
 for deck in TITLES:
  f=ROOT/'docs'/deck/'index.html';text=f.read_text()
  links=''.join(f'<a href="../{key}/" '+('aria-current="page"' if key==deck else '')+f'><small>{kind} · {count} cards</small>{title}</a>' for key,(kind,title,count) in TITLES.items())
