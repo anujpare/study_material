@@ -54,7 +54,7 @@ async function checkText(page, label) {
         await page.locator('.chapter-menu summary').click();
         await checkText(page, `${deck} menu at ${width}px`);
       }
-      console.log(`PASS two text sizes: overview, all 352 cards, expanded solutions, menus and diagram labels at ${width}px`);
+      console.log(`PASS two text sizes: overview, all 251 cards, expanded solutions, menus and diagram labels at ${width}px`);
     }
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

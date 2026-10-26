@@ -232,5 +232,8 @@ card('exponent-product','A product check needs a stronger group interface',r'''
 <p>The next two exercises turn that diagram into a verification algorithm, then show how a hypothetical exponent-division capability would defeat it. Keep public group elements separate from their hidden exponents throughout the derivation.</p>
 ''','HW4 3(d–e)',['point-quotient'],['3d','3e'])
 
-assert sum(c['kind']=='theory' for c in CARDS)==28
-assert len(CARDS)==45
+from later_teaching import revise
+revise('pir',CARDS)
+
+assert sum(c['kind']=='theory' for c in CARDS)==27
+assert len(CARDS)==44

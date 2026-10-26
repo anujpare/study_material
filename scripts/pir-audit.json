@@ -17,7 +17,7 @@
   },
   {
     "position": 3,
-    "id": "bit-selection",
+    "id": "query-shares",
     "kind": "theory",
     "source": "PIR pp. 3\u20134",
     "requires": [
@@ -26,15 +26,6 @@
   },
   {
     "position": 4,
-    "id": "query-shares",
-    "kind": "theory",
-    "source": "PIR pp. 3\u20134",
-    "requires": [
-      "bit-selection"
-    ]
-  },
-  {
-    "position": 5,
     "id": "flat-pir",
     "kind": "theory",
     "source": "PIR p. 4",
@@ -43,7 +34,7 @@
     ]
   },
   {
-    "position": 6,
+    "position": 5,
     "id": "matrix-layout",
     "kind": "theory",
     "source": "PIR pp. 4\u20135",
@@ -52,7 +43,7 @@
     ]
   },
   {
-    "position": 7,
+    "position": 6,
     "id": "matrix-proof",
     "kind": "theory",
     "source": "PIR p. 5",
@@ -61,7 +52,7 @@
     ]
   },
   {
-    "position": 8,
+    "position": 7,
     "id": "communication-balance",
     "kind": "theory",
     "source": "PIR pp. 4\u20135",
@@ -70,7 +61,7 @@
     ]
   },
   {
-    "position": 9,
+    "position": 8,
     "id": "pir-assumptions",
     "kind": "theory",
     "source": "PIR pp. 2\u20135; HW4 1",
@@ -79,7 +70,7 @@
     ]
   },
   {
-    "position": 10,
+    "position": 9,
     "id": "hw4-1c",
     "kind": "homework",
     "source": "HW4 pp. 1",
@@ -88,7 +79,7 @@
     ]
   },
   {
-    "position": 11,
+    "position": 10,
     "id": "homomorphic-operations",
     "kind": "theory",
     "source": "PIR p. 5",
@@ -97,7 +88,7 @@
     ]
   },
   {
-    "position": 12,
+    "position": 11,
     "id": "single-server",
     "kind": "theory",
     "source": "PIR pp. 5\u20136",
@@ -106,7 +97,7 @@
     ]
   },
   {
-    "position": 13,
+    "position": 12,
     "id": "hw4-1b",
     "kind": "homework",
     "source": "HW4 pp. 1",
@@ -115,7 +106,7 @@
     ]
   },
   {
-    "position": 14,
+    "position": 13,
     "id": "recursive-selection",
     "kind": "theory",
     "source": "PIR pp. 6\u20137",
@@ -124,7 +115,7 @@
     ]
   },
   {
-    "position": 15,
+    "position": 14,
     "id": "recursive-size",
     "kind": "theory",
     "source": "PIR pp. 6\u20137",
@@ -133,7 +124,7 @@
     ]
   },
   {
-    "position": 16,
+    "position": 15,
     "id": "replication-limit",
     "kind": "theory",
     "source": "PIR p. 7",
@@ -143,7 +134,7 @@
     ]
   },
   {
-    "position": 17,
+    "position": 16,
     "id": "binary-gates",
     "kind": "theory",
     "source": "HW4 4(a\u2013b), prerequisite to PIR from FHE",
@@ -152,7 +143,7 @@
     ]
   },
   {
-    "position": 18,
+    "position": 17,
     "id": "hw4-4a",
     "kind": "homework",
     "source": "HW4 pp. 4",
@@ -161,7 +152,7 @@
     ]
   },
   {
-    "position": 19,
+    "position": 18,
     "id": "fhe-selection",
     "kind": "theory",
     "source": "HW4 4(b); PIR p. 5 encryption background",
@@ -170,7 +161,7 @@
     ]
   },
   {
-    "position": 20,
+    "position": 19,
     "id": "hw4-4b",
     "kind": "homework",
     "source": "HW4 pp. 4\u20135",
@@ -179,7 +170,7 @@
     ]
   },
   {
-    "position": 21,
+    "position": 20,
     "id": "noise-model",
     "kind": "theory",
     "source": "HW4 4(c)",
@@ -188,7 +179,7 @@
     ]
   },
   {
-    "position": 22,
+    "position": 21,
     "id": "hw4-4c",
     "kind": "homework",
     "source": "HW4 pp. 5",
@@ -197,7 +188,7 @@
     ]
   },
   {
-    "position": 23,
+    "position": 22,
     "id": "server-work",
     "kind": "theory",
     "source": "PIR p. 7",
@@ -206,7 +197,7 @@
     ]
   },
   {
-    "position": 24,
+    "position": 23,
     "id": "offline-online",
     "kind": "theory",
     "source": "PIR pp. 7\u20138",
@@ -215,7 +206,7 @@
     ]
   },
   {
-    "position": 25,
+    "position": 24,
     "id": "field-review",
     "kind": "theory",
     "source": "Chapter 3 prerequisite; HW3 1(c); HW4 2",
@@ -224,7 +215,7 @@
     ]
   },
   {
-    "position": 26,
+    "position": 25,
     "id": "hw3-1c",
     "kind": "homework",
     "source": "HW3 pp. 1",
@@ -233,7 +224,7 @@
     ]
   },
   {
-    "position": 27,
+    "position": 26,
     "id": "coefficient-shift",
     "kind": "theory",
     "source": "HW4 2(a); Chapter 3 random identity test",
@@ -242,7 +233,7 @@
     ]
   },
   {
-    "position": 28,
+    "position": 27,
     "id": "hw4-2a",
     "kind": "homework",
     "source": "HW4 pp. 1\u20132",
@@ -251,7 +242,7 @@
     ]
   },
   {
-    "position": 29,
+    "position": 28,
     "id": "coefficient-split",
     "kind": "theory",
     "source": "HW4 2(b)",
@@ -260,7 +251,7 @@
     ]
   },
   {
-    "position": 30,
+    "position": 29,
     "id": "hw4-2b",
     "kind": "homework",
     "source": "HW4 pp. 2",
@@ -269,7 +260,7 @@
     ]
   },
   {
-    "position": 31,
+    "position": 30,
     "id": "product-coefficient",
     "kind": "theory",
     "source": "HW4 2(c)",
@@ -278,7 +269,7 @@
     ]
   },
   {
-    "position": 32,
+    "position": 31,
     "id": "hw4-2c",
     "kind": "homework",
     "source": "HW4 pp. 2\u20133",
@@ -287,7 +278,7 @@
     ]
   },
   {
-    "position": 33,
+    "position": 32,
     "id": "proof-models",
     "kind": "theory",
     "source": "Chapter 3 prerequisite; HW3 1(a); HW4 1(a)",
@@ -296,7 +287,7 @@
     ]
   },
   {
-    "position": 34,
+    "position": 33,
     "id": "hw3-1a",
     "kind": "homework",
     "source": "HW3 pp. 1",
@@ -305,7 +296,7 @@
     ]
   },
   {
-    "position": 35,
+    "position": 34,
     "id": "hw4-1a",
     "kind": "homework",
     "source": "HW4 pp. 1",
@@ -314,7 +305,7 @@
     ]
   },
   {
-    "position": 36,
+    "position": 35,
     "id": "succinctness-review",
     "kind": "theory",
     "source": "Chapter 3 succinctness; HW4 1(d)",
@@ -323,7 +314,7 @@
     ]
   },
   {
-    "position": 37,
+    "position": 36,
     "id": "hw4-1d",
     "kind": "homework",
     "source": "HW4 pp. 1",
@@ -332,7 +323,7 @@
     ]
   },
   {
-    "position": 38,
+    "position": 37,
     "id": "powers-setup",
     "kind": "theory",
     "source": "HW4 3(a\u2013b); Chapter 1 group prerequisites",
@@ -341,7 +332,7 @@
     ]
   },
   {
-    "position": 39,
+    "position": 38,
     "id": "hw4-3a",
     "kind": "homework",
     "source": "HW4 pp. 3",
@@ -350,7 +341,7 @@
     ]
   },
   {
-    "position": 40,
+    "position": 39,
     "id": "hw4-3b",
     "kind": "homework",
     "source": "HW4 pp. 3",
@@ -359,7 +350,7 @@
     ]
   },
   {
-    "position": 41,
+    "position": 40,
     "id": "point-quotient",
     "kind": "theory",
     "source": "HW4 3(c); Chapter 3 ZeroTest",
@@ -368,7 +359,7 @@
     ]
   },
   {
-    "position": 42,
+    "position": 41,
     "id": "hw4-3c",
     "kind": "homework",
     "source": "HW4 pp. 3",
@@ -377,7 +368,7 @@
     ]
   },
   {
-    "position": 43,
+    "position": 42,
     "id": "exponent-product",
     "kind": "theory",
     "source": "HW4 3(d\u2013e)",
@@ -386,7 +377,7 @@
     ]
   },
   {
-    "position": 44,
+    "position": 43,
     "id": "hw4-3d",
     "kind": "homework",
     "source": "HW4 pp. 3\u20134",
@@ -395,7 +386,7 @@
     ]
   },
   {
-    "position": 45,
+    "position": 44,
     "id": "hw4-3e",
     "kind": "homework",
     "source": "HW4 pp. 4",

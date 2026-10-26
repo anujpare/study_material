@@ -13,8 +13,8 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
         await lab.waitFor({state:'visible'});
         return lab;
       };
-      let lab=await visit('commitment',3,'guessing');
-      assert.equal(await page.locator('.learning[data-lab]').count(),9);
+      let lab=await visit('commitment',29,'guessing');
+      assert.equal(await page.locator('.learning[data-lab]').count(),8);
       const font=await page.locator('.pet-active .reading>p').first().evaluate(el=>parseFloat(getComputedStyle(el).fontSize));
       assert(Math.abs(font-(18.32+4/3))<0.01, `reading font is ${font}`);
       assert.equal(await page.locator('.deck-home').count(),0);
@@ -32,12 +32,12 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
       await page.waitForURL(`${base}/zero-knowledge/`);
       assert.equal(await page.locator('.learning[data-lab]').count(),4);
       await menu.locator('summary').click();
-      await page.getByRole('link',{name:/Schnorr transcripts/}).click();
+      await page.getByRole('link',{name:/^Schnorr$/}).click();
       await page.waitForURL(`${base}/zero-knowledge/#lesson-43`);
       await page.waitForFunction(()=>document.activeElement===document.querySelector('.chapter-menu summary'));
       assert.equal(await menu.getAttribute('open'),null);
       assert(await menu.locator('summary').evaluate(el=>el===document.activeElement));
-      lab=await visit('commitment',3,'guessing');
+      lab=await visit('commitment',29,'guessing');
       await lab.locator('#secret-bits').focus();await page.keyboard.press('ArrowRight');
       assert.equal(await lab.locator('#secret-bits').inputValue(),'5');
       await lab.locator('#secret-bits').evaluate(el=>el.scrollIntoView({block:'center'}));
@@ -66,12 +66,6 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
       assert.match(await lab.locator('output').textContent(),/Rejected/);
       await lab.locator('[data-move="1"]').click();
       assert.match(await lab.locator('output').textContent(),/Accepted/);
-      lab=await visit('commitment',34,'modular');
-      await lab.locator('#start-residue').fill('1');await lab.locator('#mod-step').fill('-3');
-      assert.match(await lab.locator('output').textContent(),/-2 = -1 × 5 \+ 3/);
-      assert.equal(await lab.locator('.selected-label').textContent(),'3');
-      await lab.locator('#modulus').fill('7');await lab.locator('#mod-step').fill('12');
-      assert.equal(await lab.locator('.selected-label').textContent(),'6');
       lab=await visit('commitment',49,'pedersen');
       const group=[1,2,3,4,6,8,9,12,13,16,18];
       for(const m of [0,2,10]){
@@ -114,25 +108,25 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
         assert.equal(await lab.locator('.extraction b').textContent(),'4');
       }
       // Every experiment fits the reader in portrait and landscape, including its controls.
-      for(const [chapter,ids] of [['commitment',[3,20,34,49]],['zero-knowledge',[21,38,43]]]){
+      for(const [chapter,ids] of [['commitment',[29,20,49]],['zero-knowledge',[21,38,43]]]){
         for(const height of [844,390]){
           await page.setViewportSize({width,height});
           for(const id of ids){
             await page.goto(`${base}/${chapter}/#lesson-${id}`);
-            const bounds=await page.locator('.pet-active .learning').evaluate(el=>({client:el.clientWidth,scroll:el.scrollWidth,items:[...el.querySelectorAll('button,input,select,svg')].map(x=>({left:x.getBoundingClientRect().left,right:x.getBoundingClientRect().right}))}));
+            const bounds=await page.locator('.pet-active .learning[data-lab]').evaluate(el=>({client:el.clientWidth,scroll:el.scrollWidth,items:[...el.querySelectorAll('button,input,select,svg')].map(x=>({left:x.getBoundingClientRect().left,right:x.getBoundingClientRect().right}))}));
             assert(bounds.scroll<=bounds.client+1,`lab overflow ${chapter} ${id} ${width}`);
             assert(bounds.items.every(x=>x.left>=0 && x.right<=width),`control overflow ${chapter} ${id}`);
           }
         }
       }
       assert.deepEqual(errors,[]);
-      console.log(`PASS learning: menu, +1pt type, all seven experiments and responsive layouts at ${width}px`);
+      console.log(`PASS learning: menu, +1pt type, retained experiments and responsive layouts at ${width}px`);
       await page.close();
     }
     const fallback=await browser.newPage({javaScriptEnabled:false});
     await fallback.goto(`${base}/commitment/`);await fallback.locator('.chapter-menu summary').click();
     await fallback.getByRole('link',{name:/Chapter 2/}).click();await fallback.waitForURL(`${base}/zero-knowledge/`);
-    assert.equal(await fallback.locator('.slide:visible').getAttribute('id'),'start-notation');
+    assert.equal(await fallback.locator('.slide:visible').getAttribute('id'),'lesson-1');
     console.log('PASS chapter popup and original content without JavaScript');
   } finally {await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;});

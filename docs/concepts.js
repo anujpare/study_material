@@ -25,27 +25,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (deck !== chapter) return;
     const reader = root.querySelector(`#lesson-${id} .reading`);
     if (!reader) return;
-    const visual = panel(...args), reading = document.createElement('div');
-    reading.className = 'concept-reading'; reading.id = `${args[0]}-reading`;
-    const original = [...reader.childNodes].filter(node => !node.matches?.('.beginner-context'));
-    const controls = document.createElement('div');
-    controls.className = 'learning concept-switch'; controls.setAttribute('role', 'group');
-    controls.setAttribute('aria-label', 'Lesson view');
-    controls.innerHTML = `<button type="button" data-view="visual" aria-controls="${visual.id}" aria-pressed="true">Explore visually</button><button type="button" data-view="reading" aria-controls="${reading.id}" aria-pressed="false">Read explanation</button>`;
-    reading.append(...original); reading.hidden = true;
-    reader.append(controls, visual, reading);
-    controls.addEventListener('click', event => {
-      const button = event.target.closest('[data-view]'); if (!button) return;
-      const showVisual = button.dataset.view === 'visual';
-      visual.hidden = !showVisual; reading.hidden = showVisual;
-      controls.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
-      // Refit original mathematical SVGs when their reading view is revealed.
-      requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
-    });
+    const visual = panel(...args);
+    // The text is the primary explanation. The experiment follows it visibly.
+    reader.append(visual);
+
   }
 
-  lesson('commitment', 2, 'growth', 'What changes when the input grows?',
-    'Compare n² steps with 2ⁿ steps. Move n to the right and watch how quickly the two costs separate. Both curves use the same scale.',
+  lesson('commitment', 10, 'growth', 'What changes when the input grows?',
+    'Compare n² steps with 2ⁿ steps. Move n to the right and watch how quickly the two costs separate. Both curves use the same scale; this illustrates the attacker runtime model.',
     range('growth-n', 'Input size n', 1, 12, 4) + '<div class="growth-plot"></div><div class="plot-key"><span class="key-square">n² steps</span><span class="key-exp">2ⁿ steps</span></div>' + out, p => {
       const draw = () => {
         const n = value(p, 'growth-n'), max = Math.max(n * n, 2 ** n), left = 58, right = 278, top = 30, bottom = 190;
@@ -71,9 +58,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const a = denominator(selected), b = limit(selected), sign = a > b ? '>' : a === b ? '=' : '<';
         const power = exponential ? `2<sup>${selected}</sup>` : `${selected}<sup>5</sup>`;
         const conclusion = exponential
-          ? 'For any fixed d, doubling repeatedly eventually outgrows the fixed power λᵈ. The finite samples help you see this; the Read explanation gives the general argument.'
+          ? 'For any fixed d, doubling repeatedly eventually outgrows the fixed power λᵈ. The finite samples help you see this; the explanation above gives the general argument.'
           : d < 5 ? 'This function beats the chosen threshold, but negligible requires every fixed d. Try d = 6.' : 'This function never gets below this threshold for λ > 1. One such fixed d is enough to show it is not negligible.';
-        p.querySelector('output').innerHTML = `At λ = ${selected}, the denominators satisfy ${power} ${sign} ${selected}<sup>${d}</sup>. ${a>b?'The larger denominator gives the smaller fraction, so f(λ) is below the threshold.':a===b?'Equal denominators give equal fractions, so f(λ) is not strictly below the threshold.':'The smaller denominator gives the larger fraction, so f(λ) is above the threshold.'}<span class="concept-takeaway">${conclusion}</span>`;
+        p.querySelector('output').innerHTML = `At λ = ${selected}, the denominators satisfy ${power} ${sign} ${selected}<sup>${d}</sup>. ${a>b?'The function is below the threshold.':a===b?'The function equals the threshold, so the strict inequality does not hold.':'The function is above the threshold.'}<span class="concept-takeaway">${conclusion}</span>`;
       };
       p.addEventListener('input', draw); p.addEventListener('change', draw);
       p.addEventListener('click', e => {const b=e.target.closest('[data-size]');if(b){selected=Number(b.dataset.size);draw();p.querySelector(`[data-size="${selected}"]`).focus({preventScroll:true});}});

@@ -39,6 +39,9 @@ function clamp(value){let n=Number(value);return Number.isFinite(n)?Math.max(1,M
 function fromHash(){
   const index=slides.findIndex(slide=>'#'+slide.id===location.hash);
   if(index>=0)return index+1;
+  const alias=document.getElementById(location.hash.slice(1));
+  const owner=alias?.classList.contains('card-alias')?alias.closest('section.slide'):null;
+  if(owner)return slides.indexOf(owner)+1;
   // Retain the previous numeric out-of-range fallback for old links.
   const match=/^#lesson-(\d+)$/.exec(location.hash);
   return match?clamp(match[1]):1;

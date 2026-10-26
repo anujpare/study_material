@@ -1,0 +1,2013 @@
+{
+  "source_limits": "Chapters 1/2 use the existing repository transcription; the source PDFs available for page comparison are Chapters 3/4 and HW3/4.",
+  "cards": [
+    {
+      "deck": "commitment",
+      "id": "lesson-1",
+      "title": "What this chapter will establish",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-10",
+      "title": "Security parameter λ and PPT attackers",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-7",
+      "title": "P and NP distinguish deciding from verifying",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-9",
+      "title": "Practice · P versus NP",
+      "action": "reviewed practice retained",
+      "review": "Retain the mathematical exercise and worked inference; elementary or duplicate practice was merged into its related homework.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-12",
+      "title": "Negligible means smaller than every inverse polynomial",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-13",
+      "title": "Why polynomially many attempts can remain safe",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-14",
+      "title": "Practice · Negligible or not?",
+      "action": "reviewed practice retained",
+      "review": "Retain the mathematical exercise and worked inference; elementary or duplicate practice was merged into its related homework.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-22",
+      "title": "Computational indistinguishability: the exact definition",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-18",
+      "title": "Practice · Distinguishing advantage",
+      "action": "reviewed practice retained",
+      "review": "Retain the mathematical exercise and worked inference; elementary or duplicate practice was merged into its related homework.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-19",
+      "title": "Statistical distance removes the computational restriction",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-16",
+      "title": "What a computational security claim does—and does not—promise",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-20",
+      "title": "A commitment must hide a choice and prevent changing it",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-23",
+      "title": "Commit, open, and state the two security requirements",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-24",
+      "title": "Why hiding and binding require different kinds of security",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-26",
+      "title": "HW1 · Problem 2(b)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-27",
+      "title": "A randomizer repairs the small-message hash attack",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-28",
+      "title": "A random oracle is a fixed random function accessed by queries",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-29",
+      "title": "Hiding follows until the attacker queries the hidden input",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-30",
+      "title": "Practice · Random-oracle guessing bound",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-31",
+      "title": "Binding reduces to finding a random-oracle collision",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-32",
+      "title": "HW1 · Problem 1(a)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-33",
+      "title": "HW1 · Problem 1(d)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-35",
+      "title": "Division in the exponent uses a finite field",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-37",
+      "title": "Practice · Modular division",
+      "action": "reviewed practice retained",
+      "review": "Retain the mathematical exercise and worked inference; elementary or duplicate practice was merged into its related homework.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-38",
+      "title": "What “a group of prime order q” actually means",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-39",
+      "title": "Generators connect group elements to exponents",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-42",
+      "title": "Practice · Work with a prime-order group",
+      "action": "reviewed practice retained",
+      "review": "Retain the mathematical exercise and worked inference; elementary or duplicate practice was merged into its related homework.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-48",
+      "title": "The discrete-logarithm assumption is a quantified claim",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-43",
+      "title": "A reduction turns a hypothetical attack into a solver",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-45",
+      "title": "Practice · A reduction is a logical implication",
+      "action": "reviewed practice retained",
+      "review": "Retain the mathematical exercise and worked inference; elementary or duplicate practice was merged into its related homework.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-46",
+      "title": "Pedersen commits with two public generators",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-47",
+      "title": "Pedersen’s homomorphism preserves a relation between messages",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-49",
+      "title": "Perfect hiding follows from a uniform group mask",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-51",
+      "title": "A double Pedersen opening reveals the discrete logarithm",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-52",
+      "title": "Practice · Extract the Pedersen discrete log",
+      "action": "reviewed practice retained",
+      "review": "Retain the mathematical exercise and worked inference; elementary or duplicate practice was merged into its related homework.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-53",
+      "title": "HW1 · Problem 2(a)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-54",
+      "title": "HW1 · Problem 2(c)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-55",
+      "title": "HW1 · Problem 2(d)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-56",
+      "title": "A PRF must withstand adaptively chosen oracle queries",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-58",
+      "title": "Practice · Repeated PRF queries",
+      "action": "reviewed practice retained",
+      "review": "Retain the mathematical exercise and worked inference; elementary or duplicate practice was merged into its related homework.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-60",
+      "title": "HW1 · Problem 1(b)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-61",
+      "title": "Homomorphic encryption states correctness after decryption",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-62",
+      "title": "HW1 · Problem 1(c)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-64",
+      "title": "DDH compares a linked exponent with an independent one",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-65",
+      "title": "Practice · Recognize a DDH triple",
+      "action": "reviewed practice retained",
+      "review": "Retain the mathematical exercise and worked inference; elementary or duplicate practice was merged into its related homework.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-63",
+      "title": "A candidate PRF: hash to a group, then exponentiate",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-66",
+      "title": "Embed a DDH challenge at one oracle input",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-68",
+      "title": "Check both simulated worlds, then account for the guess",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-70",
+      "title": "Practice · Account for reduction loss",
+      "action": "reviewed practice retained",
+      "review": "Retain the mathematical exercise and worked inference; elementary or duplicate practice was merged into its related homework.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-72",
+      "title": "HW1 · Problem 3(a)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-73",
+      "title": "HW1 · Problem 3(b)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-75",
+      "title": "HW1 · Problem 3(c)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-77",
+      "title": "HW1 · Problem 3(d)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-79",
+      "title": "A vector commitment binds values to their positions",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-81",
+      "title": "HW1 · Problem 4(a)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-82",
+      "title": "HW1 · Problem 4(b)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-83",
+      "title": "A Merkle opening reveals the missing inputs along one path",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "commitment",
+      "id": "lesson-84",
+      "title": "HW1 · Problem 4(c)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-1",
+      "title": "A proof protocol checks a public claim",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-2",
+      "title": "Completeness and soundness quantify over different provers",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-4",
+      "title": "What interaction changes in the complexity picture",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-7",
+      "title": "Zero knowledge protects the witness, not just the messages",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-9",
+      "title": "A simulator reproduces the verifier’s complete view",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-10",
+      "title": "The zero-knowledge definition: one simulator for each verifier",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-11",
+      "title": "Which participant must follow the protocol?",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-13",
+      "title": "Practice · Use a simulator to argue privacy",
+      "action": "reviewed practice retained",
+      "review": "Retain the mathematical exercise and worked inference; elementary or duplicate practice was merged into its related homework.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-16",
+      "title": "HW2 · Problem 1(a)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-17",
+      "title": "HW2 · Problem 1(b i)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-18",
+      "title": "HW2 · Problem 1(b ii)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-19",
+      "title": "Hamiltonian cycles: the statement and its witness",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-20",
+      "title": "Relabel the graph, then commit before the challenge",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-21",
+      "title": "Two challenges test two parts of the same claim",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-22",
+      "title": "Binding makes the two checks enforce soundness",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-6",
+      "title": "Practice · Completeness and soundness",
+      "action": "reviewed practice retained",
+      "review": "Retain the mathematical exercise and worked inference; elementary or duplicate practice was merged into its related homework.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-23",
+      "title": "Simulate the branch that will actually be revealed",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-24",
+      "title": "Rewinding is a simulator capability with a runtime cost",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-26",
+      "title": "A true statement does not necessarily show knowledge",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-28",
+      "title": "Knowledge error is the part of success that need not yield a witness",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-29",
+      "title": "Two graph openings let an extractor recover the cycle",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-30",
+      "title": "Practice · Two transcripts imply knowledge",
+      "action": "reviewed practice retained",
+      "review": "Retain the mathematical exercise and worked inference; elementary or duplicate practice was merged into its related homework.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-31",
+      "title": "A Sigma protocol has three messages and three properties",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-32",
+      "title": "Special soundness extracts from a pair of transcripts",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-33",
+      "title": "Honest-verifier zero knowledge fixes the challenge distribution",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-34",
+      "title": "Special soundness bounds the number of successful challenges",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-36",
+      "title": "Practice · Derive Sigma soundness",
+      "action": "reviewed practice retained",
+      "review": "Retain the mathematical exercise and worked inference; elementary or duplicate practice was merged into its related homework.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-38",
+      "title": "Repetition changes both soundness and the conversation",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-39",
+      "title": "HW2 · Problem 2(a)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-41",
+      "title": "HW2 · Problem 2(b)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-42",
+      "title": "HW2 · Problem 2(c)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-43",
+      "title": "Schnorr: the response links a random exponent to the secret",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-44",
+      "title": "HW2 · Problem 3(a)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-45",
+      "title": "HW2 · Problem 3(b)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-46",
+      "title": "HW2 · Problem 3(c)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-47",
+      "title": "Practice · Extract Schnorr secret numerically",
+      "action": "reviewed practice retained",
+      "review": "Retain the mathematical exercise and worked inference; elementary or duplicate practice was merged into its related homework.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-48",
+      "title": "Why plain-model non-interactive ZK is severely limited",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-49",
+      "title": "Fiat–Shamir replaces the challenge message with a hash",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-51",
+      "title": "Simulation and extraction use different oracle capabilities",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-53",
+      "title": "Practice · Fiat–Shamir proof structure",
+      "action": "reviewed practice retained",
+      "review": "Retain the mathematical exercise and worked inference; elementary or duplicate practice was merged into its related homework.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-54",
+      "title": "HW2 · Problem 1(c)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-55",
+      "title": "Prove a circuit by connecting its committed wire values",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-57",
+      "title": "HW2 · Problem 4(a)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-58",
+      "title": "HW2 · Problem 4(b)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-60",
+      "title": "A hybrid proof changes one justified component at a time",
+      "action": "rewritten",
+      "review": "Rebuilt the course-specific explanation in connected prose; local notation and formal scope are stated before use.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "zero-knowledge",
+      "id": "lesson-61",
+      "title": "HW2 · Problem 4(c)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "snarg-goal",
+      "title": "Verify a computation with a short proof",
+      "action": "rewritten",
+      "review": "Rebuilt the definition or mechanism and its missing inferential links; diagrams show the relevant message order where applicable.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "proof-properties",
+      "title": "What does each guarantee promise?",
+      "action": "reviewed and refined",
+      "review": "Keep soundness, knowledge error and privacy distinct; the recap supports HW3 1(a).",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "hw-1a",
+      "title": "HW3 1a · Knowledge implies soundness",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "setup-models",
+      "title": "What information exists before the proof?",
+      "action": "reviewed and retained",
+      "review": "Retain the simulator capability difference between plain, CRS and random-oracle models.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "hw-1b",
+      "title": "HW3 1b · Which setup model?",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "schnorr-recap",
+      "title": "The three messages we will remove",
+      "action": "rewritten",
+      "review": "Rebuilt the definition or mechanism and its missing inferential links; diagrams show the relevant message order where applicable.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "snarks",
+      "id": "fiat-shamir",
+      "title": "Replace the challenge with a hash",
+      "action": "reviewed and retained",
+      "review": "Keep the challenge timing, whole-context hash and privacy limitation before the three assigned questions.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "hw-2a",
+      "title": "HW3 2a · Construct the Schnorr proof",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "snarks",
+      "id": "hw-2b",
+      "title": "HW3 2b · Verify, then explain the equation",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "hw-1d",
+      "title": "HW3 1d · Hashing does not strengthen privacy",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "transferability",
+      "title": "A public proof and an interactive recording",
+      "action": "reviewed and retained",
+      "review": "Explain why a simulated recording does not attest live challenge timing, while NIZK has public verification.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "hw-2d",
+      "title": "HW3 2d · Can a proof be passed on?",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "challenge-search",
+      "title": "Count challenges before counting attempts",
+      "action": "reviewed and retained",
+      "review": "Retain the nonidentity h condition and count tested challenges rather than invoking unexplained hardness.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "hw-2c",
+      "title": "HW3 2c · Bound a restricted guessing attack",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "hw-3a",
+      "title": "HW3 3a · A one-bit hash challenge is insufficient",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "parallel-amplification",
+      "title": "Make the entire challenge hard to guess",
+      "action": "reviewed and retained",
+      "review": "Retain the fixed-first-message argument; no independence assumption on malicious prover strategies.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "hw-3b",
+      "title": "HW3 3b · Amplify before applying Fiat–Shamir",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "two-routes",
+      "title": "Two routes to a succinct proof",
+      "action": "rewritten",
+      "review": "Rebuilt the definition or mechanism and its missing inferential links; diagrams show the relevant message order where applicable.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "pcp",
+      "title": "Why a few proof bits can be enough",
+      "action": "rewritten",
+      "review": "Rebuilt the definition or mechanism and its missing inferential links; diagrams show the relevant message order where applicable.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "merkle-oracle",
+      "title": "Commit to the proof before revealing queries",
+      "action": "reviewed and retained",
+      "review": "Explain how each missing sibling lets verification advance one level; authentication does not establish the PCP predicate.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "pcp-protocol",
+      "title": "Authentication and truth are different checks",
+      "action": "rewritten",
+      "review": "Rebuilt the definition or mechanism and its missing inferential links; diagrams show the relevant message order where applicable.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "snarks",
+      "id": "pcp-cost",
+      "title": "Count the communication in bits",
+      "action": "reviewed and retained",
+      "review": "Retain message-by-message bit costs and distinguish succinct communication from fast verification.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "hw-4a",
+      "title": "HW3 4a · Build a succinct interactive argument",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "snarks",
+      "id": "pcp-fiat-shamir",
+      "title": "Hash the root to derive the tests",
+      "action": "reviewed and retained",
+      "review": "Retain derivation of queries from fixed root, domain separation and the scope of the compiled guarantee.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "hw-4b",
+      "title": "HW3 4b · Remove the PCP challenge message",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "finite-fields",
+      "title": "Arithmetic where division has a precise meaning",
+      "action": "reviewed and retained",
+      "review": "Retain the inverse/cancellation property needed by the root proof, including the composite-modulus counterexample.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "polynomial-language",
+      "title": "Read a polynomial as a rule with coefficients",
+      "action": "rewritten",
+      "review": "Rebuilt the definition or mechanism and its missing inferential links; diagrams show the relevant message order where applicable.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "root-bound",
+      "title": "Why degree limits the number of roots",
+      "action": "reviewed and retained",
+      "review": "Retain the factorization proof; show explicitly where field cancellation is needed.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "hw-1c",
+      "title": "HW3 1c · A root bound needs a field",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "polynomial-equality",
+      "title": "One random evaluation tests an identity",
+      "action": "reviewed and retained",
+      "review": "Retain the difference-polynomial argument, degree limit and fix-before-challenge condition.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "schwartz-zippel",
+      "title": "More variables: count total degree",
+      "action": "reviewed and refined",
+      "review": "Teach total degree and independent sampling from a common finite subset without elementary polynomial vocabulary.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "interpolation",
+      "title": "Turn a table of values into one polynomial",
+      "action": "reviewed and refined",
+      "review": "Retain the Lagrange-basis existence and root-bound uniqueness argument; remove explanations of sum/product symbols.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "vanishing-polynomial",
+      "title": "Zero on a set is not zero everywhere",
+      "action": "reviewed and retained",
+      "review": "Keep the equivalence between zeros on a set and a polynomial quotient, with a concrete factorization.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "zero-test",
+      "title": "Check many zero conditions with one identity",
+      "action": "rewritten",
+      "review": "Rebuilt the definition or mechanism and its missing inferential links; diagrams show the relevant message order where applicable.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "fibonacci-iop",
+      "title": "Encode an entire recurrence",
+      "action": "reviewed and retained",
+      "review": "Retain the seven queried values, same-polynomial consistency, indexing correction and verifier-work limitation.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "polynomial-commitment",
+      "title": "Authenticate a polynomial evaluation",
+      "action": "rewritten",
+      "review": "Rebuilt the definition or mechanism and its missing inferential links; diagrams show the relevant message order where applicable.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "polynomial-compiler",
+      "title": "The order of commitments makes the test meaningful",
+      "action": "rewritten",
+      "review": "Rebuilt the definition or mechanism and its missing inferential links; diagrams show the relevant message order where applicable.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "snarks",
+      "id": "arithmetic-circuit",
+      "title": "A computation becomes a public relation",
+      "action": "reviewed and retained",
+      "review": "Retain the actual circuit diagram and distinguish the displayed output 56 from zero-normalized relation.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "execution-trace",
+      "title": "Write down what every gate claims happened",
+      "action": "reviewed and retained",
+      "review": "Retain the repeated-wire example that motivates constraints beyond local gate arithmetic.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "roots-of-unity",
+      "title": "Choose distinct addresses with a useful pattern",
+      "action": "reviewed and retained",
+      "review": "Retain primitivity, twelve distinct addresses and the counterexample omega=1.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "trace-polynomial",
+      "title": "Put the table into a polynomial",
+      "action": "reviewed and retained",
+      "review": "Retain the address/value distinction and explain why interpolation alone accepts dishonest tables too.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "four-obligations",
+      "title": "What makes a trace a correct computation?",
+      "action": "reviewed and retained",
+      "review": "Retain independently failing scenarios; each illustrates why one of the four checks is necessary.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "boundary-conditions",
+      "title": "Bind the trace to the public claim",
+      "action": "reviewed and retained",
+      "review": "Retain public/private-input separation and authentication of any auxiliary difference polynomial.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "gate-selector",
+      "title": "One equation chooses addition or multiplication",
+      "action": "reviewed and retained",
+      "review": "Retain the derivation of the residual in each selector case and interactive numerical counterfactual.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "gate-polynomial",
+      "title": "Apply that equation to every gate",
+      "action": "reviewed and retained",
+      "review": "Retain how shifted evaluations access one gate, the vanishing domain and increased product degree.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "wire-permutation",
+      "title": "Local arithmetic does not connect the gates",
+      "action": "reviewed and refined",
+      "review": "Retain the concrete wire cycles and formal equality; explain the scope of the unproved permutation argument.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "fast-vanishing",
+      "title": "A short formula removes a hidden linear cost",
+      "action": "reviewed and retained",
+      "review": "Retain the monic-polynomial argument, repeated-squaring cost and warning that subset domains differ.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "snarks",
+      "id": "construction-map",
+      "title": "Assemble the argument and state its scope",
+      "action": "reviewed and retained",
+      "review": "Retain the connected construction and distinguish universal setup, preprocessing, proving and additional privacy/knowledge proofs.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "pir-goal",
+      "title": "Read a record without revealing which one",
+      "action": "reviewed and retained",
+      "review": "Retain indexed retrieval, DNS motivation and whole-download baseline; the database is not assumed secret from the client.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "pir-contract",
+      "title": "Separate correctness, privacy and cost",
+      "action": "rewritten",
+      "review": "Rebuilt the definition or mechanism and its missing inferential links; diagrams show the relevant message order where applicable.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "query-shares",
+      "title": "Hide the selector in two individually random shares",
+      "action": "rewritten",
+      "review": "Rebuilt the definition or mechanism and its missing inferential links; diagrams show the relevant message order where applicable.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "flat-pir",
+      "title": "The first private protocol: XOR the two answers",
+      "action": "rewritten",
+      "review": "Rebuilt the definition or mechanism and its missing inferential links; diagrams show the relevant message order where applicable.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "pir",
+      "id": "matrix-layout",
+      "title": "Reshape the database into rows and columns",
+      "action": "reviewed and refined",
+      "review": "Retain the reason to select a column and reconstruct a row locally; remove the definition of a matrix.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "matrix-proof",
+      "title": "Why the reshaped protocol still works",
+      "action": "reviewed and retained",
+      "review": "Retain cancellation in every row and the privacy argument for both coordinates.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "communication-balance",
+      "title": "Balance uploads against downloads",
+      "action": "reviewed and refined",
+      "review": "Retain the upload/download tradeoff and minimum derivation; remove a definition of ceiling notation.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "pir-assumptions",
+      "title": "Which assumption pays for privacy?",
+      "action": "reviewed and retained",
+      "review": "Retain information-theoretic versus computational assumptions in the P=NP question.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "hw4-1c",
+      "title": "HW4 1c · Two servers need a separation assumption",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "homomorphic-operations",
+      "title": "Compute on an encryption without decrypting it",
+      "action": "reviewed and retained",
+      "review": "Retain decryption-level correctness and the distinction between known scalar and hidden-plaintext multiplication.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "single-server",
+      "title": "Encrypt the column selector for one server",
+      "action": "reviewed and retained",
+      "review": "Retain encrypted linear selection, ciphertext/bit costs and security of the joint encrypted vector.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "hw4-1b",
+      "title": "HW4 1b · Single-server PIR when P equals NP",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "recursive-selection",
+      "title": "Retrieve privately from the intermediate answer too",
+      "action": "reviewed and retained",
+      "review": "Retain the two-dimensional re-encoding step and explanation that known ciphertext encodings become outer plaintext data.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "recursive-size",
+      "title": "Count the size of an encrypted record, not only its number",
+      "action": "reviewed and retained",
+      "review": "Retain expansion models and explain why counting objects does not establish the claimed bit complexity.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "replication-limit",
+      "title": "Why the same recursion cannot simply reuse two-server PIR",
+      "action": "reviewed and retained",
+      "review": "Retain the missing replicated-database precondition and distinguish naive reuse from a general impossibility claim.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "binary-gates",
+      "title": "Before FHE: describe an address and a Boolean circuit",
+      "action": "rewritten",
+      "review": "Rebuilt the definition or mechanism and its missing inferential links; diagrams show the relevant message order where applicable.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "hw4-4a",
+      "title": "HW4 4a · Build equality from Boolean gates",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "fhe-selection",
+      "title": "Turn a binary address into selection bits inside a circuit",
+      "action": "reviewed and retained",
+      "review": "Retain equality selectors, masked OR, encrypted constants and compactness before HW4 4(b).",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "hw4-4b",
+      "title": "HW4 4b · Use an encrypted binary address",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "pir",
+      "id": "noise-model",
+      "title": "Track the quantity that a gate changes",
+      "action": "reviewed and retained",
+      "review": "Retain the stipulated gate model and distinguish ciphertext noise from plaintext values.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "hw4-4c",
+      "title": "HW4 4c · Track the specified noise through the whole circuit",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "server-work",
+      "title": "A short query can still require a full database scan",
+      "action": "reviewed and retained",
+      "review": "Retain the comparison of communication and database-wide computation; delimit the raw-data scan argument.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "offline-online",
+      "title": "Move or share work without pretending it disappears",
+      "action": "reviewed and retained",
+      "review": "Retain amortized, offline, online and batching distinctions, with source-scoped performance claims.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "field-review",
+      "title": "Midterm bridge: prove claims about polynomials",
+      "action": "reviewed and refined",
+      "review": "Retain the field/cancellation recap needed for the HW3 counterexample; remove elementary polynomial definitions.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "hw3-1c",
+      "title": "HW3 1c · A root bound needs a field",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "coefficient-shift",
+      "title": "A degree bound turns a random check into evidence",
+      "action": "reviewed and retained",
+      "review": "Retain the ideal bounded-degree oracle condition and its relation to coefficient positions.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "hw4-2a",
+      "title": "HW4 2a · Prove that the low coefficients vanish",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "coefficient-split",
+      "title": "Give the target coefficient a position nobody else can occupy",
+      "action": "reviewed and retained",
+      "review": "Retain the disjoint degree-range argument and endpoint zero-polynomial cases.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "hw4-2b",
+      "title": "HW4 2b · Isolate one coefficient",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "pir",
+      "id": "product-coefficient",
+      "title": "Multiplication groups terms by the sum of their degrees",
+      "action": "reviewed and refined",
+      "review": "Retain why reversed coefficient lists form the middle coefficient and why two identities must be checked.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "hw4-2c",
+      "title": "HW4 2c · An inner product hidden in a product polynomial",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "proof-models",
+      "title": "Midterm check: identify the guarantee and the model",
+      "action": "reviewed and retained",
+      "review": "Retain the information-theoretic ideal test versus computational compiler distinction before conceptual exercises.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "hw3-1a",
+      "title": "HW3 1a · Knowledge implies soundness",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "hw4-1a",
+      "title": "HW4 1a · An ideal oracle and its cryptographic implementation",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "succinctness-review",
+      "title": "Midterm check: proof length and verifier time are different",
+      "action": "reviewed and refined",
+      "review": "Retain the verifier-time limitation of the empty-proof argument.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "hw4-1d",
+      "title": "HW4 1d · An empty proof is not automatically fast verification",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "powers-setup",
+      "title": "Public powers let us encode a polynomial evaluation",
+      "action": "rewritten",
+      "review": "Rebuilt the definition or mechanism and its missing inferential links; diagrams show the relevant message order where applicable.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "hw4-3a",
+      "title": "HW4 3a · Compute a commitment without knowing α",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "hw4-3b",
+      "title": "HW4 3b · Why the binding guarantee is computational",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "point-quotient",
+      "title": "An evaluation claim becomes divisibility by X − z",
+      "action": "rewritten",
+      "review": "Rebuilt the definition or mechanism and its missing inferential links; diagrams show the relevant message order where applicable.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "hw4-3c",
+      "title": "HW4 3c · Turn an opening into a quotient identity",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "exponent-product",
+      "title": "A product check needs a stronger group interface",
+      "action": "reviewed and retained",
+      "review": "Retain why exponent multiplication needs the supplied interface and is distinct from discrete-log recovery.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "pir",
+      "id": "hw4-3d",
+      "title": "HW4 3d · Check the identity in the exponent",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "pir",
+      "id": "hw4-3e",
+      "title": "HW4 3e · Break binding with an exponent-division capability",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw1",
+      "id": "lesson-1",
+      "title": "HW1 · Problem 1(a)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw1",
+      "id": "lesson-3",
+      "title": "HW1 · Problem 1(b)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw1",
+      "id": "lesson-5",
+      "title": "HW1 · Problem 1(c)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw1",
+      "id": "lesson-6",
+      "title": "HW1 · Problem 1(d)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw1",
+      "id": "lesson-7",
+      "title": "HW1 · Problem 2(a)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw1",
+      "id": "lesson-8",
+      "title": "HW1 · Problem 2(b)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "hw1",
+      "id": "lesson-9",
+      "title": "HW1 · Problem 2(c)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw1",
+      "id": "lesson-10",
+      "title": "HW1 · Problem 2(d)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw1",
+      "id": "lesson-12",
+      "title": "HW1 · Problem 3(a)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw1",
+      "id": "lesson-13",
+      "title": "HW1 · Problem 3(b)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw1",
+      "id": "lesson-14",
+      "title": "HW1 · Problem 3(c)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "hw1",
+      "id": "lesson-16",
+      "title": "HW1 · Problem 3(d)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw1",
+      "id": "lesson-19",
+      "title": "HW1 · Problem 4(a)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw1",
+      "id": "lesson-20",
+      "title": "HW1 · Problem 4(b)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw1",
+      "id": "lesson-22",
+      "title": "HW1 · Problem 4(c)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw2",
+      "id": "lesson-2",
+      "title": "HW2 · Problem 1(a)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw2",
+      "id": "lesson-3",
+      "title": "HW2 · Problem 1(b i)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw2",
+      "id": "lesson-4",
+      "title": "HW2 · Problem 1(b ii)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw2",
+      "id": "lesson-5",
+      "title": "HW2 · Problem 1(c)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw2",
+      "id": "lesson-8",
+      "title": "HW2 · Problem 2(a)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw2",
+      "id": "lesson-9",
+      "title": "HW2 · Problem 2(b)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw2",
+      "id": "lesson-10",
+      "title": "HW2 · Problem 2(c)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw2",
+      "id": "lesson-12",
+      "title": "HW2 · Problem 3(a)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw2",
+      "id": "lesson-13",
+      "title": "HW2 · Problem 3(b)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw2",
+      "id": "lesson-14",
+      "title": "HW2 · Problem 3(c)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "hw2",
+      "id": "lesson-17",
+      "title": "HW2 · Problem 4(a)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "hw2",
+      "id": "lesson-18",
+      "title": "HW2 · Problem 4(b)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw2",
+      "id": "lesson-20",
+      "title": "HW2 · Problem 4(c)",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw3",
+      "id": "hw-1a",
+      "title": "HW3 1a · Knowledge implies soundness",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw3",
+      "id": "hw-1b",
+      "title": "HW3 1b · Which setup model?",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw3",
+      "id": "hw-1c",
+      "title": "HW3 1c · A root bound needs a field",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw3",
+      "id": "hw-1d",
+      "title": "HW3 1d · Hashing does not strengthen privacy",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw3",
+      "id": "hw-2a",
+      "title": "HW3 2a · Construct the Schnorr proof",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "hw3",
+      "id": "hw-2b",
+      "title": "HW3 2b · Verify, then explain the equation",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw3",
+      "id": "hw-2c",
+      "title": "HW3 2c · Bound a restricted guessing attack",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw3",
+      "id": "hw-2d",
+      "title": "HW3 2d · Can a proof be passed on?",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw3",
+      "id": "hw-3a",
+      "title": "HW3 3a · A one-bit hash challenge is insufficient",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw3",
+      "id": "hw-3b",
+      "title": "HW3 3b · Amplify before applying Fiat–Shamir",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw3",
+      "id": "hw-4a",
+      "title": "HW3 4a · Build a succinct interactive argument",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "hw3",
+      "id": "hw-4b",
+      "title": "HW3 4b · Remove the PCP challenge message",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw4",
+      "id": "hw4-1a",
+      "title": "HW4 1a · An ideal oracle and its cryptographic implementation",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw4",
+      "id": "hw4-1b",
+      "title": "HW4 1b · Single-server PIR when P equals NP",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw4",
+      "id": "hw4-1c",
+      "title": "HW4 1c · Two servers need a separation assumption",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw4",
+      "id": "hw4-1d",
+      "title": "HW4 1d · An empty proof is not automatically fast verification",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw4",
+      "id": "hw4-2a",
+      "title": "HW4 2a · Prove that the low coefficients vanish",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw4",
+      "id": "hw4-2b",
+      "title": "HW4 2b · Isolate one coefficient",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "hw4",
+      "id": "hw4-2c",
+      "title": "HW4 2c · An inner product hidden in a product polynomial",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw4",
+      "id": "hw4-3a",
+      "title": "HW4 3a · Compute a commitment without knowing α",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw4",
+      "id": "hw4-3b",
+      "title": "HW4 3b · Why the binding guarantee is computational",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw4",
+      "id": "hw4-3c",
+      "title": "HW4 3c · Turn an opening into a quotient identity",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw4",
+      "id": "hw4-3d",
+      "title": "HW4 3d · Check the identity in the exponent",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "hw4",
+      "id": "hw4-3e",
+      "title": "HW4 3e · Break binding with an exponent-division capability",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw4",
+      "id": "hw4-4a",
+      "title": "HW4 4a · Build equality from Boolean gates",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    },
+    {
+      "deck": "hw4",
+      "id": "hw4-4b",
+      "title": "HW4 4b · Use an encrypted binary address",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 1
+    },
+    {
+      "deck": "hw4",
+      "id": "hw4-4c",
+      "title": "HW4 4c · Track the specified noise through the whole circuit",
+      "action": "canonical worked exercise reviewed",
+      "review": "Keep the actual task, local assumptions, justified solution steps and initially closed solution. Chapter/homework copies share their source.",
+      "protocol_diagrams": 0
+    }
+  ]
+}

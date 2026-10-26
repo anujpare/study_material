@@ -52,7 +52,7 @@ Linear-query IOPs on lecture page 3 are also introduced in the two-routes card: 
 
 ## Earlier-deck second pass
 
-The original 189-card audit and all existing IDs are retained. Chapter 1/2 and HW1/2 retain their card counts. This pass makes targeted improvements using the teaching guide rather than claiming a fresh derivation of every source theorem:
+The earlier pass below retained 189 original card records. It has now been superseded by the undergraduate rebuild described in TEACHING_REVIEW.md: repeated cards and elementary primers are removed, with old IDs retained as bookmark aliases. These previous mathematical corrections remain in force:
 
 - Replace envelope, puzzle and city/road framing in prerequisite material with commitments, encryption randomness, proposed keys and graph structure.
 - Make the ciphertext-versus-plaintext distinction with two randomized encryptions of the same message in the HW1 solution.
@@ -69,12 +69,12 @@ The executable audit verifies stable links, prerequisite order and source covera
 
 Sources are **lecture13-14_pir.pdf** (8 pages, lecture header FS2026) and **hw4_sol.pdf** (5 pages, Exercise Sheet 4 version 1, header FS2025). The differing course-year headers are retained as source facts; they are not used to infer an exam syllabus beyond the supplied material.
 
-Chapter 4 contains **28 teaching cards and 17 assigned subquestions**: all 15 HW4 questions, plus HW3 1(a) and 1(c). The first part develops PIR; the second is explicitly labelled as a midterm bridge back to polynomial proofs and commitments, since ten HW4 questions concern those earlier topics. HW4 is a separate 15-card deck in assignment order. Both decks use the same HW4 source, and the two HW3 reviews reuse the existing canonical question and solution. `scripts/pir-audit.json` records card order, prerequisites and source pages.
+Chapter 4 contains **27 teaching cards and 17 assigned subquestions**: all 15 HW4 questions, plus HW3 1(a) and 1(c). The first part develops PIR; the second is explicitly labelled as a midterm bridge back to polynomial proofs and commitments, since ten HW4 questions concern those earlier topics. HW4 is a separate 15-card deck in assignment order. Both decks use the same HW4 source, and the two HW3 reviews reuse the existing canonical question and solution. `scripts/pir-audit.json` records card order, prerequisites and source pages.
 
 | Source | Teaching path and exercise placement |
 | --- | --- |
 | PIR pp. 1–3 | Goal, indexed retrieval, correctness/privacy distinction, cost model |
-| PIR pp. 3–5 | Bit arithmetic, secret shares, flat and matrix protocols, correctness, privacy, communication balance → HW4 1(c) |
+| PIR pp. 3–5 | Private selectors, secret shares, flat and matrix protocols, correctness, privacy, communication balance → HW4 1(c) |
 | PIR pp. 5–6 | Randomized encryption, LHE operations, encrypted matrix selector → HW4 1(b) |
 | PIR pp. 6–7 | Recursive selection, ciphertext encodings, expansion, limits of direct two-server reuse |
 | HW4 pp. 4–5 | Binary addresses and Boolean gates → 4(a); FHE lookup → 4(b); gate noise and powers → 4(c) |
@@ -99,3 +99,13 @@ Chapter 4 contains **28 teaching cards and 17 assigned subquestions**: all 15 HW
 12. **HW4 3(e).** c/g^y′ is a group element g^x, not the exponent x. Apply the assumed exponent-division algorithm to that element without taking a discrete logarithm. Division requires z≠α. A forged group element need not represent a genuine quotient polynomial to satisfy the verifier under this extra capability.
 13. **HW4 4(a–b).** Use m for the equality-string length and n for database size. Encode record i by i−1 in ℓ=ceil(log₂ n) bits, avoiding the off-by-one problem when n is a power of two. The secret-key construction supplies encrypted constants; compactness and correct evaluation for the circuit are required. One response ciphertext does not mean one server operation.
 14. **HW4 4(c).** The exact stated-circuit noise is 2n·8^ceil(log₂ n); it is 2n⁴ when n is a power of two. The result uses the full equality circuit with encrypted constants and the sheet's stipulated gate rules. Other optimizations or schemes need a separate calculation; no decryption threshold is specified.
+
+## Undergraduate rebuild: formal coverage and source limits
+
+The current pass replaces automatic elementary primers and first-use glossary injection with deliberate explanations. Chapter 1 retains the formal definitions of NP, PPT, negligible functions, computational/statistical indistinguishability, hiding, binding, discrete-logarithm hardness, PRF security, DDH and position binding. Chapter 2 retains completeness/soundness, BPP/IP/PSPACE, the simulator quantifier order, proof-versus-argument distinctions, knowledge error, Sigma properties and the plain/CRS/random-oracle distinctions. Repeated accounts of these concepts are merged; no assigned homework question is removed.
+
+Chapter 3 now displays the lecture’s short-proof and fast-verifier requirements, the PCP quantifiers and the full PCS correctness/evaluation-binding games. It separates formal polynomials from evaluation functions over a finite field. Chapter 4 states privacy by comparing server views and incorporates the one-hot/inner-product setup into secret sharing instead of teaching bits or vectors on a separate card.
+
+The source PDFs available for this pass are lectures 9–12, lectures 13–14, HW3 and HW4. Chapter 1/2 and HW1/2 were reviewed against the repository’s existing lecture/exercise transcription; their original PDFs were not available in the workspace. Retention of those transcribed definitions is checked, but this is not a claim of a fresh page-by-page comparison against unavailable PDFs.
+
+The definition of computational indistinguishability uses the absolute difference of output-1 probabilities. In a balanced hidden-world guessing experiment, success above 1/2 is half that gap; the text states the convention explicitly. In the random-oracle hiding proof, each candidate-message experiment is compared with an independent commitment experiment, and a triangle inequality permits the factor of two. The collision calculation includes unqueried final opening inputs. Pedersen’s reduction handles the identity DLP challenge directly before using a nonidentity h as a generator.

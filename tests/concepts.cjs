@@ -9,26 +9,25 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
     const errors = []; page.on('pageerror', e => errors.push(e.message));
     const visit = async (deck, card, key) => {
       await page.goto(`${base}/${deck}/#lesson-${card}`);
+      await page.locator('.pet-active details.solution').evaluateAll(es=>es.forEach(e=>e.open=true));
       const lab = page.locator(`[data-lab="${key}"]`);
       await lab.waitFor({state: 'visible'});
       return lab;
     };
-    let lab = await visit('commitment',2,'growth');
+    let lab = await visit('commitment',10,'growth');
     assert.match(await lab.locator('output').textContent(), /costs are equal/);
     const cardPosition = await page.locator('#pet-card-slider').inputValue();
     await lab.locator('input').focus(); await page.keyboard.press('End');
     assert.match(await lab.locator('output').textContent(), /144 steps.*4,096 steps/);
     assert.equal(await page.locator('#pet-card-slider').inputValue(),cardPosition);
     assert.match(await lab.locator('svg').getAttribute('aria-label'),/from 0 to 4096/);
-    await page.locator('.pet-active [data-view=reading]').click();
-    assert.equal(await lab.isVisible(),false);
-    assert(await page.locator('.pet-active .concept-reading mjx-container').first().isVisible());
-    await page.locator('.pet-active [data-view=visual]').click();
-    assert.equal(await lab.locator('input').inputValue(),'12');
-    assert.equal(new URL(page.url()).hash,'#lesson-2');
+    assert(await page.locator('.pet-active .reading>p').first().isVisible());
+    assert(await lab.isVisible());
+    assert.equal(await page.locator('.concept-switch').count(),0);
+
 
     lab = await visit('commitment',13,'negligible');
-    assert.match(await lab.locator('output').textContent(),/Equal denominators/); // 2^16 = 16^4
+    assert.match(await lab.locator('output').textContent(),/equals the threshold/); // 2^16 = 16^4
     await lab.locator('select').selectOption('polynomial');
     assert.equal(await lab.locator('.below-threshold').count(),6);
     await lab.locator('input').fill('6');
@@ -37,7 +36,7 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
     await lab.locator('select').selectOption('exponential');
     await lab.locator('input').fill('8');
     await lab.locator('[data-size="128"]').click();
-    assert.match(await lab.locator('output').textContent(),/larger denominator gives the smaller fraction/);
+    assert.match(await lab.locator('output').textContent(),/is below the threshold/);
     assert(await lab.locator('[data-size="128"]').evaluate(el=>el===document.activeElement));
     assert.equal(await lab.locator('[data-size="16"]').textContent(),'λ = 16Not below');
 
@@ -129,7 +128,7 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
     assert.match(await lab.locator('output').textContent(),/Start by hashing/);
     console.log('PASS visual reasoning: growth, negligible thresholds, all 16 distinguishing tests, collision bounds, reduction steps, retries, DDH mappings, Schnorr correspondence and Merkle path');
 
-    const cases=[['commitment',2,'growth'],['commitment',13,'negligible'],['commitment',22,'distinguishing'],['commitment',31,'collision-pairs'],['commitment',51,'binding-reduction'],['zero-knowledge',24,'simulator-retry'],['hw1',1,'collision-pairs'],['hw1',16,'ddh-plane'],['hw1',22,'merkle-path'],['hw2',13,'reverse-simulator']];
+    const cases=[['commitment',10,'growth'],['commitment',13,'negligible'],['commitment',22,'distinguishing'],['commitment',31,'collision-pairs'],['commitment',51,'binding-reduction'],['zero-knowledge',24,'simulator-retry'],['hw1',1,'collision-pairs'],['hw1',16,'ddh-plane'],['hw1',22,'merkle-path'],['hw2',13,'reverse-simulator']];
     for(const width of [320,390,768]){
       await page.setViewportSize({width,height:640});
       for(const [deck,id,key] of cases){
