@@ -3,8 +3,10 @@
   const cards = [
     ["witness","A claim and its witness","card-01.html"],
     ["np","Why checking is different from finding","card-02.html"],
+    ["lecture-power","Why interaction expands what we can prove","lecture-power.html"],
     ["interaction","The verifier asks a question","card-03.html"],
     ["guarantees","Completeness and soundness","card-04.html"],
+    ["lecture-applications","When privacy is actually needed","lecture-applications.html"],
     ["zk","What zero knowledge means","card-05.html"],
     ["commitments","Hiding and binding","card-06.html"],
     ["hw1-security","HW1 · Hiding and binding","hw1-security.html"],
@@ -389,10 +391,22 @@
       steps.map(x=>x.value+" ("+x.side+" sibling at "+x.level+" level)").join(", ")+
       ". At each level combine the current value and the supplied sibling in the indicated left/right order. The final hash must equal the already-published root c. This is why proof size grows with the TREE HEIGHT, not with all eight messages.");
   }
+  function pspaceUpdate(){
+    const input=$("pspace-bits");if(!input)return;
+    const n=Number(input.value),states=2**n;
+    $("pspace-bits-label").textContent=String(n);
+    $("pspace-memory").textContent=n+" bits";
+    $("pspace-states").textContent=states.toLocaleString("en-US");
+    feedback("pspace-result",
+      "A binary counter using "+n+" bits has "+states.toLocaleString("en-US")+
+      " distinct configurations, from 0 through "+(states-1).toLocaleString("en-US")+
+      ". Visiting them all may require exponentially many steps, although the counter itself stores only "+n+
+      " bits. This illustrates the difference between memory and time; it is NOT a proof that IP=PSPACE.");
+  }
   function initializeLab(){
     drawGraph("witness-graph");npUpdate();drawGraph("graph-original",{route:fixedRoute});drawGraph("graph-permuted",{permuted:true,route:fixedPermRoute});
     drawGraph("extract-b",{permuted:true});drawGraph("extract-g");
-    scheduleUpdate();compareCost();schnorrUpdate();schnorrExtract();gateUpdate();oddsUpdate();pedersenUpdate();fsQueryUpdate();fsAmplifyUpdate();merkleUpdate();
+    scheduleUpdate();compareCost();schnorrUpdate();schnorrExtract();gateUpdate();oddsUpdate();pedersenUpdate();fsQueryUpdate();fsAmplifyUpdate();merkleUpdate();pspaceUpdate();
   }
   document.addEventListener("click",e=>{
     const b=e.target.closest("button[data-demo]");if(!b||!content.contains(b))return;
@@ -431,6 +445,7 @@
       case"fs-query-slider":fsQueryUpdate();break;
       case"fs-amplify-slider":fsAmplifyUpdate();break;
       case"merkle-leaf":merkleUpdate();break;
+      case"pspace-slider":pspaceUpdate();break;
     }
   });
   document.addEventListener("change",e=>{if(content.contains(e.target)&&e.target.dataset.demo==="merkle-leaf")merkleUpdate();});
