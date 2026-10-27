@@ -37,6 +37,7 @@
   const $=id=>document.getElementById(id);
   const content=$("lesson"),select=$("jump"),previous=$("previous"),next=$("next"),counter=$("counter"),progress=$("progress"),label=$("current-label");
   let current=0,loading=0,lockedGuess=null,lockedChallenge=null,lockedBit=null;
+  let soundnessSetup=null,soundnessChecked=false;
   function idxFromHash(){const i=cards.findIndex(c=>c.id===decodeURIComponent(location.hash.slice(1)));return i<0?0:i;}
   function navigation(){
     current=idxFromHash();
@@ -48,6 +49,7 @@
   async function render(){
     navigation();
     lockedGuess=null;lockedChallenge=null;lockedBit=null;
+    soundnessSetup=null;soundnessChecked=false;
     const request=++loading, card=cards[current];
     if(window.MathJax?.typesetClear){try{window.MathJax.typesetClear([content]);}catch(e){console.warn(e);}}
     content.innerHTML='<p class="loader">Loading the lesson…</p>';
@@ -179,12 +181,42 @@
       "Challenge c=0: reveal π and every B[i,j]. The verifier checks that B[i,j]=1 exactly when the corresponding original vertices π⁻¹(i), π⁻¹(j) are joined in G. The full permuted graph is disclosed.":
       "Challenge c=1: reveal only the five committed edges on the cycle 2→4→1→5→3→2. All five visible entries are 1. The verifier checks that the cycle visits every vertex once; π and the other committed edges stay concealed.";
   }
+  function drawFalseGraph(id,withCycle){
+    const target=$(id);if(!target)return;
+    if(withCycle===null){target.innerHTML='<p class="readout">No committed graph has been fixed yet.</p>';return;}
+    const pathEdges=[[1,2],[2,3],[3,4],[4,5]];
+    let h='<svg class="graph-svg" viewBox="0 0 360 325" role="img" aria-label="'+(withCycle?"Five-vertex cycle with an added closing edge between 5 and 1":"Five-vertex path, endpoints 1 and 5 have only one edge and cannot lie on a Hamiltonian cycle")+'">';
+    for(const [a,b] of pathEdges){
+      const u=point[a],v=point[b];
+      h+='<line class="ordinary" x1="'+u[0]+'" y1="'+u[1]+'" x2="'+v[0]+'" y2="'+v[1]+'"/>';
+    }
+    const a=point[5],b=point[1];
+    h+='<line class="'+(withCycle?"cycle":"invalid")+'" x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'"/>';
+    for(let i=1;i<=5;i++){const p=point[i];h+='<circle class="node" cx="'+p[0]+'" cy="'+p[1]+'" r="22"/><text class="node-text" x="'+p[0]+'" y="'+p[1]+'">'+i+'</text>';}
+    h+='</svg>';target.innerHTML=h;
+  }
   function hamCase(which){
-    const isomorphic=which==="isomorphic";
-    feedback("ham-false-result",isomorphic?
-      "The commitments correctly encode a graph isomorphic to G. Challenge 0 can pass, but because G has no Hamiltonian cycle, its isomorphic copy cannot contain one. Challenge 1 must fail.":
-      "The committed graph is not isomorphic to G. Challenge 0 must fail, even if the prover deliberately committed to a graph containing an easy Hamiltonian cycle that could pass challenge 1.",
-    "bad");
+    soundnessSetup=which;soundnessChecked=false;
+    drawFalseGraph("ham-false-public",false);
+    drawFalseGraph("ham-false-hidden",which==="different");
+    feedback("ham-false-result",which==="isomorphic"?
+      "The prover fixed B as the same five-vertex PATH as G₀. A graph-identity check (c=0) can pass, but a cycle check (c=1) must fail because vertices 1 and 5 each have only one incident road. Choose one challenge.":
+      "The prover fixed B as a five-vertex CYCLE. Its extra closing road (5,1) provides a Hamiltonian cycle, but means B is not isomorphic to the public path G₀. Choose one challenge.");
+  }
+  function hamFalseChallenge(c){
+    if(soundnessSetup===null){feedback("ham-false-result","The prover must first choose and fix its committed graph B. A challenge cannot precede the commitments.","bad");return;}
+    if(soundnessChecked){feedback("ham-false-result","This verifier has already challenged this committed first message. A fresh experimental run requires fixing a NEW first message; the prover cannot rewind the real verifier to change c.","bad");return;}
+    soundnessChecked=true;
+    const iso=soundnessSetup==="isomorphic",pass=(iso&&c===0)||(!iso&&c===1);
+    const reason=iso?(c===0?
+      "B is exactly a relabeling of G₀, so opening the graph and permutation passes the isomorphism check.":
+      "B is a path. Its degree-one endpoints cannot belong to any Hamiltonian cycle, so the requested cycle opening is impossible.")
+      :(c===0?
+      "B contains the extra road (5,1), so no permutation can make it equal to the public path G₀. The isomorphism check fails.":
+      "B contains the cycle 1→2→3→4→5→1, so the verifier can check opened cycle edges and accept that challenge.");
+    feedback("ham-false-result",(pass?"ACCEPT on this ONE challenge. ":"REJECT on this challenge. ")+reason+
+      " Because the first commitment was fixed before the random bit, the cheating prover can answer at most one of the two equally likely questions.",
+      pass?"good":"bad");
   }
   function simPreview(guess,challenge){
     const box=$("sim-preview");if(!box)return;
@@ -404,6 +436,7 @@
       " bits. This illustrates the difference between memory and time; it is NOT a proof that IP=PSPACE.");
   }
   function initializeLab(){
+    drawFalseGraph("ham-false-public",false);drawFalseGraph("ham-false-hidden",null);
     drawGraph("witness-graph");npUpdate();drawGraph("graph-original",{route:fixedRoute});drawGraph("graph-permuted",{permuted:true,route:fixedPermRoute});
     drawGraph("extract-b",{permuted:true});drawGraph("extract-g");
     scheduleUpdate();compareCost();schnorrUpdate();schnorrExtract();gateUpdate();oddsUpdate();pedersenUpdate();fsQueryUpdate();fsAmplifyUpdate();merkleUpdate();pspaceUpdate();
@@ -421,6 +454,7 @@
       case"perm-view":permute(true);break;
       case"ham-challenge":matrixForChallenge(Number(v));break;
       case"ham-false":hamCase(v);break;
+      case"ham-false-challenge":hamFalseChallenge(Number(v));break;
       case"sim-guess":simulator(v);break;
       case"sim-ask":simulator(v);break;
       case"schedule":scheduleUpdate();break;
