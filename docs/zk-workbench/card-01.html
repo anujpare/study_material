@@ -1,0 +1,45 @@
+<article class="lesson" aria-labelledby="lesson-title">
+  <p class="eyebrow">01 · Foundations</p>
+  <h1 id="lesson-title">What is a proof actually proving?</h1>
+  <p class="lead">A zero-knowledge proof sounds mysterious only if we skip the ordinary idea of a proof. Start by separating the <strong>claim</strong> from the <strong>evidence</strong> that convinces someone it is true.</p>
+
+  <h2>A claim about five cities</h2>
+  <p>Imagine that the lines below are roads. I claim that you can start at city A, visit each of the five cities exactly once, and return to A using only these roads. The claim is either true or false, whether or not I tell you a route.</p>
+  <figure class="graph-wrap">
+    <svg id="road-graph" data-route="none" viewBox="0 0 360 265" role="img" aria-label="Five cities A, B, C, D, E connected in a pentagon, with an additional road between A and C">
+      <polyline class="cycle-road" points="180,35 312,106 260,231 100,231 48,106 180,35" fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline>
+      <line class="extra-road" x1="180" y1="35" x2="260" y2="231" stroke-width="5" stroke-linecap="round"></line>
+      <g class="graph-nodes">
+        <circle cx="180" cy="35" r="19"></circle><circle cx="312" cy="106" r="19"></circle><circle cx="260" cy="231" r="19"></circle><circle cx="100" cy="231" r="19"></circle><circle cx="48" cy="106" r="19"></circle>
+        <g text-anchor="middle" dominant-baseline="middle"><text x="180" y="35">A</text><text x="312" y="106">B</text><text x="260" y="231">C</text><text x="100" y="231">D</text><text x="48" y="106">E</text></g>
+      </g>
+    </svg>
+    <figcaption>Each circle is a city; each line is a road. An extra diagonal road connects A and C.</figcaption>
+  </figure>
+
+  <h2>Finding evidence versus checking evidence</h2>
+  <p>Finding such a route may require trying many possibilities. <strong>Checking</strong> a proposed route is much simpler: look at every consecutive pair of cities, confirm that a road joins them, and check that each city appears once before returning to the start.</p>
+  <p>We call the claim the <strong>statement</strong>, written <span class="symbol">x</span>, and a proposed route the <strong>witness</strong>, written <span class="symbol">w</span>. A <strong>verifier</strong> is an algorithm that checks whether the witness establishes the claim. It accepts by returning 1 and rejects by returning 0.</p>
+  <div class="equation" role="group" aria-label="Verifier of x and w returns 1 when the route is valid">
+    <span>V(x, w) = 1</span>
+    <small>Here V is the verifier, x is the road map, and w is a valid route.</small>
+  </div>
+
+  <section class="experiment" aria-labelledby="experiment1-title">
+    <div class="experiment-top"><span class="experiment-label">Try it yourself</span><span class="experiment-num">Witness checker</span></div>
+    <h3 id="experiment1-title">Which proposed route proves the claim?</h3>
+    <p>Choose a route. The verifier checks the roads and the number of city visits; it does not need to discover the route itself.</p>
+    <div class="choice-grid">
+      <button type="button" data-demo="route" data-value="good">A → B → C → D → E → A</button>
+      <button type="button" data-demo="route" data-value="bad">A → B → D → E → C → A</button>
+    </div>
+    <p id="route-result" class="feedback" aria-live="polite">Select a route to run the check.</p>
+  </section>
+
+  <h2>Where NP enters</h2>
+  <p>In this course, <strong>NP</strong> means a class of yes/no problems for which, whenever the answer is yes, there exists a witness of manageable length that a computer can check efficiently. “Efficiently” means the checking time grows at most as a polynomial in the size of the input, rather than requiring an exhaustive search of every possible witness.</p>
+  <div class="equation"><span>x ∈ L ⇔ there exists w with V(x, w) = 1</span><small>L is the set of yes-instances; ∈ means “belongs to”; ⇔ means “if and only if”. The witness is short enough to check efficiently.</small></div>
+  <p>For our map, the witness is one valid round trip. The important distinction is that <strong>being able to verify evidence does not mean you know how to find it quickly</strong>.</p>
+  <p class="bridge"><strong>What remains unresolved?</strong> This ordinary proof gives the verifier the full route. On the next card, we introduce interaction—the first step toward convincing a verifier without simply handing over the witness.</p>
+  <p class="source">Grounded in PETS Lecture 5–8, pp. 1–2 · Statements, witnesses, NP</p>
+</article>
