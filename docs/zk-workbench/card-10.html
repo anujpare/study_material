@@ -12,7 +12,7 @@
 <h2>Use rewinding only when the guess fails</h2>
 <section class="lab"><div class="lab-head"><div class="tag">Simulate one attempt</div><h3>Can the simulator open what it already committed to?</h3><p>Prepare a first message, then choose the verifier's hypothetical challenge. Once the challenge is received, the commitments cannot be changed.</p></div><div class="lab-body">
 <div class="control-row"><button data-demo="sim-guess" data-value="zero">Sim guesses \(\hat c=0\)</button><button data-demo="sim-guess" data-value="one">Sim guesses \(\hat c=1\)</button></div>
-<div class="data-box sim"><span class="label">Simulated first message</span><strong id="sim-prep">No commitments prepared yet</strong></div>
+<div class="data-box sim"><span class="label">Simulated first message</span><strong id="sim-prep">No commitments prepared yet</strong></div><div class="diagram"><div class="graph-title">Verifier-visible committed matrix</div><div id="sim-preview"><p class="diagram-note">Commitments are not sent until the simulator chooses a preparation.</p></div><p class="diagram-note">A lock is a committed but unopened bit. The matrix changes to visible bits only when the guessed challenge matches the verifier’s actual challenge.</p></div>
 <div class="control-row"><button data-demo="sim-ask" data-value="ask-zero">Verifier asks \(c=0\)</button><button data-demo="sim-ask" data-value="ask-one">Verifier asks \(c=1\)</button></div>
 <div id="sim-result" class="feedback" aria-live="polite">The simulator must send its first message before receiving \(c\).</div>
 </div></section>
