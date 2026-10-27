@@ -3,7 +3,7 @@
 <p class="chapter-tag">II · Polynomial reasoning · Lecture §3</p>
 <h1>Fields: the rule behind the proofs</h1>
 <p class="aim"><strong>Question.</strong> The coming soundness proofs count the roots of polynomials. Under what arithmetic rules is that root count valid?</p>
-<p>In elementary algebra, a polynomial is an expression such as \(f(X)=3X^2-7X+6\). The variable \(X\) is a placeholder: \(f(2)\) means replace every \(X\) by \(2\). The degree is the largest exponent with nonzero coefficient; here it is \(3\). A <strong>root</strong> is a value \(a\) for which \(f(a)=0\).</p>
+<p>In elementary algebra, a polynomial is an expression such as \(f(X)=3X^2-7X+6\). The variable \(X\) is a placeholder: \(f(2)\) means replace every \(X\) by \(2\). The degree is the largest exponent with nonzero coefficient; here it is \(2\). A <strong>root</strong> is a value \(a\) for which \(f(a)=0\).</p>
 <p>Cryptographic protocols usually perform the arithmetic in a finite <strong>field</strong> rather than over the real numbers. The notation \(\mathbb F_p\), for a prime \(p\), means the residue classes \(0,1,\ldots,p-1\), with addition and multiplication taken modulo \(p\). For example in \(\mathbb F_{17}\), \(15+5=3\) and \(5\cdot4=3\), because both integer results leave remainder 3 when divided by 17.</p>
 <p>What makes this a field is that every nonzero element has a multiplicative inverse. For instance \(5^{-1}=7\) modulo 17 because \(5\cdot7=35\equiv1\pmod{17}\). Multiplying by an inverse permits cancellation: if \(ab=0\) in a field and \(a\ne0\), then \(b=a^{-1}ab=0\).</p>
 <p>This is not a merely technical condition. It is the exact step that makes our coming proof work: from \((b-a)h(b)=0\) and \(b-a\ne0\), we will conclude \(h(b)=0\).</p>
