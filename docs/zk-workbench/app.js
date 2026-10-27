@@ -27,6 +27,7 @@
     ["hw3-fs-schnorr","HW3 · Noninteractive Schnorr","hw3-fs-schnorr.html"],
     ["hw3-fs-attacks","HW3 · Guessing and transfer","hw3-fs-attacks.html"],
     ["hw3-amplify","HW3 · Amplify before Fiat–Shamir","hw3-amplify.html"],
+    ["hw1-vector","HW1 · Vector commitments","hw1-vector.html"],
     ["hw3-pcp","Optional · SNARG construction","hw3-pcp.html"],
     ["hw3-roots","Optional · Root bound over Z₆","hw3-roots.html"]
   ].map(a => ({id:a[0],title:a[1],file:a[2]}));
@@ -348,10 +349,50 @@
       "%. For Q="+Q+" fresh candidate hashes, the union bound is min(1,Q/2^λ)="+(100*union).toFixed(3)+
       "%. If all candidate hash outcomes are independent with one winning vector each, exact success probability is "+(100*exact).toFixed(3)+"%.");
   }
+  function merkleUpdate(){
+    const input=$("merkle-leaf");if(!input)return;
+    const i=Number(input.value),chosen=i-1;
+    const levels=[
+      [{name:"c",x:340,y:35}],
+      [{name:"c14",x:170,y:115},{name:"c58",x:510,y:115}],
+      ["c12","c34","c56","c78"].map((name,j)=>({name,x:85+170*j,y:195})),
+      ["c1","c2","c3","c4","c5","c6","c7","c8"].map((name,j)=>({name,x:42.5+85*j,y:280}))
+    ];
+    const path=[0,Math.floor(chosen/4),Math.floor(chosen/2),chosen];
+    const siblings=[path[1]^1,path[2]^1,path[3]^1];
+    const labels=["leaf", "pair", "half"];
+    let svg='<svg viewBox="0 0 680 323" role="img" aria-label="Binary Merkle tree, selected leaf in green, ancestors in blue, required sibling hashes in amber">';
+    for(let l=0;l<3;l++){
+      for(let j=0;j<levels[l+1].length;j++){
+        const parent=levels[l][Math.floor(j/2)],child=levels[l+1][j];
+        const route=path[l+1]===j,required=siblings[l]===j;
+        svg+='<line x1="'+parent.x+'" y1="'+parent.y+'" x2="'+child.x+'" y2="'+child.y+'" stroke="'+(route?"#1961a0":required?"#bf7d22":"#b9c7cd")+'" stroke-width="'+(route?6:required?4:2)+'"/>';
+      }
+    }
+    for(let l=0;l<levels.length;l++){
+      for(let j=0;j<levels[l].length;j++){
+        const v=levels[l][j],onPath=path[l]===j,required=l>0&&siblings[l-1]===j,leafSelected=l===3&&j===chosen;
+        const fill=leafSelected?"#a4dfc7":required?"#fee2ad":onPath?"#cfe7fb":"#f3f6f7";
+        svg+='<circle cx="'+v.x+'" cy="'+v.y+'" r="'+(l===3?22:25)+'" fill="'+fill+'" stroke="'+(onPath?"#1961a0":required?"#b87313":"#a8b7c0")+'" stroke-width="'+(onPath||required?3:2)+'"/>';
+        svg+='<text x="'+v.x+'" y="'+(v.y+6)+'" fill="#183a4d" font-size="'+(l===3?16:19)+'" font-weight="700" font-family="system-ui" text-anchor="middle">'+v.name+'</text>';
+      }
+    }
+    svg+='</svg>';
+    $("merkle-tree").innerHTML=svg;
+    const steps=[
+      {level:"leaf",value:levels[3][siblings[2]].name,side:chosen%2===0?"right":"left"},
+      {level:"pair",value:levels[2][siblings[1]].name,side:Math.floor(chosen/2)%2===0?"right":"left"},
+      {level:"half",value:levels[1][siblings[0]].name,side:Math.floor(chosen/4)%2===0?"right":"left"}
+    ];
+    feedback("merkle-path",
+      "To open position "+i+", start from H(m"+i+") and send exactly three sibling hashes: "+
+      steps.map(x=>x.value+" ("+x.side+" sibling at "+x.level+" level)").join(", ")+
+      ". At each level combine the current value and the supplied sibling in the indicated left/right order. The final hash must equal the already-published root c. This is why proof size grows with the TREE HEIGHT, not with all eight messages.");
+  }
   function initializeLab(){
     drawGraph("witness-graph");npUpdate();drawGraph("graph-original",{route:fixedRoute});drawGraph("graph-permuted",{permuted:true,route:fixedPermRoute});
     drawGraph("extract-b",{permuted:true});drawGraph("extract-g");
-    scheduleUpdate();compareCost();schnorrUpdate();schnorrExtract();gateUpdate();oddsUpdate();pedersenUpdate();fsQueryUpdate();fsAmplifyUpdate();
+    scheduleUpdate();compareCost();schnorrUpdate();schnorrExtract();gateUpdate();oddsUpdate();pedersenUpdate();fsQueryUpdate();fsAmplifyUpdate();merkleUpdate();
   }
   document.addEventListener("click",e=>{
     const b=e.target.closest("button[data-demo]");if(!b||!content.contains(b))return;
@@ -389,8 +430,10 @@
       case"pedersen-slider":pedersenUpdate();break;
       case"fs-query-slider":fsQueryUpdate();break;
       case"fs-amplify-slider":fsAmplifyUpdate();break;
+      case"merkle-leaf":merkleUpdate();break;
     }
   });
+  document.addEventListener("change",e=>{if(content.contains(e.target)&&e.target.dataset.demo==="merkle-leaf")merkleUpdate();});
   select.innerHTML=cards.map((card,i)=>'<option value="'+card.id+'">'+String(i+1).padStart(2,"0")+" · "+card.title+"</option>").join("");
   render();
 })();
