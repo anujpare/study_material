@@ -24,6 +24,13 @@
 <details><summary>(i) “A malicious verifier interacting with an honest prover will always accept a true statement.”</summary><div class="inside"><p><strong>False.</strong> Perfect completeness concerns the honest verifier. A malicious verifier could always output “reject”, violating the quoted statement without violating the proof system's definition.</p></div></details>
 <details><summary>(ii) “An honest verifier interacting with a malicious prover will learn nothing besides validity.”</summary><div class="inside"><p><strong>False.</strong> Zero knowledge protects an honest prover's secret from a possibly malicious verifier, not a cheating prover's deliberate disclosures. A malicious prover can send the secret witness in clear text.</p></div></details>
 </div>
+<details><summary>Why can’t we always amplify by accepting only if every repetition accepts?</summary>
+<div class="inside">
+<p>If a protocol has only completeness probability \(2/3\), requiring three honest repetitions all to accept would succeed with probability only \((2/3)^3=8/27\), <em>worse</em> than the original guarantee. For this generic situation, one possible amplification uses a majority: accept when at least two of three independent repetitions accept.</p>
+<p>Let \(p\) be the independent acceptance probability in each repetition. Exactly two of three accept in three possible positions, each with probability \(p^2(1-p)\); all three accept with probability \(p^3\). Thus the majority-acceptance probability is \(3p^2(1-p)+p^3\).</p>
+<div class="math">\[\begin{aligned}p=\tfrac23&:\quad 3(\tfrac23)^2(\tfrac13)+(\tfrac23)^3=\tfrac{20}{27},\\p=\tfrac13&:\quad 3(\tfrac13)^2(\tfrac23)+(\tfrac13)^3=\tfrac7{27}.\end{aligned}\]<p class="math-caption">The first value is the honest-prover case and exceeds \(2/3\); the second is the false-statement cheating case and lies below \(1/3\). This is an illustrative independent-round calculation; a general adaptive-adversary amplification proof requires the corresponding conditional probability argument.</p></div>
+<p>The later Hamiltonicity protocol has <em>perfect completeness</em>: an honest prover always succeeds, so requiring <strong>every</strong> repetition to pass does not reduce its completeness. This is why Homework 2 uses AND repetition safely there.</p>
+</div></details>
 <div class="transition"><p>Even a proof that is complete and sound may simply reveal its secret witness. Our next goal is to define a third property that rules this out without sacrificing verification.</p></div>
 <p class="source">PETS · ZK lecture notes, Definition 1, p. 2; Homework 2, Problem 1(b).</p>
 </article>
