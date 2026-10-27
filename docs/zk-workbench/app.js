@@ -1,28 +1,35 @@
 (() => {
   "use strict";
   const cards = [
-    ["witness", "A claim and its witness"],
-    ["np", "Why checking is different from finding"],
-    ["interaction", "The verifier asks a question"],
-    ["guarantees", "Completeness and soundness"],
-    ["zk", "What zero knowledge means"],
-    ["commitments", "Hiding and binding"],
-    ["permutation", "Relabeling a Hamiltonian graph"],
-    ["ham-protocol", "The two Hamiltonicity challenges"],
-    ["ham-proof", "Proving the protocol works"],
-    ["simulation", "A simulator without the secret"],
-    ["zk-proof", "Why the simulator succeeds"],
-    ["repetition", "Sequential versus parallel messages"],
-    ["cost", "Why parallel simulation is hard"],
-    ["homework2", "Homework: composition proof"],
-    ["knowledge", "Proof of knowledge and rewinding"],
-    ["sigma", "Sigma protocols and soundness"],
-    ["schnorr", "Schnorr’s protocol and completeness"],
-    ["schnorr-zk", "Schnorr’s zero-knowledge simulator"],
-    ["schnorr-ext", "Extracting Schnorr’s secret"],
-    ["circuits", "Circuit satisfiability"],
-    ["fiat-shamir", "Making the proof non-interactive"]
-  ].map((a,i) => ({id:a[0],title:a[1],file:"card-"+String(i+1).padStart(2,"0")+".html"}));
+    ["witness","A claim and its witness","card-01.html"],
+    ["np","Why checking is different from finding","card-02.html"],
+    ["interaction","The verifier asks a question","card-03.html"],
+    ["guarantees","Completeness and soundness","card-04.html"],
+    ["zk","What zero knowledge means","card-05.html"],
+    ["commitments","Hiding and binding","card-06.html"],
+    ["hw1-security","HW1 · Hiding and binding","hw1-security.html"],
+    ["hw1-pedersen","HW1 · Pedersen and ElGamal","hw1-pedersen.html"],
+    ["permutation","Relabeling a Hamiltonian graph","card-07.html"],
+    ["ham-protocol","The two Hamiltonicity challenges","card-08.html"],
+    ["ham-proof","Proving the protocol works","card-09.html"],
+    ["simulation","A simulator without the secret","card-10.html"],
+    ["zk-proof","Why the simulator succeeds","card-11.html"],
+    ["repetition","Sequential versus parallel messages","card-12.html"],
+    ["cost","Why parallel simulation is hard","card-13.html"],
+    ["homework2","Homework: composition proof","card-14.html"],
+    ["knowledge","Proof of knowledge and rewinding","card-15.html"],
+    ["sigma","Sigma protocols and soundness","card-16.html"],
+    ["schnorr","Schnorr’s protocol and completeness","card-17.html"],
+    ["schnorr-zk","Schnorr’s zero-knowledge simulator","card-18.html"],
+    ["schnorr-ext","Extracting Schnorr’s secret","card-19.html"],
+    ["circuits","Circuit satisfiability","card-20.html"],
+    ["fiat-shamir","Making the proof non-interactive","card-21.html"],
+    ["hw3-fs-schnorr","HW3 · Noninteractive Schnorr","hw3-fs-schnorr.html"],
+    ["hw3-fs-attacks","HW3 · Guessing and transfer","hw3-fs-attacks.html"],
+    ["hw3-amplify","HW3 · Amplify before Fiat–Shamir","hw3-amplify.html"],
+    ["hw3-pcp","Optional · SNARG construction","hw3-pcp.html"],
+    ["hw3-roots","Optional · Root bound over Z₆","hw3-roots.html"]
+  ].map(a => ({id:a[0],title:a[1],file:a[2]}));
 
   const $=id=>document.getElementById(id);
   const content=$("lesson"),select=$("jump"),previous=$("previous"),next=$("next"),counter=$("counter"),progress=$("progress"),label=$("current-label");
@@ -286,10 +293,65 @@
       "Fiat–Shamir: P computes c=H(x,u) locally and sends only (u,z). V independently computes the same H(x,u) and checks verif(x,u,H(x,u),z). The hash plays the role of the challenge; security arguments here use the random-oracle model.";
     feedback("fs-result",text);
   }
+  function pedersenUpdate(){
+    const select=$("pedersen-new");if(!select)return;
+    const q=11,p=23,g=2,h=8,t=3,m=4,r=2,mp=Number(select.value);
+    const inv=invmod(t,q),rp=mod(r+(m-mp)*inv,q);
+    const C=(powmod(g,m,p)*powmod(h,r,p))%p;
+    const C2=(powmod(g,mp,p)*powmod(h,rp,p))%p;
+    $("pedersen-new-label").textContent=String(mp);
+    $("pedersen-alternative").textContent="m′="+mp+", r′="+rp;
+    feedback("pedersen-result",
+      "Original: 2^4 × 8^2 mod 23 = "+C+". Alternative: 2^"+mp+" × 8^"+rp+" mod 23 = "+C2+". "+
+      (mp===m?"These are the same message with the same salt. Choose a different message to demonstrate loss of binding.":"The same fixed commitment "+C+" has two valid openings to DIFFERENT messages. Binding fails because the committer knows t=3 and can calculate t⁻¹=4 modulo 11."),
+      mp===m?"":"bad");
+  }
+  function fsQueryUpdate(){
+    const input=$("fs-query-q");if(!input)return;
+    const Q=Number(input.value),q=11;
+    $("fs-query-count").textContent=String(Q);
+    $("fs-query-bound").textContent=Q+"/"+q+" = "+(100*Q/q).toFixed(1)+"%";
+    $("fs-query-exact").textContent=(100*(1-Math.pow(1-1/q,Q))).toFixed(2)+"%";
+    feedback("fs-query-result",
+      "Each candidate fixes its response z and commitment u BEFORE the oracle reply. Its unique winning challenge is c=2. For Q="+Q+" distinct inputs, the union bound is Q/11; when the outputs are independent, exact success chance is 1−(10/11)^Q. A repeated query to one input would NOT count as another independent attempt.");
+  }
+  function fsQueryRun(){
+    const inp=$("fs-query-q");if(!inp)return;
+    const Q=Number(inp.value),q=11,p=23,h=8,winning=2;
+    const inverseH=powmod(h,q-winning,p);
+    const rows=[];
+    let wins=0;
+    // A new independent toy random oracle is sampled on each button click.
+    // The Q first messages differ because z ranges from 0 to Q−1 in a prime-order group.
+    for(let z=0;z<Q;z++){
+      const u=(powmod(2,z,p)*inverseH)%p;
+      const c=Math.floor(Math.random()*q),ok=c===winning;
+      if(ok)wins++;
+      rows.push("z="+z+", u="+u+": H(h,u)="+c+" → "+(ok?"ACCEPT":"reject"));
+    }
+    feedback("fs-query-result",
+      "Fresh toy-oracle experiment: "+wins+"/"+Q+" guesses accepted. Each z fixes a different u BEFORE asking H, and each query has one winning answer c=2. "+rows.join(" | ")+
+      ". A second run resets the simulated oracle; repeatedly querying the same input WITHOUT resetting would always return its previous value.",
+      wins?"good":"");
+  }
+  function fsAmplifyUpdate(){
+    const a=$("fs-lambda"),b=$("fs-budget");if(!a||!b)return;
+    const n=Number(a.value),Q=Number(b.value),space=2**n,p=1/space;
+    const union=Math.min(1,Q*p),exact=1-Math.pow(1-p,Q);
+    $("fs-lambda-label").textContent=String(n);
+    $("fs-budget-label").textContent=Q.toLocaleString("en-US");
+    $("fs-one").textContent="1 / "+space.toLocaleString("en-US");
+    $("fs-many").textContent=(100*union).toFixed(3)+"%";
+    feedback("fs-amplify-result",
+      "A fixed commitment vector for a false statement can pass at most one of "+space.toLocaleString("en-US")+
+      " uniform challenge vectors. One attempt has probability at most "+(100*p).toPrecision(4)+
+      "%. For Q="+Q+" fresh candidate hashes, the union bound is min(1,Q/2^λ)="+(100*union).toFixed(3)+
+      "%. If all candidate hash outcomes are independent with one winning vector each, exact success probability is "+(100*exact).toFixed(3)+"%.");
+  }
   function initializeLab(){
     drawGraph("witness-graph");npUpdate();drawGraph("graph-original",{route:fixedRoute});drawGraph("graph-permuted",{permuted:true,route:fixedPermRoute});
     drawGraph("extract-b",{permuted:true});drawGraph("extract-g");
-    scheduleUpdate();compareCost();schnorrUpdate();schnorrExtract();gateUpdate();oddsUpdate();
+    scheduleUpdate();compareCost();schnorrUpdate();schnorrExtract();gateUpdate();oddsUpdate();pedersenUpdate();fsQueryUpdate();fsAmplifyUpdate();
   }
   document.addEventListener("click",e=>{
     const b=e.target.closest("button[data-demo]");if(!b||!content.contains(b))return;
@@ -311,6 +373,7 @@
       case"sigma":sigmaUpdate(Number(v));break;
       case"hvzk":zkSchnorr();break;
       case"fs":fsUpdate(v);break;
+      case"fs-query-run":fsQueryRun();break;
     }
   });
   document.addEventListener("input",e=>{
@@ -323,6 +386,9 @@
       case"schnorr-slider":schnorrUpdate();break;
       case"extract-slider":schnorrExtract();break;
       case"gate-slider":gateUpdate();break;
+      case"pedersen-slider":pedersenUpdate();break;
+      case"fs-query-slider":fsQueryUpdate();break;
+      case"fs-amplify-slider":fsAmplifyUpdate();break;
     }
   });
   select.innerHTML=cards.map((card,i)=>'<option value="'+card.id+'">'+String(i+1).padStart(2,"0")+" · "+card.title+"</option>").join("");
