@@ -1,0 +1,27 @@
+<article class="lesson">
+<p class="chapter">Part II · How to keep a secret fixed</p>
+<h1>A commitment hides information without allowing it to change</h1>
+<p class="lead">A verifier needs to ask an unpredictable question, but how can it know that the prover did not alter its earlier answer after seeing the question? A <strong>commitment scheme</strong> supplies exactly the two properties we need.</p>
+<h2>Make a value fixed now; reveal it later</h2>
+<p>The prover chooses a bit \(b\in\{0,1\}\) and fresh random bits \(r\). It computes a commitment \(C=\mathrm{Commit}(b;r)\) and sends \(C\) to the verifier. Later, it can reveal \((b,r)\), allowing the verifier to recompute the commitment and check that the opening matches.</p>
+<div class="math">\[C=\mathrm{Commit}(b;r)\]<p class="math-caption">Here \(b\) is the secret bit; \(r\) is randomness used while committing; and \(C\) is the public commitment. The semicolon emphasizes that the randomness is a separate input.</p></div>
+<div class="role-grid">
+<div class="role prover"><div class="tag">Hiding</div><p>Before opening, a computationally bounded verifier cannot efficiently tell whether \(C\) contains 0 or 1. The contents remain secret.</p></div>
+<div class="role"><div class="tag">Binding</div><p>After the prover sends \(C\), it cannot open the same commitment as both 0 and 1. With <em>perfect binding</em>, no alternative opening exists, even for an infinitely powerful prover.</p></div>
+</div>
+<section class="lab">
+<div class="lab-head"><div class="tag">Conceptual sealed-value model</div><h3>Try to change an already committed bit</h3><p>This model illustrates the interface of a commitment; it does not implement a real cryptographic commitment function.</p></div>
+<div class="lab-body">
+<div class="control-row"><button data-demo="commit" data-value="zero">Create NEW commitment to 0</button><button data-demo="commit" data-value="one">Create NEW commitment to 1</button></div>
+<div class="data-box"><span class="label">Verifier-visible state</span><strong id="sealed-readout">No commitment sent yet</strong></div>
+<div class="control-row"><button data-demo="commit" data-value="open">Open honestly</button><button data-demo="commit" data-value="switch">Try to open as the OTHER bit</button></div>
+<div id="commit-result" class="feedback" aria-live="polite">First seal a bit. Creating a new commitment is a new attempt; it does not modify the old one.</div>
+</div>
+</section>
+<p>These guarantees do different jobs. <strong>Binding</strong> prevents a prover from changing its claimed graph after seeing the verifier's challenge; this supports soundness. <strong>Hiding</strong> prevents the verifier from learning the committed graph before it chooses its challenge; this supports zero knowledge and the simulator's efficiency.</p>
+<h2>From one bit to a graph</h2>
+<p>Represent a graph by a matrix \(\boldsymbol{B}\). For distinct vertex labels \(i,j\), the entry \(B_{ij}\) is 1 if the vertices are joined by an edge and 0 otherwise. The prover can commit separately to every entry \(B_{ij}\), while also committing to a secret relabeling of the vertices.</p>
+<p>Without knowing the committed bits, the verifier sees sealed evidence whose contents have already been fixed. It can later ask the prover to open either the entire graph or just particular edges. We will exploit these two different openings.</p>
+<div class="transition"><p>Our next obstacle is subtle: if we always committed to the original graph, revealing it would reveal which edges are which. Instead, we first <strong>randomly rename the vertices</strong> while preserving every structural property the verifier should be able to test.</p></div>
+<p class="source">PETS · Commitment prerequisites and ZK lecture notes, Theorem 1, pp. 5–6.</p>
+</article>
