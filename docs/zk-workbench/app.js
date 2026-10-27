@@ -455,6 +455,7 @@
       case"ham-challenge":matrixForChallenge(Number(v));break;
       case"ham-false":hamCase(v);break;
       case"ham-false-challenge":hamFalseChallenge(Number(v));break;
+      case"ham-false-random":hamFalseChallenge(Math.random()<.5?0:1);break;
       case"sim-guess":simulator(v);break;
       case"sim-ask":simulator(v);break;
       case"schedule":scheduleUpdate();break;
