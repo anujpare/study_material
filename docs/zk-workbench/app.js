@@ -197,6 +197,7 @@
     $("trials-words").textContent="Under independent, fair challenges the probability of requiring more than "+t+" attempts is (1/2)^"+t+". The expected number of attempts is 2, since a geometric random variable with success probability 1/2 has expectation 1/(1/2). This empirical panel is not a substitute for the hiding argument against a malicious verifier.";
   }
   function scheduleUpdate(){
+    if(!$("schedule-messages"))return;
     const mode=document.querySelector("[data-demo='schedule'][aria-pressed='true']")?.dataset.value||"sequential",n=Number($("schedule-n")?.value||3);
     if($("schedule-n-label"))$("schedule-n-label").textContent=n;
     let msg=[];
@@ -251,6 +252,7 @@
     feedback("schnorr-extraction","The first accepting transcript has c=2, z=10. The second has c′="+cprime+", z′="+zprime+". Thus (z−z′) mod 11="+numerator+", (c−c′) mod 11="+dif+", and its inverse is "+inverse+". The extracted x = "+numerator+"×"+inverse+" mod 11 = "+x+". Indeed the public h=8 equals 2^"+x+" mod 23.","good");
   }
   function gateUpdate(){
+    if(!$("gate-result"))return;
     const gate=document.querySelector("[data-demo='gate'][aria-pressed='true']")?.dataset.value||"XOR";
     const a=Number($("gate-a")?.value||0),b=Number($("gate-b")?.value||0);
     const out=gate==="XOR"?(a^b):(a&b);
