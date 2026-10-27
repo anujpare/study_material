@@ -74,19 +74,19 @@ function initLab(lab){
   if(type==="trace"){
     const mode=lab.querySelector('[data-key="mode"]')?.value??"honest";
     const rows=[[2,4,8,0],[4,3,7,1],[8,7,56,0],[56,41,0,1]];
-    let publicX=[2,4,3],explain="";
-    if(mode==="public"){publicX[0]=5;explain="The trace uses input 2 at gate 0, but the claimed public input is 5. The public-input check and a related copy constraint fail.";}
+    let traceInputs=[2,4,3],publicX=[2,4],explain="";
+    if(mode==="public"){traceInputs[0]=5;explain="The trace records public input 5, although the actual public input is 2, and gate 0 uses 2. Therefore public-input agreement and the copy constraint both fail.";}
     if(mode==="gate"){rows[2][2]=55;explain="Gate 2 says 8 × 7 = 55, which is false. The last gate still contains 56, so wiring also fails.";}
     if(mode==="wire"){rows[2]=[9,7,63,0];explain="Every gate row is locally correct and the output is zero, but the output of gate 0 (8) does not equal gate 2's left input (9). The output of gate 2 (63) also disagrees with the last gate's left input (56).";}
     if(mode==="output"){rows[3][2]=1;explain="The final output is 1, not zero. The final gate also violates its addition relation, as it must when the earlier fixed values and public target remain unchanged.";}
     if(mode==="honest"){explain="All four conditions pass for the augmented assertion (2×4)(4+3)−56=0. The last addition gate uses 41 ≡ −56 in the field F₉₇.";}
     const gateok=rows.map(r=>mod(r[3]===1?r[0]+r[1]-r[2]:r[0]*r[1]-r[2],97)===0);
-    const pubok=rows[0][0]===publicX[0]&&rows[0][1]===publicX[1]&&rows[1][1]===publicX[2];
-    const wireok=rows[0][2]===rows[2][0]&&rows[1][2]===rows[2][1]&&rows[2][2]===rows[3][0];
+    const pubok=traceInputs[0]===publicX[0]&&traceInputs[1]===publicX[1];
+    const wireok=traceInputs[0]===rows[0][0]&&traceInputs[1]===rows[0][1]&&traceInputs[1]===rows[1][0]&&traceInputs[2]===rows[1][1]&&rows[0][2]===rows[2][0]&&rows[1][2]===rows[2][1]&&rows[2][2]===rows[3][0];
     const outputok=rows[3][2]===0;
     const tbl='<div class="table-scroll"><table><thead><tr><th>Gate</th><th>Left</th><th>Right</th><th>Out</th><th>Type</th><th>Residual</th></tr></thead><tbody>'+rows.map((r,i)=>'<tr><td>'+i+'</td><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+(r[3]?"+":"×")+'</td><td>'+mod(r[3]?r[0]+r[1]-r[2]:r[0]*r[1]-r[2],97)+'</td></tr>').join("")+'</tbody></table></div>';
     const status=(name,ok)=>'<span style="color:'+(ok?"#146655":"#ac3136")+';font-weight:750">'+(ok?"✓ ":"✕ ")+name+'</span>';
-    txt(lab,tbl+'<div class="two">'+[status("Public inputs",pubok),status("Gate equations",gateok.every(Boolean)),status("Wire copies",wireok),status("Final output = 0",outputok)].map(s=>'<div>'+s+'</div>').join("")+'</div><p class="note">'+explain+'</p>');
+    txt(lab,'<p class="note">Original trace input cells: \(x_1='+traceInputs[0]+',\;x_2='+traceInputs[1]+',\;w_1='+traceInputs[2]+'\). Public statement: \(x_1=2,\;x_2=4\).</p>'+tbl+'<div class="two">'+[status("Public inputs",pubok),status("Gate equations",gateok.every(Boolean)),status("Wire copies",wireok),status("Final output = 0",outputok)].map(s=>'<div>'+s+'</div>').join("")+'</div><p class="note">'+explain+'</p>');
   }
  };
  lab.querySelectorAll("input,select").forEach(el=>el.addEventListener("input",update));
