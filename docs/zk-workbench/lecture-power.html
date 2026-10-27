@@ -1,0 +1,23 @@
+<article class="lesson">
+<p class="chapter">Lecture 5–8 · Interactive proof systems · Why interaction matters</p>
+<h1>If NP witnesses are already checkable, why interact at all?</h1>
+<p class="lead">A one-shot NP proof can send a witness and let the verifier check it. That already works for every problem in NP. Interaction is useful because it changes <em>what the verifier can establish</em>, <em>how much communication may be required</em>, and <em>what the prover can keep secret</em>. These are three different improvements, not three names for the same property.</p>
+<h2>More expressive proofs: NP versus PSPACE</h2>
+<p>In the previous lesson, NP meant that a YES-instance has a <em>short witness</em> which can be checked in polynomial time. Another complexity class, <strong>PSPACE</strong>, consists of decision problems solvable with <em>polynomial working memory</em> (polynomial space). Memory usage and running time are not the same: an algorithm can reuse its memory across many successive computations.</p>
+<section class="lab">
+<div class="lab-head"><div class="tag">Make the resource distinction concrete</div><h3>How much time can a tiny amount of memory represent?</h3><p>Consider a binary counter with \(n\) bits of memory. It can visit \(2^n\) distinct values using only \(n\) stored bits. This is not an IP proof; it illustrates why a polynomial-space computation need not finish in polynomial time.</p></div>
+<div class="lab-body">
+<div class="control-row"><label for="pspace-bits">Stored bits \(n\): <strong id="pspace-bits-label">8</strong></label><input id="pspace-bits" data-demo="pspace-slider" type="range" min="2" max="20" value="8"></div>
+<div class="data-grid"><div class="data-box verifier"><span class="label">Memory used</span><strong id="pspace-memory">8 bits</strong></div><div class="data-box"><span class="label">Counter values before repeating</span><strong id="pspace-states">256</strong></div></div>
+<div class="feedback" id="pspace-result" aria-live="polite">The number of possible sequential counter values doubles whenever a single memory bit is added.</div>
+</div></section>
+<p>A major theorem states that <strong>\(\mathrm{IP}=\mathrm{PSPACE}\)</strong>: a language has an interactive proof with an efficient randomized verifier exactly when it can be decided using polynomial space. Since NP is contained in PSPACE, this tells us that interaction can verify problems beyond the simple “send a polynomial-length NP witness” format. The lecture states this deep theorem but does not prove it; the counter is only a resource example, not a proof of the theorem.</p>
+<h2>Less communication: succinctness</h2>
+<p>A short, checkable NP witness can still be too large to transmit. Certain interactive proofs can verify a statement with communication smaller than the witness size. That property is called <strong>succinctness</strong>. It is about the size of communication (and often verification work), not automatically about privacy.</p>
+<h2>Less information revealed: zero knowledge</h2>
+<p>The most relevant improvement for the upcoming ZK construction is different again. A prover may have a valid witness \(w\), but sending \(w\) lets the verifier learn it. A zero-knowledge proof instead aims to convince the verifier that the public statement is true while revealing no efficiently learnable information beyond that truth. The verifier's ability to check and the verifier's access to the witness are separate requirements.</p>
+<div class="definition"><h3>Do not interchange these three goals</h3>
+<p><strong>Expressiveness:</strong> Which YES/NO statements can be proved?<br><strong>Succinctness:</strong> How much must be communicated or checked?<br><strong>Zero knowledge:</strong> What does a verifier learn besides the statement's truth?</p></div>
+<div class="transition"><p>We have introduced interaction because it can address meaningful limitations of one-shot proofs. Now the precise security definitions will say <em>which parties are trusted</em> and <em>what probabilities each must guarantee</em>.</p></div>
+<p class="source">PETS · Lecture 5–8, pp. 1–2, including Shamir's \(\mathrm{IP}=\mathrm{PSPACE}\) theorem. The formal proof of that theorem is outside these lecture notes.</p>
+</article>
