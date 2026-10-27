@@ -5,6 +5,7 @@
 <h2>The public claim and the secret exponent</h2>
 <p>Consider a finite set of nonzero numbers closed under multiplication modulo a prime \(p\). “Modulo \(p\)” means we take the remainder after division by \(p\). Choose an element \(g\) whose powers generate a subgroup \(\mathbb G\) of <strong>prime order</strong> \(q\): there are exactly \(q\) distinct powers, and \(g^q=1\) within the group.</p>
 <p>The prover privately holds \(x\in\mathbb Z_q\), where \(\mathbb Z_q=\{0,1,\ldots,q-1\}\) with arithmetic modulo \(q\). It publishes \(h=g^x\) and wants to prove it <em>knows</em> the exponent \(x\) without revealing \(x\).</p>
+<p>Why require <em>knowledge</em> here, rather than ordinary soundness? Because \(g\) generates the whole group, <strong>every</strong> valid public \(h\in\mathbb G\) equals \(g^x\) for some \(x\). The statement “such an \(x\) exists” is therefore automatically true. A sound proof of that statement alone would not authenticate the client; a <strong>proof of knowledge</strong> must support extraction of \(x\) from a sufficiently successful prover.</p>
 <div class="math">\[h=g^x,\qquad u=g^r,\qquad z=r+cx\pmod q\]<p class="math-caption">The prover chooses a fresh random \(r\in\mathbb Z_q\), sends \(u\); the verifier chooses a challenge \(c\in\mathbb Z_q\); and the prover returns \(z\). The secret is \(x\), while \(g,q,h,u,c,z\) are public or transmitted.</p></div>
 <div class="timeline">
 <div class="message prover"><span class="who">Prover</span><span>Samples \(r\) uniformly and sends \(u=g^r\).</span></div>
