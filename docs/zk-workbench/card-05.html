@@ -1,0 +1,24 @@
+<article class="lesson">
+<p class="chapter">Part II · Zero knowledge</p>
+<h1>How could a verifier learn nothing from a convincing proof?</h1>
+<p class="lead">We need a more precise meaning of “learns nothing.” The central idea is to ask whether the verifier could produce an equally believable record of the conversation <strong>without ever knowing the witness</strong>.</p>
+<h2>The verifier’s view is what it actually sees</h2>
+<p>A verifier's <strong>view</strong> consists of the public statement \(x\), the messages exchanged in the protocol and the verifier's own random choices and internal information. Suppose \(P\) knows a secret witness \(w\). In a real execution, the view results from interaction with \(P\). In a simulated execution, a new algorithm called <strong>Sim</strong> must construct a comparable view using <em>only</em> \(x\), not \(w\).</p>
+<div class="role-grid">
+<div class="role prover"><div class="tag">Real experiment</div><p>Prover \(P(x,w)\) interacts with verifier \(V^\ast(x)\), which sees an actual transcript.</p><p class="small">Input: public \(x\) and secret \(w\) for the prover.</p></div>
+<div class="role sim"><div class="tag">Simulated experiment</div><p>Simulator \(\mathrm{Sim}_{V^\ast}(x)\) runs the malicious verifier as a subroutine and manufactures its view.</p><p class="small">Input: only public \(x\). No witness is supplied.</p></div>
+</div>
+<p>If no efficient observer can reliably tell which experiment produced the view, then participating in the real protocol cannot have taught the verifier anything it could not already generate from the public statement.</p>
+<div class="math">\[\operatorname{View}\!\left[\langle P,V^\ast\rangle(x)\right]\;\approx_c\;\mathrm{Sim}_{V^\ast}(x)\]<p class="math-caption">The symbol \(\approx_c\) means computational indistinguishability: no efficient test can distinguish the distributions with more than negligible advantage. \(V^\ast\) may deviate arbitrarily from the verifier's protocol. The statement \(x\) must be true for the zero-knowledge requirement to apply.</p></div>
+<p>“Negligible” has a technical meaning: a function of a security parameter \(\lambda\) that eventually becomes smaller than \(1/\lambda^k\) for every fixed positive integer \(k\). The parameter \(\lambda\) is chosen to control security, for example by increasing bit lengths. We need this definition because small but constant distinguishing advantages would not count as zero knowledge.</p>
+<div class="proof"><h3>Why simulation implies privacy</h3><p>Suppose an efficient verifier learned some efficiently recognizable secret property from the real interaction, with noticeably greater success than someone holding only \(x\). That very test would distinguish real from simulated views, contradicting the defining requirement. Thus simulation explains privacy through a concrete impossibility: no efficient test can get an extra useful signal from the real transcript.</p></div>
+<p>We have <em>not</em> yet built a simulator. That construction will be the difficult part: a malicious verifier may choose challenges depending on earlier messages, while Sim has no witness.</p>
+<div class="exercise">
+<div class="tag">Homework 2 · Problem 1(a) and 1(c)</div>
+<h3>How far does simulation go for easy problems?</h3>
+<details><summary>(a) If \(P=NP\), do zero-knowledge proofs exist for every NP language?</summary><div class="inside"><p><strong>True.</strong> Under the assumption \(P=NP\), every NP statement can be decided efficiently by the verifier itself. The prover can send nothing; the simulator can reproduce that empty communication exactly. Because the verifier decides correctly, completeness and soundness also hold.</p></div></details>
+<details><summary>(c) Without random oracles, do non-interactive ZK proofs exist for languages in P?</summary><div class="inside"><p><strong>True.</strong> For a language in P, the verifier can compute the answer itself in polynomial time. An empty proof is non-interactive, reveals nothing, and is trivially simulatable. Later we will see why nontrivial NP languages are more challenging.</p></div></details>
+</div>
+<div class="transition"><p>The Hamiltonicity construction will show exactly how Sim can succeed without the witness. First we need a cryptographic way to fix information now while hiding it until later: a <strong>commitment</strong>.</p></div>
+<p class="source">PETS · ZK lecture notes, Definition 2, pp. 3–5; Homework 2, Problem 1(a,c).</p>
+</article>
