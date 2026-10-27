@@ -1,0 +1,21 @@
+<article class="lesson">
+<p class="chapter">Optional algebra bridge · Homework 3 · Problem 1(c)</p>
+<h1>Why a polynomial can have more roots than its degree outside a field</h1>
+<p class="lead">This homework question belongs to the polynomial-proof material in the following SNARKs chapter, not the ZK lecture itself. It is included here as a self-contained optional exercise so no HW3 subpart is silently omitted.</p>
+<div class="exercise"><div class="tag">Homework 3 · Problem 1(c)</div><h3>True or false?</h3><p>“The polynomial \(f(X)=2X^2+4X\) has at most two roots in \(\mathbb Z_6\).” A <strong>root</strong> is a value \(a\) for which \(f(a)=0\). Here \(\mathbb Z_6\) means we compute results modulo 6, keeping their remainder in \(\{0,1,2,3,4,5\}\).</p></div>
+<h2>Check all six possible inputs</h2>
+<div class="table-wrap"><table><thead><tr><th>\(X\)</th><th>\(2X^2+4X\)</th><th>Remainder mod 6</th><th>Root?</th></tr></thead><tbody>
+<tr><td>0</td><td>0</td><td>0</td><td>Yes</td></tr>
+<tr><td>1</td><td>6</td><td>0</td><td>Yes</td></tr>
+<tr><td>2</td><td>16</td><td>4</td><td>No</td></tr>
+<tr><td>3</td><td>30</td><td>0</td><td>Yes</td></tr>
+<tr><td>4</td><td>48</td><td>0</td><td>Yes</td></tr>
+<tr><td>5</td><td>70</td><td>4</td><td>No</td></tr>
+</tbody></table></div>
+<p>We found <strong>four roots: 0, 1, 3, 4</strong>, even though the polynomial has degree 2. So the claim is false. The interesting question is which assumption of the usual degree-bound theorem was missing.</p>
+<h2>Why the field assumption matters</h2>
+<p>A <strong>field</strong> is a number system in which every nonzero element has a multiplicative inverse. This lets us divide by nonzero quantities. The standard theorem that a nonzero polynomial of degree \(d\) has at most \(d\) roots requires a field. Its proof repeatedly factors out \((X-a)\) after finding a root and relies on the rule that a product is zero only when at least one factor is zero.</p>
+<p>Modulo 6, that latter rule fails: \(2\cdot3=6\equiv0\pmod6\), even though both factors are nonzero. These are <strong>zero divisors</strong>. Because \(\mathbb Z_6\) is not a field, we cannot apply the field root bound. The four direct evaluations above demonstrate the failure.</p>
+<div class="transition"><p>Root bounds become useful when soundness is reduced to the probability that a randomly sampled input happens to be a root of a nonzero polynomial. That is a later SNARK topic; it was not needed for the Hamiltonicity, Sigma, or Schnorr proofs in the ZK lecture.</p></div>
+<p class="source">PETS · Homework 3, Problem 1(c); optional bridge to polynomial IOPs and SNARKs.</p>
+</article>
