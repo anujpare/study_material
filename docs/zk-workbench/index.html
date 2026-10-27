@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f3f3f2">
+  <meta name="description" content="Two-card interactive proof and zero-knowledge foundations tutorial, with persistent edits to individual cards.">
+  <title>PETS · ZK learning lab</title>
+  <style>
+    :root{color-scheme:light;--bg:#f3f3f2;--paper:#eeefed;--white:#fff;--ink:#212624;--muted:#656b68;--stroke:#d4d9d5;--accent:#2857a2;--accent-bg:#e6edf9;--good:#177348;--good-bg:#e4f4e9;--bad:#a74136;--bad-bg:#f9e9e7}
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;}body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,system-ui,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+    .shell{width:min(100%,770px);height:100vh;height:100dvh;min-height:430px;margin:0 auto;background:var(--paper);display:flex;flex-direction:column;overflow:hidden;box-shadow:0 10px 65px rgba(26,33,29,.075)}
+    .masthead{flex:none;padding:17px clamp(17px,4vw,32px) 0;background:var(--paper);z-index:2}
+    .topline{display:flex;justify-content:space-between;align-items:center;gap:14px}
+    .home{color:#474f4a;text-decoration:none;font-weight:700;letter-spacing:.08em;font-size:.7rem;text-transform:uppercase;display:inline-flex;align-items:center;gap:7px}
+    .topline select{max-width:220px;min-height:36px;cursor:pointer;background:#fafbf9;border:1px solid var(--stroke);border-radius:9px;padding:5px 11px;color:var(--ink);font-family:inherit;font-size:.77rem}
+    .topline select:focus-visible,a:focus-visible,button:focus-visible{outline:3px solid #719de1;outline-offset:2px}
+    .subline{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:.74rem;font-weight:600;color:var(--muted);padding:14px 0 12px}
+    .progress-track{height:3px;background:#dbe0dc;border-radius:3px;overflow:hidden}
+    .progress-fill{width:50%;background:var(--accent);height:100%;transition:width .2s ease}
+    #content{flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;padding:25px clamp(19px,5vw,40px) 55px;scrollbar-color:#c4c9c5 transparent}
+    .lesson{max-width:650px;margin:0 auto}.eyebrow{margin:0 0 11px;font-size:.73rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--accent)}
+    h1{font-size:clamp(1.65rem,3.9vw,2.25rem);line-height:1.15;letter-spacing:-.043em;margin:0 0 22px;font-weight:800}
+    h2{font-size:1.19rem;letter-spacing:-.02em;line-height:1.32;margin:30px 0 11px}
+    h3{font-size:1.01rem;margin:8px 0 10px;letter-spacing:-.01em;line-height:1.4}
+    p{font-size:1.02rem;line-height:1.63;letter-spacing:-.012em;margin:0 0 15px}
+    p.lead{font-size:1.125rem;line-height:1.57;margin-bottom:25px;color:#333d37}
+    strong{font-weight:730} .symbol{font-family:"New York",Georgia,serif;font-style:italic}
+    .graph-wrap{margin:22px 0 27px;padding:15px;border:1px solid var(--stroke);background:#fafbf9;border-radius:17px;text-align:center}
+    .graph-wrap svg{width:min(100%,390px);height:auto;display:block;margin:0 auto}
+    .graph-wrap figcaption{font-size:.79rem;line-height:1.5;color:var(--muted);margin-top:9px}
+    .cycle-road{stroke:#bdc8c1;transition:stroke .25s ease}.extra-road{stroke:#bdc8c1}
+    #road-graph[data-route="good"] .cycle-road{stroke:#1b8151}#road-graph[data-route="bad"] .cycle-road{stroke:#a6b4aa}
+    .graph-nodes circle{fill:#fff;stroke:#718078;stroke-width:2.2}
+    .graph-nodes text{font-family:system-ui,sans-serif;font-size:17px;font-weight:750;fill:#24372b}
+    .equation{margin:20px 0 23px;padding:17px 15px;border:1px solid #d9e0e4;background:#f9fbfc;border-radius:12px;overflow-x:auto;text-align:center}
+    .equation>span{display:block;font-family:Georgia,"Times New Roman",serif;font-size:clamp(1.09rem,3vw,1.28rem);white-space:normal;line-height:1.45}
+    .equation>small{display:block;margin-top:8px;color:#58625d;font-size:.78rem;line-height:1.46;font-family:inherit}
+    .experiment{border:1px solid #becddd;border-radius:17px;padding:20px 18px 17px;background:#f8fafc;margin:25px 0}
+    .experiment-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+    .experiment-label{font-size:.70rem;font-weight:800;letter-spacing:.095em;text-transform:uppercase;color:var(--accent)}
+    .experiment-num{font-size:.72rem;font-weight:600;color:var(--muted)}
+    .experiment p{font-size:.94rem;line-height:1.53;margin-bottom:14px}
+    .choice-grid{display:flex;flex-direction:column;gap:9px;margin:14px 0}
+    .choice-grid button{font:inherit;text-align:left;font-weight:650;font-size:.94rem;line-height:1.4;padding:12px 14px;background:#fff;color:#27382f;border:1px solid #c5d1d9;border-radius:11px;cursor:pointer;transition:border-color .12s,background .12s}
+    .choice-grid button:hover{background:#eff4fb;border-color:#789ac5}
+    .choice-grid button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-bg);color:#244578}
+    .feedback{font-size:.94rem!important;border-left:3px solid #bbc8d1;padding:10px 12px;margin:11px 0 2px!important;background:#eff3f6;color:#43534b;border-radius:0 8px 8px 0}
+    .feedback.is-good{background:var(--good-bg);border-color:var(--good);color:#1d583a}.feedback.is-bad{background:var(--bad-bg);border-color:var(--bad);color:#713c34}
+    .protocol{border:1px solid var(--stroke);border-radius:15px;padding:15px 18px;margin:24px 0;background:#fafbf9}
+    .protocol-step{display:flex;align-items:flex-start;gap:13px}.step-dot{height:29px;width:29px;display:grid;place-items:center;flex:none;border-radius:50%;background:#e7ecf4;color:#2c5798;font-weight:800;font-size:.83rem}
+    .protocol-step strong{display:block;font-size:.96rem;line-height:1.4}.protocol-step span{display:block;font-size:.86rem;line-height:1.48;color:#59635c;padding-top:3px}
+    .protocol-connector{height:21px;width:2px;background:#c1cbd6;margin:6px 0 6px 14px}
+    .definition-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:21px 0}
+    .definition{padding:17px 15px;background:#fbfbf9;border:1px solid var(--stroke);border-radius:13px}
+    .definition-label{font-size:.76rem;font-weight:750;color:#5d6b61;display:block;margin-bottom:9px}
+    .definition strong{font-size:1.26rem;font-family:Georgia,serif;display:block;line-height:1.35;margin-bottom:11px}
+    .definition small{color:#4f5b54;font-size:.82rem;line-height:1.52;display:block}
+    .experiment-equation{margin:16px 0 0;background:#fff}
+    .bridge{border-left:3px solid #b8c6d7;background:#f8fafb;padding:14px 16px;margin:25px 0 16px;border-radius:0 10px 10px 0}
+    .source{border-top:1px solid var(--stroke);padding-top:14px;color:var(--muted);font-size:.74rem;margin-top:34px;line-height:1.5}
+    .footer{flex:none;background:rgba(245,246,243,.99);border-top:1px solid var(--stroke);padding:11px clamp(19px,5vw,40px) max(12px,env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .pager{width:43px;height:43px;flex:none;display:grid;place-items:center;font:inherit;font-size:1.35rem;cursor:pointer;color:#2b3530;border:1px solid var(--stroke);background:#fff;border-radius:50%}
+    .pager:hover:not(:disabled){background:#e3ecf7;border-color:#96b4d9}.pager:disabled{opacity:.3;cursor:default}
+    .footertitle{text-align:center;min-width:0;font-size:.81rem;color:#4f5952;font-weight:650;line-height:1.42}
+    .footertitle small{font-size:.73rem;display:block;color:#7c857d;font-weight:500;margin-top:2px}
+    #content .loading{padding:70px 0;text-align:center;color:var(--muted)}
+    @media(max-width:540px){.shell{box-shadow:none}.definition-grid{grid-template-columns:1fr}.topline select{max-width:185px}.subline{font-size:.7rem}.experiment{padding:17px 14px}.choice-grid button{font-size:.87rem}.equation>span{font-size:1.03rem}.topline select{font-size:.7rem}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="masthead">
+      <div class="topline">
+        <a href="../" class="home" aria-label="Return to PETS chapter selection">← &nbsp;PETS</a>
+        <select id="jump" aria-label="Jump to a tutorial card">
+          <option value="statements">01 · Statements &amp; witnesses</option>
+          <option value="interaction">02 · Interactive proofs</option>
+        </select>
+      </div>
+      <div class="subline"><span>Zero Knowledge · Learning lab</span><span id="counter">01 / 02</span></div>
+      <div class="progress-track" aria-hidden="true"><div id="progress" class="progress-fill"></div></div>
+    </header>
+    <main id="content" tabindex="-1"><p class="loading">Loading the tutorial…</p></main>
+    <footer class="footer" aria-label="Tutorial navigation">
+      <button id="previous" class="pager" type="button" aria-label="Previous card" disabled>←</button>
+      <div class="footertitle"><span id="card-label">Statements &amp; witnesses</span><small>Use the arrows or ← → keys</small></div>
+      <button id="next" class="pager" type="button" aria-label="Next card">→</button>
+    </footer>
+  </div>
+  <noscript><p>This tutorial needs JavaScript to load its cards. The individual lessons are available as <a href="card-01.html">card 1</a> and <a href="card-02.html">card 2</a>.</p></noscript>
+  <script>
+    (function(){
+      "use strict";
+      const cards=[
+        {id:"statements",file:"card-01.html",label:"Statements & witnesses"},
+        {id:"interaction",file:"card-02.html",label:"Interactive proofs"}
+      ];
+      const el={
+        content:document.getElementById("content"),jump:document.getElementById("jump"),
+        counter:document.getElementById("counter"),progress:document.getElementById("progress"),
+        previous:document.getElementById("previous"),next:document.getElementById("next"),
+        label:document.getElementById("card-label")
+      };
+      let currentIndex=0,revision=0;
+      function indexFromHash(){
+        const hash=decodeURIComponent(location.hash.slice(1));
+        const found=cards.findIndex(card=>card.id===hash);
+        return found<0?0:found;
+      }
+      async function render(){
+        const request=++revision;
+        const i=indexFromHash(),card=cards[i];currentIndex=i;
+        el.counter.textContent=String(i+1).padStart(2,"0")+" / "+String(cards.length).padStart(2,"0");
+        el.label.textContent=card.label;el.progress.style.width=String(100*(i+1)/cards.length)+"%";
+        el.jump.value=card.id;el.previous.disabled=i===0;el.next.disabled=i===cards.length-1;
+        el.content.innerHTML='<p class="loading">Loading the tutorial…</p>';
+        try{
+          const response=await fetch(card.file,{cache:"no-store"});
+          if(!response.ok)throw Error("HTTP "+response.status);
+          const html=await response.text();
+          if(request!==revision)return;
+          el.content.innerHTML=html;el.content.scrollTop=0;
+          document.title="PETS · "+card.label;
+        }catch(error){
+          if(request===revision)el.content.innerHTML='<p class="loading">Could not load this card. <a href="'+card.file+'">Open it directly</a>.</p>';
+          console.error(error);
+        }
+      }
+      function go(delta){
+        const i=currentIndex+delta;if(i<0||i>=cards.length)return;
+        location.hash=cards[i].id;
+      }
+      el.previous.addEventListener("click",()=>go(-1));
+      el.next.addEventListener("click",()=>go(1));
+      el.jump.addEventListener("change",()=>{location.hash=el.jump.value;});
+      window.addEventListener("hashchange",render);
+      window.addEventListener("keydown",event=>{
+        const target=event.target;
+        if(event.altKey||event.ctrlKey||event.metaKey||event.shiftKey||["INPUT","TEXTAREA","SELECT","BUTTON"].includes(target.tagName)||target.isContentEditable)return;
+        if(event.key==="ArrowRight"){event.preventDefault();go(1);}
+        if(event.key==="ArrowLeft"){event.preventDefault();go(-1);}
+      });
+      document.addEventListener("click",event=>{
+        const button=event.target.closest("button[data-demo]");if(!button)return;
+        const kind=button.getAttribute("data-demo");
+        const others=button.parentElement.querySelectorAll("button[data-demo='"+kind+"']");
+        others.forEach(b=>b.setAttribute("aria-pressed",String(b===button)));
+        if(kind==="route"){
+          const good=button.dataset.value==="good";
+          const graph=document.getElementById("road-graph");
+          const feedback=document.getElementById("route-result");
+          graph.dataset.route=good?"good":"bad";
+          feedback.className="feedback "+(good?"is-good":"is-bad");
+          feedback.textContent=good?
+            "ACCEPT. A–B, B–C, C–D, D–E and E–A are all roads. B, C, D and E each appear exactly once before returning to A. This route is a valid witness.":
+            "REJECT. B–D is not a road on this map, and neither is E–C. Visiting five distinct cities is not enough: every consecutive pair must also be connected by a real road.";
+        }
+        if(kind==="challenge"){
+          const count=Number(button.dataset.count)||1;
+          const bits=Array.from({length:count},()=>Math.random()<0.5?0:1);
+          const success=bits.every(bit=>bit===0),feedback=document.getElementById("challenge-result");
+          feedback.className="feedback "+(success?"is-good":"is-bad");
+          const prefix=bits.length===1?"Challenge: ":"Challenges: ";
+          feedback.textContent=prefix+bits.join(", ")+". "+(success?
+            "The cheater passed this experiment by luck, because every challenge was 0. Passing once does not prove the claim is true.":
+            "The verifier caught the cheater: at least one challenge was 1, which the prover could not answer.")+
+            (count===4?" The chance of passing all four independent checks was 1/16.":" The chance of passing this one check was 1/2.");
+        }
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>
