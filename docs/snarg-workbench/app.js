@@ -86,7 +86,7 @@ function initLab(lab){
     const outputok=rows[3][2]===0;
     const tbl='<div class="table-scroll"><table><thead><tr><th>Gate</th><th>Left</th><th>Right</th><th>Out</th><th>Type</th><th>Residual</th></tr></thead><tbody>'+rows.map((r,i)=>'<tr><td>'+i+'</td><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+(r[3]?"+":"×")+'</td><td>'+mod(r[3]?r[0]+r[1]-r[2]:r[0]*r[1]-r[2],97)+'</td></tr>').join("")+'</tbody></table></div>';
     const status=(name,ok)=>'<span style="color:'+(ok?"#146655":"#ac3136")+';font-weight:750">'+(ok?"✓ ":"✕ ")+name+'</span>';
-    txt(lab,'<p class="note">Original trace input cells: \(x_1='+traceInputs[0]+',\;x_2='+traceInputs[1]+',\;w_1='+traceInputs[2]+'\). Public statement: \(x_1=2,\;x_2=4\).</p>'+tbl+'<div class="two">'+[status("Public inputs",pubok),status("Gate equations",gateok.every(Boolean)),status("Wire copies",wireok),status("Final output = 0",outputok)].map(s=>'<div>'+s+'</div>').join("")+'</div><p class="note">'+explain+'</p>');
+    txt(lab,'<p class="note">Original trace input cells: \\(x_1='+traceInputs[0]+',\\;x_2='+traceInputs[1]+',\\;w_1='+traceInputs[2]+'\\). Public statement: \\(x_1=2,\\;x_2=4\\).</p>'+tbl+'<div class="two">'+[status("Public inputs",pubok),status("Gate equations",gateok.every(Boolean)),status("Wire copies",wireok),status("Final output = 0",outputok)].map(s=>'<div>'+s+'</div>').join("")+'</div><p class="note">'+explain+'</p>');
   }
  };
  lab.querySelectorAll("input,select").forEach(el=>el.addEventListener("input",update));
