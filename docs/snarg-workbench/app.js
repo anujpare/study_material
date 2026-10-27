@@ -39,7 +39,7 @@ function initLab(lab){
   }
   if(type==="interp"){
     const y0=val(lab,"a",1),y1=val(lab,"b",3),y2=val(lab,"c",2);
-    const q=mod((y2-2*y1+y0)*9,17),a=mod(y1-y0-q,17);
+    const q=mod((y2-2*y1+y0)*9,17),a=mod(y1-y0,17);
     txt(lab,'The unique degree-at-most-two interpolant is \\(f(X)='+y0+'+'+a+'X+'+q+'X(X-1)\\pmod{17}\\).<br> Check: \\(f(0)='+y0+'\\), \\(f(1)='+y1+'\\), \\(f(2)='+y2+'\\).<p class="note">Here 9 is the multiplicative inverse of 2 modulo 17. Uniqueness follows because two distinct degree-2 polynomials cannot agree at three distinct points.</p>');
   }
   if(type==="fib"){
