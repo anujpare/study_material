@@ -374,7 +374,7 @@
         const v=levels[l][j],onPath=path[l]===j,required=l>0&&siblings[l-1]===j,leafSelected=l===3&&j===chosen;
         const fill=leafSelected?"#a4dfc7":required?"#fee2ad":onPath?"#cfe7fb":"#f3f6f7";
         svg+='<circle cx="'+v.x+'" cy="'+v.y+'" r="'+(l===3?22:25)+'" fill="'+fill+'" stroke="'+(onPath?"#1961a0":required?"#b87313":"#a8b7c0")+'" stroke-width="'+(onPath||required?3:2)+'"/>';
-        svg+='<text x="'+v.x+'" y="'+(v.y+6)+'" fill="#183a4d" font-size="'+(l===3?16:19)+'" font-weight="700" font-family="system-ui" text-anchor="middle">'+v.name+'</text>';
+        svg+='<text x="'+v.x+'" y="'+(v.y+6)+'" fill="#183a4d" font-size="20" font-weight="700" font-family="system-ui" text-anchor="middle">'+v.name+'</text>';
       }
     }
     svg+='</svg>';
