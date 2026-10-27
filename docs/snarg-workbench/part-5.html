@@ -1,0 +1,120 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>SNARGs · Part V</title><body>
+<article class="lesson" data-id="hw2-circuit-sat" data-title="HW2 4(a–c) · Circuit satisfiability">
+<p class="chapter-tag">V · Examination workshop · Original HW2, Problem 4</p>
+<h1>Homework 2: circuit satisfiability</h1>
+<p class="aim"><strong>Question.</strong> Before the modern polynomial encoding, how can ordinary commitments and gate-level Sigma protocols certify that a Boolean circuit has a satisfying assignment?</p>
+<p>A Boolean circuit has wires carrying bits, with gates that compute XOR or AND. The language \(C_{\rm SAT}\) contains circuits with some input assignment yielding output 1. Assume perfectly binding, computationally hiding commitments to bits and Sigma protocols for proving that three committed values satisfy the XOR or AND relation.</p>
+<p>This construction illustrates the same structural issue that PLONK solves more succinctly: each gate must be correct, and shared wires must have the same value everywhere. It is not itself the SNARG construction because the number of commitments and gate proofs grows with circuit size.</p>
+<div class="exercise"><span class="exercise-kicker">HW2 · Problem 4(a)</span><h3>Construct a Sigma protocol for circuit satisfiability</h3>
+<p>Given \(N\) gates, run \(N\) parallel gate Sigma protocols, using the appropriate XOR or AND relation. Explain the prover's first message, the verifier's challenges, the prover's responses, and acceptance.</p>
+<details class="worked"><summary>Construct the full protocol</summary><div class="answer">
+<p>The prover begins with a satisfying input assignment and computes all wire values. For each distinct logical wire \(w\), it creates one commitment \(c_w=\operatorname{Commit}(m_w;r_w)\), where \(m_w\) is its bit value and \(r_w\) is fresh commitment randomness. The <em>same commitment</em> is referenced by every gate using that wire.</p>
+<p>For each gate \(j\), the public statement of the corresponding gate proof is the triple of commitments to its two inputs and output. The prover computes the gate Sigma protocol's first message \(a_j\) and sends all \(c_w\) and all \(a_j\) together.</p>
+<p>The honest verifier samples independent challenges \(e_j\) for every gate, and sends them together. The prover computes all gate responses \(z_j\) using the committed wire values and openings, and sends them in one batch. It also opens the commitment to the final output wire, revealing the value 1.</p>
+<p>The verifier checks the final output commitment opens to 1 and accepts every gate Sigma proof \((a_j,e_j,z_j)\) under its corresponding commitments.</p>
+<p class="qed">A satisfying assignment makes every committed gate relation true and makes the final output 1. Thus perfect completeness of the gate protocols and honest commitment openings give completeness of the combined circuit proof. \(\square\)</p>
+</div></details></div>
+<div class="exercise"><span class="exercise-kicker">HW2 · Problem 4(b)</span><h3>Prove soundness from the gates</h3>
+<p>Show that if an unsatisfiable Boolean circuit were accepted with non-negligible probability, at least one gate Sigma protocol must have non-negligible soundness error.</p>
+<details class="worked"><summary>Trace the contradiction to a particular gate</summary><div class="answer">
+<p>Perfect binding makes each committed wire value fixed. Because a single commitment is reused for every occurrence of a logical wire, the commitments define a global assignment of values to the circuit's wires. The output commitment is opened to 1.</p>
+<p>But the circuit is unsatisfiable: no assignment can make every gate correct while the output is 1. Therefore at least one committed gate triple violates its prescribed XOR or AND relation. Acceptance of the full proof would require accepting the Sigma proof for that false gate statement.</p>
+<p>If the overall false-acceptance probability were \(\varepsilon\), a union-bound argument over the \(N\) gate statements shows that some gate-level soundness failure must occur with probability at least \(\varepsilon/N\). For polynomial \(N\), non-negligible \(\varepsilon\) makes \(\varepsilon/N\) non-negligible.</p>
+<p class="qed">Hence an accepted unsatisfiable circuit would yield a violation of at least one underlying gate protocol's soundness. The reduction works because shared wire commitments and the opened output force a concrete globally inconsistent assignment. \(\square\)</p>
+</div></details></div>
+<div class="exercise"><span class="exercise-kicker">HW2 · Problem 4(c)</span><h3>Describe a zero-knowledge simulator</h3>
+<p>Give the intended honest-verifier simulation strategy and explain which properties are needed to argue that simulated proof data resembles a real interaction.</p>
+<details class="worked"><summary>Official solution outline and exact security caveat</summary><div class="answer">
+<p>The homework's intended outline is: create hiding commitments to convenient dummy wire values (such as 1 for every wire, so the output can be opened as 1); invoke the honest-verifier simulators of the gate Sigma protocols to make their transcripts; package these into a simulated circuit transcript. The commitments aim to hide whether their underlying bits match the actual satisfying assignment.</p>
+<p><strong>Crucial formal distinction:</strong> if every dummy wire is 1, an XOR gate has the invalid relation \(1\oplus1\ne1\). Ordinary HVZK only promises simulation of transcripts for <em>true</em> gate statements. It does not, by itself, guarantee that the gate simulator produces accepting transcripts for arbitrary <em>false</em> committed triples. Nor does hiding alone justify changing public statements inside already simulated proofs without a careful hybrid or equivocation argument.</p>
+<p>Thus the provided course solution is an <em>informal simulation sketch</em> rather than a complete theorem from the stated gate Sigma protocol assumptions. To make it rigorous one needs suitable simulation properties for the particular gate-proof construction or another justified hybrid that handles the false dummy statements.</p>
+<p class="qed">The exam-intended idea is to use hiding commitments and gate-transcript simulators; a fully rigorous ZK conclusion requires the extra simulator behavior just identified. Stating the missing hypothesis is more precise than pretending that hiding alone completes the proof. \(\square\)</p>
+</div></details></div>
+<p class="source">Source: HW2 solutions, Problem 4(a–c). The caution in part (c) distinguishes the provided informal reasoning from what follows formally under the assumptions.</p>
+</article>
+
+<article class="lesson" data-id="midterm-interpolation" data-title="Midterm 1(c) · Polynomial to vector commitment">
+<p class="chapter-tag">V · Examination workshop · Previous midterm, Problem 1(c)</p>
+<h1>Midterm: a polynomial commitment is a vector commitment</h1>
+<p class="aim"><strong>Exam objective.</strong> Apply interpolation to turn one primitive into another, then prove the new binding property from the original one.</p>
+<div class="exercise"><span class="exercise-kicker">2025 midterm · Problem 1(c) · Two marks</span>
+<p>True or false: given a polynomial commitment for degree-at-most-\((d-1)\) polynomials over \(\mathbb F\), we can construct a vector commitment for vectors in \(\mathbb F^d\) with the same commitment and opening sizes.</p>
+<details class="worked"><summary>Full one-paragraph exam solution</summary><div class="answer">
+<p><strong>True, provided the field contains at least \(d\) distinct elements.</strong> For a vector \(\mathbf v=(v_1,\ldots,v_d)\), interpolate the unique polynomial \(f\) of degree at most \(d-1\) satisfying \(f(i)=v_i\) at distinct field points \(i=1,\ldots,d\). Commit to \(f\). To open vector position \(i\), open the polynomial commitment at point \(i\) and reveal \(v_i\).</p>
+<p>Correct polynomial openings produce the true vector value. If a cheating prover could open the same vector commitment at position \(i\) to two different values, it would produce two valid polynomial openings at the same point with different outputs, contradicting evaluation binding.</p>
+<p class="qed">The construction inherits position binding, and the commitment/opening objects are unchanged, so their sizes are inherited too. This proves the assertion. \(\square\)</p>
+</div></details></div>
+<p class="source">Source: previous midterm with solutions, Problem 1(c).</p>
+</article>
+
+<article class="lesson" data-id="exam-fake-trace" data-title="Applied exercise · Locally correct, globally false">
+<p class="chapter-tag">V · Examination workshop · Constructed PLONK application</p>
+<h1>Can every gate be correct while the circuit is wrong?</h1>
+<p class="aim"><strong>Exam objective.</strong> Identify the exact algebraic condition a false trace violates and explain why the other tests do not imply it.</p>
+<p>Consider the lecture's three-gate circuit \((x_1x_2)(x_2+w_1)\), with public \(x_1=2,x_2=4\) and witness \(w_1=3\). A prover supplies the following table as its circuit trace:</p>
+<div class="table-scroll"><table><thead><tr><th>Gate</th><th>Left</th><th>Right</th><th>Output</th><th>Operation</th></tr></thead><tbody>
+<tr><td>0</td><td>2</td><td>4</td><td>8</td><td>\(\times\)</td></tr>
+<tr><td>1</td><td>4</td><td>3</td><td>7</td><td>\(+\)</td></tr>
+<tr><td>2</td><td>9</td><td>7</td><td>63</td><td>\(\times\)</td></tr>
+</tbody></table></div>
+<div class="exercise"><span class="exercise-kicker">Constructed exam-style problem</span>
+<p>(a) Verify all three gate computations. (b) Determine whether the trace represents the original circuit. (c) Express the incorrect relation using \(f_{\rm trace}\) and \(\omega\). (d) Explain why a gate ZeroTest alone cannot reject this table.</p>
+<details class="worked"><summary>Prove the answer step by step</summary><div class="answer">
+<p><strong>(a)</strong> Every row is locally correct: \(2\cdot4=8\), \(4+3=7\), and \(9\cdot7=63\). Therefore the gate polynomial vanishes at every corresponding gate position.</p>
+<p><strong>(b)</strong> The actual circuit connects gate 0's output to gate 2's left input. These locations must encode the same logical wire. But the table claims gate 0 produced 8 while gate 2 used 9, so it does not describe any execution of the specified circuit with these wire connections.</p>
+<p><strong>(c)</strong> Under the lecture's trace indexing, gate 0's output is \(f_{\rm trace}(\omega^2)=8\) and gate 2's left input is \(f_{\rm trace}(\omega^6)=9\). The violated constraint is</p>
+<div class="math">\[\boxed{f_{\rm trace}(\omega^2)=f_{\rm trace}(\omega^6),\qquad 8\ne9.}\]</div>
+<p><strong>(d)</strong> The gate ZeroTest only enforces arithmetic within each triple. It accepts these three local triples, since all their gate residuals equal zero. The wiring IOP checks equal values where the same logical wire occurs in different triples, which is precisely where the contradiction appears.</p>
+<p class="qed">This is a concrete counterexample to “all gates correct implies a correct circuit.” The correct implication needs <em>both</em> gate constraints and wire-copy consistency. \(\square\)</p>
+</div></details></div>
+<p class="source">Constructed from the circuit and constraints in official notes, §5.2, pp. 9–11; not an original homework question.</p>
+</article>
+
+<article class="lesson" data-id="exam-security-proof" data-title="Applied exercise · Build a ZeroTest soundness proof">
+<p class="chapter-tag">V · Examination workshop · Constructed polynomial application</p>
+<h1>Construct a soundness proof from a verifier equation</h1>
+<p class="aim"><strong>Exam objective.</strong> Starting from a new polynomial-verification rule, decide exactly which theorem applies and close the entire soundness argument.</p>
+<p>Let \(\mathbb F\) be a finite field of size \(p\). A prover claims that \(f(X)\), whose degree is at most 5, is zero at each point of \(\Omega=\{1,2,3\}\). It submits a candidate quotient \(q(X)\) of degree at most 5. The verifier picks uniform \(r\in\mathbb F\) and accepts if</p>
+<div class="math">\[f(r)=q(r)(r-1)(r-2)(r-3).\]</div>
+<div class="exercise"><span class="exercise-kicker">Constructed written-exam exercise</span>
+<p>(a) Explain why the protocol has perfect completeness. (b) If the claimed vanishing property is false, give a concrete polynomial whose roots are exactly the potentially accepting challenges. (c) Prove that polynomial is nonzero. (d) Bound its degree and hence the verifier's false-acceptance probability. (e) Explain which step would fail if the prover could choose \(q\) after seeing \(r\).</p>
+<details class="worked"><summary>Full proof with a final logical conclusion</summary><div class="answer">
+<p><strong>(a) Completeness.</strong> If \(f(a)=0\) for all \(a\in\Omega\), the vanishing-polynomial theorem implies \(f(X)=q(X)(X-1)(X-2)(X-3)\) for some quotient \(q\). An honest prover submits it, so the verifier's equation holds at every challenge.</p>
+<p><strong>(b) The discrepancy polynomial.</strong> Define \(Z_\Omega(X)=(X-1)(X-2)(X-3)\) and \(h(X)=f(X)-q(X)Z_\Omega(X)\). The verifier accepts exactly when \(h(r)=0\).</p>
+<p><strong>(c) Nonzeroness.</strong> If the claim is false, then \(f(a)\ne0\) for at least one \(a\in\Omega\). At that \(a\), \(Z_\Omega(a)=0\), hence \(h(a)=f(a)\ne0\), independently of \(q\). Therefore \(h\) cannot be the zero polynomial. This direct argument also avoids presuming that a dishonest quotient exists.</p>
+<p><strong>(d) Degree and probability.</strong> Since \(\deg f\le5\), \(\deg q\le5\) and \(\deg Z_\Omega=3\), we have \(\deg h\le\max(5,5+3)=8\). By the root theorem, a nonzero degree-at-most-eight polynomial has at most eight field roots, so for uniform \(r\),</p>
+<div class="math">\[\boxed{\Pr[\text{false acceptance}]\le\min\left(1,\frac8p\right).}\]</div>
+<p><strong>(e) Timing.</strong> The probability bound assumes that a fixed polynomial \(h\) exists before \(r\) is sampled. If the prover can adapt \(q\) to \(r\), then the polynomial whose roots we count changes with the challenge, and the same one-variable root-count experiment no longer applies.</p>
+<p class="qed">The false statement makes \(h\ne0\); the degree bound makes its root set small; the verifier errs only upon selecting one of those roots. These three established facts imply the displayed soundness bound. \(\square\)</p>
+</div></details></div>
+<p class="source">Constructed from the exact ZeroTest theorem in official notes, §3; not a source homework question.</p>
+</article>
+
+<article class="lesson" data-id="coverage" data-title="Course and homework coverage">
+<p class="chapter-tag">V · Examination workshop · Source map</p>
+<h1>Course and homework coverage</h1>
+<p class="aim"><strong>Purpose.</strong> Locate the exact original lecture theorem or exercise within this tutorial, without repeating the teaching.</p>
+<div class="table-scroll"><table><thead><tr><th>Source</th><th>Covered in this tutorial</th></tr></thead><tbody>
+<tr><td>Lecture §§1–2</td><td>Statement/witness relation, succinctness, PCP box, IOPs, vector commitments, PCP argument.</td></tr>
+<tr><td>Lecture §3</td><td>Fields, interpolation, polynomial root theorem, EqualityTest, Schwartz–Zippel, vanishing-polynomial theorem, ZeroTest, Fibonacci IOP.</td></tr>
+<tr><td>Lecture §4</td><td>Polynomial commitment syntax, correctness, evaluation binding, oracle replacement.</td></tr>
+<tr><td>Lecture §5</td><td>Arithmetic circuit definition, traces, root-of-unity encoding, output/public-input/gate/wiring checks.</td></tr>
+<tr><td>Lecture §6</td><td>Universal and circuit preprocessing, proof, verification and Fiat–Shamir compilation.</td></tr>
+<tr><td>HW1 Problem 4(a–c)</td><td><a href="#hw1-vectors">Three vector-commitment constructions and binding proofs.</a></td></tr>
+<tr><td>HW2 Problem 2(a–c)</td><td><a href="#repetition-hw2">Sequential, parallel and honest-verifier simulation.</a></td></tr>
+<tr><td>HW2 Problem 3(a–c)</td><td><a href="#schnorr-recall">Schnorr completeness, HVZK and extraction.</a></td></tr>
+<tr><td>HW2 Problem 4(a–c)</td><td><a href="#hw2-circuit-sat">Circuit-SAT proof, soundness and simulation caveat.</a></td></tr>
+<tr><td>HW3 Problem 1(a,b,d)</td><td><a href="#hw3-conceptual">Knowledge error, plain-model NIZK, statistical ZK.</a></td></tr>
+<tr><td>HW3 Problem 1(c)</td><td><a href="#field-foundation">Non-field counterexample modulo 6.</a></td></tr>
+<tr><td>HW3 Problem 2(a–b)</td><td><a href="#hw3-schnorr-fs">Non-interactive Schnorr proof and verification.</a></td></tr>
+<tr><td>HW3 Problem 2(c–d)</td><td><a href="#hw3-schnorr-attacks">Challenge-guessing bound and transferable proofs.</a></td></tr>
+<tr><td>HW3 Problem 3(a–b)</td><td><a href="#hw3-amplification">Amplification and Fiat–Shamir soundness.</a></td></tr>
+<tr><td>HW3 Problem 4(a)</td><td><a href="#hw3-pcp-argument">PCP + Merkle, proof and communication.</a></td></tr>
+<tr><td>HW3 Problem 4(b)</td><td><a href="#hw3-fs-pcp">Non-interactive PCP argument.</a></td></tr>
+<tr><td>Previous midterm 1(c)</td><td><a href="#midterm-interpolation">Polynomial-to-vector commitment.</a></td></tr>
+<tr><td>Previous midterm 3(c.1)</td><td><a href="#midterm-polynomial">Schwartz–Zippel one-hot-vector test.</a></td></tr>
+</tbody></table></div>
+<p>All twelve parts of Homework 3 appear within the course after their prerequisites. The relevant vector-commitment and Sigma/circuit homework from earlier sheets is also included. The standalone <a href="../hw3/">HW3</a>, <a href="../hw2/">HW2</a> and <a href="../hw1/">HW1</a> decks remain available for checking the original exercise order.</p>
+<p class="source">Cross-references: course lecture 9–12, prior homework solutions, previous midterm and common-mistakes document. Outside examples are marked “Constructed”.</p>
+</article>
+</body></html>
