@@ -1,0 +1,22 @@
+<article class="lesson">
+<p class="chapter">Part III · Graph Hamiltonicity</p>
+<h1>Prove completeness and soundness of the Hamiltonicity protocol</h1>
+<p class="lead">We want two precise results. If \(G\) really has a Hamiltonian cycle, an honest prover should always be accepted. If it has no Hamiltonian cycle, no cheating prover should succeed with probability more than \(1/2\).</p>
+<div class="proof"><h3>Proof 1 · Perfect completeness</h3>
+<p>Assume \(G\) has a Hamiltonian cycle \(w\) and the prover knows it. The prover chooses \(\pi\) and commits to the genuine relabeled graph \(B=\pi(G)\).</p>
+<p><strong>Case \(c=0\):</strong> Opening \(\pi\) and every \(B_{ij}\) lets the verifier compare all entries with the public graph. They agree by the way \(B\) was constructed, so the verifier accepts.</p>
+<p><strong>Case \(c=1\):</strong> By the relabeling argument on the previous card, applying \(\pi\) to \(w\) produces a Hamiltonian cycle of \(B\). Each edge on that cycle is genuinely present and can be opened, so the verifier accepts.</p>
+<p>Those are the only two possible challenges. Therefore the honest prover succeeds for either challenge, and \(\Pr[\mathrm{accept}\mid G\text{ has a Hamiltonian cycle}]=1\). This is <strong>perfect completeness</strong>.</p></div>
+<h2>Soundness starts with the assumption that the claim is false</h2>
+<p>Now assume \(G\) has <strong>no</strong> Hamiltonian cycle. The cheating prover still has to send all its commitments before the verifier chooses \(c\). Because the commitment scheme is <strong>perfectly binding</strong>, the prover cannot alter the committed graph after learning the challenge.</p>
+<p>Call the already-committed graph \(B\), whether or not it was constructed honestly. There are only two possibilities:</p>
+<div class="role-grid">
+<div class="role bad"><div class="tag">Case A</div><p>If \(B\) really is isomorphic to \(G\), then \(B\) has no Hamiltonian cycle because isomorphisms preserve cycles. Thus challenge \(c=1\) must fail, although \(c=0\) might pass.</p></div>
+<div class="role bad"><div class="tag">Case B</div><p>If \(B\) is <em>not</em> isomorphic to \(G\), then challenge \(c=0\) must fail, although \(c=1\) might pass if the cheating prover selected a different graph containing a cycle.</p></div>
+</div>
+<section class="lab"><div class="lab-head"><div class="tag">Find the unavoidable failing challenge</div><h3>What can a cheating prover fix in advance?</h3><p>Select which sort of graph the cheating prover committed to, remembering that the public \(G\) has no Hamiltonian cycle.</p></div><div class="lab-body"><div class="control-row"><button data-demo="ham-false" data-value="isomorphic">Commit to a real relabeling</button><button data-demo="ham-false" data-value="different">Commit to a different graph</button></div><div id="ham-false-result" class="feedback" aria-live="polite">A cheating prover may choose its commitments, but the verifier chooses the challenge after they are fixed.</div></div></section>
+<div class="proof"><h3>Proof 2 · Soundness error at most \(1/2\)</h3><p>In either case, <strong>at least one of the two challenges necessarily fails</strong>. The verifier chooses its challenge uniformly, which means each of 0 and 1 has probability \(1/2\). The prover can therefore succeed with probability at most \(1/2\):</p><div class="math">\[\Pr[\mathrm{accept}\mid G\notin L]\ \leq\ \tfrac12\]</div><p>The point is not that a typical cheater gets caught half the time. We have shown that <em>every</em> cheating strategy has at least one unavoidable failing challenge, because a graph with a cycle cannot simultaneously be an isomorphic copy of a graph with no cycle.</p></div>
+<p>Hiding did not establish soundness here. <em>Binding</em> was the essential assumption because the committed graph had to remain fixed. Hiding enters in the next, harder claim: zero knowledge.</p>
+<div class="transition"><p>How can a simulator prepare a transcript that looks like either honest response if it does not know any Hamiltonian cycle of \(G\)? The answer uses a guess about the verifier's challenge and carefully controlled rewinding.</p></div>
+<p class="source">PETS · ZK lecture notes, Theorem 1, p. 6; the proof above fills in the contradiction that each challenge pair creates.</p>
+</article>
