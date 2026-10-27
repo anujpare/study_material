@@ -1,0 +1,35 @@
+<article class="lesson">
+<p class="chapter">Part VIII · Combining Sigma protocols</p>
+<h1>Prove that a circuit has a satisfying assignment</h1>
+<p class="lead">A Boolean circuit takes input bits and evaluates gates, finally outputting 0 or 1. We want to prove that <strong>some input makes the output 1</strong> without revealing the input or all intermediate wire values. The homework constructs a proof by combining Sigma proofs for individual XOR and AND gates.</p>
+<h2>Begin with one gate, then connect the wires</h2>
+<p>An <strong>XOR</strong> gate outputs 1 if exactly one input is 1. An <strong>AND</strong> gate outputs 1 only if both inputs are 1. Write the two input bits as \(a,b\), and the output as \(d\). The relation is \(d=a\oplus b\) for XOR or \(d=a\land b\) for AND.</p>
+<section class="lab"><div class="lab-head"><div class="tag">Understand the local statement</div><h3>What must a gate-level proof establish?</h3><p>Choose the gate and inputs. The verifier should not need to learn their bits directly; it receives commitments and a Sigma proof that the hidden bits satisfy the gate's truth table.</p></div>
+<div class="lab-body">
+<div class="control-row"><button data-demo="gate" data-value="XOR" aria-pressed="true">XOR</button><button data-demo="gate" data-value="AND">AND</button></div>
+<div class="control-row"><label for="gate-a">Input \(a\): <strong id="gate-a-label">1</strong></label><input id="gate-a" data-demo="gate-slider" type="range" min="0" max="1" value="1"></div>
+<div class="control-row"><label for="gate-b">Input \(b\): <strong id="gate-b-label">0</strong></label><input id="gate-b" data-demo="gate-slider" type="range" min="0" max="1" value="0"></div>
+<div class="feedback" id="gate-result" aria-live="polite"></div>
+</div></section>
+<p>In a larger circuit, an output wire of one gate may be an input wire of another. It is essential to make <strong>one commitment per wire</strong> and reuse that same commitment everywhere that wire appears. Otherwise the prover could claim one hidden value at the output of the first gate and another at the input of the next.</p>
+<div class="exercise"><div class="tag">Homework 2 · Problem 4(a)</div><h3>Construct a Sigma protocol using \(N\) parallel gate proofs</h3><p>Assume perfectly binding and computationally hiding commitments to bits, and Sigma protocols that prove the XOR and AND relations among triples of committed bits. Describe a Sigma protocol proving that an entire Boolean circuit \(C\) is satisfiable.</p>
+<details><summary>Protocol · commitment, challenge, response and verification</summary><div class="inside">
+<p><strong>Commitment stage.</strong> Starting from a satisfying input, the prover calculates every intermediate wire bit \(m_w\), selects random \(r_w\), and sends one commitment \(c_w=\mathrm{Commit}(m_w;r_w)\) for each wire \(w\). For each gate \(j\in\{1,\ldots,N\}\), it constructs the first Sigma message \(u_j\) for the appropriate gate relation using the commitments to that gate's input and output wires. All \(u_j\) are sent together.</p>
+<p><strong>Challenge stage.</strong> The verifier samples fresh independent challenges \(e_1,\ldots,e_N\), one for each gate proof, and sends them together.</p>
+<p><strong>Response stage.</strong> The prover returns all gate responses \(z_1,\ldots,z_N\) and an opening of the final circuit-output commitment to the bit 1.</p>
+<p><strong>Verification.</strong> The verifier checks that the output really opens to 1, then checks every XOR or AND Sigma transcript against the same previously sent wire commitments. It accepts if and only if <em>all</em> checks pass.</p>
+</div></details></div>
+<div class="exercise"><div class="tag">Homework 2 · Problem 4(b)</div><h3>Prove soundness, not merely that gate checks exist</h3>
+<details><summary>Why a false circuit must cause a false gate statement</summary><div class="inside">
+<p>Suppose \(C\) is unsatisfiable: <strong>no input assignment causes output 1</strong>. Perfect binding fixes one value for each committed wire. If the final output commitment opens to 0, verification rejects immediately. Otherwise it opens to 1.</p>
+<p>Assume, seeking a contradiction, that all gate relations were also satisfied by those fixed wire values. Starting from the input wires, evaluate the circuit gate by gate. Every committed output would then equal the correct XOR/AND of the committed inputs. The final committed output would equal the actual circuit output, namely 1. That would supply a satisfying input for \(C\), contradicting unsatisfiability.</p>
+<p>Therefore at least one of the \(N\) gate statements must be false. If the combined verifier accepts with probability \(\epsilon\), a false gate proof was accepted as well. By splitting the event across the \(N\) possible gates, some underlying false gate statement must be accepted with probability at least \(\epsilon/N\); otherwise the union of all \(N\) events would have probability below \(\epsilon\). If \(N\) grows polynomially and \(\epsilon\) is non-negligible, this contradicts the assumed underlying gate-protocol soundness.</p>
+</div></details></div>
+<div class="exercise"><div class="tag">Homework 2 · Problem 4(c)</div><h3>The intended honest-verifier simulation—and its subtle assumption</h3>
+<details><summary>Sketch the simulator; identify what a fully rigorous proof still needs</summary><div class="inside">
+<p>The supplied homework solution proposes committing to 1 on every wire, using fresh randomness. The final output then genuinely opens to 1. For each gate, invoke a simulator for the gate's Sigma protocol and collect the transcripts. Hiding would make the commitments to these fake wire values look like commitments to honest wire values.</p>
+<p><strong>Important proof gap:</strong> an all-1 assignment makes some gate relations <em>false</em>—for example, XOR(1,1)=0, not 1. The standard Sigma definition only guarantees an honest-verifier simulator for <strong>true</strong> instances. From that definition alone, we cannot assume an accepting simulated transcript exists for an arbitrary false gate statement. A formal construction therefore needs an additional property of the gate simulators on these commitment statements, or a different construction with a justified hybrid argument. The homework expressly requests an informal argument; do not mistake this step for a theorem following solely from the stated Sigma axioms.</p>
+</div></details></div>
+<div class="transition"><p>We have now built interactive protocols whose verifier selects challenges. The final topic asks whether a challenge can be computed from the prover's first message, eliminating the interaction altogether.</p></div>
+<p class="source">PETS · Homework 2, Problem 4(a–c), pp. 3–5. The final caveat separates the provided informal simulator sketch from a consequence of the formal Sigma definition.</p>
+</article>
