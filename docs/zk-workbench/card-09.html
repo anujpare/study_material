@@ -14,7 +14,27 @@
 <div class="role bad"><div class="tag">Case A</div><p>If \(B\) really is isomorphic to \(G\), then \(B\) has no Hamiltonian cycle because isomorphisms preserve cycles. Thus challenge \(c=1\) must fail, although \(c=0\) might pass.</p></div>
 <div class="role bad"><div class="tag">Case B</div><p>If \(B\) is <em>not</em> isomorphic to \(G\), then challenge \(c=0\) must fail, although \(c=1\) might pass if the cheating prover selected a different graph containing a cycle.</p></div>
 </div>
-<section class="lab"><div class="lab-head"><div class="tag">Find the unavoidable failing challenge</div><h3>What can a cheating prover fix in advance?</h3><p>Select which sort of graph the cheating prover committed to, remembering that the public \(G\) has no Hamiltonian cycle.</p></div><div class="lab-body"><div class="control-row"><button data-demo="ham-false" data-value="isomorphic">Commit to a real relabeling</button><button data-demo="ham-false" data-value="different">Commit to a different graph</button></div><div id="ham-false-result" class="feedback" aria-live="polite">A cheating prover may choose its commitments, but the verifier chooses the challenge after they are fixed.</div></div></section>
+<section class="lab">
+<div class="lab-head"><div class="tag">A falsifiable claim · See which challenge MUST fail</div><h3>Fix the cheating prover’s graph before choosing the challenge</h3>
+<p>Unlike the earlier example, this public graph \(G_0\) has <strong>no Hamiltonian cycle</strong>: cities 1 and 5 have only one road each, whereas a cycle would need two different roads at every city.</p></div>
+<div class="lab-body">
+<div class="two-diagrams">
+<div class="diagram"><div class="graph-title">Public graph \(G_0\): no cycle</div><div id="ham-false-public"></div></div>
+<div class="diagram"><div class="graph-title">Committed graph \(B\)</div><div id="ham-false-hidden"><p>Choose a cheating preparation below.</p></div></div>
+</div>
+<p class="diagram-note">Gray = real road. Red dashed = a <strong>missing</strong> road. Green = extra road in the cheater’s graph. For teaching, we show the hidden committed graph; the real verifier sees only sealed commitments until opening.</p>
+<p>Stage 1 · The dishonest prover fixes one committed graph \(B\):</p>
+<div class="control-row">
+<button data-demo="ham-false" data-value="isomorphic">Commit to \(B=G_0\)</button>
+<button data-demo="ham-false" data-value="different">Commit to \(B\) WITH a cycle</button>
+</div>
+<p>Stage 2 · The verifier independently chooses one challenge. Binding prevents the prover from changing \(B\) now.</p>
+<div class="control-row">
+<button data-demo="ham-false-challenge" data-value="0">Ask \(c=0\): isomorphism?</button>
+<button data-demo="ham-false-challenge" data-value="1">Ask \(c=1\): cycle?</button>
+</div>
+<div id="ham-false-result" class="feedback" aria-live="polite">Select and fix a committed graph before choosing one challenge. Start a new preparation to try the other challenge.</div>
+</div></section>
 <div class="proof"><h3>Proof 2 · Soundness error at most \(1/2\)</h3><p>In either case, <strong>at least one of the two challenges necessarily fails</strong>. The verifier chooses its challenge uniformly, which means each of 0 and 1 has probability \(1/2\). The prover can therefore succeed with probability at most \(1/2\):</p><div class="math">\[\Pr[\mathrm{accept}\mid G\notin L]\ \leq\ \tfrac12\]</div><p>The point is not that a typical cheater gets caught half the time. We have shown that <em>every</em> cheating strategy has at least one unavoidable failing challenge, because a graph with a cycle cannot simultaneously be an isomorphic copy of a graph with no cycle.</p></div>
 <p>Hiding did not establish soundness here. <em>Binding</em> was the essential assumption because the committed graph had to remain fixed. Hiding enters in the next, harder claim: zero knowledge.</p>
 <div class="transition"><p>How can a simulator prepare a transcript that looks like either honest response if it does not know any Hamiltonian cycle of \(G\)? The answer uses a guess about the verifier's challenge and carefully controlled rewinding.</p></div>
