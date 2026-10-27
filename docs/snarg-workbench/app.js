@@ -10,7 +10,8 @@ const mod=(x,p)=>((x%p)+p)%p;
 const escape=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const gcdPow=(a,b,p)=>{let x=1;a=mod(a,p);while(b>0){if(b%2)x=x*a%p;a=a*a%p;b=Math.floor(b/2);}return x;};
 window.addEventListener("mathjax-ready",()=>{mathReady=true;typeset(main);});
-async function typeset(node){if(window.MathJax?.typesetPromise){try{await MathJax.typesetPromise([node]);}catch(e){console.warn("MathJax",e);}}}
+let mathQueue=Promise.resolve();
+function typeset(node){if(!window.MathJax?.typesetPromise)return Promise.resolve();mathQueue=mathQueue.catch(()=>{}).then(()=>MathJax.typesetPromise([node])).catch(e=>console.warn("MathJax",e));return mathQueue;}
 function htmlOut(el,html){if(window.MathJax?.typesetClear)try{MathJax.typesetClear([el])}catch(e){};el.innerHTML=html;typeset(el);}
 function val(lab,key,def){let el=lab.querySelector('[data-key="'+key+'"]');return el?Number(el.value):def;}
 function txt(lab,html){let out=lab.querySelector(".lab-output");if(out)htmlOut(out,html);}
@@ -95,7 +96,7 @@ function getHash(){try{return decodeURIComponent(location.hash.slice(1))}catch(e
 function navigate(){
  const id=getHash();const i=cards.findIndex(c=>c.id===id);current=i>=0?i:0;const c=cards[current];
  const run=++req;
- if(MathJax?.typesetClear){try{MathJax.typesetClear([main]);}catch(e){}}
+ if(window.MathJax?.typesetClear){try{MathJax.typesetClear([main]);}catch(e){}}
  main.innerHTML=c.html;main.setAttribute("data-lesson-id",c.id);
  chapter.value=String(c.chapter);
  select.innerHTML=cards.filter(x=>x.chapter===c.chapter).map(x=>'<option value="'+escape(x.id)+'">'+escape(x.title)+'</option>').join("");
