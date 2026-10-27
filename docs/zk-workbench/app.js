@@ -176,15 +176,34 @@
       "The committed graph is not isomorphic to G. Challenge 0 must fail, even if the prover deliberately committed to a graph containing an easy Hamiltonian cycle that could pass challenge 1.",
     "bad");
   }
+  function simPreview(guess,challenge){
+    const box=$("sim-preview");if(!box)return;
+    const premEdges=new Set(edges.map(([a,b])=>edgeKey(permutation[a],permutation[b])));
+    const cycleEdges=new Set(cycle.map(([a,b])=>edgeKey(permutation[a],permutation[b])));
+    let h='<div class="table-wrap"><table class="matrix" aria-label="What the verifier may see after opening commitments"><thead><tr><th>B</th>';
+    for(let j=1;j<=5;j++)h+='<th>'+j+'</th>';h+='</tr></thead><tbody>';
+    for(let i=1;i<=5;i++){
+      h+='<tr><th>'+i+'</th>';
+      for(let j=1;j<=5;j++){
+        const e=edgeKey(i,j),revealed=guess!==null&&challenge===guess&&(challenge===0||cycleEdges.has(e));
+        const bit=guess===0?Number(premEdges.has(e)):Number(i!==j);
+        h+='<td class="'+(revealed?"open":"sealed")+'">'+(revealed?bit:"🔒")+'</td>';
+      }
+      h+='</tr>';
+    }
+    box.innerHTML=h+'</tbody></table></div>';
+  }
   function simulator(action){
     if(action==="zero"||action==="one"){
       lockedGuess=Number(action==="one");lockedChallenge=null;
+      simPreview(lockedGuess,null);
       $("sim-prep").textContent="Prepared for ĉ="+lockedGuess+". Sealed commitments were sent. The verifier does not see whether the simulator prepared a relabeled G (ĉ=0) or a graph containing a known cycle (ĉ=1).";
       feedback("sim-result","Now let the verifier ask c=0 or c=1. A simulator must choose its preparation before receiving that challenge.","");
     }else if(lockedGuess===null){feedback("sim-result","The simulator must prepare and send commitments before the verifier chooses the challenge.","bad");}
     else if(lockedChallenge!==null){feedback("sim-result","The verifier already asked its challenge. To try a different preparation, start a NEW attempt; you cannot change sealed commitments mid-run.","bad");}
     else{lockedChallenge=Number(action==="ask-one");
       const ok=lockedChallenge===lockedGuess;
+      simPreview(lockedGuess,lockedChallenge);
       feedback("sim-result","Simulator guessed ĉ="+lockedGuess+"; verifier asked c="+lockedChallenge+". "+(ok?
         "MATCH: simulator opens the prepared commitments in the requested manner and outputs an accepting-looking transcript. It never used a Hamiltonian cycle of G.":
         "MISMATCH: simulator cannot produce the requested consistent opening from this preparation. It aborts and rewinds/restarts the verifier from its saved state before attempting another commitment."),ok?"good":"bad");
@@ -221,6 +240,8 @@
   }
   function extractGraph(which){
     const result=$("extract-result");if(!result)return;
+    drawGraph("extract-b",{permuted:true,route:which==="c0"?null:fixedPermRoute});
+    drawGraph("extract-g",{route:which==="combine"?fixedRoute:null});
     if(which==="c0"){result.textContent="From an accepting c=0 opening, the extractor learns the permutation π and every edge in the committed graph B. It has not yet seen a cycle.";
     }else if(which==="c1"){result.textContent="From an accepting c=1 opening with the SAME first commitments, the extractor learns a Hamiltonian cycle of B: 2→4→1→5→3→2. It has not yet learned which original vertices the labels represent.";
     }else{result.textContent="Combine BOTH accepting responses to the SAME committed first message: inverse-permute the revealed cycle. Since π⁻¹(2)=1, π⁻¹(4)=2, π⁻¹(1)=3, π⁻¹(5)=4, and π⁻¹(3)=5, we recover 1→2→3→4→5→1 in G. This is a valid witness, not merely a statement about the likelihood of cheating.";}
@@ -267,6 +288,7 @@
   }
   function initializeLab(){
     drawGraph("witness-graph");npUpdate();drawGraph("graph-original",{route:fixedRoute});drawGraph("graph-permuted",{permuted:true,route:fixedPermRoute});
+    drawGraph("extract-b",{permuted:true});drawGraph("extract-g");
     scheduleUpdate();compareCost();schnorrUpdate();schnorrExtract();gateUpdate();oddsUpdate();
   }
   document.addEventListener("click",e=>{
