@@ -1,0 +1,169 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>SNARGs · Part I</title><body>
+<article class="lesson" data-id="the-question" data-title="What would count as convincing evidence?">
+<p class="chapter-tag">I · Why SNARGs exist · Lecture §1</p>
+<h1>What would count as convincing evidence?</h1>
+<p class="aim"><strong>Question.</strong> A server claims to have completed an expensive computation. What must the client check to know the claimed result is correct, without doing the computation again?</p>
+<p>Suppose the public input is a value \(x\). The server applies SHA-256 a million times and returns an alleged result \(y\). An obvious verification method is to ask the server for every intermediate hash, then check each transition. This works, but the client performs approximately a million hash operations. Another is to request only \(y\) and recompute the whole chain. Neither achieves inexpensive verification.</p>
+<p>To formulate exactly what should be proved, collect everything the verifier already knows into the <strong>statement</strong> \(x\), and call the extra evidence known to the prover the <strong>witness</strong> \(w\). A public relation \(R(x,w)\) is a procedure that checks this evidence. We choose the convention that \(R(x,w)=1\) means the evidence is valid.</p>
+<div class="math">\[\displaystyle L=\{x:\exists\,w\text{ such that }R(x,w)=1\}.\]</div>
+<p>The symbol \(\exists\) means “there exists”; \(L\) is the set of statements for which at least one valid witness exists. For the hash-chain claim, let the statement contain the initial input and claimed final hash; the witness can contain all intermediate hashes. The relation checks the starting value, every transition, and the last value.</p>
+<p>The reason for this formulation is that finding or constructing \(w\) may be expensive even when checking a proposed \(w\) is efficient. This is the central kind of statement studied in NP. Here, “efficient” means that the checking time grows at most as a polynomial in the input length. We do not need to assume that finding \(w\) itself is efficient.</p>
+<div class="diagram">
+<div class="flow">
+<div class="stage"><strong>Prover \(P\)</strong><p>Knows \(x,w\); produces a proof \(\pi\).</p></div>
+<div class="arrow" aria-hidden="true">⟶</div>
+<div class="stage"><strong>Verifier \(V\)</strong><p>Knows \(x\); checks \(\pi\) without receiving \(w\).</p></div>
+</div>
+<p class="note">The mathematical goal is not to recover the witness. It is to decide reliably whether the public statement admits a witness.</p>
+</div>
+<h2>The two ways verification can go wrong</h2>
+<p>If \(x\in L\), an honest prover holding a valid witness should be accepted. This property is <strong>completeness</strong>. The notes use perfect completeness: honest proofs are accepted with probability \(1\).</p>
+<p>If \(x\notin L\), then no valid witness exists. A cheating prover must not be able to persuade the verifier except with a small <strong>soundness error</strong> \(\varepsilon\). In symbols, the two guarantees are</p>
+<div class="math">\[\Pr[V(x,\pi)=1\mid x\in L,\ \pi\leftarrow P(x,w)]=1,\qquad \Pr[V(x,\pi)=1\mid x\notin L]\le\varepsilon.\]</div>
+<p>In the second probability the verifier's randomness is included and the cheating prover may use an arbitrary permitted strategy. “Argument” denotes a system whose soundness is guaranteed only against computationally bounded adversaries, typically through cryptographic assumptions.</p>
+<div class="bridge"><strong>What we established.</strong> A convincing proof must make true claims pass and false claims fail, while saving the verifier work compared with checking the whole witness. The next problem is to specify what “saving work” actually requires.</div>
+<p class="source">Source: official lecture notes, §§1 and 5 (pp. 1 and 8).</p>
+</article>
+
+<article class="lesson" data-id="succinctness" data-title="How short is succinct?">
+<p class="chapter-tag">I · Why SNARGs exist · Lecture §1</p>
+<h1>How short is succinct?</h1>
+<p class="aim"><strong>Question.</strong> Sending the complete witness is already a non-interactive proof. Why is it not a SNARG?</p>
+<p>Let \(|x|\), \(|w|\), and \(|\pi|\) denote the lengths of the statement, witness and proof. Let \(\lambda\) be the security parameter: increasing it is intended to make successful computational attacks less likely. A conventional NP proof may simply send \(w\), making its length \(|w|\).</p>
+<p>We want the cost of proof verification to grow very slowly with the witness size. The lecture adopts the following two requirements:</p>
+<div class="math">\[|\pi|=O\!\left(\lambda,\operatorname{polylog}(|x|,|w|)\right),\qquad T_V=O\!\left(\lambda,|x|,\operatorname{polylog}(|w|)\right).\]</div>
+<p>Here, \(\operatorname{polylog}(n)\) means a fixed polynomial in \(\log n\), such as \((\log n)^2\). The big-\(O\) notation suppresses constant factors and describes asymptotic growth, not an exact number of bytes or processor instructions. The first condition keeps the proof short; the second keeps verification efficient. Reading the entire public statement \(x\) can require \(\Theta(|x|)\) time, so this dependence is permitted.</p>
+<p>The proof must also be <strong>non-interactive</strong>: after the prover prepares \(\pi\), anyone with the statement and public verification information can check it without having to issue a fresh challenge to that prover.</p>
+<div class="panel">
+<strong>Three distinct requirements</strong>
+<div class="essentials">
+<div><strong>Succinctness</strong><br>Short proof and inexpensive verification.</div>
+<div><strong>Non-interactivity</strong><br>A transferable proof string, not an ongoing conversation.</div>
+<div><strong>Soundness</strong><br>A false statement is accepted only with small probability.</div>
+<div><strong>Zero-knowledge (optional here)</strong><br>Verification does not reveal the witness beyond the allowed information.</div>
+</div>
+</div>
+<p>The resulting system is a <strong>SNARG</strong>: a Succinct Non-Interactive Argument. A SNARK adds a knowledge/extraction property; a zkSNARK also provides zero-knowledge. These are different guarantees and should not be inferred from the acronym “SNARG” alone.</p>
+<div class="bridge"><strong>What follows.</strong> We must now find a method that checks the consistency of a long proof using only a tiny amount of the proof. A major theorem says this is possible—but initially only in a special model of access.</div>
+<p class="source">Source: official notes, §1, and handwritten notes pp. 2–4.</p>
+</article>
+
+<article class="lesson" data-id="pcp-box" data-title="Why three proof bits can be enough">
+<p class="chapter-tag">I · Why SNARGs exist · Lecture §2</p>
+<h1>Why three proof bits can be enough</h1>
+<p class="aim"><strong>Question.</strong> How can a verifier detect false statements after inspecting only three bits of a proof?</p>
+<p>Ordinary witnesses do not have this property: three randomly chosen positions in an unstructured witness often reveal nothing relevant. The <strong>PCP theorem</strong> establishes that every NP statement has a specially <em>encoded</em> proof \(\pi\), of polynomial length, that permits a verifier to decide with only three bit queries (in the formulation quoted by the course).</p>
+<p>Imagine placing this encoded proof in a sealed box. The prover must fix the complete string before the verifier chooses query positions. The box reveals the bits at the requested indices and nothing else. The verifier uses \(O(\log M)\) random bits to index an \(M\)-bit proof and receives only \(O(1)\) bits.</p>
+<div class="diagram">
+<div class="flow">
+<div class="stage"><strong>Prover</strong><p>Encode proof \(\pi\) and seal all \(M\) bits.</p></div>
+<div class="arrow">⟶</div>
+<div class="stage"><strong>Oracle box</strong><p>Fixed bit string; responds only to index queries.</p></div>
+<div class="arrow">⟷</div>
+<div class="stage"><strong>Verifier</strong><p>Random positions, then a local predicate on returned bits.</p></div>
+</div>
+</div>
+<p>For a true statement, the honest encoded proof always passes. For a false statement, <em>every fixed encoded proof</em> has acceptance probability at most \(1/2\). The quantifier “every” matters: soundness covers arbitrary fake strings, not only malformed honest proofs.</p>
+<div class="math">\[\Pr[V^\pi(x)=1\mid x\notin L]\le\tfrac12,\qquad \Pr[V^\pi(x)=1\mid x\in L,\ \pi\text{ honest}]=1.\]</div>
+<p>The superscript \(V^\pi\) means that the verifier can query the fixed proof oracle \(\pi\). The theorem is an assumed result in these lecture notes; proving the PCP theorem itself is not part of the material.</p>
+<h2>Repeating the test</h2>
+<p>A soundness error of \(1/2\) is not small enough for cryptographic security. We can perform \(t\) independent PCP tests against the <em>same fixed</em> proof string and accept only if all pass. For every fixed false proof, each fresh test has acceptance probability at most \(1/2\). Therefore</p>
+<div class="math">\[\Pr[\text{all }t\text{ tests accept}]\le (1/2)^t=2^{-t}.\]</div>
+<div class="lab" data-lab="pcp"><div class="lab-top"><strong>Test the soundness bound</strong><p>Change the number of independent local PCP tests. The display reports the bound derived above, not an arbitrary animation.</p></div><div class="lab-content"><label>Number of tests \(t\)<input data-key="t" type="range" min="1" max="10" value="4"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<div class="bridge"><strong>What the theorem achieves—and what it does not.</strong> It gives a locally checkable proof inside an ideal box. It does not tell us how to transmit such a box. Sending the full string loses succinctness; requesting bit values from an uncommitted prover permits adaptive cheating. The next step is to enforce fixed answers cryptographically.</div>
+<p class="source">Source: official notes, §2 pp. 2–3; handwritten notes pp. 4–6.</p>
+</article>
+
+<article class="lesson" data-id="iop-types" data-title="Interactive oracle proofs">
+<p class="chapter-tag">I · Why SNARGs exist · Lecture §2.1</p>
+<h1>Interactive oracle proofs</h1>
+<p class="aim"><strong>Question.</strong> What precisely do we assume about the imaginary proof box, and how can its interface change?</p>
+<p>An <strong>Interactive Oracle Proof</strong> (IOP) is a protocol where the prover submits special encoded information to one or more oracles and the verifier asks only prescribed queries. The ideal oracle ties all answers to a single already-fixed encoding. Security is proved first in this restricted, information-theoretic setting.</p>
+<p>The interface matters because it determines which cryptographic commitment will eventually implement the oracle:</p>
+<div class="table-scroll"><table><thead><tr><th>Oracle type</th><th>What is fixed?</th><th>Allowed query and answer</th></tr></thead><tbody>
+<tr><td>PCP</td><td>A bit string \(\pi\)</td><td>Position \(i\); answer \(\pi_i\).</td></tr>
+<tr><td>Linear IOP</td><td>Vector \(\boldsymbol\pi\in\mathbb F^M\)</td><td>Vector \(\mathbf q\); answer \(\langle\mathbf q,\boldsymbol\pi\rangle=\sum_iq_i\pi_i\).</td></tr>
+<tr><td>Polynomial IOP</td><td>A polynomial \(\pi(X)\in\mathbb F[X]\)</td><td>Point \(z\in\mathbb F\); answer \(\pi(z)\).</td></tr>
+</tbody></table></div>
+<p>The field \(\mathbb F\) is a collection of numbers supporting addition, multiplication and division by nonzero elements. We will construct examples in finite fields later. The vector inner product is simply a sum of coordinate-wise products; it is the linear IOP's permitted operation.</p>
+<p>PLONK will use the polynomial interface because a polynomial can encode many computation values and its algebraic identities can be checked by a few random evaluations. Before developing it, we finish the PCP construction by learning how to fix a vector of bits.</p>
+<div class="bridge"><strong>The useful abstraction.</strong> An IOP specifies exactly what the verifier may read; a commitment scheme will make those restrictions enforceable in an ordinary protocol. This is the two-stage blueprint used throughout the lecture.</div>
+<p class="source">Source: official notes, §2.1 pp. 3–4.</p>
+</article>
+
+<article class="lesson" data-id="merkle" data-title="One commitment for an entire vector">
+<p class="chapter-tag">I · Why SNARGs exist · Lecture §2 / HW1</p>
+<h1>One commitment for an entire vector</h1>
+<p class="aim"><strong>Question.</strong> Can the prover fix millions of proof bits while sending only a short digest, then authenticate any few positions?</p>
+<p>A vector commitment has a commitment algorithm and an opening algorithm. Committing to \((m_1,\ldots,m_M)\) produces a digest \(c\). Later, an opening of position \(i\) provides \(m_i\) and a short proof that this value is consistent with \(c\).</p>
+<p>We need <strong>position binding</strong>: no computationally bounded prover should be able to produce a commitment \(c\), one index \(i\), two different messages \(m_i\ne m'_i\), and two valid openings to them. This is exactly the “cannot change a bit after seeing the verifier's position” property required by the PCP box.</p>
+<h2>The Merkle construction</h2>
+<p>Let \(H\) be a collision-resistant hash function producing \(\lambda\)-bit outputs. Hash each message at a leaf, hash the concatenation of each pair of children at their parent, and continue to one root \(c\). Each parent value commits to the complete subtree below it.</p>
+<div class="lab" data-lab="merkle"><div class="lab-top"><strong>Authentication-path explorer</strong><p>Blue is the path reconstructed by the verifier; amber nodes are precisely the sibling hashes the prover must transmit.</p></div><div class="lab-content"><label>Index to open \(i\)<input data-key="i" type="range" min="1" max="8" value="4"></label><div id="merkle-svg"></div><div class="lab-output" aria-live="polite"></div></div></div>
+<div class="proof"><h3>Why does an opening need only \(\log_2 M\) sibling hashes?</h3>
+<p>Assume for simplicity that \(M=2^k\). The tree has \(k\) levels between each leaf and the root. The verifier starts with \(H(m_i)\). At the first level, one sibling hash is enough to reconstruct the parent hash; at the second, one more sibling hash reconstructs the grandparent; and so forth. After \(k\) such steps the verifier obtains a candidate root.</p>
+<p>Thus the opening contains exactly \(k=\log_2M\) sibling hashes, plus the message and its position. The root commitment itself contains only \(\lambda\) bits. If each sibling is a \(\lambda\)-bit hash, the authentication hashes total \(O(\lambda\log M)\) bits.</p>
+<p><strong>Binding.</strong> Suppose two different messages at the same leaf both authenticate to the same root. Trace the two hash computations upward. At some level, different child inputs must yield an equal parent hash; otherwise distinct leaf hashes would produce different roots at every level. That would be a collision in \(H\) (including the possibility of a collision at the leaf itself).</p>
+<p class="qed">Therefore a Merkle root fixes each position, except with the negligible probability of finding a hash collision, while the opening is logarithmic rather than linear in the vector length. This supplies the cryptographic operation that the PCP box lacked. \(\square\)</p></div>
+<p class="source">Source: official lecture §2; Homework 1, Problem 4(c).</p>
+</article>
+
+<article class="lesson" data-id="hw1-vectors" data-title="HW1 · All three vector commitments">
+<p class="chapter-tag">I · Why SNARGs exist · Original HW1, Problem 4</p>
+<h1>Homework 1: vector commitments</h1>
+<p class="aim"><strong>Exam skill.</strong> Choose a construction with the required commitment/opening sizes, then prove position binding with an explicit collision argument.</p>
+<p>We are given a random oracle \(H:\{0,1\}^{\ast}\to\{0,1\}^{\lambda}\), and an ordered vector of \(M\) messages of length \(|m|\). Each part asks for a different trade-off between commitment length and opening length.</p>
+<div class="exercise"><span class="exercise-kicker">HW1 · Problem 4(a)</span><h3>Large commitment, constant proof</h3>
+<p>Construct a commitment of \(M\lambda\) bits with an \(O(1)\)-bit opening proof, and justify position binding.</p>
+<details class="worked"><summary>Work through the solution</summary><div class="answer">
+<p>Set \(c=(H(m_1),\ldots,H(m_M))\). To open position \(i\), reveal \(m_i\); no auxiliary proof bits are necessary. The verifier checks \(H(m_i)=c_i\).</p>
+<p>If two distinct values \(m_i,m_i'\) were accepted at the same position, then \(H(m_i)=c_i=H(m_i')\) would be a hash collision. Under the random-oracle assumption, a polynomial-time adversary finds such a collision only with negligible probability.</p>
+<p class="qed">The verifier needs no separate authentication path because the commitment already contains the expected hash at every index. The price is that the commitment grows linearly with \(M\). \(\square\)</p>
+</div></details></div>
+<div class="exercise"><span class="exercise-kicker">HW1 · Problem 4(b)</span><h3>Short commitment, full-vector opening</h3>
+<p>Construct a \(\lambda\)-bit commitment with an \(O(M|m|)\)-bit opening proof, and justify position binding.</p>
+<details class="worked"><summary>Work through the solution</summary><div class="answer">
+<p>Let \(c=H(\operatorname{enc}(m_1,\ldots,m_M))\), using an unambiguous encoding of the ordered list. To open position \(i\), reveal the entire ordered vector. The verifier recomputes its hash and reads its \(i\)-th entry.</p>
+<p>If two different messages at position \(i\) could be opened under the same digest, the two complete vector encodings would be different yet have the same hash. That is a collision.</p>
+<p class="qed">The root-sized commitment is short, but checking one position requires revealing and authenticating the whole vector. Hence this construction does not implement the succinct PCP box. \(\square\)</p>
+</div></details></div>
+<div class="exercise"><span class="exercise-kicker">HW1 · Problem 4(c)</span><h3>Short commitment and logarithmic opening</h3>
+<p>Construct a \(\lambda\)-bit commitment with an \(O(\lambda\log M)\)-bit opening proof, and prove position binding.</p>
+<details class="worked"><summary>Work through the solution</summary><div class="answer">
+<p>Build the binary Merkle tree defined in the previous lesson and send the root. The opening consists of the message, its index, and the sibling hashes on the leaf-to-root path. Recompute each parent hash in the correct left/right order and compare the final value to the root.</p>
+<p>The proof contains one \(\lambda\)-bit sibling value at each of \(\log_2M\) levels. If distinct messages could both authenticate at the same leaf, at least one equal parent hash would have different inputs, giving a collision in \(H\).</p>
+<p class="qed">Both sizes meet the requirement: one \(\lambda\)-bit root and \(O(\lambda\log M)\) auxiliary proof bits, with position binding derived from collision resistance. \(\square\)</p>
+</div></details></div>
+<p class="source">Source: HW1 solutions, Problem 4(a–c). All three parts are preserved here; <a href="../hw1/">dedicated HW1 deck</a>.</p>
+</article>
+
+<article class="lesson" data-id="hw3-pcp-argument" data-title="HW3 4(a) · Construct the argument">
+<p class="chapter-tag">I · Why SNARGs exist · Original HW3, Problem 4(a)</p>
+<h1>Homework 3: turning a PCP into an argument</h1>
+<p class="aim"><strong>Question.</strong> How do we combine the fixed-proof guarantee of a Merkle tree with the local soundness guarantee of a PCP so that the entire communication becomes succinct?</p>
+<div class="exercise">
+<span class="exercise-kicker">HW3 · Problem 4(a) · Original task</span>
+<p>A PCP proof for a statement of length \(n\) has \(M=\operatorname{poly}(n)\) bits. The verifier asks a constant \(k\) positions, selected before their answers are seen, and has perfect completeness and soundness error \(1/2\). A Merkle root has \(\lambda\) bits and each opening requires \(O(\lambda\log M)\) bits. Construct a <strong>three-message argument</strong> with negligible soundness error and total communication polynomial in \(\lambda,\log n\).</p>
+<details class="worked"><summary>Full solution · protocol, correctness, soundness, communication</summary><div class="answer">
+<h3>Construction</h3>
+<p>The prover first computes the PCP string \(\pi\) and commits to its complete vector of bits with a Merkle root \(c\). The prover retains the tree needed to authenticate openings. Its first message is \(c\). The verifier then chooses independent randomness for \(\lambda\) PCP tests and sends the resulting batch of \(k\lambda\) positions. This is a single second message, since none of the positions depends on previously revealed proof bits. The prover's third message contains every requested bit and its Merkle authentication path.</p>
+<div class="protocol"><div class="who">Prover \(P\)</div><div class="send">⟶</div><div class="who">Verifier \(V\)</div>
+<div class="msg">Commit the fixed PCP \(\pi\): send root \(c\)</div><div class="send">⟶</div><div class="local">Store \(c\)</div>
+<div class="local">Retain \(\pi\) and the Merkle tree</div><div class="send">⟵</div><div class="msg">All \(k\lambda\) queried positions</div>
+<div class="msg">Return opened bits and paths</div><div class="send">⟶</div><div class="local">Verify paths and every PCP test</div></div>
+<h3>Completeness</h3>
+<p>If \(x\in L\), the PCP theorem supplies an encoded proof for which every PCP local predicate accepts. Correct Merkle paths also verify, so the combined verifier always accepts. This proves perfect completeness.</p>
+<h3>Soundness</h3>
+<p>Now assume \(x\notin L\). Once the root has been sent, position binding prevents an efficient prover from changing the answer at a fixed index without finding a hash collision. Except for negligible cryptographic failure, the openings must therefore act as responses from one fixed proof string. For any such false-proof string, each independent PCP test accepts with probability at most \(1/2\). Requiring all \(\lambda\) tests to accept gives</p>
+<div class="math">\[\Pr[\mathrm{accept}\mid x\notin L]\le 2^{-\lambda}+\operatorname{negl}(\lambda).\]</div>
+<p>The first term comes from the PCP test; the second covers failure of Merkle binding. Without binding, the argument would be invalid: the prover could pick answers adaptively after seeing the requested positions.</p>
+<h3>Communication</h3>
+<p>The root costs \(\lambda\) bits. There are \(k\lambda=O(\lambda)\) openings because \(k\) is constant. Their total authentication-path size is</p>
+<div class="math">\[O(\lambda)\cdot O(\lambda\log M)=O(\lambda^2\log M).\]</div>
+<p>Since \(M\) is a polynomial in \(n\), we have \(\log M=O(\log n)\). The requested indices add \(O(\lambda\log M)\) bits; the returned proof-bit values add \(O(\lambda)\). Thus the total communication is \(O(\lambda^2\log n)\), which is polynomial in \(\lambda,\log n\).</p>
+<p class="qed">Both requirements are met: the encoded PCP supplies short probabilistic tests, while Merkle binding makes their answers refer to one fixed string; together they give negligible soundness error and succinct communication in three messages. This is an <em>argument</em> because binding is computational. \(\square\)</p>
+</div></details></div>
+<p>The remaining step, HW3 4(b), is to remove the verifier's challenge message. We will return to it after deriving Fiat–Shamir and its security conditions.</p>
+<p class="source">Source: HW3 Problem 4(a), linked from <a href="../hw3/">the complete HW3 deck</a>.</p>
+</article>
+</body></html>
