@@ -1,0 +1,29 @@
+<article class="lesson">
+<p class="chapter">Part I · Interactive proofs</p>
+<h1>Completeness and soundness quantify two different failures</h1>
+<p class="lead">A useful proof system must avoid rejecting a truthful prover and accepting a liar. These are different risks, so cryptography defines them separately and specifies exactly <em>who</em> is honest in each guarantee.</p>
+<div class="role-grid">
+<div class="role prover"><div class="tag">Completeness · true statement</div><p>If \(x\in L\), an honest prover \(P\) interacting with the honest verifier \(V\) must be accepted often enough.</p><div class="math">\[\Pr[\langle P,V\rangle(x)=1]\geq\tfrac23\]</div><p class="small">The probability includes the parties' random choices. Perfect completeness strengthens this bound to 1.</p></div>
+<div class="role"><div class="tag">Soundness · false statement</div><p>If \(x\notin L\), <strong>every</strong> cheating prover \(P^\ast\) must have only a small chance of fooling the honest verifier \(V\).</p><div class="math">\[\Pr[\langle P^\ast,V\rangle(x)=1]\leq\tfrac13\]</div><p class="small">The upper bound applies to all possible cheating strategies, not just a particular one.</p></div>
+</div>
+<p>The symbol \(\Pr\) means probability; \(L\) is the set of true statements; and \(P^\ast\) denotes an arbitrary, possibly malicious prover. The bounds \(2/3\) and \(1/3\) are standard convenient constants in the lecture, not absolute properties of every protocol. Appropriate repetition can amplify the gap.</p>
+<h2>Which guarantee applies in which experiment?</h2>
+<section class="lab">
+<div class="lab-head"><div class="tag">Test the quantifiers</div><h3>Change which party is dishonest</h3><p>The definition is not a vague promise that everyone always behaves correctly. Select a situation to see exactly what follows.</p></div>
+<div class="lab-body"><div class="control-row">
+<button data-demo="security" data-value="honest">True \(x\), honest P and V</button>
+<button data-demo="security" data-value="cheat">False \(x\), cheating P*</button>
+<button data-demo="security" data-value="malicious">True \(x\), cheating V*</button>
+</div>
+<div id="security-result" class="feedback" aria-live="polite">Select a case before deciding which guarantee you are allowed to invoke.</div></div></section>
+<p>Notice that <strong>soundness protects the verifier</strong> against a cheating prover. It does not say that an honest verifier learns no secrets from a cheating prover: a malicious prover might reveal its own witness. Similarly, completeness constrains an <em>honest</em> verifier, not a malicious verifier that deliberately rejects everything.</p>
+<div class="exercise">
+<div class="tag">Homework 2 · Problem 1(b)</div>
+<h3>Two common traps</h3>
+<p>Assume a zero-knowledge protocol has perfect completeness and soundness error \(1/3\). Decide whether each statement is true.</p>
+<details><summary>(i) “A malicious verifier interacting with an honest prover will always accept a true statement.”</summary><div class="inside"><p><strong>False.</strong> Perfect completeness concerns the honest verifier. A malicious verifier could always output “reject”, violating the quoted statement without violating the proof system's definition.</p></div></details>
+<details><summary>(ii) “An honest verifier interacting with a malicious prover will learn nothing besides validity.”</summary><div class="inside"><p><strong>False.</strong> Zero knowledge protects an honest prover's secret from a possibly malicious verifier, not a cheating prover's deliberate disclosures. A malicious prover can send the secret witness in clear text.</p></div></details>
+</div>
+<div class="transition"><p>Even a proof that is complete and sound may simply reveal its secret witness. Our next goal is to define a third property that rules this out without sacrificing verification.</p></div>
+<p class="source">PETS · ZK lecture notes, Definition 1, p. 2; Homework 2, Problem 1(b).</p>
+</article>
