@@ -93,6 +93,74 @@ function initLab(lab){
  update();
 }
 
+
+/* Each supplementary visualization is attached to the exact mathematical claim
+   it tests; none of these small-field experiments replaces the general proof. */
+function extraBox(title,why,fields,type){
+ return '<div class="lab" data-lab="'+type+'"><div class="lab-top"><strong>'+title+'</strong><p>'+why+'</p></div><div class="lab-content">'+fields+'<div class="lab-output" aria-live="polite"></div></div></div>';
+}
+function range(name,math,min,max,def){
+ return '<label>'+math+'<input type="range" data-key="'+name+'" min="'+min+'" max="'+max+'" step="1" value="'+def+'"></label>';
+}
+function choice(name,options){
+ return '<label>Choose a case<select data-key="'+name+'">'+options.map(([v,t])=>'<option value="'+v+'">'+t+'</option>').join("")+'</select></label>';
+}
+function vizMath(x){return '\\('+x+'\\)'}
+function svgTrend(values,maxX,maxY,highlight){
+ const w=330,h=135,left=28,top=9,bottom=114;
+ let s='<div class="plot"><svg class="math-visual" viewBox="0 0 330 135" role="img" aria-label="Discrete values plotted at each integer input">';
+ s+='<path d="M28 9 V114 H320" stroke="#a9b7af" stroke-width="1" fill="none"/>';
+ values.forEach((v,i)=>{
+  const x=left+(i+.5)*(290/values.length);
+  const y=bottom-v/maxY*99;
+  const color=i===highlight?"#2b6f58":"#b3c9bb";
+  s+='<rect x="'+(x-290/values.length*.34)+'" y="'+y+'" width="'+Math.max(2,290/values.length*.68)+'" height="'+Math.max(1,bottom-y)+'" rx="1" fill="'+color+'"/>';
+  if(i===highlight)s+='<text x="'+x+'" y="'+(y-4)+'" text-anchor="middle" font-size="10" font-weight="700" fill="#254d3d">'+v+'</text>';
+ });
+ s+='<text x="6" y="14" font-size="11" fill="#66766b">'+maxY+'</text><text x="10" y="115" font-size="11" fill="#66766b">0</text>';
+ s+='<text x="29" y="129" font-size="11" fill="#66766b">0</text>';
+ s+='<text x="300" y="129" font-size="11" fill="#66766b">'+maxX+'</text></svg></div>';
+ return s;
+}
+function svgMatrix(size,test,selected){
+ let s='<div class="plot"><svg viewBox="0 0 306 306" class="math-visual" role="img" aria-label="All equally likely pairs of challenges. Dark cells are the pairs accepted by the verifier.">';
+ const step=35,pad=31;
+ for(let j=0;j<size;j++)for(let i=0;i<size;i++){
+  const x=pad+i*step,y=pad+j*step;
+  const root=test(i,j);
+  const focus=selected[0]===i&&selected[1]===j;
+  s+='<rect x="'+x+'" y="'+y+'" width="31" height="31" rx="3" fill="'+(root?"#a9d5bc":"#e9e9e6")+'" stroke="'+(focus?"#1f5f49":"#d6d9d4")+'" stroke-width="'+(focus?3:1)+'"/>';
+  if(focus)s+='<circle cx="'+(x+15.5)+'" cy="'+(y+15.5)+'" r="5" fill="#245b46"/>';
+ }
+ for(let i=0;i<size;i++){
+  s+='<text x="'+(pad+i*step+15)+'" y="22" text-anchor="middle" font-size="12" fill="#66756a">'+i+'</text>';
+  s+='<text x="20" y="'+(pad+i*step+20)+'" text-anchor="middle" font-size="12" fill="#66756a">'+i+'</text>';
+ }
+ s+='<text x="140" y="301" font-size="11" text-anchor="middle" fill="#65766b">r₁ →</text>';
+ s+='<text transform="translate(9,161) rotate(-90)" font-size="11" text-anchor="middle" fill="#65766b">r₂ →</text>';
+ return s+'</svg></div>';
+}
+function initLessonExtras(id){
+ const extras={
+  "succinctness":extraBox("Witness length versus logarithmic growth","Choose a witness length M = 2ᵏ. The displayed k is log₂ M, not a claim that a real SNARG proof has exactly k bits.",range("k","Exponent k",3,20,10),"growth"),
+  "pcp-box":extraBox("Read-only oracle: what does a position query reveal?","The eight bits are fixed before you choose the index. This demonstrates the oracle interface, not the PCP theorem or its soundness.",range("i","Query position i",1,8,4),"bitbox"),
+  "equality-proof":extraBox("Why the prover must commit before the challenge","Give the cheating prover r first. It can then choose the nonzero degree-one polynomial gᵣ(X) = X − r, which always agrees with f(X) = 0 at the known challenge.",range("r","Challenge r",0,16,4),"adaptive"),
+  "schwartz-zippel":extraBox("Two-variable root count: h(X,Y) = XY","All 49 pairs in 𝔽₇² are equally likely. Highlighted cells satisfy h = 0. This enumerates an example; the preceding induction proves the general lemma.",range("r1","First coordinate r₁",0,6,2)+range("r2","Second coordinate r₂",0,6,3),"szplot"),
+  "midterm-polynomial":extraBox("Test the exact midterm acceptance polynomial","Choose a valid basis vector or an invalid vector. Green squares are precisely the random challenges that satisfy the verifier's equality, for N = 2 and p = 7.",choice("case",[["valid","Valid x = (1,0)"],["two","Invalid x = (1,1)"],["single","Invalid x = (2,0)"]])+range("r1","First challenge r₁",0,6,2)+range("r2","Second challenge r₂",0,6,3),"onehot"),
+  "vanishing-polynomial":extraBox("Vanishing means every designated point is a root","For Ω = {1,2}, inspect ZΩ(r)=(r−1)(r−2). The product vanishes precisely at the two required points.",range("r","Evaluation point r",0,16,1),"vanish"),
+  "polynomial-commitments":extraBox("Why a commitment and an opening have different jobs","Select a stage. This is a protocol-flow visualization; it does not simulate a cryptographic commitment algorithm.",range("stage","Protocol stage",1,3,1)+range("r","Evaluation point r",0,16,3),"opening"),
+  "roots-unity-cost":extraBox("Twelve factors versus four multiplications","For ω = 6 in 𝔽₉₇, the entire 12-point vanishing product must equal r¹²−1. Both sides update as you change r.",range("r","Field element r",0,96,8),"unitycost"),
+  "circuits-meaning":extraBox("What the witness must make zero","In 𝔽₉₇, the statement requires C(x,w) = (2·4)(4+w) − 56 = 0. Change the private witness and inspect the exact residual.",range("w","Candidate witness w",0,8,3),"circuit"),
+  "plonk-output-input":extraBox("Public-input mismatch is a nonzero polynomial value","The public input is x₁ = 2. Change what the committed trace claims at its designated input location and inspect g(ω⁻¹) = ftrace(ω⁻¹) − fin(ω⁻¹).",range("x","Claimed trace input",0,8,2),"public"),
+  "plonk-gates":extraBox("The selector determines which gate equation is checked","The gate triple (L,R,O) = (4,3,7) is an addition gate. Change only the selector to see why the gate equation passes or fails.",choice("s",[["1","Addition selector s = 1"],["0","Multiplication selector s = 0"]]),"selector"),
+  "plonk-final":extraBox("Which component certifies each PLONK requirement?","Inspect the exact implication at each verification stage. The claimed global circuit proof succeeds only after all four conditions hold.",range("stage","Verification check",1,4,1),"plonkstages")
+ };
+ const html=extras[id];if(!html)return;
+ const anchor=main.querySelector(".proof")||main.querySelector(".diagram")||main.querySelector(".panel")||main.querySelector(".three")||main.querySelector("h2")||main.querySelector(".aim");
+ if(anchor)anchor.insertAdjacentHTML("afterend",html);
+ else main.insertAdjacentHTML("beforeend",html);
+}
+
 function getHash(){try{return decodeURIComponent(location.hash.slice(1))}catch(e){return ""}}
 function closeMenu(){const menu=byId("chapter-menu");if(menu)menu.open=false}
 function navigate(){
