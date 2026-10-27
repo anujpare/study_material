@@ -1,0 +1,24 @@
+<article class="lesson">
+<p class="chapter">Part IV · Proving zero knowledge</p>
+<h1>The simulator prepares for a challenge it has not yet seen</h1>
+<p class="lead">To establish zero knowledge, we must produce an efficient algorithm \(\mathrm{Sim}\) that manufactures a convincing verifier view <strong>without a Hamiltonian cycle of \(G\)</strong>. It cannot simply behave like the honest prover, because that prover needs the witness.</p>
+<h2>Construct a response to one guessed challenge</h2>
+<p>The simulator first picks a guess \(\hat c\in\{0,1\}\) uniformly. Its first message is crafted so that it can convincingly answer <em>that</em> challenge, even though the simulator does not know a Hamiltonian cycle of the public graph.</p>
+<div class="role-grid">
+<div class="role sim"><div class="tag">Guess \(\hat c=0\)</div><p>Choose a random permutation \(\pi\), build the genuine relabeled graph \(B=\pi(G)\), and commit to all its entries and to \(\pi\). If the verifier asks \(c=0\), open everything and demonstrate a correct isomorphism. No cycle was needed.</p></div>
+<div class="role sim"><div class="tag">Guess \(\hat c=1\)</div><p>Commit instead to a <strong>complete graph</strong> on the same vertices, which certainly contains a cycle, and commit to any auxiliary permutation. If the verifier asks \(c=1\), reveal any Hamiltonian cycle of that complete graph. It need not be related to \(G\).</p></div>
+</div>
+<p>A complete graph has an edge between every pair of different vertices. The simulator can therefore construct a cycle immediately, without knowing a cycle of \(G\). However, that prepared graph generally could not pass \(c=0\): it might not be isomorphic to \(G\).</p>
+<h2>Use rewinding only when the guess fails</h2>
+<section class="lab"><div class="lab-head"><div class="tag">Simulate one attempt</div><h3>Can the simulator open what it already committed to?</h3><p>Prepare a first message, then choose the verifier's hypothetical challenge. Once the challenge is received, the commitments cannot be changed.</p></div><div class="lab-body">
+<div class="control-row"><button data-demo="sim-guess" data-value="zero">Sim guesses \(\hat c=0\)</button><button data-demo="sim-guess" data-value="one">Sim guesses \(\hat c=1\)</button></div>
+<div class="data-box sim"><span class="label">Simulated first message</span><strong id="sim-prep">No commitments prepared yet</strong></div>
+<div class="control-row"><button data-demo="sim-ask" data-value="ask-zero">Verifier asks \(c=0\)</button><button data-demo="sim-ask" data-value="ask-one">Verifier asks \(c=1\)</button></div>
+<div id="sim-result" class="feedback" aria-live="polite">The simulator must send its first message before receiving \(c\).</div>
+</div></section>
+<p>If \(c=\hat c\), the simulator knows the required openings and outputs the verifier's view. If \(c\ne\hat c\), it <strong>aborts and restarts</strong> from a saved state of the verifier, with fresh commitments and a fresh guess. Rewinding here means that the simulator can run the simulated verifier again from the same saved earlier state; it does <em>not</em> mean a real-world prover gets to undo a message already sent.</p>
+<div class="math">\[\hat c\ \xleftarrow{\$}\ \{0,1\},\qquad \text{keep attempt only if }\hat c=c\]<p class="math-caption">The arrow with a dollar sign means that \(\hat c\) is sampled uniformly at random. The simulator sees \(c\) only after sending its commitments; it keeps an attempt only on a match.</p></div>
+<p>We have built the algorithmic skeleton. Two difficult questions remain: Why does the surviving transcript look like a real conversation, and why does the simulator finish in polynomial time?</p>
+<div class="transition"><p>The next card answers both by separating <em>correctness of the simulated distribution</em> from <em>efficiency of repeated guessing</em>.</p></div>
+<p class="source">PETS · ZK lecture notes, Hamiltonicity simulator, p. 7.</p>
+</article>
