@@ -92,34 +92,67 @@ function initLab(lab){
  lab.querySelectorAll("input,select").forEach(el=>el.addEventListener("input",update));
  update();
 }
+
 function getHash(){try{return decodeURIComponent(location.hash.slice(1))}catch(e){return ""}}
+function closeMenu(){const menu=byId("chapter-menu");if(menu)menu.open=false}
 function navigate(){
- const id=getHash();const i=cards.findIndex(c=>c.id===id);current=i>=0?i:0;const c=cards[current];
- const run=++req;
+ const id=getHash();const found=cards.findIndex(c=>c.id===id);
+ current=found>=0?found:0;
+ const c=cards[current];
  if(window.MathJax?.typesetClear){try{MathJax.typesetClear([main]);}catch(e){}}
- main.innerHTML=c.html;main.setAttribute("data-lesson-id",c.id);
+ main.innerHTML=c.html;
+ main.dataset.lessonId=c.id;
+ main.scrollTop=0;
+ byId("header-title").textContent=c.title;
+ byId("counter").textContent=(current+1)+" / "+cards.length;
+ byId("position").textContent=(current+1)+" / "+cards.length;
+ const slider=byId("deck-slider");
+ slider.max=String(cards.length);slider.value=String(current+1);
+ slider.setAttribute("aria-valuetext","Lesson "+(current+1)+" of "+cards.length+": "+c.title);
  chapter.value=String(c.chapter);
  select.innerHTML=cards.filter(x=>x.chapter===c.chapter).map(x=>'<option value="'+escape(x.id)+'">'+escape(x.title)+'</option>').join("");
  select.value=c.id;
- byId("chapter-name").textContent=chapters[c.chapter];
- byId("position").textContent=String(current+1).padStart(2,"0")+" / "+cards.length;
- byId("meter-fill").style.width=(100*(current+1)/cards.length)+"%";
- byId("bottom-title").textContent=c.title;
  prev.disabled=current===0;next.disabled=current===cards.length-1;
+ initLessonExtras(c.id);
  main.querySelectorAll(".lab").forEach(initLab);
  typeset(main);
- window.scrollTo({top:0,behavior:"instant"});
+ closeMenu();
 }
 async function start(){
  try{
-  const sources=await Promise.all(chapterFiles.map(async(path,i)=>{const res=await fetch("./"+path,{cache:"no-store"});if(!res.ok)throw Error(path+" returned "+res.status);const text=await res.text();const doc=new DOMParser().parseFromString(text,"text/html");return [...doc.querySelectorAll("article.lesson")].map(el=>({id:el.dataset.id,title:el.dataset.title,chapter:i,html:el.innerHTML}));}));
+  const sources=await Promise.all(chapterFiles.map(async(path,i)=>{
+   const res=await fetch("./"+path,{cache:"no-store"});
+   if(!res.ok)throw Error(path+" returned "+res.status);
+   const source=await res.text();
+   const doc=new DOMParser().parseFromString(source,"text/html");
+   return [...doc.querySelectorAll("article.lesson")].map(el=>({id:el.dataset.id,title:el.dataset.title,chapter:i,html:el.innerHTML}));
+  }));
   cards=sources.flat();
   if(cards.length<20)throw Error("Course chapters incomplete: "+cards.length);
   chapter.innerHTML=chapters.map((c,i)=>'<option value="'+i+'">'+escape(c)+'</option>').join("");
-  chapter.addEventListener("change",()=>{const x=cards.find(c=>c.chapter===Number(chapter.value));if(x)location.hash=x.id;});
+  chapter.addEventListener("change",()=>{
+   const x=cards.find(c=>c.chapter===Number(chapter.value));
+   if(x)location.hash=x.id;
+  });
   select.addEventListener("change",()=>{location.hash=select.value;});
   prev.addEventListener("click",()=>{if(current>0)location.hash=cards[current-1].id;});
   next.addEventListener("click",()=>{if(current<cards.length-1)location.hash=cards[current+1].id;});
+  byId("deck-slider").addEventListener("input",e=>{
+   const v=Math.max(1,Math.min(cards.length,Number(e.target.value)));
+   byId("position").textContent=v+" / "+cards.length;
+   if(cards[v-1]?.id!==getHash())location.hash=cards[v-1].id;
+  });
+  document.addEventListener("keydown",e=>{
+   if(e.key==="Escape"){closeMenu();return}
+   if(e.altKey||e.ctrlKey||e.metaKey||e.shiftKey)return;
+   if(["INPUT","TEXTAREA","SELECT","BUTTON","SUMMARY"].includes(document.activeElement?.tagName)||document.activeElement?.isContentEditable)return;
+   if(e.key==="ArrowRight"&&current<cards.length-1){e.preventDefault();location.hash=cards[current+1].id;}
+   if(e.key==="ArrowLeft"&&current>0){e.preventDefault();location.hash=cards[current-1].id;}
+  });
+  document.addEventListener("pointerdown",e=>{
+   const menu=byId("chapter-menu");
+   if(menu?.open&&!menu.contains(e.target))closeMenu();
+  });
   window.addEventListener("hashchange",navigate);
   if(!getHash())history.replaceState(null,"","#"+cards[0].id);
   navigate();
