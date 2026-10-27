@@ -1,0 +1,25 @@
+<article class="lesson">
+<p class="chapter">Homework 1 · Commitment prerequisites · Problems 2(c,d)</p>
+<h1>Why does knowing the discrete logarithm destroy one form of binding?</h1>
+<p class="lead">Two group-based commitments look similar. Yet if the committer knows the discrete-logarithm relation between their public generators, one loses binding completely while the other remains binding but loses information-theoretic privacy.</p>
+<h2>Pedersen commitments with a known generator relation</h2>
+<p>Let \(\mathbb G\) be a cyclic group of prime order \(q\) with generator \(g\). Choose \(h=g^t\) for a nonzero \(t\in\mathbb Z_q\); the assumption \(t\ne0\) ensures that \(h\) is also a generator. The committer makes \(C=g^m h^r\), where \(m\) is the message and \(r\) is random.</p>
+<div class="math">\[C=g^m h^r=g^{m+tr}\]<p class="math-caption">We use \(t\) for the known relation between \(g\) and \(h\), to avoid confusing it with the Schnorr secret \(x\) introduced later. The equality follows from \(h=g^t\) and exponent laws.</p></div>
+<p>Suppose the committer already sent \(C\), opened honestly as \((m,r)\), and then wants to claim it committed to some different \(m'\). It needs a new salt \(r'\) solving \(m'+tr'\equiv m+tr\pmod q\). Solving gives:</p>
+<div class="math">\[r'=r+(m-m')t^{-1}\pmod q\]<p class="math-caption">The value \(t^{-1}\) is the multiplicative inverse of \(t\) modulo prime \(q\). It exists because \(t\ne0\). Substituting this \(r'\) makes \(g^{m'}h^{r'}=g^m h^r=C\).</p></div>
+<section class="lab">
+<div class="lab-head"><div class="tag">HW1 2(c) · Exhibit two different openings</div><h3>Change the claimed message without changing the commitment</h3><p>Use \(q=11\), \(p=23\), \(g=2\), and \(h=g^3=8\) modulo 23. The originally committed message is \(m=4\), with salt \(r=2\). Here the committer knows \(t=3\).</p></div>
+<div class="lab-body">
+<div class="control-row"><label for="pedersen-new">Alternative message \(m'\): <strong id="pedersen-new-label">7</strong></label><input id="pedersen-new" data-demo="pedersen-slider" type="range" min="0" max="10" value="7"></div>
+<div class="data-grid"><div class="data-box prover"><span class="label">Original opening</span><strong>\(m=4,\ r=2\)</strong></div><div class="data-box sim"><span class="label">Alternative opening</span><strong id="pedersen-alternative">\(m'=7,\ r'=1\)</strong></div></div>
+<div id="pedersen-result" class="feedback" aria-live="polite">The two sides should always calculate the same fixed group element \(C\).</div>
+</div></section>
+<div class="proof"><h3>Show hiding survives even though binding fails</h3><p>Because \(r\) is uniform modulo \(q\) and \(t\ne0\), the exponent \(m+tr\) is uniform modulo \(q\) for <em>every fixed message</em> \(m\). The map \(r\mapsto m+tr\pmod q\) is a bijection, so the resulting group element \(g^{m+tr}\) is uniform in \(\mathbb G\). Thus the distribution of \(C\) is identical for all messages: the scheme is <strong>perfectly hiding</strong>. The two alternative openings above establish that it is <strong>not binding</strong> when the committer knows \(t\).</p></div>
+<h2>HW1 2(d) · Why the ElGamal-style pair behaves differently</h2>
+<p>Now the commitment is an ordered pair rather than one group element:</p>
+<div class="math">\[C=(g^r,\ g^m h^r)\]<p class="math-caption">Again \(h=g^t\) and the relation \(t\) is assumed known. The verifier receives both components, not merely \(g^m h^r\).</p></div>
+<div class="proof"><h3>Prove binding</h3><p>If two openings \((m,r)\) and \((m',r')\) yield the same pair, equality of the first components gives \(g^r=g^{r'}\). Since \(g\) has order \(q\), \(r=r'\pmod q\). Equality of the second components then gives \(g^m h^r=g^{m'}h^{r'}\), so the matching \(h\) factors cancel, leaving \(g^m=g^{m'}\). Hence \(m=m'\pmod q\). Two different messages cannot open the same commitment: it is <strong>perfectly binding</strong>.</p></div>
+<div class="proof"><h3>Disprove statistical hiding</h3><p>Because \(t\) is known, the observer divides the second public component by the first raised to \(t\):</p><div class="math">\[\frac{g^m h^r}{(g^r)^t}=\frac{g^m g^{tr}}{g^{tr}}=g^m.\]</div><p>An unbounded observer can calculate the discrete logarithm \(m\) of this result, so the message is recoverable: the scheme is <strong>not statistically hiding</strong>. If the message domain is small, even an efficient observer may recover \(m\) by enumeration.</p></div>
+<div class="transition"><p>We have now proved what hiding and binding mean in concrete algebra. Return to the main ZK construction: the prover can use a <em>properly chosen</em> binding-and-hiding commitment scheme to fix a graph while keeping its entries secret.</p></div>
+<p class="source">PETS · Homework 1 (FS2026, version 1.2), Problem 2(c,d). The numbers use a deliberately insecure toy group solely to make the algebra checkable.</p>
+</article>
