@@ -135,8 +135,8 @@ kbd{border:1px solid var(--line);border-bottom-width:3px;background:#f6f9fa;bord
 .shell{box-shadow:none}
 .head{padding:11px 16px 8px}
 .toprow{gap:9px}.brand{font-size:18px}
-.pick{font-size:17px;padding:12px 31px 12px 9px}
-.headmeta,.headmeta strong{font-size:17px}
+.pick{font-size:18px;padding:12px 31px 12px 9px}
+.headmeta,.headmeta strong{font-size:18px}
 .main{padding:26px 17px 85px}
 p,li{font-size:20px;line-height:1.6}
 p.lead{font-size:21px}
@@ -153,7 +153,7 @@ h1{font-size:31px}h2{font-size:25px}
 .message .who{font-size:18px}
 th,td{font-size:18px;padding:8px}
 .matrix th,.matrix td{min-width:37px;padding:7px}
-.bottom-center{font-size:17px}
+.bottom-center{font-size:18px}
 .arrow{min-width:51px;min-height:51px}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
