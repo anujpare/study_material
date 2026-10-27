@@ -130,6 +130,8 @@ math[display=block]{overflow-x:auto;max-width:100%}
 .bottom-center .small{display:block;color:#53646b;font-size:18px!important;margin-top:2px}
 .loader{font-size:21px;text-align:center;color:var(--muted);padding:65px 0}
 .hidden{display:none!important}
+#merkle-tree{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;padding-bottom:6px}
+#merkle-tree svg{display:block;width:680px;min-width:680px;max-height:none}
 kbd{border:1px solid var(--line);border-bottom-width:3px;background:#f6f9fa;border-radius:5px;padding:2px 7px;font-family:inherit;font-size:17px}
 @media(max-width:660px){
 .shell{box-shadow:none}
