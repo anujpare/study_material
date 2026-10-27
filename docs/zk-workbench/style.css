@@ -88,7 +88,7 @@ input[type=range]{accent-color:#2363a2;width:min(100%,300px);height:34px}
 .graph-svg .invalid{stroke:#bd3f52;stroke-width:5;stroke-dasharray:8 7;stroke-linecap:round}
 .graph-svg .node{fill:#fff;stroke:#4b7188;stroke-width:2.5}
 .graph-svg .node-text{fill:#162a34;font-size:22px;font-weight:800;text-anchor:middle;dominant-baseline:central}
-.graph-svg .edge-number{font-size:15px;fill:#335464}
+.graph-svg .edge-number{font-size:18px;fill:#335464}
 .graph-legend{display:flex;flex-wrap:wrap;gap:16px;font-size:18px;margin-top:11px}
 .graph-legend span::before{content:"";display:inline-block;width:17px;height:6px;border-radius:3px;margin-right:8px;vertical-align:middle;background:#068473}
 .graph-legend .gray::before{background:#96a6ac}
@@ -132,7 +132,7 @@ math[display=block]{overflow-x:auto;max-width:100%}
 .hidden{display:none!important}
 #merkle-tree{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;padding-bottom:6px}
 #merkle-tree svg{display:block;width:680px;min-width:680px;max-height:none}
-kbd{border:1px solid var(--line);border-bottom-width:3px;background:#f6f9fa;border-radius:5px;padding:2px 7px;font-family:inherit;font-size:17px}
+kbd{border:1px solid var(--line);border-bottom-width:3px;background:#f6f9fa;border-radius:5px;padding:2px 7px;font-family:inherit;font-size:18px}
 @media(max-width:660px){
 .shell{box-shadow:none}
 .head{padding:11px 16px 8px}
