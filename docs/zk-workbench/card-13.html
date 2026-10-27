@@ -1,0 +1,25 @@
+<article class="lesson">
+<p class="chapter">Part V · Repeating a proof</p>
+<h1>Derive the \(2^\lambda\) simulation cost instead of memorizing it</h1>
+<p class="lead">For a single Hamiltonicity proof, the simulator guesses one bit correctly with probability \(1/2\). If the verifier makes \(\lambda\) independent fair challenges, the probability of guessing every one before seeing any is \(2^{-\lambda}\). The key question is <strong>whether those guesses must all succeed in one attempt</strong>.</p>
+<h2>Sequential schedule: finish one repetition before preparing the next</h2>
+<p>In round 1, the simulator guesses \(\hat c_1\), sees \(c_1\), and rewinds that one round until the guess works. It then begins round 2, guesses \(\hat c_2\), and repeats. Each individual round takes 2 attempts on average, so the expected <em>total number of single-round attempts</em> is \(2\lambda\).</p>
+<div class="math">\[\mathbb E[\text{single-round attempts in sequence}]=2+2+\cdots+2=2\lambda\]<p class="math-caption">There are \(\lambda\) completed rounds. A rewind in round \(i\) does not require throwing away the correctly simulated earlier rounds. The equation adds expected costs; it does not multiply success probabilities across unfinished rounds.</p></div>
+<h2>Parallel schedule: prepare every commitment before any challenge</h2>
+<p>The straightforward simulator must guess an entire vector \((\hat c_1,\ldots,\hat c_\lambda)\) before receiving \((c_1,\ldots,c_\lambda)\). For an honest verifier, each of the \(2^\lambda\) vectors is equally likely and the simulator's fixed guess matches only one of them.</p>
+<div class="math">\[\Pr[(\hat c_1,\ldots,\hat c_\lambda)=(c_1,\ldots,c_\lambda)]=\left(\tfrac12\right)^\lambda=\frac1{2^\lambda}\]<p class="math-caption">The product uses independence of the honest verifier's \(\lambda\) random challenge bits. A full-protocol attempt succeeds only if every bit matches; its expected number of attempts is \(2^\lambda\).</p></div>
+<section class="lab"><div class="lab-head"><div class="tag">One slider, three different quantities</div><h3>Separate soundness amplification from simulation cost</h3><p>Here \(\lambda\) is the number of repetitions, not the bit length of an individual challenge.</p></div>
+<div class="lab-body">
+<div class="control-row"><label for="cost-n">Repetitions \(\lambda\): <strong id="cost-label">4</strong></label><input id="cost-n" data-demo="cost-slider" type="range" min="1" max="12" value="4"></div>
+<div class="data-grid">
+<div class="data-box prover"><span class="label">Expected sequential single-round attempts</span><strong id="cost-seq">8</strong></div>
+<div class="data-box sim"><span class="label">Expected naive parallel whole-protocol attempts</span><strong id="cost-par">16</strong></div>
+<div class="data-box verifier"><span class="label">Soundness error in either repetition schedule</span><strong id="cost-sound">1 / 16</strong></div>
+</div>
+<div id="cost-explain" class="feedback" aria-live="polite"></div>
+</div></section>
+<div class="proof"><h3>Why soundness decreases in both schedules</h3><p>For any false graph statement, once each repeated commitment has been fixed, at most one of its two challenges can be answered successfully. With fresh independent uniform challenges, the probability of answering every repetition is therefore at most \((1/2)^\lambda\). This gives soundness error \(2^{-\lambda}\), whether the challenges arrive individually or as one vector.</p></div>
+<p><strong>Do not draw the wrong conclusion.</strong> The exponential cost applies to the <em>straightforward guess-and-rewind simulator</em> for parallel composition. It does not establish that every possible simulator fails or that parallel repetition is automatically not zero knowledge. Against malicious verifiers, challenge bits may be chosen dependently based on all commitments, which is why the ordinary sequential composition proof cannot simply be reused.</p>
+<div class="transition"><p>This is exactly the point of the homework: formulate what remains provable for sequential general ZK, and what remains provable for parallel <em>honest-verifier</em> ZK.</p></div>
+<p class="source">PETS · ZK lecture notes, p. 7; Homework 2, Problem 2. The simulator costs are for the explicit guessing strategies, not lower bounds for all algorithms.</p>
+</article>
