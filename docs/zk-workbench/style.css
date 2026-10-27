@@ -16,7 +16,7 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{ou
 .progress{height:5px;background:#dce5e8;border-radius:5px;margin-top:10px;overflow:hidden}
 .progress>div{height:100%;background:linear-gradient(90deg,var(--prover),var(--verifier));width:4.8%;transition:width .18s ease}
 .main{flex:1;min-height:0;padding:38px clamp(19px,5.2vw,58px) 96px}
-#lesson{max-width:820px;margin:0 auto}
+#lesson{width:100%;max-width:820px;margin:0 auto}
 .chapter{font-size:18px;font-weight:790;letter-spacing:.025em;color:var(--prover);margin:0 0 13px}
 h1,h2,h3{line-height:1.23;letter-spacing:-.025em;color:#162a34}
 h1{font-size:clamp(30px,3.9vw,40px);margin:0 0 25px;font-weight:830}
