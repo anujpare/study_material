@@ -259,47 +259,42 @@ D(X)=\left(\prod_{a\in\Omega}(X-a)\right)q(X)
 </article>
 
 <article class="lesson" data-id="fibonacci-protocol" data-title="The complete Fibonacci polynomial IOP">
-
-<p class="chapter-tag">Lecture §3 · Putting the polynomial IOP together</p>
-<h1>Have we really proved the hundredth Fibonacci number?</h1>
-<p class="aim">We can now build the complete Fibonacci verification protocol. The verifier checks the starting values, the claimed final value, and one randomized polynomial identity representing every recurrence step. We will show why these checks force the claimed result, and identify what is still missing before the protocol can work with a real prover.</p>
-<p>Let \(f_{\rm fib}(X)\) be the polynomial that the prover claims encodes the sequence at positions \(0,1,\ldots,100\). Its degree is at most 100. Let \(\Omega=\{0,1,\ldots,98\}\) be the positions where the recurrence must hold. Define</p>
+<p class="chapter-tag">Lecture §3 · The complete Fibonacci Poly-IOP</p>
+<h1>Do the polynomial checks really prove the claimed number?</h1>
+<p class="aim">We can now combine the algebraic tools into a verification protocol. The prover supplies a polynomial representing its proposed Fibonacci sequence and a quotient for the recurrence discrepancy. The verifier checks the endpoints and one random identity. We must show that passing these checks forces the original public claim, rather than merely producing plausible equations.</p>
+<h2>What the prover prepares</h2>
+<p>Let \(f_{\rm fib}\) be the degree-at-most-100 polynomial representing the claimed values at positions \(0,\ldots,100\). Define the recurrence discrepancy and the vanishing polynomial for the 99 required steps:</p>
 <div class="math">\[
-D(X)=f_{\rm fib}(X+2)-f_{\rm fib}(X)-f_{\rm fib}(X+1),
-\qquad
-Z_\Omega(X)=\prod_{i=0}^{98}(X-i).
+\begin{aligned}
+D(X)&=f_{\rm fib}(X+2)-f_{\rm fib}(X+1)-f_{\rm fib}(X),\\
+\Omega&=\{0,1,\ldots,98\},\\
+Z_\Omega(X)&=\prod_{i=0}^{98}(X-i).
+\end{aligned}
 \]</div>
-<p>If the recurrence is correct at every step, the polynomial \(D\) is divisible by \(Z_\Omega\). The prover therefore places both \(f_{\rm fib}\) and a quotient polynomial \(q\) in our ideal polynomial oracle, claiming \(D=Z_\Omega q\).</p>
-<h2>What does the verifier actually ask?</h2>
-<p>First the verifier checks the two starting values and the claimed final value. In the <em>consistent indexing used here</em>, these requirements are</p>
+<p>If the proposed sequence is correct, \(D\) vanishes at every point of \(\Omega\), so Theorem 2 gives a quotient polynomial \(q\) satisfying \(D=Z_\Omega q\). The prover fixes \(f_{\rm fib}\) and \(q\) in the ideal polynomial oracle <em>before</em the verifier chooses a random challenge.</p>
+<h2>What the verifier checks</h2>
+<p>First, it requests the evaluations at positions 0, 1 and 100. These must equal the public starting values and claimed final result:</p>
 <div class="math">\[
-f_{\rm fib}(0)=0,\qquad
-f_{\rm fib}(1)=1,\qquad
+f_{\rm fib}(0)=0,\quad f_{\rm fib}(1)=1,\quad
 f_{\rm fib}(100)=354\,224\,848\,179\,261\,915\,075.
 \]</div>
-<p>Next it chooses one random field element \(r\). Instead of checking 99 recurrence positions, it requests exactly four evaluations: \(f_{\rm fib}(r)\), \(f_{\rm fib}(r+1)\), \(f_{\rm fib}(r+2)\) and \(q(r)\). It checks</p>
+<p>Second, it chooses a uniform random field element \(r\), requests \(f_{\rm fib}(r)\), \(f_{\rm fib}(r+1)\), \(f_{\rm fib}(r+2)\), and \(q(r)\), and checks the ZeroTest identity</p>
 <div class="math">\[
 \boxed{
-f_{\rm fib}(r+2)-f_{\rm fib}(r)-f_{\rm fib}(r+1)
-\stackrel{?}{=}q(r)\prod_{i=0}^{98}(r-i).
+f_{\rm fib}(r+2)-f_{\rm fib}(r+1)-f_{\rm fib}(r)
+=q(r)\prod_{i=0}^{98}(r-i).
 }
 \]</div>
-<div class="lab" data-lab="fib"><div class="lab-top"><strong>See why the starting values force the sequence</strong><p>Follow a shorter example: once two consecutive numbers are known, the recurrence fixes the next one. The same reasoning works all the way to step 100.</p></div><div class="lab-content"><label class="range-label">Step \(i\) <output class="range-value" data-live-for="n">6</output><input data-key="n" type="range" min="0" max="8" value="6"></label><div class="lab-output" aria-live="polite"></div></div></div>
-<div class="proof"><h3>Why do these tests prove the original claim?</h3>
-<p>Suppose the oracle answers are honest and all the algebraic conditions hold. We know the values at 0 and 1. The recurrence at step 0 forces the next value to be \(0+1=1\). The recurrence at step 1 forces the next to be \(1+1=2\). After that each new value is forced by its two predecessors. By induction, all values at positions 0 through 100 must equal the Fibonacci sequence determined by the chosen starting conditions.</p>
-<p>In particular, the value at position 100 cannot be invented independently: it is determined by the initial values and the recurrence. The separate final-value check makes sure it equals the public number being claimed.</p>
-<p>Now suppose the public final-value claim is false. If an endpoint check fails, the verifier rejects directly. Otherwise, if every recurrence equation were also correct, induction would force the true Fibonacci value at position 100—contradicting the false target. Therefore at least one required recurrence equation must fail.</p>
-<p>By Theorem 2, no quotient \(q\) can then satisfy \(D=Z_\Omega q\) as a polynomial identity. In particular, the polynomial</p>
-<div class="math">\[h(X)=D(X)-q(X)Z_\Omega(X)\]</div>
-<p>is <strong>nonzero for every permitted quotient</strong>. Its degree is at most 199: the recurrence discrepancy \(D\) has degree at most 100, while \(Z_\Omega\) has degree 99 and the oracle restricts \(q\) to degree at most 100. A uniformly random \(r\) therefore satisfies \(h(r)=0\) with probability at most \(199/|\mathbb F|\), and hence at most the lecture's simpler bound</p>
-<div class="math">\[\boxed{\Pr[\text{false claim accepted}]\le\frac{200}{|\mathbb F|}.}\]</div>
-<p>This probability argument applies because \(f_{\rm fib}\) and \(q\) are fixed <em>before</em> the verifier samples \(r\). We have established the exact link between a false computation and the root theorem: a false claim forces a fixed, nonzero polynomial of bounded degree.</p>
-<p class="qed">So the protocol checks precisely what we needed: it ties the public result to a sequence forced by the recurrence, without reading every recurrence step. That's the reason the polynomial test can replace the long explicit computation. \(\square\)</p></div>
-<h2>Two problems remain</h2>
-<p><strong>First, our polynomial oracle is imaginary.</strong> A real prover could wait for \(r\) and invent values that make the check pass. We need a commitment scheme that fixes the polynomials and authenticates their answers before the random point is chosen.</p>
-<p><strong>Second, there's still a cost hidden in the verifier's work.</strong> Directly evaluating \(Z_\Omega(r)\) means multiplying 99 factors. If our computation had a million steps, that would require roughly a million factors. The verifier would no longer be succinct. In PLONK we'll choose special evaluation positions, or use circuit-specific preprocessing, so the needed vanishing polynomials can be evaluated efficiently.</p>
-<div class="bridge">The first problem is a cryptographic one: how do we replace the ideal polynomial box with short authenticated evaluations? This is exactly what the next lecture section's <strong>polynomial commitment scheme</strong> is for.</div>
-<p class="source">Lecture §3, full Fibonacci Poly-IOP and the verifier's \(Z_\Omega(r)\) bottleneck. The source's contradictory initial-value notation is explicitly flagged in the field lesson.</p>
-
+<p>The left side is exactly \(D(r)\); the right side is exactly \(q(r)Z_\Omega(r)\). We have not invented a new test here: we are applying the ZeroTest whose soundness was proved in the preceding lesson.</p>
+<div class="lab" data-lab="fib"><div class="lab-top"><strong>Why the recurrence fixes every subsequent value</strong><p>Starting from 0 and 1, move through a short Fibonacci sequence. Each new value is forced by the preceding two; there is no freedom to change one value while keeping all recurrence equations true.</p></div><div class="lab-content"><label class="range-label">Step \(i\) <output class="range-value" data-live-for="n">6</output><input data-key="n" type="range" min="0" max="8" value="6"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<div class="proof"><h3>Why the checks establish the public statement</h3>
+<p>Suppose the endpoint checks hold and the recurrence identity holds as a polynomial identity. By Theorem 2, the discrepancy is zero at every required step. Starting with \(f_{\rm fib}(0)=0\) and \(f_{\rm fib}(1)=1\), the recurrence forces \(f_{\rm fib}(2)=1\). Once positions 0 through \(i+1\) are fixed, the recurrence at position \(i\) forces the value at \(i+2\). By induction, the polynomial's values at all positions through 100 equal the Fibonacci sequence.</p>
+<p>The final endpoint check then establishes that the actual hundredth value equals the public target. Conversely, if the public target is false, the verifier cannot have both correct endpoints and all correct recurrence equations. A false endpoint is rejected directly; otherwise the recurrence is false somewhere and the ZeroTest soundness bound applies.</p>
+<p>Thus the ideal protocol has perfect completeness and the same bounded false-acceptance probability as the recurrence ZeroTest, assuming the polynomial oracle enforces the required degree and consistency restrictions. \(\square\)</p></div>
+<h2>Why isn't this a finished SNARG?</h2>
+<p>Two problems remain. First, the oracle is imaginary: a real prover could invent evaluations after seeing \(r\). We need a <strong>polynomial commitment</strong> to fix the polynomial and authenticate its answers.</p>
+<p>Second, evaluating \(Z_\Omega(r)\) directly requires multiplying 99 factors. For a computation with millions of steps, that would take work proportional to the computation size. The lecture later uses structured evaluation points or circuit-specific preprocessing to make this calculation efficient.</p>
+<div class="bridge">We have proved the mathematical checking method. The next section solves the first remaining problem: replacing the ideal polynomial oracle with a cryptographic commitment that supports short, authenticated evaluation proofs. The efficient vanishing-polynomial calculation will return when we build PLONK.</div>
+<p class="source">Official lecture §3, complete Fibonacci Poly-IOP and the explicit verifier-cost limitation at the start of §4.</p>
 </article>
 </body></html>
