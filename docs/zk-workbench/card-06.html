@@ -1,7 +1,7 @@
 <article class="lesson">
 <p class="chapter">Part II · How to keep a secret fixed</p>
-<h1>Lock a secret now, open it later</h1>
-<p class="lead">The zero-knowledge definition asks for a convincing proof whose messages reveal no useful witness information. Our coming Hamiltonicity protocol needs the prover to fix a relabeled graph <em>before</em> the verifier selects a challenge, but revealing that graph in advance would undermine the privacy argument. We need a primitive that fixes a value without disclosing it yet. Suppose the prover is going to be asked a surprise question. We don't want it to change its first answer after learning the question. But we also don't want the verifier to see that answer too early. Can we make something both fixed and hidden?</p>
+<h1>How can the prover fix a value without revealing it?</h1>
+<p class="lead">Our Hamiltonicity proof will ask the verifier to choose between two checks of the <em>same</em> graph. The prover must fix that graph before the challenge; otherwise it could choose a different graph for each question. But revealing the graph before the challenge could disclose information that the zero-knowledge proof is supposed to hide. We need one object that fixes a value now and allows selected information to be revealed later. That is the purpose of a commitment.</p>
 <h2>Make a value fixed now; reveal it later</h2>
 <p>A <strong>commitment</strong> does exactly that. To commit to a bit \(b\), the prover chooses random \(r\), calculates \(C=\operatorname{Commit}(b;r)\), and sends only \(C\). Later it reveals \(b,r\), so the verifier can check the opening by recomputing \(C\).</p>
 <div class="math">\[C=\mathrm{Commit}(b;r)\]<p class="math-caption">The bit \(b\) is the secret, \(r\) is the fresh randomness, and \(C\) is the public commitment. The semicolon in \(\operatorname{Commit}(b;r)\) separates the message from the random choice used to hide it.</p></div>
@@ -24,6 +24,6 @@
 <p>The verifier then knows the graph entries have been fixed, although it cannot yet read them. Later it can ask to open the whole graph or only the edges of a claimed cycle.</p>
 <div class="transition"><p>We now have both tools the graph protocol needs: binding fixes the first message, and hiding conceals its contents. But revealing the secret cycle with the graph would defeat our purpose. Before committing, the prover will therefore randomly rename the vertices. That preserves the cycle while hiding its original labels.</p>
 <div class="practice-link"><span class="practice-tag">Optional commitment homework</span><a href="#hw1-security">HW1: prove hiding and binding for several constructions</a><a href="#hw1-pedersen">HW1: what happens when the Pedersen generator relation is known?</a></div>
-<p></p></div>
+</div>
 <p class="source">PETS · Commitment prerequisites and ZK lecture notes, Theorem 1, pp. 5–6.</p>
 </article>
