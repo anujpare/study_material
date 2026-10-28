@@ -15,6 +15,7 @@
 <tr><td>\(\operatorname{Verify}(pp,c,z,y,\pi)\to\{0,1\}\)</td><td>Verifier checks that the value \(y\) at \(z\) is authenticated against the earlier commitment \(c\).</td></tr>
 </tbody></table></div>
 <p>The symbols have different roles: \(d\) is the degree limit, \(\lambda\) the security parameter, \(pp\) the public setup, \(c\) the commitment, \(z\) the queried point, \(y\) the answer, and \(\pi\) the opening proof. The polynomial itself can be enormous; the goal is for \(c\) and \(\pi\) to be short.</p>
+<p class="note">Notation in the sources: the handwritten notes include the commitment among the inputs to Open, whereas the typed lecture writes Open(pp,f,z). We use the typed notation throughout.</p>
 <div class="lab" data-lab="opening"><div class="lab-top"><strong>Follow one polynomial through the protocol</strong><p>The simple example \(f(X)=X^2+1\) shows the order of messages, not a real cryptographic implementation.</p></div><div class="lab-content">
 <label class="range-label">Protocol stage <output class="range-value" data-live-for="stage">1</output><input data-key="stage" type="range" min="1" max="3" value="1"></label>
 <label class="range-label">Evaluation point \(z\) <output class="range-value" data-live-for="r">3</output><input data-key="r" type="range" min="0" max="16" value="3"></label><div class="lab-output" aria-live="polite"></div></div></div>
