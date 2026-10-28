@@ -190,7 +190,7 @@ f_{\rm trace}(\omega^5)=f_{\rm trace}(\omega^7).
 
 <p class="chapter-tag">Lecture §6 · A PLONK SNARG</p>
 <h1>Why do these checks prove the circuit statement?</h1>
-<p class="aim">We now have four constraint families, each ruling out a different way to falsify a circuit trace. The final question is whether those constraints together establish the original claim (C(\mathbf x,\mathbf w)=0). We will prove that implication by following the gates in circuit order. Only after that proof can we explain how the lecture packages the checks into a succinct argument.</p>
+<p class="aim">We now have four constraint families, each ruling out a different way to falsify a circuit trace. The final question is whether those constraints together establish the original claim \(C(\mathbf x,\mathbf w)=0\). We will prove that implication by following the gates in circuit order. Only after that proof can we explain how the lecture packages the checks into a succinct argument.</p>
 <div class="proof"><h3>From a valid trace to a satisfying witness</h3>
 <p>Take a trace that passes all four checks. The public-input check fixes the known inputs to the values the verifier supplied. The other original input positions determine a candidate private witness \(\mathbf w\).</p>
 <p>Now process the circuit in gate order. For the first gate, its input wires have definite values. The gate equation forces its output to be the correct sum or product. The wiring check forces every later occurrence of that output wire to carry exactly that same value. So the next gate receives the outputs specified by the circuit, rather than values invented independently by the prover.</p>
