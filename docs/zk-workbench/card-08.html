@@ -1,7 +1,7 @@
 <article class="lesson">
 <p class="chapter">Part III · Graph Hamiltonicity</p>
 <h1>Two questions about the same hidden graph</h1>
-<p class="lead">The prover has fixed a relabeled graph \(B\) and the renaming \(\pi\) inside commitments. The verifier will choose one of two questions. The prover must be able to answer either, but it won't know which one is coming when it commits.</p>
+<p class="lead">Relabeling preserves a Hamiltonian cycle, but sending a relabeled graph alone proves nothing: the prover could choose any graph that happens to contain a cycle. We need to verify <em>both</em> that the committed graph \(B\) is an isomorphic copy of the public graph \(G\), and that \(B\) contains a Hamiltonian cycle. Revealing everything would expose the witness, so the verifier randomly asks for just one of these two checks. The commitments force both possible answers to refer to the same \(B\).</p>
 <div class="timeline">
 <div class="message prover"><span class="who">Prover</span><span>Selects one random \(\pi\), computes \(B=\pi(G)\), and sends \(\mathrm{Commit}(\pi)\) plus commitments to every \(B_{ij}\).</span></div>
 <div class="message"><span class="who">Verifier</span><span>Samples a single fair bit \(c\in\{0,1\}\). Only one branch is requested in any real execution.</span></div>
