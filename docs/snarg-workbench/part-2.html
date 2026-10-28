@@ -45,7 +45,7 @@
 <p>So the prover can encode the proposed Fibonacci values \(F_0,\ldots,F_{100}\) in one polynomial \(f_{\rm fib}\) of degree at most 100. Asking for \(f_{\rm fib}(i)\) is asking for the number it placed at position \(i\).</p>
 <p>This does <em>not</em> mean a hundred values have magically been compressed into a few bits. The polynomial can still have 101 coefficients, and the prover must do the work of constructing it. The advantage will come later: the verifier can test equations involving those values from just a few polynomial evaluations instead of reading the entire list.</p>
 <p>One question remains: could there be <em>two</em> different degree-at-most-100 polynomials fitting the same 101 values? We'll answer that after proving a key fact about polynomial roots. For now we have shown how a fitting polynomial can be constructed.</p>
-<div class="bridge">We now have an algebraic representation of the witness: one polynomial gives the claimed value at each Fibonacci index. But interpolation ignores the recurrence. The prover can choose any list and construct a polynomial through it. To certify the actual computation, we need to enforce the relation (f_{m fib}(i+2)=f_{m fib}(i+1)+f_{m fib}(i)) at every required step. The next lesson turns the failure of this relation into a polynomial, and asks what a random evaluation can tell us about it.</div>
+<div class="bridge">We now have an algebraic representation of the witness: one polynomial gives the claimed value at each Fibonacci index. But interpolation ignores the recurrence. The prover can choose any list and construct a polynomial through it. To certify the actual computation, we need to enforce the relation \(f_{\rm fib}(i+2)=f_{\rm fib}(i+1)+f_{\rm fib}(i)\) at every required step. The next lesson turns the failure of this relation into a polynomial, and asks what a random evaluation can tell us about it.</div>
 <p class="source">Lecture §3, encoding the Fibonacci sequence into a polynomial; the three-point and incremental constructions supply the algebra needed to understand the lecture's use of interpolation.</p>
 
 </article>
@@ -65,7 +65,7 @@
 <div class="math">\[0=h(b)=(b-a)q(b).\]</div>
 <p>The factor \(b-a\) is nonzero. In a field, a product can be zero only if one factor is zero, so \(q(b)=0\). In other words, after removing the factor for root \(a\), the other roots remain roots of the quotient.</p>
 <p>Each new distinct root therefore supplies another linear factor and reduces the degree by one. A nonzero degree-\(d\) polynomial cannot have more than \(d\) different linear factors.</p>
-<p class="qed">Thus it has at most (d) distinct roots. The proof depends on being able to cancel the nonzero factor (b-a), which explains the field assumption. \(\square\)</p></div>
+<p class="qed">Thus it has at most \(d\) distinct roots. The proof depends on being able to cancel the nonzero factor \(b-a\), which explains the field assumption. \(\square\)</p></div>
 <div class="practice-link"><span class="practice-tag">HW3 Problem 1(c) · Check the field assumption</span><p>Now that we have proved the root bound, the homework below asks what goes wrong in arithmetic modulo 6, where nonzero factors can multiply to zero.</p></div>
 <div class="exercise"><span class="exercise-kicker">HW3 · Problem 1(c)</span>
 <h3>Does the polynomial root bound hold modulo 6?</h3>
