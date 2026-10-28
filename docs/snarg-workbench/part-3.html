@@ -3,7 +3,7 @@
 
 <p class="chapter-tag">Lecture §4 · Polynomial Commitments</p>
 <h1>How can the verifier trust the polynomial's answers?</h1>
-<p class="aim">Our Fibonacci proof is mathematically sound <em>if</em> the prover puts its polynomials in an ideal box before learning the verifier's random evaluation point. A real dishonest prover has no reason to obey that rule. We need to make the box's behavior enforceable.</p>
+<p class="aim">The Fibonacci ZeroTest is sound only when the polynomial (f_{m fib}) and its claimed quotient (q) are fixed <em>before</em> the verifier chooses the random point (r). In our ideal polynomial oracle that restriction was automatic. A real prover could instead choose its answers after seeing (r), making a false identity appear true at the chosen point. We need a way to fix each polynomial first and later authenticate its evaluations. That is the exact purpose of a polynomial commitment.</p>
 <p>The problem is nearly identical to the one we solved for PCPs. There, a Merkle commitment fixed a long <em>bit string</em>, and an opening proved which bit belonged at one position. Now the object is a <em>polynomial</em>, and the verifier asks for its value at a chosen field point. We therefore need a <strong>polynomial commitment scheme</strong>.</p>
 <p>Think of the prover committing to our Fibonacci trace \(f_{\rm fib}\) before the verifier chooses \(r\). Later it should be able to prove “the polynomial I committed to has value \(y\) at point \(r\)” without sending all its coefficients.</p>
 <h2>What operations would such a scheme need?</h2>
@@ -112,7 +112,7 @@
 
 <p class="chapter-tag">Lecture §4 and §6 · From Poly-IOP to SNARG</p>
 <h1>Can we make the random challenge without a conversation?</h1>
-<p class="aim">We now have a succinct way to check polynomial identities using authenticated evaluations. But it's still interactive: after receiving the prover's commitments, the verifier must choose a random challenge and send it. For a proof that anybody can verify later, we'd like the challenge to be reproducible without contacting the prover.</p>
+<p class="aim">Polynomial commitments solve the consistency problem: the prover fixes its polynomials before answering random evaluation queries. But the verifier still has to send those queries after receiving the commitments. Our original goal was a <em>non-interactive</em> proof that anybody can verify later. Fiat–Shamir addresses this remaining message, not the polynomial mathematics: it lets both parties derive the challenge from the already-fixed first message and public statement.</p>
 <p>Look again at the three stages. In the general Sigma-protocol notation, the prover first sends \(u\), the verifier chooses challenge \(c\), and the prover answers \(z\). What is essential is not who physically transmits the bits of \(c\), but that the challenge is unpredictable before \(u\) has been fixed.</p>
 <p>Suppose prover and verifier use a hash function \(H\) modeled as a <strong>random oracle</strong>. In this model each new input receives a random output that is remembered so the same input always gets the same output. The prover can fix \(u\) first and then calculate</p>
 <div class="math">\[\boxed{c=H(\operatorname{Encode}(x,u,\text{parameters})).}\]</div>
