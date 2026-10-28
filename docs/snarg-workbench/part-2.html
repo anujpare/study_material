@@ -11,7 +11,7 @@
 f_{\rm fib}(0)&=0,\qquad f_{\rm fib}(1)=1,\\
 f_{\rm fib}(100)&=354\,224\,848\,179\,261\,915\,075,\\
 f_{\rm fib}(i+2)&=f_{\rm fib}(i+1)+f_{\rm fib}(i)
-\quad(i=0,\ldots,98).
+\quad\(i=0,\ldots,98\).
 \end{aligned}
 \]</div>
 <p>Why are these conditions sufficient? Starting with 0 and 1, the recurrence forces the value at 2, then at 3, and so on. No later value can be chosen independently. Thus, if all the equations hold, the value at position 100 must be the actual hundredth Fibonacci number.</p>
@@ -59,9 +59,9 @@ f_{\rm fib}(i+2)&=f_{\rm fib}(i+1)+f_{\rm fib}(i)
 
 <p class="chapter-tag">Lecture §3 · EqualityTest, Theorem 1 and Lemma 1</p>
 <h1>If two polynomials agree once, are they equal?</h1>
-<p class="aim">Interpolation lets the prover create a polynomial (f_{\rm fib}(X)) through its claimed Fibonacci values, but that does not prove the values are correct. The actual rule is (f_{\rm fib}(i+2)=f_{\rm fib}(i+1)+f_{\rm fib}(i)) at each step (i=0,\ldots,98). Subtract the right side and call the result the <strong>recurrence discrepancy</strong>:</p>
+<p class="aim">Interpolation lets the prover create a polynomial \(f_{\rm fib}(X)\) through its claimed Fibonacci values, but that does not prove the values are correct. The actual rule is \(f_{\rm fib}(i+2)=f_{\rm fib}(i+1)+f_{\rm fib}(i)\) at each step (i=0,\ldots,98). Subtract the right side and call the result the <strong>recurrence discrepancy</strong>:</p>
 <div class="math">\[D(X)=f_{\rm fib}(X+2)-f_{\rm fib}(X+1)-f_{\rm fib}(X).\]</div>
-<p>We need (D(i)=0) at every required step. Eventually we'll express those many requirements as one polynomial identity. But first we need to know whether a verifier can test <em>any fixed polynomial identity</em> without inspecting every coefficient. That is the simpler problem EqualityTest solves.</p>
+<p>We need \(D(i)=0\) at every required step. Eventually we'll express those many requirements as one polynomial identity. But first we need to know whether a verifier can test <em>any fixed polynomial identity</em> without inspecting every coefficient. That is the simpler problem EqualityTest solves.</p>
 <p>One matching value doesn't prove equality with certainty. For example, \(f(X)=0\) and \(g(X)=X-3\) differ as polynomials but both give zero at \(X=3\). The useful question is not whether they <em>could</em> match by accident; it is <em>how many choices of \(r\) would make that accident happen</em>.</p>
 <p>Call \(h(X)=f(X)-g(X)\) the difference. The verifier is fooled exactly when \(h(r)=0\). A number that makes a polynomial zero is called a <strong>root</strong>. So we need to know how many roots a nonzero polynomial can have.</p>
 <div class="proof"><h3>Theorem 1: a nonzero degree-\(d\) polynomial has at most \(d\) roots</h3>
@@ -70,7 +70,7 @@ f_{\rm fib}(i+2)&=f_{\rm fib}(i+1)+f_{\rm fib}(i)
 <div class="math">\[0=h(b)=(b-a)q(b).\]</div>
 <p>The factor \(b-a\) is nonzero. In a field, a product can be zero only if one factor is zero, so \(q(b)=0\). In other words, after removing the factor for root \(a\), the other roots remain roots of the quotient.</p>
 <p>Each new distinct root therefore supplies another linear factor and reduces the degree by one. A nonzero degree-\(d\) polynomial cannot have more than \(d\) different linear factors.</p>
-<p class="qed">Thus it has at most (d) distinct roots. The proof depends on being able to cancel the nonzero factor (b-a), which explains the field assumption. \(\square\)</p></div>
+<p class="qed">Thus it has at most \(d\) distinct roots. The proof depends on being able to cancel the nonzero factor \(b-a\), which explains the field assumption. \(\square\)</p></div>
 <div class="practice-link"><span class="practice-tag">HW3 Problem 1(c) · Check the field assumption</span><p>Now that we have proved the root bound, the homework below asks what goes wrong in arithmetic modulo 6, where nonzero factors can multiply to zero.</p></div>
 <div class="exercise"><span class="exercise-kicker">HW3 · Problem 1(c)</span>
 <h3>Does the polynomial root bound hold modulo 6?</h3>
@@ -117,7 +117,7 @@ f_{\rm fib}(i+2)&=f_{\rm fib}(i+1)+f_{\rm fib}(i)
 <p class="qed">We have proved the lemma by induction from the one-variable root theorem. As before, a soundness proof must first establish that a false claim produces a <em>nonzero</em> polynomial. \(\square\)</p></div>
 <p>For the example \(XY\), the total degree is 2, so the lemma gives the bound \(2/7=14/49\). We counted 13 zeros. The bound is correct, and it applies to every nonzero polynomial with the stated total degree, not just this example.</p>
 <div class="practice-link"><span class="practice-tag">Use the lemma in an exam problem</span><a href="#midterm-polynomial">Previous midterm 3(c.1): derive a soundness bound for a vector test</a></div>
-<div class="bridge">Schwartz–Zippel gives the same type of guarantee when a false statement produces a nonzero polynomial of several variables. It also supports the related midterm question. But the Fibonacci proof has one variable, so we return to its concrete unresolved task: the discrepancy (D(X)) must equal zero at the 99 specific points (0,1,\ldots,98). How can we turn all those local equalities into one identity that EqualityTest can check?</div>
+<div class="bridge">Schwartz–Zippel gives the same type of guarantee when a false statement produces a nonzero polynomial of several variables. It also supports the related midterm question. But the Fibonacci proof has one variable, so we return to its concrete unresolved task: the discrepancy \(D(X)\) must equal zero at the 99 specific points \(0,1,\ldots,98\). How can we turn all those local equalities into one identity that EqualityTest can check?</div>
 <p class="source">Lecture §3, Lemma 2, including the total-degree definition; its full induction proof is supplied here rather than treating the lemma as unexplained.</p>
 
 </article>
