@@ -160,6 +160,65 @@ function initLab(lab){
       '<span>99 other points reject</span></div>'+
       '<p class="visual-note">Exactly two of 101 possible field values are roots. Choosing a uniform r gives false acceptance probability 2/101 in this example.</p>');
   }
+  if(type==="story-zero"){
+    const claim=lab.querySelector('[data-key="claim"]')?.value??"8",honest=claim==="5",r=val(lab,"r",3),p=101;
+    const f=honest?[0,46,75,32,71,80]:[0,87,99,96,96,27],q=honest?[51,21]:[79,74];
+    const poly=(coef,x)=>{let a=0;for(let i=coef.length-1;i>=0;i--)a=mod(a*x+coef[i],p);return a;};
+    const f0=poly(f,r),f1=poly(f,r+1),f2=poly(f,r+2);
+    const lhs=mod(f2-f1-f0,p),Z=mod(r*(r-1)*(r-2)*(r-3),p),qv=mod(q[0]+q[1]*r,p);
+    const rhs=mod(Z*qv,p),h=mod(lhs-rhs,p),ok=lhs===rhs,expected=honest?0:mod(51*r*(r-1)*(r-2),p);
+    if(h!==expected)throw Error("Fibonacci example inconsistent at r="+r);
+    const checks=[0,1,2,3].map(i=>'<span class="'+(!honest&&i===3?'failed-step':'')+'">Step '+i+': '+(!honest&&i===3?'wrong by 3':'correct')+'</span>').join("");
+    txt(lab,'<div class="sequence-mini">'+checks+'</div>'+
+      '<div class="zero-sides"><div><small>Recurrence difference</small><strong>D('+r+') = '+lhs+'</strong>'+
+      '<span>f(r+2) − f(r+1) − f(r)</span></div>'+
+      '<div><small>Claimed identity</small><strong>Z(r)q(r) = '+rhs+'</strong>'+
+      '<span>'+Z+' × '+qv+' (mod 101)</span></div></div>'+
+      '<div class="exam-result '+(ok?'success':'failure')+'"><strong>'+
+      (ok?(honest?'Honest proof accepted':'False claim slips through at this r'):'False claim rejected')+
+      '</strong><p>Discrepancy h('+r+') = '+lhs+' − '+rhs+' ≡ '+h+' (mod 101).</p></div>'+
+      '<div class="root-location"><span class="root-highlight">r = 0</span><span class="root-highlight">r = 1</span>'+
+      '<span class="root-highlight">r = 2</span><span>'+(honest?'All 101 choices accept':'Only these 3 choices accept the lie')+'</span></div>'+
+      '<p class="viz-insight">'+(honest?
+      'The honest identity holds at every point, giving perfect completeness.':
+      'The dishonest remainder is h(X)=51X(X−1)(X−2). Exactly 3 of 101 challenges are roots, below the general bound of 5/101.')+'</p>');
+  }
+  if(type==="story-circuit"){
+    const mode=lab.querySelector('[data-key="mode"]')?.value??"honest",p=97;
+    let input=[2,4,3],rows=[[2,4,8,0],[4,3,7,1],[8,7,56,0]],target=56;
+    let reason="Every gate is correct, all wires match, and the output equals the public target 56.";
+    if(mode==="wire"){
+      rows[2]=[9,17,56,0];
+      reason="All gate arithmetic, public inputs and output checks pass. But gate 0 produced 8, not 9; gate 1 produced 7, not 17. Only the wire-copy checks fail.";
+    }else if(mode==="input"){
+      input=[5,4,57];rows=[[5,4,20,0],[4,57,61,1],[20,61,56,0]];
+      reason="This is a consistent circuit computing 56, but with x₁=5 instead of the public x₁=2. Only the public-input check fails.";
+    }else if(mode==="gate"){
+      rows=[[2,4,9,0],[4,3,7,1],[9,7,56,0]];
+      reason="All wires agree and the final value is 56. But 2×4≠9 and 9×7≠56 (mod 97). The gate arithmetic checks fail.";
+    }else if(mode==="target"){
+      target=55;
+      reason="The actual computation is valid, but the public statement now demands 55 rather than 56. Only the final-output check fails.";
+    }
+    const gateok=rows.every(r=>mod((r[3]===1?r[0]+r[1]:r[0]*r[1])-r[2],p)===0);
+    const pubok=input[0]===2&&input[1]===4;
+    const wireok=input[0]===rows[0][0]&&input[1]===rows[0][1]&&
+      input[1]===rows[1][0]&&input[2]===rows[1][1]&&
+      rows[0][2]===rows[2][0]&&rows[1][2]===rows[2][1];
+    const outputok=rows[2][2]===target;
+    const table='<div class="table-scroll"><table class="trace-table"><thead><tr><th>Gate</th><th>Left</th><th>Rule</th><th>Right</th><th>Output</th></tr></thead><tbody>'+
+      rows.map((r,i)=>'<tr><td>'+i+'</td><td>'+r[0]+'</td><td>'+(r[3]===1?'+':'×')+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>').join('')+'</tbody></table></div>';
+    const status=(name,ok)=>'<div class="constraint-status '+(ok?'pass':'fail')+'"><span>'+(ok?'✓':'×')+'</span><b>'+name+'</b></div>';
+    const copy=(name,a,b)=>'<div class="copy-check '+(a===b?'pass':'fail')+'"><span>'+name+'</span><strong>'+
+      a+(a===b?' = ':' ≠ ')+b+'</strong></div>';
+    txt(lab,'<p class="visual-note">Trace inputs: '+input.join(', ')+'. Public inputs: 2, 4. Claimed target: '+target+'.</p>'+
+      table+'<div class="wire-pairs">'+
+      copy("Gate 0 output → Gate 2 left",rows[0][2],rows[2][0])+
+      copy("Gate 1 output → Gate 2 right",rows[1][2],rows[2][1])+'</div>'+
+      '<div class="constraint-status-grid">'+status("Public inputs",pubok)+status("Final output",outputok)+
+      status("Gate arithmetic",gateok)+status("Wire copies",wireok)+'</div>'+
+      '<p class="viz-insight">'+reason+'</p>');
+  }
   if(type==="ring"){
     const r=val(lab,"r",3),y=mod(2*r*r+4*r,6);
     txt(lab,'\\(f('+r+')='+y+'\\pmod 6\\). '+(y===0?'This is a root.':'This is not a root.')+' The four roots are 0, 1, 3, and 4.'+grid([0,1,2,3,4,5],x=>mod(2*x*x+4*x,6)===0,r));
