@@ -1,26 +1,26 @@
 <article class="lesson">
 <p class="chapter">Part VI · Sigma protocols</p>
-<h1>One pair of accepting transcripts gives a general soundness theorem</h1>
-<p class="lead">The graph protocol and Schnorr identification appear different, but the same structure underlies both: commitment, challenge, response. Sigma protocols formalize the structural properties that make this pattern useful.</p>
+<h1>One simple rule explains Sigma-protocol soundness</h1>
+<p class="lead">Hamiltonian-cycle proofs use graphs, and Schnorr will use exponents. Yet the same thing makes both work: after fixing a first message, the prover must answer a surprise challenge. A Sigma protocol captures that shared structure.</p>
 <div class="timeline">
 <div class="message prover"><span class="who">P → V</span><span>Commitment \(u\), fixed before the verifier asks its question.</span></div>
 <div class="message"><span class="who">V → P</span><span>Challenge \(c\), chosen uniformly from a finite set \(\mathcal C\).</span></div>
 <div class="message prover"><span class="who">P → V</span><span>Response \(z\). The verifier outputs \(\mathrm{verif}(x,u,c,z)\in\{0,1\}\).</span></div>
 </div>
 <h2>Three properties in the definition</h2>
-<div class="role prover"><div class="tag">1 · Perfect completeness</div><p>For a true statement and honest prover, the verifier accepts every honest execution, with probability 1.</p></div>
-<div class="role sim"><div class="tag">2 · Honest-verifier zero knowledge</div><p>Given a true public statement \(x\) and a desired challenge \(c\), an efficient simulator produces a transcript \((u,c,z)\) indistinguishable from an honest verifier's transcript conditioned on that challenge. This does <em>not</em> automatically promise security against an arbitrarily malicious verifier.</p></div>
-<div class="role"><div class="tag">3 · Special soundness</div><p>There is an efficient extractor which, given <strong>two accepting transcripts</strong> \((u,c,z)\) and \((u,c',z')\) with the <strong>same \(u\)</strong> but distinct challenges \(c\ne c'\), outputs a valid witness \(w\) with \(M(x,w)=1\).</p></div>
+<div class="role prover"><div class="tag">1 · Perfect completeness</div><p><strong>Perfect completeness:</strong> when the claim is true and the prover follows the protocol, verification always accepts.</p></div>
+<div class="role sim"><div class="tag">2 · Honest-verifier zero knowledge</div><p><strong>Honest-verifier zero knowledge:</strong> for a true statement \(x\) and an honestly chosen challenge \(c\), an efficient simulator can create a convincing transcript \((u,c,z)\) without the witness. This alone says nothing about arbitrary malicious verifiers.</p></div>
+<div class="role"><div class="tag">3 · Special soundness</div><p><strong>Special soundness:</strong> if the same \(u\) has accepted responses to two different challenges \(c\ne c'\), an efficient extractor can recover a witness \(w\) with \(M(x,w)=1\).</p></div>
 <h2>Proof of the Sigma-protocol soundness theorem</h2>
 <div class="proof">
 <h3>Claim: soundness error is at most \(1/|\mathcal C|\)</h3>
-<p><strong>Step 1.</strong> Fix a false statement \(x\notin L\) and an arbitrary first commitment \(u\) sent by any cheating prover. Since \(x\) is false, no valid witness \(w\) exists.</p>
-<p><strong>Step 2.</strong> Suppose two distinct challenges \(c\ne c'\) could both lead to accepting responses for that same \(u\). Special soundness would let us run the extractor on the two accepting transcripts and obtain \(w\) with \(M(x,w)=1\).</p>
-<p><strong>Step 3.</strong> That contradicts \(x\notin L\). Therefore, for each fixed \(u\), <strong>at most one challenge</strong> in the challenge set can lead to acceptance.</p>
-<p><strong>Step 4.</strong> The honest verifier chooses uniformly among \(|\mathcal C|\) challenges after \(u\) is fixed. At most one can succeed, hence:</p>
-<div class="math">\[\Pr[\mathrm{accept}\mid x\notin L]\leq\frac{1}{|\mathcal C|}\]<p class="math-caption">The notation \(|\mathcal C|\) is the number of possible challenges. The bound applies to any cheating prover, including one that randomizes its first message or response.</p></div>
+<p>Suppose the claim is false, \(x\notin L\). Fix any first message \(u\) sent by a cheating prover. There is no valid witness.</p>
+<p>Imagine the prover could answer two distinct challenges \(c,c'\) correctly without changing \(u\). Special soundness would let us extract a valid witness from those accepted transcripts.</p>
+<p>But a witness for a false statement cannot exist. So our assumption was impossible. For this fixed first message, <em>at most one</em> challenge can have an accepting response.</p>
+<p>The verifier chooses \(c\) uniformly from a set \(\mathcal C\), after \(u\) has been fixed. At most one choice works. Therefore</p>
+<div class="math">\[\Pr[\mathrm{accept}\mid x\notin L]\leq\frac{1}{|\mathcal C|}\]<p class="math-caption">The notation \(|\mathcal C|\) means the number of possible challenges. The result holds for any cheating prover, including one that uses randomness before sending \(u\).</p></div>
 </div>
-<section class="lab"><div class="lab-head"><div class="tag">Change the challenge space</div><h3>How does special soundness limit a false claim?</h3><p>The result is a <em>theorem</em>, not an empirical success rate. The buttons apply its counting argument.</p></div><div class="lab-body"><div class="control-row"><button data-demo="sigma" data-value="2">2 challenges</button><button data-demo="sigma" data-value="4">4 challenges</button><button data-demo="sigma" data-value="8">8 challenges</button></div><div id="sigma-result" class="feedback" aria-live="polite">At most one challenge can work for a false claim because two would imply an extractable witness.</div></div></section>
-<div class="transition"><p>The next three cards apply these properties to a concrete algebraic protocol. You will see that Schnorr's completeness, simulator and extractor each correspond to one property above—and each can be proved by a short, exact calculation.</p></div>
+<section class="lab"><div class="lab-head"><div class="tag">Change the challenge space</div><h3>How does special soundness limit a false claim?</h3><p>Change the challenge-space size below. The picture counts the possible challenges; the theorem is the reason at most one can work.</p></div><div class="lab-body"><div class="control-row"><button data-demo="sigma" data-value="2">2 challenges</button><button data-demo="sigma" data-value="4">4 challenges</button><button data-demo="sigma" data-value="8">8 challenges</button></div><div id="sigma-result" class="feedback" aria-live="polite">At most one challenge can work for a false claim because two would imply an extractable witness.</div></div></section>
+<div class="transition"><p>This is why Sigma protocols are so useful. When we can prove special soundness, a simple counting argument gives a soundness bound. Now we'll see the same reasoning expressed with exponents in Schnorr's protocol.</p></div>
 <p class="source">PETS · ZK lecture notes, Definition 5 and Theorem 2, pp. 8–9.</p>
 </article>
