@@ -1,88 +1,113 @@
 <!doctype html><html lang="en"><meta charset="utf-8"><title>SNARGs · Part I</title><body>
 <article class="lesson" data-id="the-question" data-title="What would count as convincing evidence?">
 <p class="chapter-tag">I · Why SNARGs exist · Lecture §1</p>
-<h1>How can we check a computation without doing it again?</h1>
-<p class="aim">A server has done a million calculations and tells us the answer. We'd like to know if it's right. But checking every calculation would mean doing nearly the same amount of work ourselves.</p>
-<p>Take the example in the notes. The server repeatedly applies SHA-256, a function that turns an input into a fixed-length string of bits. We give it an initial value \(x\). After a million applications, it gives us a final value \(y\).</p>
-<p>What would convince us that \(y\) is correct? The server could send every intermediate value, and we could check that each is the SHA-256 hash of the one before it. That would work, but we'd have to perform a million checks. If the server sends only \(y\), we could recompute everything ourselves. That is no improvement either.</p>
-<p>What we want is a <strong>proof</strong> that is much easier to check than the original computation.</p>
-<h2>What exactly are we trying to prove?</h2>
-<p>First separate two things. The <strong>statement</strong> \(x\) is what the verifier is being asked to believe. In the hash example it includes the starting value and the claimed final value. A <strong>witness</strong> \(w\) is extra information that establishes the claim, such as the list of intermediate hashes.</p>
-<p>We write \(R(x,w)=1\) when a public checking procedure \(R\) decides that \(w\) is valid evidence for \(x\). The number \(1\) simply means “yes.” The set of statements with valid evidence is</p>
-<div class="math">\[L=\{x:\exists w,\;R(x,w)=1\}.\]</div>
-<p>The symbol \(\exists\) means “there exists.” So \(x\) belongs to \(L\) precisely when at least one suitable witness exists. In cryptography, we'll often call \(L\) a <em>language</em>. It is just a set of valid statements.</p>
-<p>We study statements where checking a given witness is efficient. These are the statements associated with the complexity class NP. Finding the witness may be difficult, even though checking it is straightforward.</p>
+<h1>How can we check a calculation without repeating it?</h1>
+<p class="aim">Suppose a server does a million steps of a calculation and gives you the answer. If checking the answer takes another million steps, what have you gained?</p>
+<p>Imagine the server repeatedly applying the same public function \(H\), starting with a value \(a\). After a million steps, it tells you the answer is \(b\). We know the function, the starting value, the number of steps and the claimed result. We do <em>not</em> know whether the server actually performed the steps correctly.</p>
+<p>There is an obvious way to check. Ask the server for every intermediate value, then apply \(H\) to each value and see whether the next one matches. This is convincing, but it makes us do nearly the entire calculation ourselves.</p>
+<p>Could the server send something much shorter—something we can check quickly, but that a cheater cannot easily fake? That's the problem a succinct proof is meant to solve.</p>
+<h2>What must the server prove?</h2>
+<p>Let's give names to the pieces we already have. The <strong>statement</strong>, written \(x\), is the public claim. In this example, \(x\) contains the starting value \(a\), the reported result \(b\), and the rule to apply \(H\) one million times.</p>
+<p>The <strong>witness</strong>, written \(w\), is the extra evidence that makes the claim checkable. Here, \(w\) can be the list of intermediate values. If we had the list, we could check every step, and that would tell us whether the claimed result is right.</p>
+<p>Call this ordinary checking procedure \(R\). We write \(R(x,w)=1\) if all the steps check out, and \(R(x,w)=0\) otherwise. The number 1 simply means “accept.”</p>
+<p>A statement is <em>true</em> if at least one valid witness exists. Cryptographers collect all true statements in a set called a <strong>language</strong> \(L\):</p>
+<div class="math">\[L=\{x:\exists w\text{ with }R(x,w)=1\}.\]</div>
+<p>The symbol \(\exists\) means “there exists.” So the equation says only this: \(x\) belongs to \(L\) if there is some evidence \(w\) that passes the checker.</p>
+<p>We care about problems where checking a supplied witness is efficient, even if finding one is hard. Those are the kinds of problems studied in the complexity class NP. We won't need the complexity theory to follow the next construction; the key point is simply that <em>checking evidence</em> and <em>finding evidence</em> are different jobs.</p>
+<h2>Who sends what?</h2>
+<p>The <strong>prover</strong>, \(P\), knows the witness and wants to convince us. The <strong>verifier</strong>, \(V\), knows only the public statement and checks the claim. Our goal is for the prover to send a short string, called the <strong>proof</strong> \(\pi\) (the Greek letter “pi”), instead of the entire witness \(w\).</p>
 <div class="diagram"><div class="flow">
-<div class="stage"><strong>Prover \(P\)</strong><p>Knows the statement \(x\) and a witness \(w\). Builds a proof \(\pi\).</p></div>
+<div class="stage"><strong>Prover \(P\)</strong><p>Has the public claim \(x\) and the long evidence \(w\).</p></div>
 <div class="arrow">⟶</div>
-<div class="stage"><strong>Verifier \(V\)</strong><p>Knows \(x\), receives \(\pi\), and decides whether to accept.</p></div>
-</div></div>
-<h2>Two things the proof must get right</h2>
-<p>If the statement is true and the prover follows the rules, the verifier should accept. We call this <strong>completeness</strong>. If the statement is false, a dishonest prover should almost never convince the verifier. We call this <strong>soundness</strong>.</p>
-<p>The lecture asks for perfect completeness. It also allows a small probability \(\varepsilon\) of accepting a false statement:</p>
+<div class="stage"><strong>Verifier \(V\)</strong><p>Receives a short proof \(\pi\) and checks the claim \(x\).</p></div>
+</div><p class="diagram-note">The long witness stays with the prover. Whether a short proof can replace it is exactly what we still need to establish.</p></div>
+<h2>What would make this convincing?</h2>
+<p>Two things. First, when the claim is true and the prover follows the rules, the verifier should accept. This is <strong>completeness</strong>. The lecture asks for <em>perfect</em> completeness: an honest proof always passes.</p>
+<p>Second, when the claim is false, even a dishonest prover should have only a small chance of making the verifier accept. This is <strong>soundness</strong>. We call that small chance \(\varepsilon\), the soundness error:</p>
 <div class="math">\[
 \begin{aligned}
-\Pr[\text{accept}\mid\text{true statement, honest prover}]&=1,\\
-\Pr[\text{accept}\mid\text{false statement}]&\le\varepsilon.
+\Pr[\text{accept}\mid\text{true, honest prover}]&=1,\\
+\Pr[\text{accept}\mid\text{false claim}]&\le\varepsilon.
 \end{aligned}
 \]</div>
-<p>The symbol \(\Pr\) means probability; the random choices made during the proof determine the probabilities. In the second line, the dishonest prover can use any strategy allowed by the security model.</p>
-<div class="bridge">We now know what a proof must establish. But a proof could still be as long and expensive to check as the computation itself. We need a stronger requirement: the proof should be <em>short</em>.</div>
-<p class="source">Lecture 9–12, §1 and §5. The statement \(x\) here can contain several public values; the notation follows the lecture.</p>
+<p>Here \(\Pr\) means probability; the second guarantee must cover every cheating strategy allowed by the security model. The point is not that a proof <em>looks</em> persuasive. It must come with a reason a false claim is very unlikely to pass.</p>
+<div class="bridge">We now know what we're trying to replace: a long witness \(w\) that we could check ourselves. But if the proof \(\pi\) is just as long as \(w\), we've solved nothing. Next we'll look at what it means for the proof to be short.</div>
+<p class="source">Lecture 9–12, §1 and §5. The repeated-function calculation is an illustrative example; the definitions use the lecture's notation.</p>
 </article>
 
 <article class="lesson" data-id="succinctness" data-title="How short is succinct?">
 <p class="chapter-tag">I · Why SNARGs exist · Lecture §1</p>
-<h1>A proof that is quicker to check</h1>
-<p class="aim">If I give you a million numbers as evidence, I haven't saved you much work. Can the proof remain small even when the computation gets enormous?</p>
-<p>Call the proof \(\pi\), the public statement \(x\), and the witness \(w\). The vertical bars \(|\pi|\), \(|x|\), and \(|w|\) mean their lengths in bits. A standard NP proof can consist of the entire witness, so its length grows with \(|w|\).</p>
-<p>A <strong>succinct</strong> proof should grow much more slowly. The notes use these bounds:</p>
+<h1>How much shorter can a proof be?</h1>
+<p class="aim">The server could send us the whole list of intermediate results. We could check it, but we'd still have a huge amount of work. What does it take to make verification genuinely cheaper?</p>
+<p>We called the long evidence \(w\) and the short proof we hope to send \(\pi\). The notation \(|w|\) means the <strong>length of the witness in bits</strong>, and \(|\pi|\) means the length of the proof in bits. A list of intermediate numbers can always be written as a sequence of 0s and 1s. For example, if the list contains a million 256-bit results, its encoding uses roughly 256 million bits.</p>
+<p>Sending \(w\) directly would make the proof as long as the evidence. A <strong>succinct</strong> proof should instead stay small as the witness becomes large. How could that even be possible? Let's first see one simple reason why a large amount of information needn't always require a large <em>question</em>.</p>
+<h2>Naming one bit is cheaper than sending every bit</h2>
+<p>Imagine the witness consists of just eight bits, at positions 0 through 7. To ask for position 5, we don't have to list all eight bits. We can say “101,” because 101 is the number 5 written in binary. Every position from 0 to 7 has a three-digit binary address, from 000 to 111.</p>
+<p>Why three digits? A binary digit has two choices, 0 or 1. Three of them give \(2\times2\times2=2^3=8\) different addresses. If there are \(2^k\) positions, <strong>\(k\) binary digits can name any one of them</strong>. The letter \(k\) here is simply the number of address digits. The inverse statement is written \(\log_2(2^k)=k\), pronounced “log base two.”</p>
+<div class="lab" data-lab="growth">
+<div class="lab-top"><strong>How many digits does an address need?</strong><p>Change \(k\). Each additional binary digit doubles the number of bits we could address. The large number is the length of the imagined witness, not the length of a SNARG proof.</p></div>
+<div class="lab-content">
+<label class="range-label">Number of binary address digits \(k\)
+<output class="range-value" data-live-for="k">3</output>
+<input data-key="k" type="range" min="3" max="20" value="3" step="1" aria-label="Number of address digits k">
+</label>
+<div class="lab-output" aria-live="polite"></div>
+</div>
+</div>
+<p>There's a crucial difference between <em>naming</em> a bit and <em>checking</em> a proof. Knowing how to request a few positions doesn't tell us whether those positions are enough to catch cheating. We'll need a theorem for that in the next lesson.</p>
+<h2>Now define the kind of proof we want</h2>
+<p>Let \(|x|\) be the length of the public statement. Let \(T_V\) be the time the verifier spends checking the proof. Finally, \(\lambda\) is a security parameter: increasing it is meant to make attacks less likely. The lecture asks for a proof that remains small and a verifier that does little work compared with reading the witness:</p>
 <div class="math">\[
-|\pi|=O\bigl(\lambda,\operatorname{polylog}(|x|,|w|)\bigr)
+|\pi|=O\!\left(\lambda,\operatorname{polylog}(|x|,|w|)\right)
 \]
 \[
-T_V=O\bigl(\lambda,|x|,\operatorname{polylog}(|w|)\bigr).
+T_V=O\!\left(\lambda,|x|,\operatorname{polylog}(|w|)\right).
 \]</div>
-<p>Here \(T_V\) is the verifier's running time. The parameter \(\lambda\) controls the desired cryptographic security. The notation \(\operatorname{polylog}(n)\) means a fixed power of a logarithm, such as \((\log_2 n)^2\). And \(O(\cdot)\) describes how a quantity grows for large inputs; it is not an exact count of bytes or operations.</p>
-<p>Why is the logarithm attractive? If the number of witness values doubles, its binary logarithm increases by just one. Move the slider and compare the two quantities. This is a comparison of growth rates, not a prediction of an actual SNARG's proof size.</p>
-<p>The verifier is allowed time proportional to \(|x|\), since it may have to read the public statement. What we're trying to avoid is work proportional to the enormous private witness.</p>
-<h2>What does “non-interactive” add?</h2>
-<p>Sometimes the verifier sends a random question and the prover responds. That requires a conversation. For a <strong>non-interactive</strong> proof, the prover instead makes one proof string that anyone can check later, without asking the prover another question.</p>
-<p>This gives the name <strong>SNARG</strong>: <em>Succinct Non-Interactive Argument</em>. The word <em>argument</em> signals that soundness is guaranteed against computationally bounded cheaters, relying on cryptography.</p>
-<p>Notice that nothing we've said demands zero knowledge. A SNARG need not hide the witness. Zero knowledge is a further promise: the proof should not reveal private information beyond what the statement establishes. Nor is a proof of knowledge automatically guaranteed by the SNARG requirements.</p>
-<div class="bridge">There is still a difficulty. A proof may be very long, even if only a few parts are important. How could a verifier learn enough about it without reading it? A surprising theorem gives us a starting point.</div>
-<p class="source">Official notes, §1; handwritten notes pp. 2–3.</p>
+<p>Here's what the notation is saying. A <em>polylogarithm</em> is a fixed power of a logarithm, such as \((\log_2 n)^2\). The \(O\) notation describes how a cost grows, rather than an exact byte count. So the proof and its verification should depend on the very large witness mainly through logarithms, not by reading it all. The verifier may still need time proportional to \(|x|\) to read the public claim.</p>
+<h2>And why “non-interactive”?</h2>
+<p>If the verifier must send a fresh random question and wait for the prover's answer, the parties are still having a conversation. A <strong>non-interactive</strong> proof is one string the prover can send now and anybody can check later, without contacting the prover.</p>
+<p>Put the requirements together and we get a <strong>SNARG</strong>: a <em>Succinct Non-Interactive Argument</em>. “Argument” means that resistance to cheating relies on computational assumptions: we promise security against attackers with realistically bounded computing power, not an infinitely powerful attacker.</p>
+<p>A SNARG need not hide the witness. That stronger privacy property is called zero knowledge. Nor does the word SNARG alone promise a way to extract a witness from a successful prover.</p>
+<div class="bridge">We've seen why a question about a huge bit string can be short. Now for the difficult part: can we arrange a proof so that checking only a few chosen bits really tells us something about the whole statement? That's where the PCP theorem enters.</div>
+<p class="source">Official notes, §1; handwritten notes pp. 2–3. The binary-address example illustrates the logarithm; it does not derive the full SNARG size bound.</p>
 </article>
 
 <article class="lesson" data-id="pcp-box" data-title="Why three proof bits can be enough">
 <p class="chapter-tag">I · Why SNARGs exist · Lecture §2</p>
-<h1>Could three bits tell us whether a proof is wrong?</h1>
-<p class="aim">Suppose someone hands you an ordinary thousand-page calculation and asks you to check three random characters. You wouldn't expect to learn much. But what if the proof had been written in a very special way?</p>
-<p>The PCP theorem says that, for any statement in NP, a prover can produce a specially <strong>encoded</strong> proof that a verifier checks by reading only three bits. The proof itself may be long. What is remarkable is the tiny number of bits the verifier needs to inspect.</p>
-<p>The lecture states two guarantees. If the statement is true, there is an encoded proof that always passes. If it is false, <em>every</em> encoded proof the prover might supply has at most a \(1/2\) chance of passing the verifier's random test:</p>
+<h1>Could checking just three bits catch a false proof?</h1>
+<p class="aim">We just learned to <em>name</em> a position in a long string using few bits. But if you inspected three random characters of an ordinary calculation, you probably wouldn't learn whether it was correct. The next theorem solves that harder problem.</p>
+<p>The <strong>PCP theorem</strong> says that the prover can write the evidence in a special encoded form so that a verifier can check a statement by reading only three bits of this encoded proof. The encoding is important: three bits of the original witness would not normally be enough.</p>
+<p>Let's call the long encoded bit string \(\pi_{\rm PCP}\), to distinguish it from the short SNARG proof \(\pi\) we eventually want. Let <strong>\(M\) be the number of bits in \(\pi_{\rm PCP}\)</strong>. This is a new length: \(M\) describes the specially encoded PCP proof, while \(|w|\) in the previous lesson described the original witness. They need not be the same size.</p>
+<p>We can use what we just learned about binary addresses. Even when the encoded proof has \(M\) bits, choosing a position needs only about \(\log_2 M\) bits. The remarkable new part is that, with this special encoding, inspecting only a constant number of chosen bits can actually detect false claims.</p>
+<h2>What does the theorem guarantee?</h2>
+<p>For a true statement, there is an encoded proof that passes every test. For a false statement, <em>every fixed bit string</em> the cheater might offer has at most a one-half chance of passing a randomly chosen test:</p>
 <div class="math">\[
-\Pr[\text{accept}\mid\text{true statement, correct proof}]=1,
-\quad
-\Pr[\text{accept}\mid\text{false statement}]\le\tfrac12.
+\Pr[\text{accept}\mid\text{true statement, honest PCP}]=1,
+\qquad
+\Pr[\text{accept}\mid\text{false statement}]\le \tfrac12.
 \]</div>
-<p>The theorem does not say that three bits of an ordinary witness are enough. The special encoding is essential. The lecture takes the theorem as a given; its long proof is not part of our course.</p>
-<h2>The box that makes the theorem work</h2>
-<p>Imagine that the prover puts the entire encoded proof \(\pi\) inside a locked box. The verifier can ask for bit \(i\), and the box returns \(\pi_i\). It cannot ask for the rest, and the prover cannot change the proof after seeing which bits are requested.</p>
+<p>The theorem is a deep result, and the lecture asks us to use it rather than prove it. For now, what matters is exactly what it promises—and that the random test is applied to a proof string already fixed by the prover.</p>
+<h2>Imagine keeping the encoded proof in a locked box</h2>
+<p>The prover puts all \(M\) bits inside a box and closes it. The verifier can request position \(i\), and the box returns the bit \((\pi_{\rm PCP})_i\). The box always answers from the same string; the prover can't replace a bit after learning the question.</p>
 <div class="diagram"><div class="flow">
-<div class="stage"><strong>Prover</strong><p>Writes the encoded proof \(\pi\) and locks it in the box.</p></div>
+<div class="stage"><strong>Prover</strong><p>Fixes the complete encoded proof.</p></div>
 <div class="arrow">⟶</div>
-<div class="stage"><strong>Proof box</strong><p>Remembers one fixed string and answers position queries.</p></div>
+<div class="stage"><strong>Proof box</strong><p>Answers queries from that fixed string.</p></div>
 <div class="arrow">⟷</div>
-<div class="stage"><strong>Verifier</strong><p>Chooses random positions and checks the returned bits.</p></div>
-</div><p class="note">The little bit-query simulator in this lesson shows how the box behaves; it does not attempt to simulate the PCP theorem itself.</p></div>
-<p>If the proof has \(M\) bits, an index can be written with about \(\log_2 M\) bits. Thus the verifier needs only \(O(\log M)\) random bits to choose its positions, and receives a constant number of proof bits.</p>
-<h2>Can we make a false acceptance much less likely?</h2>
-<p>One test has error at most \(1/2\). Ask the box to pass \(t\) independent tests, all against the <em>same fixed proof</em>, and accept only if every test passes. Each new random test has conditional acceptance probability at most \(1/2\), so</p>
+<div class="stage"><strong>Verifier</strong><p>Chooses a few positions and checks a rule for the returned bits.</p></div>
+</div><p class="diagram-note">The box is an idealized device. The following little experiment shows how it answers one query; it is not a simulation of the PCP theorem.</p></div>
+<h2>How do we make the error smaller than one-half?</h2>
+<p>Repeat the test \(t\) times, choosing fresh independent random positions each time, but always testing the <em>same fixed</em> proof. Accept only if every test passes. For a false statement, the chance of passing each independent test is at most \(1/2\), so</p>
 <div class="math">\[\Pr[\text{all }t\text{ tests pass}]\le(1/2)^t=2^{-t}.\]</div>
-<p>The independence is important: we choose fresh random questions for every test. The proof must remain fixed throughout. Use the slider to see why repeating a test makes a fixed false proof unlikely to pass them all.</p>
-<div class="lab" data-lab="pcp"><div class="lab-top"><strong>How much does repetition help?</strong><p>Move \(t\). The value shown is the proved upper bound for a fixed false proof, not a simulation of PCP encoding.</p></div><div class="lab-content"><label>Number of independent tests \(t\)<input data-key="t" type="range" min="1" max="10" value="4"></label><div class="lab-output" aria-live="polite"></div></div></div>
-<div class="bridge">The locked box is imaginary. Sending the entire encoded proof to the verifier would ruin succinctness. Asking an uncommitted prover for individual bits would let the prover adapt the answers. We need a real way to fix a long string and then reveal just a few positions.</div>
-<p class="source">Official notes, §2 pp. 2–3; handwritten notes pp. 4–6.</p>
+<div class="lab" data-lab="pcp"><div class="lab-top"><strong>Try repeated random tests</strong><p>Increase the number \(t\) of independent tests. The figure shows the error bound, not an actual PCP encoding.</p></div>
+<div class="lab-content">
+<label class="range-label">Number of independent tests \(t\)
+<output class="range-value" data-live-for="t">4</output>
+<input data-key="t" type="range" min="1" max="10" value="4">
+</label><div class="lab-output" aria-live="polite"></div></div></div>
+<p>To build a real proof, we still have to replace the imaginary box. Sending all \(M\) bits defeats our aim of a short proof. Asking a dishonest prover for bits without fixing its string lets it change answers to suit our questions. We need a way to lock a long string using one small commitment.</p>
+<div class="bridge">The mathematical verifier works with a locked bit string. Cryptography will now give us a real way to lock the string and open just the positions we ask for.</div>
+<p class="source">Official notes, §2 pp. 2–3; handwritten notes pp. 4–6. The symbol \(M\) here means the encoded PCP proof length in bits.</p>
 </article>
 
 <article class="lesson" data-id="iop-types" data-title="Interactive oracle proofs">
