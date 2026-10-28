@@ -28,6 +28,10 @@
 <details><summary>Answer · distinguish changing the challenge from strengthening privacy</summary><div class="inside">
 <p>False. Fiat–Shamir does not automatically turn computational zero knowledge into <em>statistical</em> zero knowledge. Replacing the challenge with a hash doesn't prove that an unlimited observer learns nothing.</p>
 </div></details></div>
-<div class="transition"><p>What have we actually learned? Binding fixes the first message. A random challenge tests it. Simulation proves privacy. Two accepted challenges can yield a witness. Fiat–Shamir changes how the challenge is supplied, but each security guarantee still needs its own proof.</p></div>
+<div class="transition"><p>We can now close the story that began with the Hamiltonian-cycle witness. Binding makes the prover's first commitment unchangeable; a random challenge makes false claims risky; simulation explains why the verifier learns nothing extra; and two accepted challenges can reveal a witness to an extractor. Fiat–Shamir can remove the challenge message, but the soundness and privacy arguments still have to be established for the transformed protocol.</p>
+<div class="practice-link"><span class="practice-tag">Apply Fiat–Shamir</span><a href="#hw3-fs-schnorr">HW3 2(a–b): make Schnorr non-interactive</a><a href="#hw3-fs-attacks">HW3 2(c–d): bound challenge guessing</a><a href="#hw3-amplify">HW3 3(a–b): amplify before hashing</a></div>
+<div class="transition"><p>That answers our zero-knowledge question. The next PETS chapter asks a different one: can we make a proof <em>much shorter than the computation it certifies</em>? We'll use the same commitment-and-challenge ideas with polynomial tests and PLONK. <a href="../snarg-workbench/#the-question">Continue with SNARGs → PLONK</a>.</p></div>
+<div class="practice-link"><span class="practice-tag">Optional bridge to SNARGs</span><a href="#hw1-vector">HW1 4(a–c): open one position of a long vector</a><a href="#hw3-pcp">HW3 4(a–b): compile a PCP into a succinct argument</a><a href="#hw3-roots">HW3 1(c): why polynomial root bounds need a field</a></div>
+<p></p></div>
 <p class="source">PETS · ZK lecture notes, Non-interactive Zero-Knowledge and Fiat–Shamir, pp. 10–11. Security sketches are explicitly distinguished from formal reductions.</p>
 </article>
