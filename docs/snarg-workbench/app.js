@@ -343,14 +343,16 @@ function initLab(lab){
   }
   if(type==="plonkstages"){
     const stage=val(lab,"stage",1);
-    const tests=[
-      ["Final output","The last output position contains 0, as required by the public statement."],
-      ["Public input","The trace matches every public input at its designated position."],
-      ["Gate operations","The gate constraint polynomial vanishes at every gate-start position."],
-      ["Wiring copies","Every occurrence of the same logical wire has an identical field value."]
+    const steps=[
+      ["Inputs are fixed","The verifier's public input is x₁ = 2, x₂ = 4. The proposed witness supplies w₁ = 3. Every occurrence of these values must agree with the original input positions.",""],
+      ["Gate 0 · multiplication","The first gate receives 2 and 4. Its gate equation forces output 8.","\\(2\\cdot4=8\\)"],
+      ["Gate 1 · addition","Its input wires carry 4 and 3. Its gate equation forces output 7.","\\(4+3=7\\)"],
+      ["Gate 2 · multiplication","Wiring forces gate 2 to receive the outputs 8 and 7. Its gate equation forces 56. The illustrated public target is 56; a formal zero-output circuit would add a final comparison gate.","\\(8\\cdot7=56\\)"]
     ];
-    txt(lab,tests.map((a,i)=>'<div class="stage" style="margin-bottom:6px;border-left:3px solid '+(i+1===stage?'#2d6b54':'#cad8cd')+';background:'+(i+1===stage?'#e8f2eb':'#f3f4f1')+'"><strong>'+(i+1)+'. '+a[0]+'</strong>'+(i+1===stage?'<p>'+a[1]+'</p>':'')+'</div>').join('')+
-      '<p class="viz-insight">Passing all four constraint families implies an honest satisfying circuit trace. Authenticated randomized polynomial checks are needed to establish these conditions without checking the entire trace.</p>');
+    const boxes=steps.map((x,i)=>'<div class="stage" style="margin:5px 0;opacity:'+(i+1<=stage?1:.4)+';border-color:'+(i+1===stage?'#2d6b54':'#cad8cd')+'"><strong>'+(i+1)+'. '+x[0]+'</strong></div>').join("");
+    const selected=steps[stage-1];
+    txt(lab,boxes+'<div class="viz-insight"><strong>'+selected[0]+'</strong><p>'+selected[1]+'</p>'+
+      (selected[2]?'<p>'+selected[2]+'</p>':'')+'</div>');
   }
  };
  lab.querySelectorAll("input,select").forEach(el=>el.addEventListener("input",update));
