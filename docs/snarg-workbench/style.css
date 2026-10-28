@@ -716,3 +716,24 @@ body{background:var(--page);color:var(--ink);font-family:-apple-system,BlinkMacS
   #lessons .reading .zero-sides strong{font-size:15px}
   #lessons .reading .recurrence-check>div{grid-template-columns:75px minmax(0,1fr) 60px}
 }
+
+#lessons .reading .protocol-stages{
+  display:flex;flex-direction:column;gap:7px;
+  margin:8px 0 13px;
+}
+#lessons .reading .protocol-stages>div{
+  padding:10px 12px;background:#f5f7f4;
+  border:1px solid #d6ded6;border-radius:9px;min-height:48px;
+}
+#lessons .reading .protocol-stages>div.selected{
+  background:#e9f3ea;border:1px solid #8cb99a;
+}
+#lessons .reading .protocol-stages>div span{
+  display:block;font-size:11px;font-weight:700;color:#667568;margin-bottom:3px;
+}
+#lessons .reading .protocol-stages>div strong{
+  display:block;font-size:15px;color:#305841;
+}
+#lessons .reading .protocol-stages>div p{
+  font-size:14px;line-height:1.5;margin:7px 0 1px;
+}
