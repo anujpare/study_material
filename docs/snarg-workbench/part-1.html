@@ -152,6 +152,7 @@ T_V=O\bigl(\lambda,|x|,\operatorname{polylog}(|w|)\bigr).
 <p>The PCP theorem supplies the test. The Merkle root makes all answers refer to one fixed proof string. Neither works alone: the PCP box was imaginary, while Merkle authentication tells us that a bit is <em>unchanged</em>, not that the whole statement is <em>true</em>. We need both.</p>
 <div class="exercise"><span class="exercise-kicker">HW3 · Problem 4(a) · Original task</span>
 <p>A PCP proof for a statement of length \(n\) has \(M=\operatorname{poly}(n)\) bits. A PCP test queries a constant \(k\) positions, chosen before seeing their answers, with perfect completeness and soundness error \(1/2\). Merkle commitments have \(\lambda\)-bit roots and openings of \(O(\lambda\log M)\) bits. Construct a three-message argument with negligible soundness error and communication polynomial in \(\lambda\) and \(\log n\).</p>
+<p><em>Read the quantities before solving:</em> \(n\) is the public statement length; \(M\) is the number of bits in the <em>encoded</em> PCP proof; “\(\operatorname{poly}(n)\)” means bounded by a fixed power of \(n\). In this problem \(k\) is the fixed number of positions read per PCP test (three in our lecture's version), <em>not</em> the number of address digits called \(k\) in the earlier logarithm example. Here \(\lambda\) is used as both the security parameter and the number of repetitions needed to drive the error down.</p>
 <details class="worked"><summary>Work through the construction and proof</summary><div class="answer">
 <h3>First, the protocol</h3>
 <p>The prover computes its PCP proof string \(\pi\), builds a Merkle tree over the bits, and sends the root \(c\). This is message one. The root must be sent <em>before</em> the verifier chooses positions, or the prover could change the proof to suit the test.</p>
@@ -173,7 +174,7 @@ T_V=O\bigl(\lambda,|x|,\operatorname{polylog}(|w|)\bigr).
 <h3>Have we kept communication short?</h3>
 <p>We send one root of \(\lambda\) bits. We authenticate \(k\lambda\) proof positions. Since \(k\) is constant and each path has \(O(\lambda\log M)\) bits, all paths together cost</p>
 <div class="math">\[O(k\lambda\cdot\lambda\log M)=O(\lambda^2\log M).\]</div>
-<p>The PCP length is polynomial in \(n\), so \(\log M=O(\log n)\). The indices and opened bits do not change this leading bound. The entire communication is therefore \(O(\lambda^2\log n)\).</p>
+<p>Why can we replace \(\log M\) by \(O(\log n)\)? The PCP theorem gives a polynomial bound on \(M\). If \(M\le n^a\) for some fixed constant \(a\), taking logarithms gives \(\log M\le\log(n^a)=a\log n\). That is exactly what \(O(\log n)\) means. The query indices and opened bits don't change the leading asymptotic bound, so total communication is \(O(\lambda^2\log n)\).</p>
 <p class="qed">We have now proved the two things the question asked: negligible soundness error and succinct communication. Merkle binding makes the PCP tests apply to one fixed proof; the PCP theorem makes those few tests meaningful. \(\square\)</p>
 </div></details></div>
 <div class="bridge">We have our first real construction: a <em>succinct interactive argument</em>. It has short communication and small soundness error. But the verifier still sends random queries, so it isn't non-interactive yet. We'll remove that message later with Fiat–Shamir.</div>
