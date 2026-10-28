@@ -88,6 +88,93 @@ function initLab(lab){
     const status=(name,ok)=>'<span style="color:'+(ok?"#146655":"#ac3136")+';font-weight:750">'+(ok?"✓ ":"✕ ")+name+'</span>';
     txt(lab,'<p class="note">Original trace input cells: \\(x_1='+traceInputs[0]+',\\;x_2='+traceInputs[1]+',\\;w_1='+traceInputs[2]+'\\). Public statement: \\(x_1=2,\\;x_2=4\\).</p>'+tbl+'<div class="two">'+[status("Public inputs",pubok),status("Gate equations",gateok.every(Boolean)),status("Wire copies",wireok),status("Final output = 0",outputok)].map(s=>'<div>'+s+'</div>').join("")+'</div><p class="note">'+explain+'</p>');
   }
+
+  if(type==="growth"){
+    const k=val(lab,"k",10),M=2**k;
+    txt(lab,'<div class="two"><div class="stage"><strong>Witness length</strong><p>'+M.toLocaleString('en-US')+' values</p></div><div class="stage"><strong>Binary logarithm</strong><p>'+k+'</p></div></div><p class="viz-insight">\\(M=2^{'+k+'}\\), therefore \\(\\log_2 M='+k+'\\). This comparison concerns asymptotic growth. No exact SNARG proof length is inferred from it.</p>');
+  }
+  if(type==="bitbox"){
+    const i=val(lab,"i",4),bits=[1,0,1,1,0,0,1,0];
+    const cells='<div class="lab-grid">'+bits.map((b,j)=>'<span class="'+(i===j+1?"root current":"")+'">'+(i===j+1?b:"?")+'</span>').join("")+'</div>';
+    txt(lab,cells+'<p class="viz-insight">Only \\(\\pi_{'+i+'}='+bits[i-1]+'\\) is revealed. The other seven bits remain concealed. The full vector was fixed before the query.</p>');
+  }
+  if(type==="adaptive"){
+    const r=val(lab,"r",4);
+    txt(lab,'<div class="two"><div class="stage"><strong>At r = '+r+'</strong><p>\\(f(r)=0\\), \\(g_r(r)=0\\)</p></div><div class="stage"><strong>At r + 1</strong><p>\\(f(r+1)=0\\), \\(g_r(r+1)=1\\)</p></div></div><p class="viz-insight">After learning r, a cheating prover sets \\(g_r(X)=X-'+r+'\\), a nonzero polynomial. The test accepts at r with certainty even though the polynomials differ. The root theorem does not justify a probability bound when the polynomial depends on the random challenge.</p>');
+  }
+  if(type==="szplot"){
+    const r1=val(lab,"r1",2),r2=val(lab,"r2",3),h=mod(r1*r2,7);
+    txt(lab,svgMatrix(7,(x,y)=>x*y%7===0,[r1,r2])+
+      '<div class="two"><div class="stage"><strong>Selected point</strong><p>\\(h('+r1+','+r2+')='+h+'\\)</p></div><div class="stage"><strong>Exact chance</strong><p>13 of 49 field pairs</p></div></div>'+
+      '<p class="viz-insight">The only zeros occur when r₁ = 0 or r₂ = 0. The row and column contain 7 + 7 − 1 = 13 points (subtracting the shared origin). Thus \\(13/49\\le 2/7\\), matching the Schwartz–Zippel upper bound for degree 2.</p>');
+  }
+  if(type==="onehot"){
+    const selected=lab.querySelector('[data-key="case"]')?.value||"valid";
+    const x=selected==="valid"?[1,0]:selected==="two"?[1,1]:[2,0];
+    const r1=val(lab,"r1",2),r2=val(lab,"r2",3);
+    const poly=(a,b)=>mod((x[0]*a+x[1]*b)**2-x[0]*a*a-x[1]*b*b,7);
+    let roots=0;for(let a=0;a<7;a++)for(let b=0;b<7;b++)if(poly(a,b)===0)roots++;
+    const value=poly(r1,r2);
+    txt(lab,svgMatrix(7,(a,b)=>poly(a,b)===0,[r1,r2])+
+      '<div class="two"><div class="stage"><strong>Selected challenge</strong><p>\\(h('+r1+','+r2+')='+value+'\\)</p></div><div class="stage"><strong>Accepting choices</strong><p>'+roots+' / 49</p></div></div>'+
+      '<p class="viz-insight">'+(selected==="valid"?
+        'Every challenge is accepted, as required by perfect completeness.':
+        'This invalid vector is accepted on exactly '+roots+' out of 49 challenges, below the upper bound 2/7. The proof derives the bound for every invalid vector, not just this small example.')+'</p>');
+  }
+  if(type==="vanish"){
+    const r=val(lab,"r",1),a=mod(r-1,17),b=mod(r-2,17),z=mod(a*b,17);
+    txt(lab,'<div class="two"><div class="stage"><strong>Two factors</strong><p>\\((r-1)='+a+',\\;(r-2)='+b+'\\)</p></div><div class="stage"><strong>Their product</strong><p>\\(Z_\\Omega(r)='+z+'\\)</p></div></div>'+
+      grid(Array.from({length:17},(_,i)=>i),n=>n===1||n===2,r)+
+      '<p class="viz-insight">The product is zero at r = 1 or r = 2 because a factor is zero. At all other field points both factors are nonzero, so their product cannot be zero in a field.</p>');
+  }
+  if(type==="opening"){
+    const stage=val(lab,"stage",1),r=val(lab,"r",3),y=mod(r*r+1,17);
+    const info=[
+      ['Commit','Prover fixes the entire polynomial f(X)=X²+1 under the published degree bound and sends c.'],
+      ['Challenge','Verifier selects evaluation point r = '+r+' after the commitment is fixed.'],
+      ['Open and verify','Prover supplies y = f('+r+') = '+y+' and proof π. Verify(pp,c,r,y,π) checks whether this opening is authenticated.']
+    ];
+    txt(lab,'<div class="flow">'+info.map((a,i)=>'<div class="stage" style="border-color:'+(i+1===stage?'#4b7963':'#d5ddd6')+';background:'+(i+1===stage?'#e4f1e9':'#f3f4f1')+'"><strong>'+(i+1)+'. '+a[0]+'</strong><p>'+a[1]+'</p></div>').join('<span class="arrow">→</span>')+'</div>'+
+      '<p class="viz-insight">The binding requirement makes the opening consistent with the previous commitment. Neither a real commitment c nor a real opening π is computed in this conceptual diagram.</p>');
+  }
+  if(type==="unitycost"){
+    const r=val(lab,"r",8);
+    const omega=Array.from({length:12},(_,i)=>gcdPow(6,i,97));
+    const prod=omega.reduce((v,a)=>mod(v*(r-a),97),1);
+    const power=mod(gcdPow(r,12,97)-1,97);
+    txt(lab,'<div class="two"><div class="stage"><strong>12-factor product</strong><p>\\(\\prod_{j=0}^{11}(r-6^j)='+prod+'\\)</p></div><div class="stage"><strong>Compact formula</strong><p>\\(r^{12}-1='+power+'\\)</p></div></div>'+
+      '<p class="viz-insight">They are equal for r = '+r+' because both evaluate the same polynomial over 𝔽₉₇. Computing r¹² uses r², r⁴, r⁸ and r⁸·r⁴: four multiplications, versus evaluating and multiplying twelve factors.</p>');
+  }
+  if(type==="circuit"){
+    const w=val(lab,"w",3),a=8,b=4+w,out=a*b,res=mod(out-56,97);
+    txt(lab,'<div class="three"><div class="stage"><strong>Gate 0 · ×</strong><p>2 × 4 = 8</p></div><div class="stage"><strong>Gate 1 · +</strong><p>4 + '+w+' = '+b+'</p></div><div class="stage"><strong>Gate 2 · ×</strong><p>8 × '+b+' = '+out+'</p></div></div>'+
+      '<p>\\(C(\\mathbf{x},'+w+')=8('+b+')-56\\equiv '+res+'\\pmod{97}\\).</p>'+
+      '<p class="viz-insight">'+(res===0?'The witness satisfies the public target, so this instance of the zero-output condition holds.':'This witness does not satisfy the public target: the output-check constraint is nonzero.')+'</p>');
+  }
+  if(type==="public"){
+    const x=val(lab,"x",2),g=mod(x-2,97);
+    txt(lab,'<div class="two"><div class="stage"><strong>Committed trace</strong><p>\\(f_{\\rm trace}(\\omega^{-1})='+x+'\\)</p></div><div class="stage"><strong>Public polynomial</strong><p>\\(f_{\\rm in}(\\omega^{-1})=2\\)</p></div></div>'+
+      '<p>\\(g(\\omega^{-1})='+x+'-2\\equiv '+g+'\\pmod{97}\\).</p>'+
+      '<p class="viz-insight">'+(g===0?'The required public input agrees exactly.':'The public input differs. The ZeroTest over the public-input positions must reject except with its bounded soundness error.')+'</p>');
+  }
+  if(type==="selector"){
+    const s=Number(lab.querySelector('[data-key="s"]')?.value??1);
+    const add=4+3,mul=4*3,v=s*add+(1-s)*mul,err=mod(v-7,97);
+    txt(lab,'<div class="three"><div class="stage"><strong>Inputs</strong><p>L = 4, R = 3</p></div><div class="stage"><strong>Selected operation</strong><p>'+(s===1?'4 + 3 = 7':'4 × 3 = 12')+'</p></div><div class="stage"><strong>Claimed output</strong><p>O = 7</p></div></div>'+
+      '<p>\\('+s+'(4+3)+(1-'+s+')(4\\cdot3)-7\\equiv '+err+'\\pmod{97}\\).</p>'+
+      '<p class="viz-insight">'+(err===0?'The equation vanishes because the selector matches the gate type.':'The polynomial residual is nonzero: the same triple fails if the gate is multiplication instead of addition.')+' The real selector is fixed by the public circuit, not chosen by the prover.</p>');
+  }
+  if(type==="plonkstages"){
+    const stage=val(lab,"stage",1);
+    const tests=[
+      ["Final output","The last output position contains 0, as required by the public statement."],
+      ["Public input","The trace matches every public input at its designated position."],
+      ["Gate operations","The gate constraint polynomial vanishes at every gate-start position."],
+      ["Wiring copies","Every occurrence of the same logical wire has an identical field value."]
+    ];
+    txt(lab,tests.map((a,i)=>'<div class="stage" style="margin-bottom:6px;border-left:3px solid '+(i+1===stage?'#2d6b54':'#cad8cd')+';background:'+(i+1===stage?'#e8f2eb':'#f3f4f1')+'"><strong>'+(i+1)+'. '+a[0]+'</strong>'+(i+1===stage?'<p>'+a[1]+'</p>':'')+'</div>').join('')+
+      '<p class="viz-insight">Passing all four constraint families implies an honest satisfying circuit trace. Authenticated randomized polynomial checks are needed to establish these conditions without checking the entire trace.</p>');
+  }
  };
  lab.querySelectorAll("input,select").forEach(el=>el.addEventListener("input",update));
  update();
