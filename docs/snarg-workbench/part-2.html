@@ -60,11 +60,8 @@ f_{\rm fib}(i+2)&=f_{\rm fib}(i+1)+f_{\rm fib}(i)
 
 <p class="chapter-tag">Lecture §3 · Theorem 1 · Polynomial roots</p>
 <h1>How many points can hide a false polynomial equation?</h1>
-<p class="aim">Interpolation lets the prover create a polynomial \(f_{\rm fib}(X)\) through its claimed Fibonacci values, but that does not prove the values are correct. The actual rule is \(f_{\rm fib}(i+2)=f_{\rm fib}(i+1)+f_{\rm fib}(i)\) at each step \(i=0,\ldots,98\). Subtract the right side and call the result the <strong>recurrence discrepancy</strong>:</p>
-<div class="math">\[D(X)=f_{\rm fib}(X+2)-f_{\rm fib}(X+1)-f_{\rm fib}(X).\]</div>
-<p>We need \(D(i)=0\) at every required step. Eventually we'll express those many requirements as one polynomial identity. But first we need to know whether a verifier can test <em>any fixed polynomial identity</em> without inspecting every coefficient. That is the simpler problem EqualityTest solves.</p>
-<p>One matching value doesn't prove equality with certainty. For example, \(f(X)=0\) and \(g(X)=X-3\) differ as polynomials but both give zero at \(X=3\). The useful question is not whether they <em>could</em> match by accident; it is <em>how many choices of \(r\) would make that accident happen</em>.</p>
-<p>Call \(h(X)=f(X)-g(X)\) the difference. The verifier is fooled exactly when \(h(r)=0\). A number that makes a polynomial zero is called a <strong>root</strong>. So we need to know how many roots a nonzero polynomial can have.</p>
+<p class="aim">The Fibonacci discrepancy \(D(X)\) measures whether each recurrence step is correct. We would like to check polynomial equations without examining every coefficient. Suppose two fixed polynomials \(f\) and \(g\) are different. How many evaluation points could make them appear equal?</p>
+<p>If the verifier compares \(f(r)\) and \(g(r)\) at a chosen point \(r\), a false equality passes exactly when \(h(r)=0\), where \(h(X)=f(X)-g(X)\) is their <strong>difference polynomial</strong>. A point where a polynomial equals zero is called a <strong>root</strong>. We therefore need to count the roots of a nonzero polynomial.</p>
 <div class="proof"><h3>Theorem 1: a nonzero degree-\(d\) polynomial has at most \(d\) roots</h3>
 <p>Suppose \(h(a)=0\). Every expression \(X^j-a^j\) is divisible by \(X-a\): for example \(X^2-a^2=(X-a)(X+a)\). By applying this fact to each term, \(h(X)-h(a)\) is divisible by \(X-a\). Since \(h(a)=0\), we can write \(h(X)=(X-a)q(X)\).</p>
 <p>If \(b\ne a\) is another root, substitute it into that equation:</p>
