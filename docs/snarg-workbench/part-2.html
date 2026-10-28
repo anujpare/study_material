@@ -95,7 +95,7 @@
 
 <p class="chapter-tag">Lecture §3 · Lemma 2, Schwartz–Zippel</p>
 <h1>What changes when the equation has more than one variable?</h1>
-<p class="aim">We have a sound way to test identities between fixed polynomials in one variable. Fibonacci uses that kind of polynomial. The lecture also states a generalization for proofs that make several random choices and evaluate a polynomial with several variables. It is an extension of the same principle—not a new requirement imposed by Fibonacci. We'll prove it and then return to the recurrence problem that remains unsolved.</p>
+<p class="aim">EqualityTest gives the bound we need when an identity depends on one variable. Before we apply it to Fibonacci, the lecture establishes the more general Schwartz–Zippel lemma for equations involving several variables. This is a generalization, not a new requirement of Fibonacci: our recurrence polynomial still has only one variable. We prove the general result because the same reasoning is useful in other polynomial verification problems.</p>
 <p>Take \(h(X,Y)=XY\) over \(\mathbb F_7\). The polynomial is zero if \(X=0\) or \(Y=0\). If we choose each coordinate independently from the seven field elements, there are \(7\times7=49\) equally likely pairs. Seven have \(X=0\), seven have \(Y=0\), and \((0,0)\) was counted twice. So exactly 13 pairs make this nonzero polynomial zero.</p>
 <p>For multivariable polynomials, we need a measure of degree. In each term, add the exponents of its variables, then take the largest result. For instance \(3X^2Y^3Z+2XY^2\) has <strong>total degree</strong> \(2+3+1=6\).</p>
 <p>Now we can state <strong>Lemma 2, Schwartz–Zippel</strong>. Let \(h(X_1,\ldots,X_m)\) be a <em>nonzero</em> polynomial of total degree at most \(d\). Choose each \(r_i\) independently and uniformly from a finite subset \(\Omega\) of the field. Then</p>
@@ -164,7 +164,7 @@ h(\mathbf r)=(ar_j)^2-ar_j^2
 
 <p class="chapter-tag">Lecture §3 · Vanishing polynomial, Theorem 2</p>
 <h1>How can 99 equations become one equation?</h1>
-<p class="aim">Return to the discrepancy (D(X)) we constructed earlier. We require (D(i)=0) at exactly the 99 Fibonacci step indices (i=0,1,\ldots,98). A random test of (D(r)=0) over the <em>whole field</em> would not be justified: the recurrence is not supposed to hold between our discrete step indices. We need a new way to express “zero on this particular set” as an identity of polynomials that is true everywhere when the claim is correct.</p>
+<p class="aim">Return to the Fibonacci discrepancy polynomial (D(X)) introduced before EqualityTest. We need (D(i)=0) at each of the 99 recurrence positions (i=0,ldots,98). EqualityTest cannot be applied directly to (D(X)=0) everywhere, because a valid Fibonacci interpolation need not satisfy the recurrence at points outside those positions. We need an identity that holds everywhere <em>if and only if</em> those 99 positions are correct.</p>
 <p>Recall the exact discrepancy polynomial we already defined in the EqualityTest lesson:</p>
 <div class="math">\[D(X)=f_{\rm fib}(X+2)-f_{\rm fib}(X)-f_{\rm fib}(X+1).\]</div>
 <p>At a step \(i\), the recurrence is correct exactly when \(D(i)=0\). So our 99 equations become the single statement “\(D\) is zero at every point of the set \(\Omega=\{0,1,\ldots,98\}\).” That is still many values to check—but now we can use polynomial algebra.</p>
@@ -189,7 +189,7 @@ h(\mathbf r)=(ar_j)^2-ar_j^2
 
 <p class="chapter-tag">Lecture §3 · ZeroTest and Lemma 3</p>
 <h1>Can one random point check all the required zeros?</h1>
-<p class="aim">Our Fibonacci verifier needs to check (D(X)=Z_\Omega(X)q(X)), where (D) measures recurrence errors and (Z_\Omega) is zero at every step index. EqualityTest says that a false identity of bounded degree is unlikely to hold at one random field point. So the verifier can select (r) and compare (D(r)) with (Z_\Omega(r)q(r)). This checks the entire recurrence <em>indirectly</em>, without enumerating its 99 steps.</p>
+<p class="aim">The vanishing-polynomial theorem gives the missing identity: all 99 Fibonacci steps are correct exactly when (D(X)=Z_Omega(X)q(X)) for some quotient polynomial (q). Unlike the recurrence, this identity must hold at <em>every</em> field point. We can therefore use EqualityTest to check it at one random point rather than inspect every step.</p>
 <p>Before building the full Fibonacci protocol, the lecture names this reusable operation <strong>ZeroTest</strong>. It handles <em>any</em> requirement that one polynomial vanish on a specified set of points. The exact same operation will later check public inputs and gate equations in PLONK, which is why we now state and prove it in general form.</p>
 <p>We first describe the lecture's general protocol. Suppose a polynomial \(f\) of degree at most \(d\) should be zero on a set \(\Omega\) of \(k\le d\) field points. The prover puts the polynomial \(f\) and a claimed quotient \(q\) in our ideal polynomial oracle, with the enforced degree bound \(\deg q\le d\). The verifier chooses a uniform random field element \(r\), asks for \(f(r)\) and \(q(r)\), calculates the known \(Z_\Omega(r)\), and checks</p>
 <div class="math">\[\boxed{f(r)\stackrel{?}{=}q(r)Z_\Omega(r).}\]</div>
@@ -217,7 +217,7 @@ h(\mathbf r)=(ar_j)^2-ar_j^2
 
 <p class="chapter-tag">Lecture §3 · Putting the polynomial IOP together</p>
 <h1>Have we really proved the hundredth Fibonacci number?</h1>
-<p class="aim">We can now answer the question that started this chapter. The prover has a polynomial containing 101 claimed Fibonacci values. The verifier must establish that the first two are correct, the last is the published claim, and every intermediate value follows the recurrence. We've derived a way to replace all 99 individual recurrence checks by one random polynomial identity test. Let's put these requirements into an actual verifier protocol and prove that they force the claimed value.</p>
+<p class="aim">We can now answer the question that started this chapter. The prover claims a value for (F_{100}). We must establish that its sequence begins with the correct values, follows the recurrence at every required position, and ends at the claimed result. Interpolation represents the sequence; the vanishing-polynomial theorem turns the recurrence into one identity; ZeroTest checks that identity probabilistically. Now we combine these obligations and prove they force the original claim.</p>
 <p>Let \(f_{\rm fib}(X)\) be the polynomial that the prover claims encodes the sequence at positions \(0,1,\ldots,100\). Its degree is at most 100. Let \(\Omega=\{0,1,\ldots,98\}\) be the positions where the recurrence must hold. Define</p>
 <div class="math">\[
 D(X)=f_{\rm fib}(X+2)-f_{\rm fib}(X)-f_{\rm fib}(X+1),
