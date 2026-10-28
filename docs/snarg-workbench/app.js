@@ -207,7 +207,7 @@ function initLab(lab){
       mod(r[3]?r[0]+r[1]-r[2]:r[0]*r[1]-r[2],97)+'</td></tr>').join("")+'</tbody></table></div>';
     const status=(name,ok)=>'<span style="color:'+(ok?"#146655":"#ac3136")+';font-weight:750">'+(ok?"✓ ":"✕ ")+name+'</span>';
     txt(lab,wireDiagram(rows,traceInputs)+
-      '<p class="note">Trace inputs: \(x_1='+traceInputs[0]+',\;x_2='+traceInputs[1]+',\;w_1='+traceInputs[2]+'\). Public statement: \(x_1=2,\;x_2=4,\;\mathrm{target}='+target+'\). All arithmetic is modulo 97.</p>'+
+      '<p class="note">Trace inputs: \\(x_1='+traceInputs[0]+',\\;x_2='+traceInputs[1]+',\\;w_1='+traceInputs[2]+'\\). Public statement: \\(x_1=2,\\;x_2=4,\\;\\mathrm{target}='+target+'\\). All arithmetic is modulo 97.</p>'+
       tbl+'<div class="two">'+[
         status("Public inputs",pubok),status("Gate equations",gateok),
         status("Wire copies",wireok),status("Output = "+target,outputok)
