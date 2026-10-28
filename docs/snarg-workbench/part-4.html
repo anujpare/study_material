@@ -73,47 +73,46 @@ f_{\rm trace}(\omega^{3l+2})&=\text{output of gate }l.
 <article class="lesson" data-id="roots-unity-cost" data-title="Why roots of unity make verification faster">
 
 <p class="chapter-tag">Lecture §§3 and 5.2 · Efficient vanishing polynomials</p>
-<h1>Why use these special evaluation points?</h1>
-<p class="aim">The Fibonacci verifier still had to evaluate a product with one factor per recurrence position. That becomes expensive for a large computation. We chose the circuit's evaluation points as powers of a root of unity because their vanishing polynomial has a much simpler form. We will prove that form now.</p>
-<p>For the entire set \(\Omega=\{1,\omega,\ldots,\omega^{d-1}\}\), the vanishing polynomial is, by definition,</p>
+<h1>Why do the roots of unity make verification cheaper?</h1>
+<p class="aim">The Fibonacci verifier had to evaluate a product with one factor for every required recurrence position. That becomes expensive for a large computation. We chose the circuit's evaluation points as powers of a root of unity because their vanishing polynomial has a simpler form. We will prove that form rather than merely assert it.</p>
+<p>Recall the set \(\Omega=\{1,\omega,\ldots,\omega^{d-1}\}\), where \(\omega\) has multiplicative order \(d\). The polynomial that vanishes at precisely these \(d\) points is</p>
 <div class="math">\[Z_\Omega(X)=\prod_{j=0}^{d-1}(X-\omega^j).\]</div>
-<p>There are \(d\) factors. But every point \(\omega^j\) also makes the much simpler polynomial \(X^d-1\) equal to zero, because \((\omega^j)^d=(\omega^d)^j=1\).</p>
-<div class="proof"><h3>Show that the two polynomials are identical</h3>
-<p>Both polynomials have degree \(d\) and leading coefficient 1. Their difference therefore has degree at most \(d-1\): the leading \(X^d\) terms cancel.</p>
-<p>Yet at each of the \(d\) distinct points \(\omega^0,\ldots,\omega^{d-1}\), both polynomials are zero, so their difference has \(d\) roots. A nonzero polynomial of degree at most \(d-1\) cannot have that many roots. Their difference must therefore be identically zero.</p>
+<p>By the definition of \(\omega\), each point \(\omega^j\) satisfies \((\omega^j)^d=(\omega^d)^j=1\). Therefore every point of \(\Omega\) is also a root of \(X^d-1\). That observation suggests a much shorter expression for the vanishing polynomial, but we still need to show the two polynomials are equal.</p>
+<div class="proof"><h3>Prove \(Z_\Omega(X)=X^d-1\)</h3>
+<p>Both polynomials have degree \(d\) and leading coefficient 1. Their difference therefore has degree at most \(d-1\), because the leading \(X^d\) terms cancel.</p>
+<p>At every one of the \(d\) distinct points of \(\Omega\), both polynomials are zero. Their difference consequently has at least \(d\) roots. The root theorem says a nonzero polynomial of degree at most \(d-1\) cannot have \(d\) distinct roots. Thus the difference must be the zero polynomial, and</p>
 <div class="math">\[\boxed{Z_\Omega(X)=X^d-1.}\]</div>
-<p class="qed">That is why we chose this domain: a vanishing product with \(d\) factors collapses to a single power and a subtraction. \(\square\)</p></div>
-<p>Doesn't taking a large power also take a long time? Not with <strong>repeated squaring</strong>. To calculate \(r^{12}\), first calculate \(r^2\), then \(r^4\), then \(r^8\), and multiply \(r^8r^4\). That's four field multiplications, rather than evaluating and multiplying twelve separate factors. In general, exponentiation by repeated squaring takes \(O(\log d)\) multiplications.</p>
-<p>One caution: the identity \(Z_\Omega(X)=X^d-1\) is for the <em>full</em> roots-of-unity domain. A smaller set of positions—such as just the public-input positions or just gate starts—does not automatically have that same polynomial. The lecture notes that these subsets can also have useful structure or be handled with circuit-specific preprocessing; it does not provide every resulting formula.</p>
-<div class="bridge">We now have a convenient polynomial encoding of the trace and a fast way to evaluate the full-domain vanishing polynomial. The next question is the one that actually determines correctness: what equations must that trace satisfy so it represents the circuit we asked the prover to run?</div>
-<p class="source">Lecture §3, discussion of the Fibonacci verifier's product bottleneck, and §5.2, the structured roots-of-unity domain.</p>
+<p>We have proved the identity, not just checked it on a numerical example. \(\square\)</p></div>
+<h2>How much work does this save?</h2>
+<p>Evaluating the original product at a point \(r\) requires roughly \(d\) factors. Evaluating \(r^d-1\) is much faster using <strong>repeated squaring</strong>. For example, \(r^{12}\) can be obtained by computing \(r^2\), \(r^4=(r^2)^2\), \(r^8=(r^4)^2\), and then \(r^{12}=r^8r^4\). The number of multiplications grows as \(O(\log d)\), rather than \(O(d)\).</p>
+<p>This formula applies to the <em>complete</em> roots-of-unity domain. The public-input positions and gate-start positions are subsets of that domain. Their vanishing polynomials require their own structure or preprocessing; we must not substitute \(X^d-1\) for an arbitrary subset.</p>
+<div class="bridge">The trace polynomial is now represented on a domain whose full vanishing polynomial is inexpensive to evaluate. But interpolation does not certify the trace. We must still prove that the stored values are the right public inputs, that each gate performs the correct operation, that wire copies agree, and that the output satisfies the claim. The next lessons derive these four checks.</div>
+<p class="source">Official lecture §5.2, structured evaluation domain and the \(O(\log d)\) vanishing-polynomial evaluation.</p>
 
 </article>
 
 <article class="lesson" data-id="plonk-output-input" data-title="PLONK checks 1 and 2: output and public inputs">
 
-<p class="chapter-tag">Lecture §5.2 · Verifying the circuit trace, conditions 1–2</p>
-<h1>How do we know the trace is for our statement?</h1>
-<p class="aim">The trace polynomial records the prover's proposed values, whether correct or not. To verify the actual circuit, we must check its output, public inputs, gate operations, and wire connections. We start with the output and public inputs because these connect the trace to the statement the verifier wants proved.</p>
-
-<h2>1. The circuit must reach the required output</h2>
-<p>For gate \(l\), the output is stored at \(f_{\rm trace}(\omega^{3l+2})\). The last gate has number \(|C|-1\), so its output is at exponent \(3(|C|-1)+2=3|C|-1\).</p>
-<p>For the lecture's <strong>zero-output</strong> circuit statement, this means checking one value:</p>
+<p class="chapter-tag">Lecture §5.2 · Conditions 1 and 2</p>
+<h1>Does the trace describe the public statement we are proving?</h1>
+<p class="aim">The prover can interpolate any table of numbers. We need four constraints that make the table a valid circuit execution. The first two connect it to the particular public statement: the final output must be correct, and the public input entries must equal the values the verifier supplied.</p>
+<h2>1. Check the output</h2>
+<p>For gate \(l\), the trace stores its output at \(f_{\rm trace}(\omega^{3l+2})\). The last gate has index \(|C|-1\), so its output position is \(3(|C|-1)+2=3|C|-1\). The formal zero-output statement therefore requires</p>
 <div class="math">\[\boxed{f_{\rm trace}(\omega^{3|C|-1})=0.}\]</div>
-<p>The lecture's pictured three-gate circuit ends in 56, not 0. If we use that picture to claim its output is 56, the corresponding illustrative condition is \(f_{\rm trace}(\omega^8)=56\). To use the formal zero-output language, append a target-checking operation and build the trace and evaluation domain for that <em>modified</em> circuit. We must not mix the three-gate positions with the four-gate output check.</p>
-<h2>2. The prover must not change our public inputs</h2>
-<p>Suppose the verifier specified public inputs \(x_1,\ldots,x_m\). The trace has designated positions \(\omega^{-1},\ldots,\omega^{-m}\) for them. The verifier must make sure the prover really put the requested values there.</p>
-<p>Construct a polynomial \(f_{\rm in}\) from the public data, with \(f_{\rm in}(\omega^{-j})=x_j\) at each public-input position. This is ordinary interpolation: the verifier knows those values and therefore knows the intended polynomial. It need not know the private witness.</p>
-<p>Define the difference</p>
+<p>In the lecture's pictured three-gate example, the output is 56, so the corresponding illustrative target check is \(f_{\rm trace}(\omega^8)=56\). That is not the formal zero-output condition. A circuit with an added target-comparison operation would have a different trace and final output position.</p>
+<h2>2. Check the public inputs</h2>
+<p>The verifier knows the public input values \(x_1,\ldots,x_m\). The trace is supposed to store them at \(\omega^{-1},\ldots,\omega^{-m}\). We cannot simply trust the prover's claim that those entries are correct.</p>
+<p>From the public values, construct an interpolation polynomial \(f_{\rm in}(X)\) satisfying \(f_{\rm in}(\omega^{-j})=x_j\) for \(j=1,\ldots,m\). This polynomial depends only on the public statement, so the verifier can calculate it without knowing the witness.</p>
+<p>Let \(\Omega_I=\{\omega^{-1},\ldots,\omega^{-m}\}\). Define the difference polynomial</p>
 <div class="math">\[g(X)=f_{\rm trace}(X)-f_{\rm in}(X).\]</div>
-<p>At public-input position \(\omega^{-j}\), the equation \(g(\omega^{-j})=0\) means exactly \(f_{\rm trace}(\omega^{-j})=x_j\). Thus all the public inputs are correct <em>if and only if</em> \(g\) is zero on the set \(\Omega_I=\{\omega^{-1},\ldots,\omega^{-m}\}\).</p>
-<p>That is ZeroTest again. The prover supplies the polynomial \(g\) and its vanishing-polynomial quotient. Before using ZeroTest, the verifier checks that the claimed \(g\) is actually consistent with \(f_{\rm trace}-f_{\rm in}\), by a random equality test using authenticated evaluations. Otherwise the prover could substitute an unrelated polynomial that happens to vanish on \(\Omega_I\).</p>
-<div class="proof"><h3>What do these first two checks establish?</h3>
-<p>The first check pins down the final result. The second pins down every public input. A successful ZeroTest of \(g\), together with the consistency check, forces \(f_{\rm trace}(\omega^{-j})=x_j\) at each public-input position.</p>
-<p class="qed">We now know the trace begins with the right public values and claims the right final answer. We do not yet know whether it reached that answer by performing the correct operations. \(\square\)</p></div>
-<p>Why not just open all \(m\) input locations directly? Because that would require \(m\) separate authentication proofs and make the <em>proof length</em> grow linearly with the public input. The verifier may spend time reading the public input, but the SNARG proof itself must remain succinct.</p>
-<div class="bridge">Correct endpoints aren't enough. A prover could put the right public inputs and right answer in its trace but invent arbitrary intermediate values. Next we must force every individual gate to perform the operation shown in the public circuit.</div>
-<p class="source">Lecture §5.2, conditions (1) and (2), input polynomial \(f_{\rm in}\), and footnote explaining why opening every input location would violate succinct proof size.</p>
+<p>At position \(\omega^{-j}\), the equality \(g(\omega^{-j})=0\) is exactly the requirement \(f_{\rm trace}(\omega^{-j})=x_j\). Therefore all public inputs are correct <em>if and only if</em> \(g\) vanishes on \(\Omega_I\).</p>
+<h2>Why does this become two checks, not one?</h2>
+<p>We want to use ZeroTest on \(g\), but the prover could put an unrelated polynomial in the oracle and claim it is \(g\). So the verifier must first check the <strong>consistency identity</strong> \(g=f_{\rm trace}-f_{\rm in}\), using authenticated evaluations at a random point. Only then does ZeroTest on \(g\) establish that the trace contains the public inputs.</p>
+<div class="proof"><h3>Why the two checks together are sufficient</h3>
+<p>If the consistency identity holds, then \(g(a)=f_{\rm trace}(a)-f_{\rm in}(a)\) for every field point \(a\). If ZeroTest establishes that \(g(a)=0\) for every \(a\in\Omega_I\), then at each public-input position \(f_{\rm trace}(a)=f_{\rm in}(a)=x_j\). Conversely, if the trace has the correct public inputs, its genuine difference polynomial vanishes on \(\Omega_I\). These are precisely the two directions we need. \(\square\)</p></div>
+<p>Why not simply open every public-input position? Because that would require a separate proof for each entry, making the proof size grow linearly with the public input. The verifier's <em>running time</em> may depend linearly on the public statement, but the SNARG <em>proof length</em> must remain succinct. The input polynomial and ZeroTest let the verifier avoid a linear number of authenticated openings.</p>
+<div class="bridge">We now know that the trace starts with the right public inputs and claims the required output. But it could still contain incorrect intermediate calculations. The next constraint checks the arithmetic of every gate without opening every gate entry separately.</div>
+<p class="source">Official lecture §5.2, conditions (1) and (2), the public-input polynomial, its consistency check and the footnote on succinct proof length.</p>
 
 </article>
 
