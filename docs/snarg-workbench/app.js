@@ -177,20 +177,41 @@ function initLab(lab){
   }
   if(type==="trace"){
     const mode=lab.querySelector('[data-key="mode"]')?.value??"honest";
-    const rows=[[2,4,8,0],[4,3,7,1],[8,7,56,0],[56,41,0,1]];
-    let traceInputs=[2,4,3],publicX=[2,4],explain="";
-    if(mode==="public"){traceInputs[0]=5;explain="The trace records public input 5, although the actual public input is 2, and gate 0 uses 2. Therefore public-input agreement and the copy constraint both fail.";}
-    if(mode==="gate"){rows[2][2]=55;explain="Gate 2 says 8 × 7 = 55, which is false. The last gate still contains 56, so wiring also fails.";}
-    if(mode==="wire"){rows[2]=[9,7,63,0];explain="Every gate row is locally correct and the output is zero, but the output of gate 0 (8) does not equal gate 2's left input (9). The output of gate 2 (63) also disagrees with the last gate's left input (56).";}
-    if(mode==="output"){rows[3][2]=1;explain="The final output is 1, not zero. The final gate also violates its addition relation, as it must when the earlier fixed values and public target remain unchanged.";}
-    if(mode==="honest"){explain="All four conditions pass for the augmented assertion (2×4)(4+3)−56=0. The last addition gate uses 41 ≡ −56 in the field F₉₇.";}
-    const gateok=rows.map(r=>mod(r[3]===1?r[0]+r[1]-r[2]:r[0]*r[1]-r[2],97)===0);
+    const rows=[[2,4,8,0],[4,3,7,1],[8,7,56,0]];
+    const traceInputs=[2,4,3],publicX=[2,4];
+    const target=mode==="output"?55:56;
+    let explain="Every gate equation, wire equality, public input and output condition holds.";
+    if(mode==="public"){
+      traceInputs[0]=5;
+      explain="The trace claims x₁ = 5 although the verifier supplied x₁ = 2. Gate 0 still uses 2, so both the public-input check and one wire-copy equality fail.";
+    }
+    if(mode==="gate"){
+      rows[2][2]=55;
+      explain="Gate 2 claims 8 × 7 = 55. This fails its multiplication equation and also fails the public target 56. Its wire inputs remain consistent.";
+    }
+    if(mode==="wire"){
+      rows[2]=[9,17,56,0];
+      explain="All three gate equations pass: 9 × 17 = 153 ≡ 56 (mod 97). The public inputs and final output also pass. But gate 0 produced 8, not 9, and gate 1 produced 7, not 17. Only the wiring check catches this false trace.";
+    }
+    if(mode==="output"){
+      explain="The three gates and every wire are correct, but the public statement now claims output 55. The trace ends at 56, so only the output check fails.";
+    }
+    const gateok=rows.every(r=>mod(r[3]===1?r[0]+r[1]-r[2]:r[0]*r[1]-r[2],97)===0);
     const pubok=traceInputs[0]===publicX[0]&&traceInputs[1]===publicX[1];
-    const wireok=traceInputs[0]===rows[0][0]&&traceInputs[1]===rows[0][1]&&traceInputs[1]===rows[1][0]&&traceInputs[2]===rows[1][1]&&rows[0][2]===rows[2][0]&&rows[1][2]===rows[2][1]&&rows[2][2]===rows[3][0];
-    const outputok=rows[3][2]===0;
-    const tbl='<div class="table-scroll"><table><thead><tr><th>Gate</th><th>Left</th><th>Right</th><th>Out</th><th>Type</th><th>Residual</th></tr></thead><tbody>'+rows.map((r,i)=>'<tr><td>'+i+'</td><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+(r[3]?"+":"×")+'</td><td>'+mod(r[3]?r[0]+r[1]-r[2]:r[0]*r[1]-r[2],97)+'</td></tr>').join("")+'</tbody></table></div>';
+    const wireok=traceInputs[0]===rows[0][0]&&traceInputs[1]===rows[0][1]&&
+      traceInputs[1]===rows[1][0]&&traceInputs[2]===rows[1][1]&&
+      rows[0][2]===rows[2][0]&&rows[1][2]===rows[2][1];
+    const outputok=rows[2][2]===target;
+    const tbl='<div class="table-scroll"><table><thead><tr><th>Gate</th><th>Left</th><th>Right</th><th>Out</th><th>Type</th><th>Residual</th></tr></thead><tbody>'+
+      rows.map((r,i)=>'<tr><td>'+i+'</td><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+(r[3]?"+":"×")+'</td><td>'+
+      mod(r[3]?r[0]+r[1]-r[2]:r[0]*r[1]-r[2],97)+'</td></tr>').join("")+'</tbody></table></div>';
     const status=(name,ok)=>'<span style="color:'+(ok?"#146655":"#ac3136")+';font-weight:750">'+(ok?"✓ ":"✕ ")+name+'</span>';
-    txt(lab,wireDiagram(rows,traceInputs)+'<p class="note">Original trace input cells: \\(x_1='+traceInputs[0]+',\\;x_2='+traceInputs[1]+',\\;w_1='+traceInputs[2]+'\\). Public statement: \\(x_1=2,\\;x_2=4\\).</p>'+tbl+'<div class="two">'+[status("Public inputs",pubok),status("Gate equations",gateok.every(Boolean)),status("Wire copies",wireok),status("Final output = 0",outputok)].map(s=>'<div>'+s+'</div>').join("")+'</div><p class="note">'+explain+'</p>');
+    txt(lab,wireDiagram(rows,traceInputs)+
+      '<p class="note">Trace inputs: \(x_1='+traceInputs[0]+',\;x_2='+traceInputs[1]+',\;w_1='+traceInputs[2]+'\). Public statement: \(x_1=2,\;x_2=4,\;\mathrm{target}='+target+'\). All arithmetic is modulo 97.</p>'+
+      tbl+'<div class="two">'+[
+        status("Public inputs",pubok),status("Gate equations",gateok),
+        status("Wire copies",wireok),status("Output = "+target,outputok)
+      ].map(v=>'<div>'+v+'</div>').join("")+'</div><p class="viz-insight">'+explain+'</p>');
   }
 
   if(type==="growth"){
