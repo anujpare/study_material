@@ -136,6 +136,30 @@ function initLab(lab){
  const type=lab.dataset.lab;
  const update=()=>{
   syncRangeValues(lab);
+  if(type==="story-step"){
+    const i=val(lab,"i",0),v=[0,1,1,2,3,8];
+    const expected=v[i]+v[i+1],claimed=v[i+2],ok=expected===claimed;
+    const rows=[0,1,2,3].map(j=>
+      '<div class="step-chip '+(j===i?'selected ':'')+(v[j]+v[j+1]===v[j+2]?'pass':'fail')+'">'+
+      '<strong>Step '+j+'</strong><span>'+v[j]+' + '+v[j+1]+' '+(v[j]+v[j+1]===v[j+2]?'=':'≠')+' '+v[j+2]+'</span></div>').join("");
+    txt(lab,'<div class="step-grid">'+rows+'</div>'+
+      '<div class="exam-result '+(ok?'success':'failure')+'"><strong>'+(ok?'Verifier accepts this step':'Verifier catches the false step')+'</strong>'+
+      '<p>At step '+i+' the rule expects '+v[i]+' + '+v[i+1]+' = '+expected+
+      ', but the server reported '+claimed+'.</p></div>'+
+      '<p class="visual-note">Only step 3 is wrong. One uniform random step catches the lie with probability 1/4 and misses it with probability 3/4.</p>');
+  }
+  if(type==="story-poly"){
+    const r=val(lab,"r",1),h=mod((r-1)*(r-4),101),accepted=h===0;
+    txt(lab,'<div class="math-calc"><span>Difference polynomial at the selected point</span>'+
+      '<strong>h('+r+') = ('+r+' − 1)('+r+' − 4) ≡ '+h+' (mod 101)</strong></div>'+
+      '<div class="exam-result '+(accepted?'failure':'success')+'"><strong>'+
+      (accepted?'False equality passes at this point':'False equality is detected')+'</strong>'+
+      '<p>The two polynomials differ. A false equality passes only if h(r) = 0.</p></div>'+
+      '<div class="root-location"><span class="root-highlight">Root r = 1</span>'+
+      '<span class="root-highlight">Root r = 4</span>'+
+      '<span>99 other points reject</span></div>'+
+      '<p class="visual-note">Exactly two of 101 possible field values are roots. Choosing a uniform r gives false acceptance probability 2/101 in this example.</p>');
+  }
   if(type==="ring"){
     const r=val(lab,"r",3),y=mod(2*r*r+4*r,6);
     txt(lab,'\\(f('+r+')='+y+'\\pmod 6\\). '+(y===0?'This is a root.':'This is not a root.')+' The four roots are 0, 1, 3, and 4.'+grid([0,1,2,3,4,5],x=>mod(2*x*x+4*x,6)===0,r));
