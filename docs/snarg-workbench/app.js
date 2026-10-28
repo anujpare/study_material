@@ -114,7 +114,7 @@ function initLab(lab){
   }
   if(type==="pcp"){
     const t=val(lab,"t",4),err=1/Math.pow(2,t);
-    txt(lab,'<b>'+t+' independent PCP tests</b> require '+(3*t)+' bit openings in the three-query version. For a fixed false-proof string, \\(\\Pr[\\mathrm{all\\ pass}]\\le 2^{-'+t+'}='+err.toFixed(6)+'\\).<p class="note">This is a bound, not a simulation of a PCP encoding. Independence holds because fresh verifier randomness is used for each test against the same fixed proof.</p>');
+    txt(lab,'<b>'+t+' independent PCP tests</b> involve up to '+(3*t)+' queried proof-bit positions in the three-query version. For a fixed false-proof string, \\(\\Pr[\\mathrm{all\\ pass}]\\le 2^{-'+t+'}='+err.toFixed(6)+'\\).<p class="note">This is a bound, not a simulation of a PCP encoding. Independence holds because fresh verifier randomness is used for each test against the same fixed proof.</p>');
   }
   if(type==="eq"){
     const r=val(lab,"r",1),f=mod(r*r+1,17),g=mod(f+(r-1)*(r-4),17),pass=f===g;
@@ -252,8 +252,8 @@ function initLab(lab){
     const stage=val(lab,"stage",1),r=val(lab,"r",3),y=mod(r*r+1,17);
     const info=[
       ['Commit','Prover fixes the entire polynomial f(X)=X²+1 under the published degree bound and sends c.'],
-      ['Challenge','Verifier selects evaluation point r = '+r+' after the commitment is fixed.'],
-      ['Open and verify','Prover supplies y = f('+r+') = '+y+' and proof π. Verify(pp,c,r,y,π) checks whether this opening is authenticated.']
+      ['Challenge','Verifier selects evaluation point z = '+r+' after the commitment is fixed.'],
+      ['Open and verify','Prover supplies y = f('+r+') = '+y+' and proof π. Verify(pp,c,z,y,π) checks whether this opening is authenticated.']
     ];
     txt(lab,'<div class="flow">'+info.map((a,i)=>'<div class="stage" style="border-color:'+(i+1===stage?'#4b7963':'#d5ddd6')+';background:'+(i+1===stage?'#e4f1e9':'#f3f4f1')+'"><strong>'+(i+1)+'. '+a[0]+'</strong><p>'+a[1]+'</p></div>').join('<span class="arrow">→</span>')+'</div>'+
       '<p class="viz-insight">The binding requirement makes the opening consistent with the previous commitment. Neither a real commitment c nor a real opening π is computed in this conceptual diagram.</p>');
