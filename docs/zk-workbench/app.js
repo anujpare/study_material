@@ -3,9 +3,9 @@
   const cards = [
     ["witness","A claim and its witness","card-01.html"],
     ["np","Why checking is different from finding","card-02.html"],
-    ["lecture-power","Why interaction expands what we can prove","lecture-power.html"],
     ["interaction","The verifier asks a question","card-03.html"],
     ["guarantees","Completeness and soundness","card-04.html"],
+    ["lecture-power","Why interaction expands what we can prove","lecture-power.html"],
     ["lecture-applications","When privacy is actually needed","lecture-applications.html"],
     ["zk","What zero knowledge means","card-05.html"],
     ["commitments","Hiding and binding","card-06.html"],
