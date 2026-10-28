@@ -31,7 +31,7 @@
 <div class="math">\[f_2(X)=X+cX(X-1).\]</div>
 <p>At \(X=2\), the required value 1 gives \(2+2c=1\). Hence \(c=-1/2\), which we can calculate because we're working in a field and 2 has an inverse. Our polynomial is</p>
 <div class="math">\[\boxed{f_2(X)=X-\tfrac12X(X-1)=\tfrac12X(3-X).}\]</div>
-<p>Check every condition: \(f_2(0)=0\), \(f_2(1)=1\), and \(f_2(2)=1\). We have <em>represented</em> the first three Fibonacci numbers, not proved their correctness. If the prover changed one of those numbers, another interpolating polynomial would still exist.</p>
+<p>Check every condition: \(f_2(0)=0\), \(f_2(1)=1\), and \(f_2(2)=1\). In the field \(\mathbb F_{17}\), the coefficient \(-1/2\) is represented by 8, because \(2\cdot8\equiv-1\pmod{17}\). That is why the interactive example below displays the coefficient 8. We have <em>represented</em> the first three Fibonacci numbers, not proved their correctness. If the prover changed one of those numbers, another interpolating polynomial would still exist.</p>
 <div class="lab" data-lab="interp"><div class="lab-top"><strong>Fit the first three Fibonacci values</strong><p>Start with 0, 1, 1. Change one value to see that a polynomial will also fit an incorrect sequence. The arithmetic is over \(\mathbb F_{17}\).</p></div><div class="lab-content">
 <label class="range-label">Desired \(f(0)\) <output class="range-value" data-live-for="a">0</output><input data-key="a" type="range" min="0" max="16" value="0"></label>
 <label class="range-label">Desired \(f(1)\) <output class="range-value" data-live-for="b">1</output><input data-key="b" type="range" min="0" max="16" value="1"></label>
