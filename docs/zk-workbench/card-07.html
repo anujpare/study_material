@@ -3,10 +3,10 @@
 <h1>Why does the prover randomly permute the vertices?</h1>
 <p class="lead">In the Hamiltonicity proof, the prover knows a Hamiltonian cycle of the public graph \(G\). Revealing that cycle with its original vertex labels would reveal the witness. We therefore need to preserve the mathematical claim while concealing the correspondence between the proof's vertex labels and those of \(G\).</p>
 <h2>Relabeling a graph without changing its edges</h2>
-<p>Write \(G=(V,E)\), where \(V=\{1,2,3,4,5\}\) is the vertex set and \(E\) is the set of undirected edges. A <strong>permutation</strong> \(\pi:V\to V\) is a bijection: every vertex receives a distinct new label, and every old label can be recovered using the inverse permutation \(\pi^{-1}\).</p>
+<p>Write \(G=(V,E)\), where \(V=\{1,2,3,4,5\}\) is the vertex set and \(E\) is the set of undirected edges. The lecture uses a <strong>permutation</strong> \(\Pi:V\to V\) to map each <em>new</em> vertex label back to its original label. Because \(\Pi\) is a bijection, the inverse \(\Pi^{-1}\) maps original labels to new labels.</p>
 <p>Suppose the prover knows the Hamiltonian cycle \(1\to2\to3\to4\to5\to1\). Here is one possible permutation:</p>
-<div class="math">\[\pi(1)=2,\quad\pi(2)=4,\quad\pi(3)=1,\quad\pi(4)=5,\quad\pi(5)=3\]<p class="math-caption">The demonstration fixes this permutation so you can inspect its effect. The honest prover chooses a fresh random permutation in each protocol execution.</p></div>
-<p>Construct a new graph \(B=\pi(G)\) with the same adjacency relation under the new labels: for every edge \(\{u,v\}\in E\), the relabeled graph contains \(\{\pi(u),\pi(v)\}\), and no additional edges are introduced. This is a graph <strong>isomorphism</strong>. An edge remains an edge; only its endpoints' labels change.</p>
+<div class="math">\[\Pi(1)=3,\quad\Pi(2)=1,\quad\Pi(3)=5,\quad\Pi(4)=2,\quad\Pi(5)=4\]<p class="math-caption">The demonstration fixes this permutation so you can inspect its effect. The honest prover chooses a fresh random permutation in each protocol execution.</p></div>
+<p>Construct a new graph \(B\) by assigning its edge \(\{i,j\}\) exactly when the original graph has edge \(\{\Pi(i),\Pi(j)\}\). Equivalently, each original edge \(\{u,v\}\) becomes \(\{\Pi^{-1}(u),\Pi^{-1}(v)\}\) in \(B\). This is a graph <strong>isomorphism</strong>. An edge remains an edge; only its endpoints' labels change.</p>
 <div class="two-diagrams">
 <div class="diagram"><div class="graph-title">Original public graph \(G\)</div><div id="graph-original"></div></div>
 <div class="diagram"><div class="graph-title">Relabeled graph \(B=\pi(G)\)</div><div id="graph-permuted"></div></div>
