@@ -347,11 +347,6 @@ body{background:var(--page);color:var(--ink);font-family:-apple-system,BlinkMacS
 @media(max-width:355px){.reader-footer .deck-jump{right:108px;gap:6px}.reader-footer .nav{gap:5px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 
-/* The menu must never occupy reading space until explicitly opened. */
-.chapter-menu:not([open]) > .chapter-panel{display:none!important}
-.chapter-menu[open] > .chapter-panel{display:flex}
-
-
 /* Menu interaction — shared by both interactive PETS labs. Unlike the older
    <details> reader, this button cannot inherit the legacy overflow:hidden. */
 #lessons .chapter-menu{
