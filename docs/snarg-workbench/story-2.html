@@ -26,7 +26,14 @@
 <p><strong>For the other direction,</strong> suppose every recurrence equation holds. Then 0 is a root of \(D\), so \(X\) is a factor. Since 1 is also a root, the remaining quotient must have factor \(X-1\): we can cancel the nonzero factor \(1-0\) when substituting 1. Repeat the same argument at 2 and 3. We obtain all four factors \(X(X-1)(X-2)(X-3)\) dividing \(D\), hence \(D=Zq\). If \(D\) is the zero polynomial, use \(q=0\).</p>
 <p class="qed">We've proved both directions. The four separate additions are correct precisely when there is a quotient \(q\) making the single polynomial identity \(D=Zq\) true. \(\square\)</p></div>
 <p>Recall that the interpolated trace polynomial \(f\) has degree at most 5. Substituting \(X+1\) or \(X+2\) doesn't increase its degree, so \(D\) has degree at most 5. Since \(Z\) has degree 4, an honest nonzero quotient \(q\) needs degree at most 1.</p>
-<p>That's our new representation of the computation. The prover doesn't have to convince us separately about each addition; it can claim one polynomial identity. But it could still lie about the quotient. We need a way to check the identity cheaply.</p>
+<p>That's our new representation of the computation. The prover doesn't have to convince us separately about each addition; it can claim one polynomial identity. But it could still lie about the quotient.</p>
+<div class="lab" data-lab="story-divisibility">
+<div class="lab-top"><strong>Could a fake quotient repair a wrong addition?</strong><p>At each required step, \(Z(i)=0\). Try the true and false traces and see what that forces \(D(i)\) to equal.</p></div>
+<div class="lab-content">
+<label>Which trace? <select data-key="claim"><option value="8">False ending 8</option><option value="5">Honest ending 5</option></select></label>
+<label class="range-label">Step \(i\) <output class="range-value" data-live-for="i">3</output><input data-key="i" type="range" min="0" max="3" value="3"></label>
+<div class="lab-output" aria-live="polite"></div></div></div>
+<p>We now have a single identity equivalent to all four checks. We need a way to test it cheaply without reading every polynomial coefficient.</p>
 <div class="obstacle-progress"><h3>What did we just achieve?</h3>
 <p>Four recurrence equations became one identity about three polynomials: the committed trace \(f\), the derived discrepancy \(D\), and the quotient \(q\).</p>
 <p class="next-obstacle">We already proved that one random evaluation can test a fixed polynomial identity. Let's apply that result to this identity—and see exactly what happens when the server lies about the final value.</p></div>
@@ -92,7 +99,14 @@
 <p><strong>Correctness:</strong> an honest opening of the committed polynomial's true value is accepted.</p>
 <p><strong>Binding:</strong> a dishonest prover cannot feasibly produce conflicting valid openings for the same committed polynomial and evaluation point. In a complete construction, the degree limit and consistency across all the requested evaluations must also be enforced.</p>
 <p class="qed">With these guarantees, the verifier can treat the short authenticated answers as if they came from a polynomial fixed before the question. The root-count proof from ZeroTest becomes applicable to a real cryptographic protocol, up to the probability of breaking its commitment assumptions. \(\square\)</p></div>
-<p>But this is still a conversation. The verifier has to choose \(r\) <em>after</em> seeing \(c_f,c_q\), and send that random challenge to the prover. How do we turn the conversation into a proof string anyone can check later?</p>
+<p>But this is still a conversation. The verifier has to choose \(r\) <em>after</em> seeing \(c_f,c_q\), and send that random challenge to the prover. The order matters because the prover cannot tailor the already committed polynomials to a known \(r\).</p>
+<div class="lab" data-lab="story-protocol">
+<div class="lab-top"><strong>Who knows what, and when?</strong><p>Follow the three stages of the polynomial check. Then switch to Fiat–Shamir to see which message disappears.</p></div>
+<div class="lab-content">
+<label>Protocol <select data-key="protocol"><option value="interactive">Interactive verifier challenge</option><option value="fiat-shamir">Fiat–Shamir challenge</option></select></label>
+<label class="range-label">Stage <output class="range-value" data-live-for="stage">1</output><input data-key="stage" type="range" min="1" max="3" value="1"></label>
+<div class="lab-output" aria-live="polite"></div></div></div>
+<p>How do we turn this conversation into a proof string anyone can check later?</p>
 <h2>Replace the challenge message, not its security purpose</h2>
 <p>Both prover and verifier can compute the same challenge from a hash of the public statement and the commitments:</p>
 <div class="math">\[r=H(\text{public statement},c_f,c_q,\text{protocol parameters}).\]</div>
@@ -134,6 +148,10 @@
 <p>For three gates we have nine gate-entry values—three per gate—and three original input values, making twelve numbers. We want a polynomial \(f_{\rm trace}\) that remembers all twelve values. Interpolation gives one polynomial of degree at most 11, provided we choose twelve distinct field points.</p>
 <p>Here the lecture chooses a particularly useful set of points: powers of an element \(\omega\) with multiplicative order 12. In \(\mathbb F_{97}\), the number \(\omega=6\) has exactly that order. So our twelve distinct points are \(1,\omega,\omega^2,\ldots,\omega^{11}\), with all multiplication taken modulo 97.</p>
 <p>Why move from \(\mathbb F_{101}\) to \(\mathbb F_{97}\)? The two examples have different needs. The earlier field made the Fibonacci arithmetic easy to see; this field contains the exact 12-point multiplicative cycle required by the lecture's trace example. The polynomial principles are unchanged.</p>
+<p>We can check the claim that 6 has order 12. In this field, \(6^6\equiv96=-1\), so \(6^{12}\equiv1\). Also \(6^4\equiv35\ne1\). The possible proper orders dividing 12 are 1, 2, 3, 4 and 6; every one divides 4 or 6. Since neither the fourth nor the sixth power is 1, none of those smaller orders works. Therefore the order is exactly 12, and the first twelve powers are all different.</p>
+<div class="lab" data-lab="unity">
+<div class="lab-top"><strong>See the twelve places in the trace</strong><p>Move \(j\) to evaluate \(6^j\bmod97\). Each of the twelve results names one of the trace's evaluation points.</p></div>
+<div class="lab-content"><label class="range-label">Exponent \(j\) <output class="range-value" data-live-for="j">3</output><input type="range" data-key="j" min="0" max="11" value="3"></label><div class="lab-output" aria-live="polite"></div></div></div>
 <div class="obstacle-progress"><h3>What does the circuit buy us?</h3>
 <p>Any calculation built from additions and multiplications becomes a set of simple, checkable gate equations connected by wires. Interpolation can again place its claimed values inside a polynomial.</p>
 <p class="next-obstacle">But how do we verify that all those values describe the <em>requested computation</em>, rather than a table of unrelated but individually correct arithmetic?</p></div>
