@@ -1,22 +1,22 @@
 <article class="lesson">
 <p class="chapter">Part I · Interactive proofs</p>
-<h1>Completeness and soundness quantify two different failures</h1>
-<p class="lead">A useful proof system must avoid rejecting a truthful prover and accepting a liar. These are different risks, so cryptography defines them separately and specifies exactly <em>who</em> is honest in each guarantee.</p>
+<h1>What does it mean for a proof to work?</h1>
+<p class="lead">A proof system can make two mistakes. It might reject an honest prover with a true statement, or accept a cheating prover with a false statement. We give those failures different names because they protect against different things.</p>
 <div class="role-grid">
-<div class="role prover"><div class="tag">Completeness · true statement</div><p>If \(x\in L\), an honest prover \(P\) interacting with the honest verifier \(V\) must be accepted often enough.</p><div class="math">\[\Pr[\langle P,V\rangle(x)=1]\geq\tfrac23\]</div><p class="small">The probability includes the parties' random choices. Perfect completeness strengthens this bound to 1.</p></div>
-<div class="role"><div class="tag">Soundness · false statement</div><p>If \(x\notin L\), <strong>every</strong> cheating prover \(P^\ast\) must have only a small chance of fooling the honest verifier \(V\).</p><div class="math">\[\Pr[\langle P^\ast,V\rangle(x)=1]\leq\tfrac13\]</div><p class="small">The upper bound applies to all possible cheating strategies, not just a particular one.</p></div>
+<div class="role prover"><div class="tag">Completeness · true statement</div><p>For <strong>completeness</strong>, assume \(x\in L\): the statement is true. An honest prover \(P\) talking to the honest verifier \(V\) must be accepted with high probability.</p><div class="math">\[\Pr[\langle P,V\rangle(x)=1]\geq\tfrac23\]</div><p class="small">The probability includes any random choices made by the protocol. <strong>Perfect completeness</strong> means the honest prover is accepted every time.</p></div>
+<div class="role"><div class="tag">Soundness · false statement</div><p>For <strong>soundness</strong>, assume \(x\notin L\): the statement is false. Then <em>any</em> cheating prover \(P^\ast\) must have only a small chance of making the honest verifier accept.</p><div class="math">\[\Pr[\langle P^\ast,V\rangle(x)=1]\leq\tfrac13\]</div><p class="small">We must consider every cheating strategy, not just the first one we can imagine.</p></div>
 </div>
-<p>The symbol \(\Pr\) means probability; \(L\) is the set of true statements; and \(P^\ast\) denotes an arbitrary, possibly malicious prover. The bounds \(2/3\) and \(1/3\) are standard convenient constants in the lecture, not absolute properties of every protocol. Appropriate repetition can amplify the gap.</p>
+<p>Here \(\Pr\) means probability, \(L\) is the set of true statements, and \(P^\ast\) can be any dishonest prover. The lecture uses \(2/3\) and \(1/3\) as convenient completeness and soundness bounds. They are not laws of nature; we can often improve them by repetition.</p>
 <h2>Which guarantee applies in which experiment?</h2>
 <section class="lab">
-<div class="lab-head"><div class="tag">Test the quantifiers</div><h3>Change which party is dishonest</h3><p>The definition is not a vague promise that everyone always behaves correctly. Select a situation to see exactly what follows.</p></div>
+<div class="lab-head"><div class="tag">Test the quantifiers</div><h3>Change which party is dishonest</h3><p>Choose who is dishonest in the experiment. The answer depends on which guarantee we are discussing.</p></div>
 <div class="lab-body"><div class="control-row">
 <button data-demo="security" data-value="honest">True \(x\), honest P and V</button>
 <button data-demo="security" data-value="cheat">False \(x\), cheating P*</button>
 <button data-demo="security" data-value="malicious">True \(x\), cheating V*</button>
 </div>
 <div id="security-result" class="feedback" aria-live="polite">Select a case before deciding which guarantee you are allowed to invoke.</div></div></section>
-<p>Notice that <strong>soundness protects the verifier</strong> against a cheating prover. It does not say that an honest verifier learns no secrets from a cheating prover: a malicious prover might reveal its own witness. Similarly, completeness constrains an <em>honest</em> verifier, not a malicious verifier that deliberately rejects everything.</p>
+<p>Completeness makes a promise about an <em>honest verifier</em>. A malicious verifier could reject every proof. Soundness protects the verifier from a cheating prover; it doesn't stop that prover from deliberately revealing its secret. Zero knowledge will be a separate promise.</p>
 <div class="exercise">
 <div class="tag">Homework 2 · Problem 1(b)</div>
 <h3>Two common traps</h3>
@@ -26,11 +26,11 @@
 </div>
 <details><summary>Why can’t we always amplify by accepting only if every repetition accepts?</summary>
 <div class="inside">
-<p>If a protocol has only completeness probability \(2/3\), requiring three honest repetitions all to accept would succeed with probability only \((2/3)^3=8/27\), <em>worse</em> than the original guarantee. For this generic situation, one possible amplification uses a majority: accept when at least two of three independent repetitions accept.</p>
-<p>Let \(p\) be the independent acceptance probability in each repetition. Exactly two of three accept in three possible positions, each with probability \(p^2(1-p)\); all three accept with probability \(p^3\). Thus the majority-acceptance probability is \(3p^2(1-p)+p^3\).</p>
-<div class="math">\[\begin{aligned}p=\tfrac23&:\quad 3(\tfrac23)^2(\tfrac13)+(\tfrac23)^3=\tfrac{20}{27},\\p=\tfrac13&:\quad 3(\tfrac13)^2(\tfrac23)+(\tfrac13)^3=\tfrac7{27}.\end{aligned}\]<p class="math-caption">The first value is the honest-prover case and exceeds \(2/3\); the second is the false-statement cheating case and lies below \(1/3\). This is an illustrative independent-round calculation; a general adaptive-adversary amplification proof requires the corresponding conditional probability argument.</p></div>
-<p>The later Hamiltonicity protocol has <em>perfect completeness</em>: an honest prover always succeeds, so requiring <strong>every</strong> repetition to pass does not reduce its completeness. This is why Homework 2 uses AND repetition safely there.</p>
+<p>Be careful with repetition. If honest acceptance is only \(2/3\) and we demand that <em>every</em> one of three runs accepts, the honest prover would pass with probability \((2/3)^3=8/27\), worse than before. For this situation we can instead use a majority vote.</p>
+<p>Let \(p\) be the probability that one independent run accepts. Exactly two of three accept in three possible orders, each with probability \(p^2(1-p)\); all three accept with probability \(p^3\). So majority acceptance has probability \(3p^2(1-p)+p^3\).</p>
+<div class="math">\[\begin{aligned}p=\tfrac23&:\quad 3(\tfrac23)^2(\tfrac13)+(\tfrac23)^3=\tfrac{20}{27},\\p=\tfrac13&:\quad 3(\tfrac13)^2(\tfrac23)+(\tfrac13)^3=\tfrac7{27}.\end{aligned}\]<p class="math-caption">Use that expression for the honest and dishonest cases. It improves the gap in this independent-run example. With an adaptive dishonest prover, a full amplification proof must also control the conditional chance of passing each new run.</p></div>
+<p>Our later Hamiltonian-cycle protocol has perfect completeness, so an honest prover passes every repetition. There we can safely require all repetitions to pass while reducing soundness error.</p>
 </div></details>
-<div class="transition"><p>Even a proof that is complete and sound may simply reveal its secret witness. Our next goal is to define a third property that rules this out without sacrificing verification.</p></div>
+<div class="transition"><p>We now know when a proof convinces us. But a convincing proof could still reveal the witness. To prevent that, we need to define zero knowledge.</p></div>
 <p class="source">PETS · ZK lecture notes, Definition 1, p. 2; Homework 2, Problem 1(b).</p>
 </article>
