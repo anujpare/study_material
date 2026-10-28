@@ -179,7 +179,7 @@
     const active=new Set((route||[]).slice(1).map((v,i)=>edgeKey(route[i],v)));
     const real=new Set(edges.map(([a,b])=>edgeKey(map(a),map(b))));
     const pos=v=>point[v];
-    let markup='<svg class="graph-svg" viewBox="0 0 360 325" role="img" aria-label="Five-vertex graph; green segments identify edges in the proposed Hamiltonian cycle, gray segments identify other edges, and dashed red segments identify nonedges in the candidate sequence">';
+    let markup='<svg class="graph-svg" viewBox="0 0 360 325" role="img" aria-label="Five-vertex graph; green segments represent existing edges of the candidate vertex sequence, gray segments other edges, and dashed red segments consecutive vertex pairs that are not edges">';
     for(const [a,b] of edges){
       const u=map(a),v=map(b),xy=pos(u),zw=pos(v);
       markup+='<line class="ordinary" x1="'+xy[0]+'" y1="'+xy[1]+'" x2="'+zw[0]+'" y2="'+zw[1]+'"/>';
