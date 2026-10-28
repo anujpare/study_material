@@ -3,7 +3,7 @@
 <h1>Two questions about the same hidden graph</h1>
 <p class="lead">Relabeling preserves a Hamiltonian cycle, but sending a relabeled graph alone proves nothing: the prover could choose any graph that happens to contain a cycle. We need to verify <em>both</em> that the committed graph \(B\) is an isomorphic copy of the public graph \(G\), and that \(B\) contains a Hamiltonian cycle. Revealing everything would expose the witness, so the verifier randomly asks for just one of these two checks. The commitments force both possible answers to refer to the same \(B\).</p>
 <div class="timeline">
-<div class="message prover"><span class="who">Prover</span><span>Selects one random \(\pi\), computes \(B=\pi(G)\), and sends \(\mathrm{Commit}(\pi)\) plus commitments to every \(B_{ij}\).</span></div>
+<div class="message prover"><span class="who">Prover</span><span>Selects one random \(\Pi\), computes \(B_{ij}=1\ \Longleftrightarrow\ \{\Pi(i),\Pi(j)\}\in E\), and sends \(\mathrm{Commit}(\Pi)\) plus commitments to every \(B_{ij}\).</span></div>
 <div class="message"><span class="who">Verifier</span><span>Samples a single fair bit \(c\in\{0,1\}\). Only one branch is requested in any real execution.</span></div>
 <div class="message prover"><span class="who">Prover</span><span>Provides the openings requested by the chosen \(c\), without altering the original commitments.</span></div>
 </div>
@@ -16,8 +16,8 @@
 </div></section>
 <h2>Why two challenges?</h2>
 <div class="role-grid">
-<div class="role"><div class="tag">If \(c=0\): isomorphism</div><p>For challenge \(c=0\), the prover reveals the permutation \(\pi\) and every graph entry. The verifier checks \(B=\pi(G)\): was this graph obtained by renaming the public graph correctly? This check does not require revealing a Hamiltonian cycle.</p></div>
-<div class="role prover"><div class="tag">If \(c=1\): cycle</div><p>For challenge \(c=1\), the prover reveals only the committed edge values along a cycle in \(B\). The verifier checks that every claimed edge exists and the cycle visits each vertex once. It does not learn \(\pi\) or the remaining graph entries.</p></div>
+<div class="role"><div class="tag">If \(c=0\): isomorphism</div><p>For challenge \(c=0\), the prover reveals the permutation \(\Pi\) and every graph entry. The verifier checks \(B_{ij}=1\ \Longleftrightarrow\ \{\Pi(i),\Pi(j)\}\in E\): was this graph obtained by renaming the public graph correctly? This check does not require revealing a Hamiltonian cycle.</p></div>
+<div class="role prover"><div class="tag">If \(c=1\): cycle</div><p>For challenge \(c=1\), the prover reveals only the committed edge values along a cycle in \(B\). The verifier checks that every claimed edge exists and the cycle visits each vertex once. It does not learn \(\Pi\) or the remaining graph entries.</p></div>
 </div>
 <p>Notice the limitation of each question. The \(c=0\) question checks that \(B\) is the right graph, but not that it contains a cycle. The \(c=1\) question checks that \(B\) has a cycle, but not that it is a renamed copy of \(G\). Neither check alone proves everything.</p>
 <p>Why is that good enough? On a false claim, a cheater must fix a graph before the challenge. We will prove that no single fixed graph can make both answers valid. The verifier catches the cheater with probability at least one half.</p>
