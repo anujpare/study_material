@@ -16,6 +16,29 @@ function htmlOut(el,html){if(window.MathJax?.typesetClear)try{MathJax.typesetCle
 function val(lab,key,def){let el=lab.querySelector('[data-key="'+key+'"]');return el?Number(el.value):def;}
 function txt(lab,html){let out=lab.querySelector(".lab-output");if(out)htmlOut(out,html);}
 function grid(vals,pred,current){return '<div class="lab-grid">'+vals.map(v=>'<span class="'+(pred(v)?"root ":"")+(v===current?"current":"")+'">'+v+'</span>').join("")+'</div>';}
+
+function wireDiagram(rows,input){
+ const copies=[
+  ["Input x₁",input[0],"Gate 0 left",rows[0][0]],
+  ["Gate 0 out",rows[0][2],"Gate 2 left",rows[2][0]],
+  ["Gate 1 out",rows[1][2],"Gate 2 right",rows[2][1]],
+  ["Gate 2 out",rows[2][2],"Final gate left",rows[3][0]]
+ ];
+ let out='<div class="plot"><svg class="math-visual" viewBox="0 0 330 226" role="img" aria-label="Exact wire-copy equalities. Green connections reuse identical field values; red connections disagree.">';
+ copies.forEach((c,i)=>{
+  const y=8+i*55,ok=c[1]===c[3],color=ok?"#4b9070":"#b24b4f";
+  out+='<rect x="3" y="'+y+'" width="127" height="42" rx="7" fill="#f5f7f5" stroke="#cbd8cd"/>';
+  out+='<rect x="202" y="'+y+'" width="125" height="42" rx="7" fill="'+(ok?"#edf6ef":"#fff0ef")+'" stroke="'+color+'"/>';
+  out+='<path d="M131 '+(y+20)+' H200" stroke="'+color+'" stroke-width="3" fill="none"/>';
+  out+='<path d="M193 '+(y+14)+' L201 '+(y+20)+' L193 '+(y+26)+'" stroke="'+color+'" stroke-width="2" fill="none"/>';
+  out+='<text x="10" y="'+(y+16)+'" font-size="11" fill="#485a4d">'+c[0]+'</text>';
+  out+='<text x="10" y="'+(y+32)+'" font-size="15" font-weight="700" fill="#263e31">'+c[1]+'</text>';
+  out+='<text x="210" y="'+(y+16)+'" font-size="11" fill="#485a4d">'+c[2]+'</text>';
+  out+='<text x="210" y="'+(y+32)+'" font-size="15" font-weight="700" fill="'+color+'">'+c[3]+(ok?" ✓":" ✕")+'</text>';
+ });
+ return out+'</svg><div class="visual-note">Every arrow represents an equality required by the circuit wiring. A red arrow alone invalidates the proposed trace.</div></div>';
+}
+
 function initLab(lab){
  const type=lab.dataset.lab;
  const update=()=>{
@@ -29,18 +52,30 @@ function initLab(lab){
   }
   if(type==="eq"){
     const r=val(lab,"r",1),f=mod(r*r+1,17),g=mod(f+(r-1)*(r-4),17),pass=f===g;
-    txt(lab,'\\(f('+r+')='+f+'\\), \\(g('+r+')='+g+'\\) in \\(\\mathbb F_{17}\\). <b>'+(pass?'False acceptance':'Rejection')+'</b>.'+grid(Array.from({length:17},(_,i)=>i),x=>x===1||x===4,r)+'<p class="note">Only points 1 and 4 make \\(f-g\\) vanish: exactly 2 false-accept challenges out of 17.</p>');
+    const h=Array.from({length:17},(_,i)=>mod((i-1)*(i-4),17));
+    txt(lab,'\\(f('+r+')='+f+'\\), \\(g('+r+')='+g+'\\) in \\(\\mathbb F_{17}\\). <b>'+(pass?'False acceptance':'Rejection')+'</b>.'+
+      grid(Array.from({length:17},(_,i)=>i),x=>x===1||x===4,r)+
+      svgTrend(h,16,16,r)+
+      '<p class="visual-note">The bars show the disagreement \\(h(r)=g(r)-f(r)\\) in the finite field. A zero-height bar at r = 1 or 4 means the false equality passes at that challenge.</p>'+
+      '<p class="viz-insight">The difference has exactly two roots, so false acceptance occurs on exactly 2 of 17 equally likely challenges.</p>');
   }
   if(type==="zero"){
     const r=val(lab,"r",3),fake=lab.querySelector('[data-key="fake"]')?.checked??true;
     const z=mod((r-1)*(r-2),17),q=mod(r+3,17),rhs=mod(z*q,17);
     const lhs=mod(rhs+(fake?r-3:0),17);
-    txt(lab,'\\(f('+r+')='+lhs+'\\), \\(Z_\\Omega('+r+')q('+r+')='+rhs+'\\). <b>'+(lhs===rhs?'Accept':'Reject')+'</b>.'+(fake?'<p class="note">The dishonest difference polynomial is \\(h(X)=X-3\\); only \\(r=3\\) fools this verifier.</p>':'<p class="note">The honest identity holds for every challenge.</p>'));
+    const domain=Array.from({length:17},(_,i)=>i);
+    txt(lab,'\\(f('+r+')='+lhs+'\\), \\(Z_\\Omega('+r+')q('+r+')='+rhs+'\\). <b>'+(lhs===rhs?'Accept':'Reject')+'</b>.'+
+     grid(domain,x=>!fake||x===3,r)+
+     '<p class="viz-insight">'+(fake?'The dishonest difference polynomial is \\(h(X)=X-3\\), so only challenge r = 3 gives false acceptance.':'The honest identity holds at every challenge, establishing perfect completeness.')+'</p>');
   }
   if(type==="interp"){
     const y0=val(lab,"a",1),y1=val(lab,"b",3),y2=val(lab,"c",2);
     const q=mod((y2-2*y1+y0)*9,17),a=mod(y1-y0,17);
-    txt(lab,'The unique degree-at-most-two interpolant is \\(f(X)='+y0+'+'+a+'X+'+q+'X(X-1)\\pmod{17}\\).<br> Check: \\(f(0)='+y0+'\\), \\(f(1)='+y1+'\\), \\(f(2)='+y2+'\\).<p class="note">Here 9 is the multiplicative inverse of 2 modulo 17. Uniqueness follows because two distinct degree-2 polynomials cannot agree at three distinct points.</p>');
+    const ys=Array.from({length:17},(_,i)=>mod(y0+a*i+q*i*(i-1),17));
+    txt(lab,'The unique degree-at-most-two interpolant is \\(f(X)='+y0+'+'+a+'X+'+q+'X(X-1)\\pmod{17}\\).'+
+      svgTrend(ys,16,16,[0,1,2])+
+      '<p class="visual-note">Highlighted bars are the three imposed values f(0), f(1), f(2); the other field evaluations follow from the same polynomial. Values are discrete residues, not a smooth real-number curve.</p>'+
+      '<p class="viz-insight">The polynomial matches \\(f(0)='+y0+'\\), \\(f(1)='+y1+'\\), \\(f(2)='+y2+'\\). Two degree-at-most-two polynomials agreeing at these three distinct points must be identical.</p>');
   }
   if(type==="fib"){
     let n=val(lab,"n",6),f=[0,1];for(let i=2;i<10;i++)f[i]=f[i-1]+f[i-2];
@@ -86,7 +121,7 @@ function initLab(lab){
     const outputok=rows[3][2]===0;
     const tbl='<div class="table-scroll"><table><thead><tr><th>Gate</th><th>Left</th><th>Right</th><th>Out</th><th>Type</th><th>Residual</th></tr></thead><tbody>'+rows.map((r,i)=>'<tr><td>'+i+'</td><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+(r[3]?"+":"×")+'</td><td>'+mod(r[3]?r[0]+r[1]-r[2]:r[0]*r[1]-r[2],97)+'</td></tr>').join("")+'</tbody></table></div>';
     const status=(name,ok)=>'<span style="color:'+(ok?"#146655":"#ac3136")+';font-weight:750">'+(ok?"✓ ":"✕ ")+name+'</span>';
-    txt(lab,'<p class="note">Original trace input cells: \\(x_1='+traceInputs[0]+',\\;x_2='+traceInputs[1]+',\\;w_1='+traceInputs[2]+'\\). Public statement: \\(x_1=2,\\;x_2=4\\).</p>'+tbl+'<div class="two">'+[status("Public inputs",pubok),status("Gate equations",gateok.every(Boolean)),status("Wire copies",wireok),status("Final output = 0",outputok)].map(s=>'<div>'+s+'</div>').join("")+'</div><p class="note">'+explain+'</p>');
+    txt(lab,wireDiagram(rows,traceInputs)+'<p class="note">Original trace input cells: \\(x_1='+traceInputs[0]+',\\;x_2='+traceInputs[1]+',\\;w_1='+traceInputs[2]+'\\). Public statement: \\(x_1=2,\\;x_2=4\\).</p>'+tbl+'<div class="two">'+[status("Public inputs",pubok),status("Gate equations",gateok.every(Boolean)),status("Wire copies",wireok),status("Final output = 0",outputok)].map(s=>'<div>'+s+'</div>').join("")+'</div><p class="note">'+explain+'</p>');
   }
 
   if(type==="growth"){
@@ -200,9 +235,10 @@ function svgTrend(values,maxX,maxY,highlight){
  values.forEach((v,i)=>{
   const x=left+(i+.5)*(290/values.length);
   const y=bottom-v/maxY*99;
-  const color=i===highlight?"#2b6f58":"#b3c9bb";
+  const chosen=Array.isArray(highlight)?highlight.includes(i):i===highlight;
+  const color=chosen?"#2b6f58":"#b3c9bb";
   s+='<rect x="'+(x-290/values.length*.34)+'" y="'+y+'" width="'+Math.max(2,290/values.length*.68)+'" height="'+Math.max(1,bottom-y)+'" rx="1" fill="'+color+'"/>';
-  if(i===highlight)s+='<text x="'+x+'" y="'+(y-4)+'" text-anchor="middle" font-size="10" font-weight="700" fill="#254d3d">'+v+'</text>';
+  if(chosen)s+='<text x="'+x+'" y="'+(y-4)+'" text-anchor="middle" font-size="10" font-weight="700" fill="#254d3d">'+v+'</text>';
  });
  s+='<text x="6" y="14" font-size="11" fill="#66766b">'+maxY+'</text><text x="10" y="115" font-size="11" fill="#66766b">0</text>';
  s+='<text x="29" y="129" font-size="11" fill="#66766b">0</text>';
