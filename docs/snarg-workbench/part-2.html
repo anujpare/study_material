@@ -202,28 +202,34 @@ h(\mathbf r)=(ar_j)^2-ar_j^2
 </article>
 
 <article class="lesson" data-id="vanishing-polynomial" data-title="Make all Fibonacci steps one identity">
-
-<p class="chapter-tag">Lecture §3 · Vanishing polynomial, Theorem 2</p>
-<h1>How can 99 equations become one equation?</h1>
-<p class="aim">Our Fibonacci discrepancy polynomial must equal zero at the 99 positions where the recurrence is required. It need not be zero everywhere. EqualityTest therefore cannot check it against the zero polynomial directly. We need an identity that holds everywhere exactly when those 99 conditions hold.</p>
-<p>Recall the exact discrepancy polynomial we already defined in the EqualityTest lesson:</p>
-<div class="math">\[D(X)=f_{\rm fib}(X+2)-f_{\rm fib}(X)-f_{\rm fib}(X+1).\]</div>
-<p>At a step \(i\), the recurrence is correct exactly when \(D(i)=0\). So our 99 equations become the single statement “\(D\) is zero at every point of the set \(\Omega=\{0,1,\ldots,98\}\).” That is still many values to check—but now we can use polynomial algebra.</p>
-<p>Make a polynomial with one factor for each required position:</p>
-<div class="math">\[\boxed{Z_\Omega(X)=\prod_{a\in\Omega}(X-a).}\]</div>
-<p>The symbol \(\prod\) means “multiply all the factors.” For \(\Omega=\{1,2\}\), the result would be \((X-1)(X-2)\). For our Fibonacci steps, it is \(X(X-1)\cdots(X-98)\). This is called the <strong>vanishing polynomial</strong> because its value is zero at every point we want to check.</p>
-<h2>The key equivalence</h2>
-<p><strong>Theorem 2:</strong> a polynomial \(D\) is zero at every point of \(\Omega\) <em>if and only if</em> some polynomial \(q\) satisfies \(D=Z_\Omega q\). That says the polynomial \(D\) is divisible by \(Z_\Omega\).</p>
-<div class="proof"><h3>Prove both directions</h3>
-<p><strong>If \(D=Z_\Omega q\):</strong> take any \(a\in\Omega\). One factor of \(Z_\Omega(a)\) is \(a-a=0\), so \(D(a)=Z_\Omega(a)q(a)=0\). Thus every recurrence step passes.</p>
-<p><strong>Conversely:</strong> suppose \(D(a)=0\) at all the distinct points \(a_1,\ldots,a_k\) of \(\Omega\). Since \(a_1\) is a root, the factor theorem gives \(D(X)=(X-a_1)q_1(X)\). Substitute \(a_2\):</p>
-<div class="math">\[0=D(a_2)=(a_2-a_1)q_1(a_2).\]</div>
-<p>The points are different, so \(a_2-a_1\ne0\). The field's cancellation property forces \(q_1(a_2)=0\), which means \(q_1\) has the factor \(X-a_2\). Continue through all distinct required points. We obtain \(D=Z_\Omega q\). If \(D\) is the zero polynomial, simply take \(q=0\).</p>
-<p class="qed">So the 99 recurrence equations are satisfied <em>exactly when</em> one polynomial identity \(D(X)=Z_\Omega(X)q(X)\) holds. That's not a heuristic: we've proved both implications. \(\square\)</p></div>
-<p>Here's a small example that will also appear in the next interactive test. Let \(\Omega=\{1,2\}\) and \(D(X)=X^3-7X+6\). We can factor \(D(X)=(X-1)(X-2)(X+3)\). The first two factors are \(Z_\Omega\), so the quotient is \(q(X)=X+3\).</p>
-<div class="bridge">We now have the identity we were missing: all 99 recurrence constraints are equivalent to \(D=Z_\Omega q\) for some quotient polynomial \(q\). The question is no longer “does the recurrence hold at 99 separate places?” but “is this claimed identity true?” We've already proved how a random point can test a fixed polynomial identity. Applying that result to the vanishing-polynomial identity is precisely ZeroTest.</div>
-<p class="source">Lecture §3, Theorem 2 and the transition from Fibonacci recurrence equations to a vanishing-polynomial identity.</p>
-
+<p class="chapter-tag">Lecture §3 · Vanishing polynomials and Theorem 2</p>
+<h1>How can 99 recurrence equations become one identity?</h1>
+<p class="aim">The verifier needs to know that the Fibonacci discrepancy \(D(i)\) is zero for every \(i=0,\ldots,98\). EqualityTest checks an identity that holds everywhere, but our recurrence is only required at these particular positions. We must first turn those 99 conditions into one identity that is true everywhere exactly when all the conditions hold.</p>
+<p>Recall the discrepancy polynomial:</p>
+<div class="math">\[
+D(X)=f_{\rm fib}(X+2)-f_{\rm fib}(X+1)-f_{\rm fib}(X).
+\]</div>
+<p>For each required step \(i\), the recurrence is correct if and only if \(D(i)=0\). Let \(\Omega=\{0,1,\ldots,98\}\) be the set of positions where this must happen. We want a polynomial that is zero at precisely these designated points.</p>
+<h2>Build a polynomial with the required roots</h2>
+<p>For one required point \(a\), the factor \(X-a\) is zero at \(X=a\). To make a polynomial zero at <em>every</em point of \(\Omega\), multiply one factor for each point:</p>
+<div class="math">\[
+\boxed{Z_\Omega(X)=\prod_{a\in\Omega}(X-a).}
+\]</div>
+<p>This is the <strong>vanishing polynomial</strong> of \(\Omega\). For the Fibonacci steps, it is \(X(X-1)\cdots(X-98)\). The symbol \(\prod\) means to multiply all the listed factors. The polynomial has degree \(|\Omega|=99\), because it is a product of 99 linear factors.</p>
+<p>Why is this useful? If \(D(X)\) contains every factor of \(Z_\Omega(X)\), then it must be zero at every required position. The converse is also true, and proving it is what allows us to replace 99 equations by one.</p>
+<div class="proof"><h3>Theorem 2: zeros on \(\Omega\) are equivalent to divisibility by \(Z_\Omega\)</h3>
+<p><strong>Forward direction.</strong> Suppose \(D(X)=Z_\Omega(X)q(X)\) for some polynomial \(q\). At any \(a\in\Omega\), one factor of \(Z_\Omega(a)\) is \(a-a=0\). Therefore \(D(a)=Z_\Omega(a)q(a)=0\). Thus every required recurrence step holds.</p>
+<p><strong>Reverse direction.</strong> Suppose \(D(a)=0\) for every \(a\in\Omega\). By the factor theorem, each such root supplies a factor \(X-a\). Because the points are distinct, after dividing out the factor for one root, every other root remains a root of the quotient: this follows from the same cancellation argument used in Theorem 1. Repeating for all points gives</p>
+<div class="math">\[
+D(X)=\left(\prod_{a\in\Omega}(X-a)\right)q(X)
+=Z_\Omega(X)q(X).
+\]</div>
+<p>If \(D\) is identically zero, choose \(q=0\). Both directions are proved. Hence \(D\) is zero on \(\Omega\) <em>if and only if</em> it is divisible by \(Z_\Omega\). \(\square\)</p></div>
+<h2>Check the equivalence on a small example</h2>
+<p>Take \(\Omega=\{1,2\}\) and \(D(X)=X^3-7X+6\). Factoring gives \(D(X)=(X-1)(X-2)(X+3)\). Therefore \(Z_\Omega(X)=(X-1)(X-2)\) and the quotient is \(q(X)=X+3\). The two required zeros are present precisely because the vanishing polynomial divides \(D\).</p>
+<p>This example is not the general proof; it simply shows how the theorem can be used to construct a quotient.</p>
+<div class="bridge">We have now achieved the crucial algebraic step. Instead of asking the verifier to check 99 separate values \(D(i)=0\), the prover can claim that there exists a polynomial \(q\) satisfying the <em>global identity</em> \(D(X)=Z_\Omega(X)q(X)\). The verifier can test that identity at one random point. We call the resulting protocol ZeroTest.</div>
+<p class="source">Official lecture §3, Theorem 2, the vanishing polynomial and the polynomial divisibility example.</p>
 </article>
 
 <article class="lesson" data-id="zerotest-proof" data-title="ZeroTest: the verifier's actual check">
