@@ -3,9 +3,9 @@
 <h1>Prove the graph protocol's two guarantees</h1>
 <p class="lead">We know the two questions the verifier may ask. Let's prove exactly what they guarantee. A real cycle must pass either question. If \(G\) has no cycle, a cheater with fixed commitments cannot answer both.</p>
 <div class="proof"><h3>Proof 1 · Perfect completeness</h3>
-<p>For completeness, assume \(G\) has a Hamiltonian cycle \(w\). The honest prover chooses a random permutation \(\pi\) and commits to \(B=\pi(G)\).</p>
-<p>If \(c=0\), it opens the full graph and the permutation. By construction every edge agrees with \(B=\pi(G)\), so the verifier accepts.</p>
-<p>If \(c=1\), it takes its known cycle \(w\), renames every vertex using \(\pi\), and reveals the corresponding edges of \(B\). A permutation preserves edge membership and visits each vertex exactly once, so the verifier accepts.</p>
+<p>For completeness, assume \(G\) has a Hamiltonian cycle \(w\). The honest prover chooses a random permutation \(\Pi\) and commits to \(B_{ij}=1\iff\{\Pi(i),\Pi(j)\}\in E\).</p>
+<p>If \(c=0\), it opens the full graph and the permutation. By construction every edge agrees with \(B_{ij}=1\iff\{\Pi(i),\Pi(j)\}\in E\), so the verifier accepts.</p>
+<p>If \(c=1\), it takes its known cycle \(w\), renames every vertex using \(\Pi^{-1}\), and reveals the corresponding edges of \(B\). A permutation preserves edge membership and visits each vertex exactly once, so the verifier accepts.</p>
 <p>Those are the only possible challenges. An honest prover therefore passes with probability \(1\). That proves <strong>perfect completeness</strong>.</p></div>
 <h2>Soundness starts with the assumption that the claim is false</h2>
 <p>Now assume the claim is false: \(G\) has no Hamiltonian cycle. The cheating prover must commit to a graph \(B\) before the verifier picks \(c\). Perfect binding is needed here: without it, the prover could change \(B\) after seeing the question.</p>
