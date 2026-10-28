@@ -55,11 +55,12 @@ f_{\rm fib}(i+2)&=f_{\rm fib}(i+1)+f_{\rm fib}(i)
 <p class="source">Official lecture §3, encoding the Fibonacci computation; interpolation steps supplied as mathematical prerequisites.</p>
 </article>
 
-<article class="lesson" data-id="equality-proof" data-title="Why checking a random point can work">
+<article class="lesson" data-id="root-bound" data-title="Theorem 1 · Why a false polynomial has few roots">
 
-<p class="chapter-tag">Lecture §3 · EqualityTest, Theorem 1 and Lemma 1</p>
-<h1>If two polynomials agree once, are they equal?</h1>
-<p class="aim">Interpolation lets the prover create a polynomial \(f_{\rm fib}(X)\) through its claimed Fibonacci values, but that does not prove the values are correct. The actual rule is \(f_{\rm fib}(i+2)=f_{\rm fib}(i+1)+f_{\rm fib}(i)\) at each step (i=0,\ldots,98). Subtract the right side and call the result the <strong>recurrence discrepancy</strong>:</p>
+
+<p class="chapter-tag">Lecture §3 · Theorem 1 · Polynomial roots</p>
+<h1>How many points can hide a false polynomial equation?</h1>
+<p class="aim">Interpolation lets the prover create a polynomial \(f_{\rm fib}(X)\) through its claimed Fibonacci values, but that does not prove the values are correct. The actual rule is \(f_{\rm fib}(i+2)=f_{\rm fib}(i+1)+f_{\rm fib}(i)\) at each step \(i=0,\ldots,98\). Subtract the right side and call the result the <strong>recurrence discrepancy</strong>:</p>
 <div class="math">\[D(X)=f_{\rm fib}(X+2)-f_{\rm fib}(X+1)-f_{\rm fib}(X).\]</div>
 <p>We need \(D(i)=0\) at every required step. Eventually we'll express those many requirements as one polynomial identity. But first we need to know whether a verifier can test <em>any fixed polynomial identity</em> without inspecting every coefficient. That is the simpler problem EqualityTest solves.</p>
 <p>One matching value doesn't prove equality with certainty. For example, \(f(X)=0\) and \(g(X)=X-3\) differ as polynomials but both give zero at \(X=3\). The useful question is not whether they <em>could</em> match by accident; it is <em>how many choices of \(r\) would make that accident happen</em>.</p>
@@ -71,7 +72,7 @@ f_{\rm fib}(i+2)&=f_{\rm fib}(i+1)+f_{\rm fib}(i)
 <p>The factor \(b-a\) is nonzero. In a field, a product can be zero only if one factor is zero, so \(q(b)=0\). In other words, after removing the factor for root \(a\), the other roots remain roots of the quotient.</p>
 <p>Each new distinct root therefore supplies another linear factor and reduces the degree by one. A nonzero degree-\(d\) polynomial cannot have more than \(d\) different linear factors.</p>
 <p class="qed">Thus it has at most \(d\) distinct roots. The proof depends on being able to cancel the nonzero factor \(b-a\), which explains the field assumption. \(\square\)</p></div>
-<div class="practice-link"><span class="practice-tag">HW3 Problem 1(c) · Check the field assumption</span><p>Now that we have proved the root bound, the homework below asks what goes wrong in arithmetic modulo 6, where nonzero factors can multiply to zero.</p></div>
+<p>HW3 Problem 1(c) tests why the field assumption matters. Try it before opening the solution.</p>
 <div class="exercise"><span class="exercise-kicker">HW3 · Problem 1(c)</span>
 <h3>Does the polynomial root bound hold modulo 6?</h3>
 <p>Consider \(f(X)=2X^2+4X\) with arithmetic modulo 6. It has degree 2. Could it have more than two roots (inputs where it evaluates to zero)? Test all six possible values of \(X\).</p>
@@ -82,7 +83,15 @@ f_{\rm fib}(i+2)&=f_{\rm fib}(i+1)+f_{\rm fib}(i)
 <p class="qed">The root-count claim is false over \(\mathbb Z_6\), and this shows exactly which algebraic assumption fails. The later soundness proofs will work over fields instead. \(\square\)</p>
 </div></details></div>
 
-<h2>Apply the theorem to EqualityTest</h2>
+<div class="bridge">We have proved the property needed for random verification: a nonzero degree-\(d\) polynomial has at most \(d\) roots. The next lesson applies that result to the verifier's actual equality test and derives its error probability.</div>
+<p class="source">Official lecture §3, Theorem 1; HW3 Problem 1(c) and its worked counterexample.</p>
+</article>
+
+<article class="lesson" data-id="equality-proof" data-title="EqualityTest · One random point">
+<p class="chapter-tag">Lecture §3 · EqualityTest and Lemma 1</p>
+<h1>How can one random evaluation test equality?</h1>
+<p class="aim">The previous lesson proved that a nonzero polynomial of degree at most \(d\) has at most \(d\) roots. We can now use that result to decide whether two polynomials fixed by the prover are identical, without checking every coefficient.</p>
+<h2>The verifier's test</h2>
 <p>Let \(f\) and \(g\) both have degree at most \(d\), and let the verifier choose \(r\) uniformly at random from a finite field \(\mathbb F\). It accepts if \(f(r)=g(r)\).</p>
 <p><strong>Completeness:</strong> if \(f=g\), the equality holds at every point, so the verifier always accepts.</p>
 <p><strong>Soundness:</strong> if \(f\ne g\), then \(h=f-g\) is a <em>nonzero</em> polynomial of degree at most \(d\). The verifier accepts incorrectly only if it chooses one of the at most \(d\) roots of \(h\). There are \(|\mathbb F|\) equally likely field values, so</p>
@@ -91,8 +100,9 @@ f_{\rm fib}(i+2)&=f_{\rm fib}(i+1)+f_{\rm fib}(i)
 <div class="lab" data-lab="eq"><div class="lab-top"><strong>Find exactly which checks miss a false claim</strong><p>Over \(\mathbb F_{17}\), compare \(f(X)=X^2+1\) with \(g(X)=f(X)+(X-1)(X-4)\). They're different, but agree at two points.</p></div><div class="lab-content"><label class="range-label">Random point \(r\) <output class="range-value" data-live-for="r">1</output><input data-key="r" type="range" min="0" max="16" value="1"></label><div class="lab-output" aria-live="polite"></div></div></div>
 <p>We can also settle the uniqueness question from interpolation. If two degree-at-most-\((N-1)\) polynomials agreed at \(N\) distinct points, their difference would have at least \(N\) roots while having degree at most \(N-1\). Unless the difference is zero everywhere, that contradicts Theorem 1. So the interpolation polynomial is unique.</p>
 <p>There is one further condition that makes the probability argument work. The polynomials must be <em>fixed before the verifier chooses \(r\)</em>. Otherwise a cheater who learns \(r\) could invent \(g(X)=f(X)+(X-r)\), which is a different polynomial but guaranteed to agree with \(f\) at that already-known point. Later we'll use commitments to enforce the correct order.</p>
-<div class="bridge">EqualityTest provides the missing <em>testing method</em>: if two low-degree polynomials are fixed before the challenge, one random evaluation can reveal a false identity with high probability. But Fibonacci's recurrence is required only at the 99 step positions, not at every field element. We still need to turn those 99 local conditions into a genuine polynomial identity. First, the lecture generalizes the same root argument to several variables; then we'll return to that exact Fibonacci obstacle.</div>
-<p class="source">Lecture §3, Theorem 1 (polynomial root bound), EqualityTest and Lemma 1. The interpolation uniqueness proof follows directly from the same theorem.</p>
+<div class="bridge">EqualityTest provides the missing <em>testing method</em>: if two low-degree polynomials are fixed before the challenge, one random evaluation can reveal a false identity with high probability. But Fibonacci's recurrence is required only at the 99 step positions, not at every field element. We still need to turn those 99 local conditions into a genuine polynomial identity. The lecture next generalizes the root argument to several variables. We will then return to the Fibonacci obstacle.</div>
+<p class="source">Official lecture §3, EqualityTest and Lemma 1. Interpolation uniqueness follows from Theorem 1.</p>
+
 
 </article>
 
