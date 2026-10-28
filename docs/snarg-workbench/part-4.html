@@ -1,251 +1,229 @@
 <!doctype html><html lang="en"><meta charset="utf-8"><title>SNARGs · Part IV</title><body>
-<article class="lesson" data-id="circuits-meaning" data-title="Why PLONK starts with a circuit">
-<p class="chapter-tag">IV · PLONK from circuits · Lecture §5</p>
+<article class="lesson" data-id="circuits-meaning" data-title="Why PLONK begins with circuits">
+
+<p class="chapter-tag">Lecture §5 · The PLONK IOP</p>
 <h1>Fibonacci was one calculation. What about every calculation?</h1>
-<p class="aim">Fibonacci taught us how to check one kind of calculation: every step had to satisfy the same recurrence. We now know how to authenticate the polynomial and remove the verifier's challenge. What we don't yet know is how to express the correctness of a <em>general computation</em> as polynomial equations. Arithmetic circuits solve exactly that remaining problem.</p>
-<p>Imagine drawing a computation as boxes connected by wires. Each box takes two numbers and either adds or multiplies them. We call a box a <strong>gate</strong>, and the whole diagram an <strong>arithmetic circuit</strong>.</p>
-<p>The wires carry numbers from a field \(\mathbb F\), so every addition and multiplication follows that field's rules. The circuit itself is public. Some input wires carry values everybody knows; others carry private values known to the prover.</p>
-<p>Write the public inputs as a vector \(\mathbf x\) and the private ones as \(\mathbf w\). A vector is just an ordered list of numbers. The prover wants to show there is some \(\mathbf w\) for which the circuit output is zero:</p>
+<p class="aim">Our Fibonacci proof worked because every step obeyed the same rule: add the previous two values. But a general program might add at one step, multiply at another, and reuse an earlier result many times. If we want a SNARG for general NP statements, we need a standard way to describe those calculations.</p>
+<p>That's what an <strong>arithmetic circuit</strong> provides. Think of a computation drawn as boxes connected by wires. Each box, called a <strong>gate</strong>, receives two field values and either adds or multiplies them. The wires carry outputs of earlier gates to later ones. The circuit tells us exactly which calculation must take place.</p>
+<p>The lecture defines an arithmetic circuit \(C\) over a field \(\mathbb F\), with two kinds of inputs: public values \(\mathbf x\), known to the verifier, and private values \(\mathbf w\), known to the prover. The bold notation means an ordered list of numbers, called a vector.</p>
+<p>Rather than proving the output equals an arbitrary target directly, the lecture uses the equivalent <strong>zero-output form</strong>: the prover must show that some private witness makes</p>
 <div class="math">\[\boxed{C(\mathbf x,\mathbf w)=0.}\]</div>
-<p>The corresponding language in the lecture is</p>
+<p>We can write the set of true statements as</p>
 <div class="math">\[L=\{\mathbf x\in\mathbb F^m:\exists\mathbf w\in\mathbb F^n,\ C(\mathbf x,\mathbf w)=0\}.\]</div>
-<p>Here \(m\) and \(n\) are the numbers of public and private inputs. As before, \(\exists\) means “there exists.”</p>
-<h2>Let's calculate one circuit by hand</h2>
-<p>Take the example from the notes. The public inputs are \(x_1=2\) and \(x_2=4\), and the private input is \(w_1=3\). The circuit evaluates</p>
-<div class="math">\[t=(x_1\cdot x_2)\cdot(x_2+w_1).\]</div>
-<p>We can do it with three gates. Gate 0 multiplies \(2\cdot4=8\). Gate 1 adds \(4+3=7\). Gate 2 multiplies the two results, giving \(8\cdot7=56\).</p>
-<div class="three">
-<div class="stage"><strong>Gate 0 · Multiply</strong><p>2 and 4<br>Output: 8</p></div>
-<div class="stage"><strong>Gate 1 · Add</strong><p>4 and 3<br>Output: 7</p></div>
-<div class="stage"><strong>Gate 2 · Multiply</strong><p>8 and 7<br>Output: 56</p></div>
-</div>
-<p>But our formal statement asks for an output of <em>zero</em>. The pictured circuit ends at 56. To prove that its answer equals a claimed target 56, we add a final check \(t-56=0\).</p>
-<p>For the interactive example, we work in \(\mathbb F_{97}\). Since \(-56\equiv41\pmod{97}\), a fourth addition gate takes \(t\) and 41 and should output zero. The fourth gate is an added checking operation; the original lecture diagram has only the first three gates.</p>
-<div class="practice-link"><span class="practice-tag">Related earlier technique</span><a href="#hw2-circuit-sat">HW2 4(a–c): check a Boolean circuit using one proof per gate</a></div>
-<div class="bridge">A large computation can be broken into thousands of tiny gate operations, all using the same two rules: addition and multiplication. That reduces the problem of checking an arbitrary program to checking a great many simple equalities. But sending and checking every gate value would still be expensive. Next we'll pack those values into one polynomial, using the interpolation method we already learned.</div>
-<p class="source">Official notes, Definition 2 and circuit diagram, pp. 8–9. The target-checking gate is added here and identified separately.</p>
+<p>This is the same statement-and-witness definition we began with. The difference is that we have given the checking computation a fixed structure: a circuit made of addition and multiplication gates. In the field \(\mathbb F_2\), where the only values are 0 and 1, those two gates correspond to XOR and AND, so Boolean circuits fit into this picture.</p>
+<h2>Work through the lecture's three-gate example</h2>
+<p>Take public inputs \(x_1=2\) and \(x_2=4\), and private input \(w_1=3\). The circuit performs</p>
+<div class="math">\[t=(x_1x_2)(x_2+w_1).\]</div>
+<p>Gate 0 multiplies \(2\cdot4=8\). Gate 1 adds \(4+3=7\). Gate 2 multiplies the two intermediate outputs, giving \(8\cdot7=56\). Here's the complete proposed gate table:</p>
+<div class="table-scroll"><table><thead><tr><th>Gate</th><th>Operation</th><th>Left</th><th>Right</th><th>Output</th></tr></thead><tbody>
+<tr><td>0</td><td>Multiply</td><td>2</td><td>4</td><td>8</td></tr>
+<tr><td>1</td><td>Add</td><td>4</td><td>3</td><td>7</td></tr>
+<tr><td>2</td><td>Multiply</td><td>8</td><td>7</td><td>56</td></tr>
+</tbody></table></div>
+<p>Notice an apparent mismatch: the example outputs 56, but the formal language above requires output 0. This pictured circuit is an <em>illustration of an execution</em>, not yet a satisfying zero-output instance. If our public claim is “the result is 56,” we can add a final comparison \(t-56=0\). That makes a <em>new circuit</em> whose final output is zero. We'll keep the original three-gate circuit for the lecture's trace-encoding example, and distinguish its illustrative target check from the general zero-output requirement.</p>
+<h2>Why is a list of correct gates not enough?</h2>
+<p>Suppose gate 0 outputs 8, but gate 2 secretly uses 9 as its left input. Gate 2 might still multiply its two inputs correctly, yet the entire circuit would be wrong: the wire connecting gate 0 to gate 2 was not respected.</p>
+<p>To verify a circuit, then, we must check both the <em>arithmetic inside each gate</em> and the <em>values copied along the wires</em>, along with the public inputs and final output. The proposed values of all inputs and wires form the <strong>circuit trace</strong>.</p>
+<div class="practice-link"><span class="practice-tag">Related homework</span><a href="#hw2-circuit-sat">HW2 Problem 4(a–c): use commitments and gate proofs to certify Boolean circuit satisfiability</a></div>
+<div class="bridge">We can now reduce general computation to a long list of simple gate equations. But if the verifier checks each gate and wire directly, it has to follow the entire computation again. We need the polynomial trick from Fibonacci: encode all the claimed trace values in one polynomial, then express the circuit rules as polynomial identities.</div>
+<p class="source">Lecture §5, Definition 2 (arithmetic circuits), the language \(C(\mathbf x,\mathbf w)=0\), and the pictured three-gate example.</p>
+
 </article>
 
-<article class="lesson" data-id="trace-encoding" data-title="From a circuit trace to one polynomial">
-<p class="chapter-tag">IV · PLONK from circuits · Lecture §5.1</p>
-<h1>Write down what happened at every gate</h1>
-<p class="aim">We now have a circuit whose gates produce values. But our efficient ZeroTest checks polynomials, not tables of gate values. To use it, the prover must turn its entire proposed circuit execution into a polynomial that can be queried at selected points. Interpolation gives us exactly that representation.</p>
-<p>First make the table. For each gate, record its left input, right input, and output. The lecture calls this a <strong>circuit trace</strong>.</p>
-<div class="table-scroll"><table><thead><tr><th>Gate</th><th>Left</th><th>Right</th><th>Output</th></tr></thead><tbody>
-<tr><td>0 · \(×\)</td><td>2</td><td>4</td><td>8</td></tr>
-<tr><td>1 · \(+\)</td><td>4</td><td>3</td><td>7</td></tr>
-<tr><td>2 · \(×\)</td><td>8</td><td>7</td><td>56</td></tr>
-</tbody></table></div>
-<p>There are nine entries in the gate rows. We also need to record the three original inputs \(2,4,3\). That makes twelve numbers to encode.</p>
-<p>In general, if the circuit has \(|C|\) gates and \(|I|\) original inputs, the lecture sets</p>
-<div class="math">\[d=3|C|+|I|.\]</div>
-<p>Why the factor 3? Each gate contributes exactly three entries: left, right, output. For our example, \(d=3\cdot3+3=12\).</p>
-<h2>Where do we put the twelve numbers?</h2>
-<p>Interpolation lets us choose distinct field points and make a polynomial with prescribed values at those points. The notes choose the points \(1,\omega,\omega^2,\ldots,\omega^{d-1}\), where \(\omega\) has <strong>multiplicative order \(d\)</strong>.</p>
-<p>That means \(\omega^d=1\), but none of the smaller positive powers \(\omega,\ldots,\omega^{d-1}\) equals 1. So all \(d\) points are different, exactly what interpolation needs.</p>
-<div class="math">\[\Omega=\{1,\omega,\omega^2,\ldots,\omega^{d-1}\}.\]</div>
-<div class="lab" data-lab="unity"><div class="lab-top"><strong>Visit all twelve points</strong><p>In \(\mathbb F_{97}\), the number \(\omega=6\) has order 12. Move the exponent and see where its powers go.</p></div><div class="lab-content"><label>Exponent \(j\)<input data-key="j" type="range" min="0" max="11" value="3"></label><div class="lab-output" aria-live="polite"></div></div></div>
-<p>The prover makes a polynomial \(f_{\mathrm{trace}}\) and assigns the values at specific powers. For each original input number \(j=1,\ldots,|I|\), set</p>
-<div class="math">\[f_{\mathrm{trace}}(\omega^{-j})=\text{input number }j.\]</div>
-<p>For each gate \(l=0,\ldots,|C|-1\), use three consecutive powers:</p>
+<article class="lesson" data-id="trace-encoding" data-title="Put the entire circuit trace into one polynomial">
+
+<p class="chapter-tag">Lecture §5.1 · From Circuits to Polynomials</p>
+<h1>How can one polynomial remember every gate value?</h1>
+<p class="aim">The circuit has given us a collection of claimed input, intermediate and output values. Our efficient verifier knows how to ask a polynomial oracle for evaluations. So we'll use interpolation—exactly as in Fibonacci—to turn the entire trace into one polynomial.</p>
+<p>First count the numbers we have to store. Every gate gives us three values: its left input, right input and output. There are \(|C|\) gates, where \(|C|\) means the number of gates. There are also \(|I|\) original inputs, including public and private ones. So the total number of trace entries is</p>
+<div class="math">\[\boxed{d=3|C|+|I|.}\]</div>
+<p>In the three-gate example, \(|C|=3\), and the original inputs are 2, 4, 3, so \(|I|=3\). Thus \(d=3\cdot3+3=12\) values. Those twelve values are what our polynomial must remember.</p>
+<h2>Which twelve points should hold the numbers?</h2>
+<p>We could choose any twelve different field elements. But the lecture makes a special choice that will simplify verification later. Pick a number \(\omega\) with <strong>multiplicative order 12</strong>. That means \(\omega^{12}=1\) but no smaller positive exponent gives 1. Then the twelve points</p>
+<div class="math">\[\Omega=\{1,\omega,\omega^2,\ldots,\omega^{11}\}\]</div>
+<p>are all distinct: if two powers repeated before exponent 12, a smaller positive power would equal 1. The lecture calls such an \(\omega\) a root of unity.</p>
+<p>For a small numerical example, work in \(\mathbb F_{97}\), the integers modulo 97. Here \(\omega=6\) has order 12. In fact \(6^6\equiv96=-1\), so \(6^{12}\equiv1\); and \(6^4\equiv35\ne1\). These rule out all proper divisors of 12 as possible orders.</p>
+<div class="lab" data-lab="unity"><div class="lab-top"><strong>See the twelve different evaluation points</strong><p>Move the exponent \(j\) and watch \(6^j\bmod97\) visit each point. After \(j=11\), the next power returns to 1.</p></div><div class="lab-content"><label class="range-label">Exponent \(j\) <output class="range-value" data-live-for="j">3</output><input data-key="j" type="range" min="0" max="11" value="3"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<h2>Assign every trace entry to a point</h2>
+<p>Now the prover interpolates a polynomial called \(f_{\rm trace}(X)\) through these twelve values. We assign the original inputs to the last few powers, using \(\omega^{-j}=\omega^{12-j}\), and assign the three values of gate \(l\) to three successive powers beginning at \(\omega^{3l}\):</p>
 <div class="math">\[
 \begin{aligned}
-f_{\mathrm{trace}}(\omega^{3l})&=\text{left input},\\
-f_{\mathrm{trace}}(\omega^{3l+1})&=\text{right input},\\
-f_{\mathrm{trace}}(\omega^{3l+2})&=\text{output}.
+f_{\rm trace}(\omega^{-j})&=\text{original input number }j,\\
+f_{\rm trace}(\omega^{3l})&=\text{left input of gate }l,\\
+f_{\rm trace}(\omega^{3l+1})&=\text{right input of gate }l,\\
+f_{\rm trace}(\omega^{3l+2})&=\text{output of gate }l.
 \end{aligned}
 \]</div>
-<p>In this multiplicative cycle, \(\omega^{-1}=\omega^{d-1}\), so the negative powers are just other points among the same \(d\) distinct powers.</p>
-<div class="panel">
-<p><strong>Our twelve assignments, exactly as in the lecture:</strong></p>
-<div class="table-scroll"><table><thead><tr><th>Positions</th><th>Values</th></tr></thead><tbody>
-<tr><td>\(\omega^{-1},\omega^{-2},\omega^{-3}\)</td><td>2, 4, 3 (original inputs)</td></tr>
-<tr><td>\(\omega^{0},\omega^{1},\omega^{2}\)</td><td>2, 4, 8 (gate 0)</td></tr>
-<tr><td>\(\omega^{3},\omega^{4},\omega^{5}\)</td><td>4, 3, 7 (gate 1)</td></tr>
-<tr><td>\(\omega^{6},\omega^{7},\omega^{8}\)</td><td>8, 7, 56 (gate 2)</td></tr>
+<p>Here \(j=1,\ldots,|I|\) and \(l=0,\ldots,|C|-1\). These are not mysterious shifts: they are a filing system. Three consecutive evaluation points store the three numbers for one gate.</p>
+<div class="table-scroll"><table><thead><tr><th>Trace item</th><th>Evaluation positions</th><th>Stored values</th></tr></thead><tbody>
+<tr><td>Original inputs</td><td>\(\omega^{-1},\omega^{-2},\omega^{-3}\)</td><td>2, 4, 3</td></tr>
+<tr><td>Gate 0: multiplication</td><td>\(\omega^0,\omega^1,\omega^2\)</td><td>2, 4, 8</td></tr>
+<tr><td>Gate 1: addition</td><td>\(\omega^3,\omega^4,\omega^5\)</td><td>4, 3, 7</td></tr>
+<tr><td>Gate 2: multiplication</td><td>\(\omega^6,\omega^7,\omega^8\)</td><td>8, 7, 56</td></tr>
 </tbody></table></div>
-</div>
-<div class="proof"><h3>Does such a polynomial actually exist?</h3>
-<p>Yes. We prescribed \(d=12\) values at twelve distinct points. The interpolation result gives one and only one polynomial of degree at most \(d-1=11\) that fits them. The degree bound follows from the number of points, not from a guess about the polynomial's shape.</p>
-<p class="qed">So all the claimed gate and input values can be represented by one polynomial \(f_{\mathrm{trace}}\). We have not checked that the values are correct yet. We've only arranged them so they can be checked algebraically. \(\square\)</p>
-</div>
-<div class="bridge">We can now ask \(f_{\mathrm{trace}}\) for any recorded gate value. But interpolation doesn't tell us whether the recorded values are <em>correct</em>: it can encode a fake trace just as easily as an honest one. Our next task is to turn circuit correctness into a few polynomial identities. First, though, notice why we chose the special powers of \(\omega\) instead of ordinary consecutive numbers. They make a large part of the verification much cheaper.</div>
-<p class="source">Official notes, §5.1, pp. 8–9.</p>
+<div class="proof"><h3>Does the trace polynomial actually exist?</h3>
+<p>Yes. We prescribed exactly twelve values at twelve distinct field points. The interpolation construction gives a polynomial of degree at most 11 matching them. And if two such polynomials matched at all twelve points, their difference would have twelve roots but degree at most 11, so it would have to be zero. Thus the interpolating polynomial is unique.</p>
+<p class="qed">The prover can represent the complete proposed trace with one degree-at-most-11 polynomial. The lecture sometimes uses the looser degree bound \(d=12\), but degree 11 suffices for this interpolation. \(\square\)</p></div>
+<p>There is an important limitation: any twelve numbers can be interpolated, including a dishonest trace. Our polynomial is a representation, <em>not yet evidence of correctness</em>.</p>
+<div class="bridge">Why did we choose the awkward powers of \(\omega\) instead of the natural indices 0 through 11? Because the polynomial that vanishes at all these powers has a special simple formula. That will help us avoid the slow product that troubled the Fibonacci verifier.</div>
+<p class="source">Lecture §5.1: \(d=3|C|+|I|\), roots-of-unity evaluation domain, and the exact mapping of inputs and gate values into \(f_{\rm trace}\).</p>
+
 </article>
 
-<article class="lesson" data-id="roots-unity-cost" data-title="Why the special evaluation domain matters">
-<p class="chapter-tag">IV · PLONK from circuits · Lecture §§3, 5.2</p>
-<h1>Why choose these unusual points?</h1>
-<p class="aim">In the trace encoding, we deliberately used the powers \(1,\omega,\omega^2,\ldots\) instead of ordinary positions. It may have seemed like an unnecessary complication. But recall the one operation that was still expensive in Fibonacci: calculating a vanishing polynomial as a long product. The special points let us replace that product with a single power.</p>
-<p>For the full set \(\Omega=\{1,\omega,\ldots,\omega^{d-1}\}\), the vanishing polynomial is</p>
+<article class="lesson" data-id="roots-unity-cost" data-title="Why roots of unity make verification faster">
+
+<p class="chapter-tag">Lecture §§3 and 5.2 · Efficient vanishing polynomials</p>
+<h1>Why use these special evaluation points?</h1>
+<p class="aim">The Fibonacci verifier had one remaining expensive calculation: evaluating a vanishing polynomial that was a product of many factors. We have now chosen the trace positions to be all the powers of a root of unity. That makes their vanishing polynomial much easier to evaluate.</p>
+<p>For the entire set \(\Omega=\{1,\omega,\ldots,\omega^{d-1}\}\), the vanishing polynomial is, by definition,</p>
 <div class="math">\[Z_\Omega(X)=\prod_{j=0}^{d-1}(X-\omega^j).\]</div>
-<p>That product has \(d\) factors. But look at another polynomial, \(X^d-1\). At each point \(X=\omega^j\), its value is</p>
-<div class="math">\[(\omega^j)^d-1=(\omega^d)^j-1=1-1=0.\]</div>
-<p>So \(X^d-1\) has exactly the same \(d\) designated roots. In fact, the two polynomials are equal, and we can prove it without expanding the large product.</p>
-<div class="proof"><h3>Prove \(Z_\Omega(X)=X^d-1\)</h3>
-<p>Both polynomials have degree \(d\), and both have leading coefficient 1. Subtract them:</p>
-<div class="math">\[h(X)=(X^d-1)-Z_\Omega(X).\]</div>
-<p>The two \(X^d\) terms cancel. So either \(h\) is identically zero or its degree is at most \(d-1\). But at each of the \(d\) different points \(\omega^j\), both original polynomials are zero; hence \(h(\omega^j)=0\).</p>
-<p>If \(h\) were a nonzero polynomial of degree at most \(d-1\), our root theorem would allow only \(d-1\) roots. We have \(d\) roots. That's impossible. Therefore \(h\) must be the zero polynomial.</p>
+<p>There are \(d\) factors. But every point \(\omega^j\) also makes the much simpler polynomial \(X^d-1\) equal to zero, because \((\omega^j)^d=(\omega^d)^j=1\).</p>
+<div class="proof"><h3>Show that the two polynomials are identical</h3>
+<p>Both polynomials have degree \(d\) and leading coefficient 1. Their difference therefore has degree at most \(d-1\): the leading \(X^d\) terms cancel.</p>
+<p>Yet at each of the \(d\) distinct points \(\omega^0,\ldots,\omega^{d-1}\), both polynomials are zero, so their difference has \(d\) roots. A nonzero polynomial of degree at most \(d-1\) cannot have that many roots. Their difference must therefore be identically zero.</p>
 <div class="math">\[\boxed{Z_\Omega(X)=X^d-1.}\]</div>
-<p class="qed">We've replaced a product of \(d\) factors with a single power and a subtraction. That's the reason this special set of points is useful. \(\square\)</p>
-</div>
-<h2>Is taking a large power expensive?</h2>
-<p>Not if we use repeated squaring. To compute \(r^{12}\), first compute \(r^2\), then \(r^4=(r^2)^2\), then \(r^8=(r^4)^2\), then \(r^{12}=r^8r^4\). That's four field multiplications instead of a product with twelve separate factors.</p>
-<p>In general, repeated squaring takes \(O(\log d)\) multiplications to compute \(r^d\), so evaluating the full-domain vanishing polynomial is inexpensive even when \(d\) is large.</p>
-<div class="warning"><p>Be careful about the set. The identity \(Z_\Omega(X)=X^d-1\) holds for the <em>complete set</em> of distinct \(d\)-th roots of unity. A smaller arbitrary subset, such as the positions of only the public inputs, generally does not have that same formula. Those checks may require other structure or preprocessing.</p></div>
-<div class="bridge">So choosing the roots-of-unity domain was not decoration. It makes an important part of the polynomial check fast. We now have the trace polynomial and an efficient way to evaluate the full-domain vanishing polynomial. The remaining question is what <em>equations</em> the trace must satisfy to count as a real circuit execution. There are four families, and each catches a different way of cheating.</div>
-<p class="source">Official notes, discussion after the Fibonacci example and §5.2.</p>
+<p class="qed">That is why we chose this domain: a vanishing product with \(d\) factors collapses to a single power and a subtraction. \(\square\)</p></div>
+<p>Doesn't taking a large power also take a long time? Not with <strong>repeated squaring</strong>. To calculate \(r^{12}\), first calculate \(r^2\), then \(r^4\), then \(r^8\), and multiply \(r^8r^4\). That's four field multiplications, rather than evaluating and multiplying twelve separate factors. In general, exponentiation by repeated squaring takes \(O(\log d)\) multiplications.</p>
+<p>One caution: the identity \(Z_\Omega(X)=X^d-1\) is for the <em>full</em> roots-of-unity domain. A smaller set of positions—such as just the public-input positions or just gate starts—does not automatically have that same polynomial. The lecture notes that these subsets can also have useful structure or be handled with circuit-specific preprocessing; it does not provide every resulting formula.</p>
+<div class="bridge">We now have a convenient polynomial encoding of the trace and a fast way to evaluate the full-domain vanishing polynomial. The next question is the one that actually determines correctness: what equations must that trace satisfy so it represents the circuit we asked the prover to run?</div>
+<p class="source">Lecture §3, discussion of the Fibonacci verifier's product bottleneck, and §5.2, the structured roots-of-unity domain.</p>
+
 </article>
 
-<article class="lesson" data-id="plonk-output-input" data-title="PLONK checks I: output and public inputs">
-<p class="chapter-tag">IV · PLONK from circuits · Lecture §5.2, checks 1–2</p>
-<h1>How do we know the trace is for the right problem?</h1>
-<p class="aim">The prover has encoded a table in \(f_{\mathrm{trace}}\). But any table can be interpolated into a polynomial, including a completely invented one. To turn this into a proof, we need conditions that force the table to be the execution of <em>our</em> circuit. Start with the two things the verifier knows for sure: the public input and the answer it expects.</p>
-<p>Let's handle those two possibilities first. After this we'll worry about whether the gates and wires were consistent.</p>
-<h2>1. Did the final output equal zero?</h2>
-<p>Recall that gate \(l\) stores its output at position \(\omega^{3l+2}\). The last gate is numbered \(|C|-1\), so its output lives at exponent \(3(|C|-1)+2=3|C|-1\).</p>
-<p>There is only one value to check:</p>
-<div class="math">\[\boxed{f_{\mathrm{trace}}(\omega^{3|C|-1})=0.}\]</div>
-<p>For the three-gate picture in the notes, the final value is 56, so this zero-output check fails. That's correct: the picture calculates 56, rather than checking that the answer equals a target. When we append the final target-check gate, the correct output is zero.</p>
-<h2>2. Did the prover use our public inputs?</h2>
-<p>Suppose the verifier gave public input values \(x_1,\ldots,x_m\). The prover is supposed to put them at \(\omega^{-1},\ldots,\omega^{-m}\). We can't simply trust that it did so.</p>
-<p>The verifier makes its own polynomial \(f_{\mathrm{in}}\) from the public values, satisfying</p>
-<div class="math">\[f_{\mathrm{in}}(\omega^{-j})=x_j,\qquad j=1,\ldots,m.\]</div>
-<p>Why invent this polynomial? Because we already know how to test whether <em>two polynomials agree at a chosen set of points</em>. Define their difference:</p>
-<div class="math">\[g(X)=f_{\mathrm{trace}}(X)-f_{\mathrm{in}}(X).\]</div>
-<p>At public input position \(a=\omega^{-j}\), the condition \(g(a)=0\) means</p>
-<div class="math">\[
-f_{\mathrm{trace}}(\omega^{-j})-f_{\mathrm{in}}(\omega^{-j})=0
-\quad\Longleftrightarrow\quad
-f_{\mathrm{trace}}(\omega^{-j})=x_j.
-\]</div>
-<p>So the entire public-input check is exactly the statement that \(g\) vanishes on the set</p>
-<div class="math">\[\Omega_I=\{\omega^{-1},\ldots,\omega^{-m}\}.\]</div>
-<p>We've already learned to prove that with ZeroTest: the prover supplies a quotient for \(g\) over \(\Omega_I\), and the verifier checks the identity using authenticated random evaluations. It must also check that the claimed \(g\) really is \(f_{\mathrm{trace}}-f_{\mathrm{in}}\), not an unrelated polynomial.</p>
-<div class="proof"><h3>What does a successful input check establish?</h3>
-<p>If the ZeroTest identity and the consistency equation hold, then \(g\) is zero at every public input position. At position \(\omega^{-j}\), that gives \(f_{\mathrm{trace}}(\omega^{-j})=f_{\mathrm{in}}(\omega^{-j})=x_j\). So every prescribed public value in the trace agrees with what the verifier knows.</p>
-<p class="qed">The test checks exactly the public-input requirement. It does not yet check whether the gates computed correctly with those inputs. \(\square\)</p>
-</div>
-<p>Why not open all \(m\) input positions directly? That would need \(m\) polynomial opening proofs, growing linearly with the public input length. Our definition allows the verifier to read its \(m\) public values, but the proof itself is supposed to remain succinct.</p>
-<div class="bridge">The output and public-input checks tie the proposed trace to the problem we're trying to solve. But they still don't tell us <em>how</em> the table reached that output. A cheater could write correct endpoints and arbitrary intermediate numbers. Our next check forces every individual gate to perform its prescribed addition or multiplication.</div>
-<p class="source">Official notes, §5.2 items (1)–(2) and footnote 3, pp. 9–10.</p>
+<article class="lesson" data-id="plonk-output-input" data-title="PLONK checks 1 and 2: output and public inputs">
+
+<p class="chapter-tag">Lecture §5.2 · Verifying the circuit trace, conditions 1–2</p>
+<h1>How do we know the trace is for our statement?</h1>
+<p class="aim">The prover has committed to a polynomial representing twelve numbers. But interpolation would have produced a polynomial for any fabricated table. We need conditions that force these numbers to describe an execution of the <em>public circuit</em>, with the <em>public inputs</em> the verifier supplied and the required output.</p>
+<p>The lecture lists four requirements: the final output, the public inputs, correctness of every gate, and consistency of the wires. We'll handle them one at a time. The first two anchor the trace to the particular statement we're proving.</p>
+<h2>1. The circuit must reach the required output</h2>
+<p>For gate \(l\), the output is stored at \(f_{\rm trace}(\omega^{3l+2})\). The last gate has number \(|C|-1\), so its output is at exponent \(3(|C|-1)+2=3|C|-1\).</p>
+<p>For the lecture's <strong>zero-output</strong> circuit statement, this means checking one value:</p>
+<div class="math">\[\boxed{f_{\rm trace}(\omega^{3|C|-1})=0.}\]</div>
+<p>The lecture's pictured three-gate circuit ends in 56, not 0. If we use that picture to claim its output is 56, the corresponding illustrative condition is \(f_{\rm trace}(\omega^8)=56\). To use the formal zero-output language, append a target-checking operation and build the trace and evaluation domain for that <em>modified</em> circuit. We must not mix the three-gate positions with the four-gate output check.</p>
+<h2>2. The prover must not change our public inputs</h2>
+<p>Suppose the verifier specified public inputs \(x_1,\ldots,x_m\). The trace has designated positions \(\omega^{-1},\ldots,\omega^{-m}\) for them. The verifier must make sure the prover really put the requested values there.</p>
+<p>Construct a polynomial \(f_{\rm in}\) from the public data, with \(f_{\rm in}(\omega^{-j})=x_j\) at each public-input position. This is ordinary interpolation: the verifier knows those values and therefore knows the intended polynomial. It need not know the private witness.</p>
+<p>Define the difference</p>
+<div class="math">\[g(X)=f_{\rm trace}(X)-f_{\rm in}(X).\]</div>
+<p>At public-input position \(\omega^{-j}\), the equation \(g(\omega^{-j})=0\) means exactly \(f_{\rm trace}(\omega^{-j})=x_j\). Thus all the public inputs are correct <em>if and only if</em> \(g\) is zero on the set \(\Omega_I=\{\omega^{-1},\ldots,\omega^{-m}\}\).</p>
+<p>That is ZeroTest again. The prover supplies the polynomial \(g\) and its vanishing-polynomial quotient. Before using ZeroTest, the verifier checks that the claimed \(g\) is actually consistent with \(f_{\rm trace}-f_{\rm in}\), by a random equality test using authenticated evaluations. Otherwise the prover could substitute an unrelated polynomial that happens to vanish on \(\Omega_I\).</p>
+<div class="proof"><h3>What do these first two checks establish?</h3>
+<p>The first check pins down the final result. The second pins down every public input. A successful ZeroTest of \(g\), together with the consistency check, forces \(f_{\rm trace}(\omega^{-j})=x_j\) at each public-input position.</p>
+<p class="qed">We now know the trace begins with the right public values and claims the right final answer. We do not yet know whether it reached that answer by performing the correct operations. \(\square\)</p></div>
+<p>Why not just open all \(m\) input locations directly? Because that would require \(m\) separate authentication proofs and make the <em>proof length</em> grow linearly with the public input. The verifier may spend time reading the public input, but the SNARG proof itself must remain succinct.</p>
+<div class="bridge">Correct endpoints aren't enough. A prover could put the right public inputs and right answer in its trace but invent arbitrary intermediate values. Next we must force every individual gate to perform the operation shown in the public circuit.</div>
+<p class="source">Lecture §5.2, conditions (1) and (2), input polynomial \(f_{\rm in}\), and footnote explaining why opening every input location would violate succinct proof size.</p>
+
 </article>
 
-<article class="lesson" data-id="plonk-gates" data-title="PLONK check II: selector and gate equations">
-<p class="chapter-tag">IV · PLONK from circuits · Lecture §5.2, check 3</p>
-<h1>Can one equation check both kinds of gates?</h1>
-<p class="aim">We have fixed the public inputs and final output. But a fake trace could still contain wrong calculations in the middle. If we check every gate separately, we'd lose the efficiency we wanted. So we'll describe <em>all</em> the addition and multiplication gates using one polynomial whose required zeros certify the local arithmetic.</p>
-<p>Start with one gate. Call its left input \(L\), right input \(R\), and output \(O\). For an addition gate, the condition is \(L+R=O\). For a multiplication gate, it's \(LR=O\).</p>
-<p>Introduce a number \(s\), called the <strong>selector</strong>. Set \(s=1\) for addition and \(s=0\) for multiplication. Now examine this single equation:</p>
+<article class="lesson" data-id="plonk-gates" data-title="PLONK check 3: one equation for all gates">
+
+<p class="chapter-tag">Lecture §5.2 · Verifying the circuit trace, condition 3</p>
+<h1>How can one equation check both addition and multiplication?</h1>
+<p class="aim">The verifier must reject a trace with a wrong gate result. But there may be millions of gates. If it checked each one separately, we would be back to repeating the computation. We need one polynomial whose required zeros express <em>all</em> the gate calculations.</p>
+<p>Start with just one gate. Call its left input \(L\), its right input \(R\), and its output \(O\). For addition we need \(L+R=O\). For multiplication we need \(LR=O\).</p>
+<p>The circuit already tells us which operation each gate performs. Encode that public choice with a bit \(s\), called a <strong>selector</strong>: set \(s=1\) for addition and \(s=0\) for multiplication. Now consider</p>
 <div class="math">\[\boxed{s(L+R)+(1-s)LR-O=0.}\]</div>
-<p>Why does it work? When \(s=1\), the multiplication term disappears and we get \(L+R-O=0\). When \(s=0\), the addition term disappears and we get \(LR-O=0\). We haven't approximated anything: it's exactly the right equation for either gate.</p>
-<h2>Put the selector into a polynomial</h2>
-<p>Every gate has a public type. Build a selector polynomial \(f_{\mathrm{sel}}\) whose value at the start of gate \(l\) is its selector:</p>
-<div class="math">\[
-f_{\mathrm{sel}}(\omega^{3l})=
-\begin{cases}
-0&\text{if gate }l\text{ multiplies},\\
-1&\text{if gate }l\text{ adds}.
-\end{cases}
-\]</div>
-<p>Why store this in a polynomial? Because we can now use it together with \(f_{\mathrm{trace}}\) to form <em>one gate-checking polynomial</em>. At the start of a gate, the trace values at \(X,\omega X,\omega^2X\) are exactly \(L,R,O\). Replace the three letters by those evaluations:</p>
+<p>Substitute \(s=1\): the multiplication part disappears, leaving \(L+R-O=0\). Substitute \(s=0\): the addition part disappears, leaving \(LR-O=0\). So the same equation checks either kind of gate exactly.</p>
+<p>Look at the lecture's example. Gate 0 multiplies \(2\cdot4=8\), so \(s=0\) and the equation becomes \(2\cdot4-8=0\). Gate 1 adds \(4+3=7\), so \(s=1\) and it becomes \(4+3-7=0\). The formula doesn't merely resemble the right rules; it gives them exactly.</p>
+<h2>Use the trace polynomial instead of three separate numbers</h2>
+<p>Recall our encoding: at gate-start point \(X=\omega^{3l}\), the left input is \(f_{\rm trace}(X)\), the right input is \(f_{\rm trace}(\omega X)\), and the output is \(f_{\rm trace}(\omega^2X)\). The public circuit also determines the selector for each gate.</p>
+<p>Interpolate those selector bits into a polynomial \(f_{\rm sel}(X)\) with \(f_{\rm sel}(\omega^{3l})=0\) for multiplication and 1 for addition. For the three-gate example, its values at gate starts \(1,\omega^3,\omega^6\) are 0, 1, 0.</p>
+<p>Now replace \(L,R,O,s\) in the single-gate equation with these polynomial evaluations:</p>
 <div class="math">\[
 \begin{aligned}
-f_{\mathrm{gates}}(X)={}&f_{\mathrm{sel}}(X)
-\bigl[f_{\mathrm{trace}}(X)+f_{\mathrm{trace}}(\omega X)\bigr]\\
-&+\bigl(1-f_{\mathrm{sel}}(X)\bigr)
-f_{\mathrm{trace}}(X)f_{\mathrm{trace}}(\omega X)\\
-&-f_{\mathrm{trace}}(\omega^2X).
+f_{\rm gates}(X)={}&f_{\rm sel}(X)\bigl(f_{\rm trace}(X)+f_{\rm trace}(\omega X)\bigr)\\
+&+\bigl(1-f_{\rm sel}(X)\bigr)f_{\rm trace}(X)f_{\rm trace}(\omega X)\\
+&-f_{\rm trace}(\omega^2X).
 \end{aligned}
 \]</div>
-<p>It looks long, but it's simply our one-gate equation with polynomial evaluations in place of \(L,R,O\).</p>
-<p>At each gate-start position \(X=\omega^{3l}\), the equation \(f_{\mathrm{gates}}(X)=0\) is <em>exactly equivalent</em> to the gate's arithmetic being correct. Therefore the prover must show that \(f_{\mathrm{gates}}\) is zero on all gate-start positions:</p>
-<div class="math">\[
-\Omega_{\mathrm{gates}}=
-\{1,\omega^3,\omega^6,\ldots,\omega^{3(|C|-1)}\}.
-\]</div>
-<p>This is another ZeroTest. Its quotient identity can be checked at a random point after the relevant polynomials are committed to.</p>
-<div class="proof"><h3>What does this prove—and what doesn't it prove?</h3>
-<p>For every gate \(l\), substitute \(X=\omega^{3l}\). The selector becomes the gate's fixed operation bit, and the three trace evaluations become that gate's left, right and output values. If the gate polynomial is zero there, the required addition or multiplication relation holds.</p>
-<p class="qed">Thus a correct ZeroTest proves that every <em>individual gate</em> is evaluated correctly. It says nothing yet about whether a gate has actually used the output of the preceding gate connected to it. That's a different condition. \(\square\)</p>
-</div>
-<p>One efficiency detail: \(f_{\mathrm{sel}}\) is large, but it depends only on the circuit diagram, not on the witness. We can compute and commit to it once when preparing the circuit, rather than rebuilding it for every input.</p>
-<div class="bridge">There is still one loophole. Gate 2 might correctly calculate \(9\times7=63\) even though gate 0 actually output 8 and is supposed to feed gate 2. Each gate would pass its arithmetic test, but the circuit would be false. That's why we must also check that the values of connected wires agree across different gate rows.</div>
-<p class="source">Official notes, §5.2 item (3), p. 10.</p>
+<p>Why is this useful? At the start of any gate \(l\), the equation \(f_{\rm gates}(\omega^{3l})=0\) is <em>exactly</em> the correct arithmetic rule for that gate. Hence every gate is evaluated correctly if and only if the gate polynomial vanishes on</p>
+<div class="math">\[\Omega_{\rm gates}=\{\omega^0,\omega^3,\omega^6,\ldots,\omega^{3(|C|-1)}\}.\]</div>
+<p>That's the same pattern we proved in Fibonacci: many required zero values, one vanishing-polynomial quotient, and a random ZeroTest to check the identity without visiting every position.</p>
+<div class="proof"><h3>What does this guarantee?</h3>
+<p>If the gate polynomial is zero at each gate-start point, substituting those points recovers the correct addition or multiplication equation for every gate, because the selector comes from the public circuit. Conversely, if every gate is evaluated correctly, those same equations are zero at every gate-start point.</p>
+<p class="qed">We have reduced all the local gate checks to a polynomial vanishing condition. But we have <em>not</em> yet proved that one gate used the output of the gate actually wired to it. \(\square\)</p></div>
+<p>The selector polynomial is large—its degree grows with circuit size. The verifier should not calculate it from scratch for every proof. But the selector depends only on the <em>circuit</em>, not on the input or private witness, so it can be computed and committed to in a one-time circuit-specific preprocessing step.</p>
+<div class="bridge">Here's the remaining loophole. Gate 2 could correctly compute \(9\cdot7=63\), even though gate 0 produced 8 and was supposed to feed 8 into gate 2. Every local gate equation might pass while the overall circuit is false. The last condition checks the wires linking the gate rows.</div>
+<p class="source">Lecture §5.2, condition (3), selector polynomial \(f_{\rm sel}\), gate polynomial \(f_{\rm gates}\), and circuit-specific preprocessing observation.</p>
+
 </article>
 
-<article class="lesson" data-id="plonk-wiring" data-title="PLONK check III: wiring consistency">
-<p class="chapter-tag">IV · PLONK from circuits · Lecture §5.2, check 4</p>
-<h1>Three correct calculations can still give a false circuit</h1>
-<p class="aim">The last lesson found a loophole in our gate test. The verifier checks every gate's arithmetic in isolation, so a dishonest prover might feed gate 2 a different number from the one gate 0 actually produced. Let's see why that makes a false trace pass the earlier tests—and how the wiring check closes the gap.</p>
-<p>No. In our actual circuit, the output of gate 0 is wired to the left input of gate 2. Gate 0 produced 8, so gate 2 must receive 8—not 9. A calculation can be locally correct and still use a value from the wrong wire.</p>
-<p>This is why PLONK has a separate <strong>wiring check</strong>. Wherever the same logical wire appears in the trace, the two polynomial evaluations must agree.</p>
-<p>In our example, gate 0's output is at \(\omega^2\), and gate 2's left input is at \(\omega^6\). Gate 1's output is at \(\omega^5\), and gate 2's right input is at \(\omega^7\). So two required equalities are</p>
+<article class="lesson" data-id="plonk-wiring" data-title="PLONK check 4: the gates must be connected correctly">
+
+<p class="chapter-tag">Lecture §5.2 · Verifying the circuit trace, condition 4</p>
+<h1>Three correct gates can still describe the wrong computation</h1>
+<p class="aim">We have proved that every gate performs its own addition or multiplication correctly. But the trace stores some values more than once. The output of one gate appears again as the input to another. Those repeated entries must agree, or the prover can secretly change a wire value while keeping each individual gate locally correct.</p>
+<p>In our original circuit, gate 0 produces 8, and gate 2 must use that 8 as its left input. Gate 1 produces 7, and gate 2 must use 7 as its right input. In terms of the trace polynomial, the required equalities are</p>
 <div class="math">\[
-f_{\mathrm{trace}}(\omega^2)=f_{\mathrm{trace}}(\omega^6),
+f_{\rm trace}(\omega^2)=f_{\rm trace}(\omega^6),
 \qquad
-f_{\mathrm{trace}}(\omega^5)=f_{\mathrm{trace}}(\omega^7).
+f_{\rm trace}(\omega^5)=f_{\rm trace}(\omega^7).
 \]</div>
-<div class="lab" data-lab="trace"><div class="lab-top"><strong>Make the trace lie in different ways</strong><p>Change the proposed trace. Watch which arithmetic equations pass and which wire connections fail. The last gate checks the public target, so a correct circuit has output zero.</p></div><div class="lab-content"><label>Which trace should the prover send?<select data-key="mode"><option value="honest">Honest trace</option><option value="wire">Wrong wire values, correct local gates</option><option value="gate">Wrong multiplication</option><option value="public">Wrong public input</option><option value="output">Wrong final output</option></select></label><div class="lab-output" aria-live="polite"></div></div></div>
-<h2>How do we express all the wire equalities?</h2>
-<p>The lecture introduces a <strong>rotation polynomial</strong> \(f_{\mathrm{rot}}\). For each point \(a\) in the trace domain \(\Omega\), it identifies another position carrying the same logical wire. Repeating these mappings visits all occurrences of that wire.</p>
-<p>So the intended relation is</p>
-<div class="math">\[
-f_{\mathrm{trace}}(a)
-=f_{\mathrm{trace}}(f_{\mathrm{rot}}(a)),
-\qquad a\in\Omega.
-\]</div>
-<div class="proof"><h3>Why would checking these relations suffice?</h3>
-<p>Take any one logical wire. Suppose its positions form a cycle \(a_1\to a_2\to\cdots\to a_k\to a_1\) under \(f_{\mathrm{rot}}\). If the displayed equation holds at every position in the cycle, then the value at \(a_1\) equals the value at \(a_2\); that equals the value at \(a_3\); and so on. By ordinary transitivity of equality, every occurrence has exactly the same value.</p>
-<p class="qed">So these equalities are precisely what we need to prevent different occurrences of the same wire from carrying contradictory numbers. Together with the gate equations, they make the trace describe one genuine circuit computation. \(\square\)</p>
-</div>
-<p>The rotation polynomial depends on the fixed wiring diagram, so like the selector it can be prepared once for a circuit.</p>
-<div class="warning"><p>The lecture sketches this wiring method but does not describe the full polynomial IOP that proves these equations efficiently. We have proved <em>what the wire equalities imply</em>, not the security of the omitted wiring subprotocol. No additional wiring proof is examinable from these lecture notes unless supplied elsewhere in the course.</p></div>
-<div class="practice-link"><span class="practice-tag">Test the loophole</span><a href="#exam-fake-trace">Practice: all gates are correct, but the circuit is false—find the bad wire</a></div>
-<div class="bridge">The wiring rule was the final missing logical condition. We now have four checks: the right public inputs, the right output, honest arithmetic at each gate, and agreement where wires connect. The next lesson will show, step by step, why passing <em>all four</em> forces a real satisfying computation. That's the conclusion we've been working toward since the very first lesson.</div>
-<p class="source">Official notes, §5.2 item (4), pp. 10–11.</p>
+<p>And we must also ensure the original input entries agree with the copies inside the gates. For example, public \(x_2=4\) appears at \(\omega^{-2}\), gate 0's right input at \(\omega^1\), and gate 1's left input at \(\omega^3\). All three places refer to one logical wire and must contain the same number.</p>
+<div class="lab" data-lab="trace"><div class="lab-top"><strong>Make a trace lie in different ways</strong><p>Choose a proposed trace. See which checks fail. The simulator includes an extra target-check gate in \(\mathbb F_{97}\) so that the desired final output is zero; this is a gate-value illustration, not the earlier twelve-point polynomial encoding.</p></div><div class="lab-content"><label>Trace the prover claims <select data-key="mode">
+<option value="honest">Honest trace</option>
+<option value="wire">Wrong wiring, locally correct gates</option>
+<option value="gate">Wrong multiplication</option>
+<option value="public">Wrong public input</option>
+<option value="output">Wrong final output</option>
+</select></label><div class="lab-output" aria-live="polite"></div></div></div>
+<h2>How can we describe all wire equalities at once?</h2>
+<p>Take any logical wire and list every trace position where its value appears. Put those positions in a cycle. For the input \(x_2\), for instance, we can make a cycle through \(\omega^{-2}\), \(\omega^1\), \(\omega^3\), and back to \(\omega^{-2}\).</p>
+<p>The lecture encodes the mapping from each position to the next position carrying the same wire using a <strong>rotation polynomial</strong> \(f_{\rm rot}\). It is a polynomial representation of a permutation of the trace positions, determined entirely by the circuit wiring. It is not merely the operation \(X\mapsto\omega X\).</p>
+<p>The intended consistency condition is</p>
+<div class="math">\[\boxed{f_{\rm trace}(a)=f_{\rm trace}(f_{\rm rot}(a))\quad\text{for all }a\in\Omega.}\]</div>
+<div class="proof"><h3>Why do these equalities enforce the actual wires?</h3>
+<p>Suppose one logical wire appears at positions \(a_1,\ldots,a_k\), ordered as a cycle \(a_1\to a_2\to\cdots\to a_k\to a_1\). The displayed equation forces the value at \(a_1\) to equal the value at \(a_2\); that equals the value at \(a_3\), and so on. By ordinary transitivity of equality, every occurrence carries the same number.</p>
+<p>Conversely, if each logical wire really does carry one consistent value at every occurrence, then all these equalities hold. So checking these relations is equivalent to checking correct wire copying.</p>
+<p class="qed">This closes the loophole left by local gate equations. Once wire copies are consistent, the gate calculations refer to the actual connected circuit, not independent rows of arithmetic. \(\square\)</p></div>
+<p>Like the selector polynomial, \(f_{\rm rot}\) depends only on the public circuit, not on its witness. It can therefore be computed and committed to in preprocessing. The lecture explicitly does <em>not</em> give the detailed polynomial IOP for efficiently checking these rotation relations; we should understand the logical condition and its purpose without inventing a full security proof that isn't in the source.</p>
+<div class="practice-link"><span class="practice-tag">Test whether you've understood the loophole</span><a href="#exam-fake-trace">Exam-style exercise: locally correct gates, but one copied wire is wrong</a></div>
+<div class="bridge">We now have all four necessary checks: public inputs, output, individual gate arithmetic, and wiring. What remains is to show they are sufficient together. Then the final lecture section packages their polynomial checks with universal setup, circuit-specific preprocessing and Fiat–Shamir.</div>
+<p class="source">Lecture §5.2, condition (4), input and intermediate wire equalities, rotation polynomial and the omission of the detailed wiring subprotocol.</p>
+
 </article>
 
-<article class="lesson" data-id="plonk-final" data-title="Putting the PLONK SNARG together">
-<p class="chapter-tag">IV · PLONK from circuits · Lecture §6</p>
-<h1>Put all the pieces together</h1>
-<p class="aim">We started by asking how to verify an expensive computation without repeating it. We now have a trace represented by a polynomial and four checks designed to catch every type of false circuit execution. It's time to prove that those checks really do answer our original question, and then see how the proof can be short.</p>
-<h2>First, prepare what does not change</h2>
-<p>The polynomial commitment scheme runs a <strong>universal setup</strong> for a chosen maximum polynomial or circuit size, producing public parameters \(pp\). This setup does not depend on the particular circuit \(C\).</p>
-<p>Next, for a particular circuit, calculate the selector \(f_{\mathrm{sel}}\) and rotation polynomial \(f_{\mathrm{rot}}\), then commit to them. Their contents depend only on the gates and wires of that circuit—not on the private witness. So if the circuit is used repeatedly, this <strong>circuit-specific preprocessing</strong> needs to be done only once.</p>
-<h2>Then the prover does the real computation</h2>
-<p>For public input \(\mathbf x\) and witness \(\mathbf w\), the prover evaluates the circuit, records every gate's inputs and output, and interpolates the trace polynomial \(f_{\mathrm{trace}}\). It commits to the trace and to the auxiliary polynomials and quotients needed for the input, gate, and wiring checks.</p>
-<p>The verifier uses short polynomial openings and random points to test the claimed equations. The entire logic rests on just four requirements:</p>
-<div class="panel">
-<p><strong>1. Output.</strong> The final gate's trace value must be zero.</p>
-<p><strong>2. Public input.</strong> The designated trace positions must contain the actual public values.</p>
-<p><strong>3. Gates.</strong> Every gate's two inputs and output must satisfy its selected addition or multiplication equation.</p>
-<p><strong>4. Wiring.</strong> Every occurrence of the same logical wire must carry the same value.</p>
-</div>
-<div class="proof"><h3>If all four hold, why is the statement true?</h3>
-<p>Start at the circuit's inputs. Requirement 2 fixes the public ones. The private input positions give us a candidate witness \(\mathbf w\). Requirement 4 means each wire has one consistent value wherever it is used.</p>
-<p>Now go through the gates in computation order. For the first gate, its inputs are the specified wire values, and requirement 3 says the output is their correct sum or product. Because wiring is consistent, the next gate sees exactly the output values delivered by earlier gates. Requirement 3 then makes its output correct too. Continue through the whole circuit.</p>
-<p>We have now shown that the recorded trace must equal a genuine evaluation of \(C(\mathbf x,\mathbf w)\). Finally, requirement 1 says its output is zero. Therefore</p>
+<article class="lesson" data-id="plonk-final" data-title="The complete PLONK SNARG blueprint">
+
+<p class="chapter-tag">Lecture §6 · A PLONK SNARG</p>
+<h1>Why do these checks prove the circuit statement?</h1>
+<p class="aim">We started by asking how to verify a long computation without running it again. The trace polynomial now holds a proposed execution, and we have four requirements that aim to force it to be genuine. Before discussing proof size, let's show exactly why <em>passing all four</em> means the public statement is true.</p>
+<div class="proof"><h3>From a valid trace to a satisfying witness</h3>
+<p>Take a trace that passes all four checks. The public-input check fixes the known inputs to the values the verifier supplied. The other original input positions determine a candidate private witness \(\mathbf w\).</p>
+<p>Now process the circuit in gate order. For the first gate, its input wires have definite values. The gate equation forces its output to be the correct sum or product. The wiring check forces every later occurrence of that output wire to carry exactly that same value. So the next gate receives the outputs specified by the circuit, rather than values invented independently by the prover.</p>
+<p>Repeat this reasoning through all gates. By induction on the gate order, the whole trace is a genuine evaluation of \(C(\mathbf x,\mathbf w)\). Finally, the output check says that this genuine evaluation reaches zero. Therefore</p>
 <div class="math">\[\boxed{C(\mathbf x,\mathbf w)=0.}\]</div>
-<p class="qed">That's the missing last line of the argument. The four conditions don't merely describe a computation; <em>together they force the existence of a witness that satisfies the public circuit statement</em>. \(\square\)</p>
+<p class="qed">We have proved the logical implication the protocol needs: if the four constraint families hold, the trace supplies an actual witness to the public circuit statement. This is why checking them is sufficient. \(\square\)</p></div>
+<h2>How is the final system organized?</h2>
+<p>The lecture divides the work into three stages, because some calculations depend only on the circuit, while others depend on the witness for a particular proof.</p>
+<div class="panel">
+<p><strong>Universal setup.</strong> Run the polynomial commitment scheme's setup to obtain public parameters \(pp\). This setup supports some maximum degree or circuit size but does not depend on a particular circuit \(C\).</p>
+<p><strong>Circuit-specific preprocessing.</strong> Given \(C\), build its selector polynomial \(f_{\rm sel}\) and rotation polynomial \(f_{\rm rot}\), commit to them, and publish the commitments as part of the circuit's verification information. This step takes work proportional to circuit size \(O(|C|)\) but can be reused for many different inputs to the same circuit.</p>
+<p><strong>Proof and verification.</strong> For public input \(\mathbf x\) and witness \(\mathbf w\), compute the circuit trace, interpolate and commit to \(f_{\rm trace}\), and produce the polynomial checks summarized below.</p>
 </div>
-<h2>And what makes the proof short?</h2>
-<p>Polynomial IOPs let the verifier test each family of constraints using a few evaluations rather than examining every gate. Polynomial commitments authenticate those evaluations. Finally, Fiat–Shamir derives the random challenges from the earlier commitments, so the verifier no longer needs to interact with the prover.</p>
-<p>For suitable commitment schemes and full subprotocols, the lecture targets proof size and verification time of the form</p>
+<h2>The four checks in the lecture's final protocol</h2>
+<p><strong>1. Output:</strong> authenticate the trace polynomial's value at the final gate's output position and check it is zero.</p>
+<p><strong>2. Public inputs:</strong> construct \(f_{\rm in}\) from the public values, check that the claimed difference \(f_{\rm trace}-f_{\rm in}\) is consistent with the trace, and use ZeroTest over the public-input positions with a quotient polynomial.</p>
+<p><strong>3. Gate arithmetic:</strong> use the preprocessed selector polynomial and the trace polynomial to form \(f_{\rm gates}\). The prover supplies its vanishing-polynomial quotient over all gate-start positions. The verifier checks the resulting identity using authenticated random evaluations.</p>
+<p><strong>4. Wiring:</strong> use the preprocessed rotation polynomial to establish that all occurrences of the same logical wire have equal values. The lecture sketches this additional polynomial IOP rather than deriving it completely.</p>
+<p>Every random evaluation point that the verifier would choose interactively can then be derived using Fiat–Shamir in the random-oracle model, producing a non-interactive proof string. Which polynomial commitment scheme we select affects setup assumptions and security properties.</p>
+<h2>Why is it supposed to be succinct?</h2>
+<p>The prover still performs the full circuit computation and prepares the polynomial commitments and quotients. But the verifier does not inspect every gate. It authenticates a small number of polynomial evaluations and checks a small number of identities.</p>
+<p>Let \(|C|\) mean the number of circuit gates, \(|\mathbf x|\) the size of the public input, \(|\pi|\) the proof length, and \(T_V\) the verification time. The lecture's intended bounds are</p>
 <div class="math">\[
-|\pi|=O(\lambda,\operatorname{polylog}|C|),
+|\pi|=O\bigl(\lambda,\operatorname{polylog}|C|\bigr),
 \qquad
-T_V=O(\lambda,|\mathbf x|,\operatorname{polylog}|C|).
+T_V=O\bigl(\lambda,|\mathbf x|,\operatorname{polylog}|C|\bigr).
 \]</div>
-<p>The symbol \(|C|\) measures circuit size. These are the course's target bounds, not timings obtained from the little three-gate example.</p>
-<p>We should distinguish the result we proved from the machinery the notes don't fully develop. We proved that a trace satisfying all four conditions is a satisfying circuit execution. The end-to-end cryptographic theorem also needs secure polynomial commitments, the omitted wiring IOP, degree guarantees, and the Fiat–Shamir security argument. The notes explain the blueprint rather than proving every implementation detail.</p>
-<p>The same construction applies to a long calculation like the repeated-function example from our first lesson: represent its steps as a circuit, commit to the corresponding trace, and prove the gate and wire relations. The prover still performs the full calculation; the savings come from not making every verifier repeat it.</p>
-<div class="obstacle-progress"><h3>The original question, answered</h3>
-<p><b>What was too expensive?</b> Checking each step of a long witness.</p>
-<p><b>What changed?</b> A polynomial represents the trace; algebraic identities represent the checks; random evaluations detect false identities; polynomial commitments authenticate those evaluations; and Fiat–Shamir makes the challenges reproducible without interaction.</p>
-<p><b>Why should we believe the result?</b> The four circuit conditions force a satisfying execution, and the polynomial root bounds explain why a false identity is unlikely to pass—subject to the additional commitment, wiring-IOP, and Fiat–Shamir assumptions stated above.</p></div>
-<div class="practice-link"><span class="practice-tag">Final review</span><a href="#coverage">See every relevant lecture theorem, homework question, and midterm exercise</a></div>
-<p class="source">Official notes, §6, p. 11. The notes explicitly omit detailed wiring and zero-knowledge constructions.</p>
+<p>These are target asymptotic bounds for suitable implementations, not costs derived from our tiny example. Their significance is that the verifier may read the public statement, but it should not redo work proportional to the full circuit.</p>
+<div class="lab" data-lab="plonkstages"><div class="lab-top"><strong>What does each check rule out?</strong><p>Select a condition to see its role in the complete circuit proof.</p></div><div class="lab-content"><label class="range-label">Check number <output class="range-value" data-live-for="stage">1</output><input data-key="stage" type="range" min="1" max="4" value="1"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<p>We should be precise about the scope of the notes. We've explained why the four conditions imply a satisfying circuit execution, the polynomial tools for checking the stated identities, and the commitment/Fiat–Shamir blueprint. The lecture does not fully prove a concrete polynomial commitment construction or its entire wiring IOP, so a complete end-to-end SNARG security theorem needs those additional components.</p>
+<p>Nor has the lecture shown that the proof hides the witness. Zero knowledge is a further property that may be added by randomization; it isn't part of the SNARG definition used here.</p>
+<div class="bridge">Return to the original million-step computation. The prover still does the expensive work, but it can encode the execution as a circuit trace, and the verifier can check authenticated polynomial identities rather than recomputing every step. The four constraints are what tie those short checks back to the actual computation. That's the full reason the construction is useful—not just a collection of unrelated polynomial tricks.</div>
+<div class="practice-link"><span class="practice-tag">Exam review</span><a href="#coverage">Find every relevant lecture result, homework exercise, and prior midterm problem</a></div>
+<p class="source">Lecture §6, universal setup, preprocessing, four proof checks, Fiat–Shamir and succinctness bounds. The omitted wiring and zero-knowledge details remain explicitly out of scope.</p>
+
 </article>
 </body></html>
