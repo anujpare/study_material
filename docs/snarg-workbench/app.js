@@ -10,14 +10,15 @@ let cards=[],current=0,req=0,mathReady=false,readingMode="guided";
 const coreIds=new Set([
  "the-question","succinctness","pcp-box","merkle","hw3-pcp-argument","iop-types",
  "field-foundation","interpolation","equality-proof","schwartz-zippel","vanishing-polynomial",
- "zerotest-proof","fibonacci-protocol","polynomial-commitments","schnorr-recall",
+ "zerotest-proof","fibonacci-protocol","polynomial-commitments",
  "fiat-shamir","circuits-meaning","trace-encoding","roots-unity-cost","plonk-output-input",
  "plonk-gates","plonk-wiring","plonk-final"
 ]);
 const exerciseSources={
  "hw1-vectors":"merkle",
  "midterm-polynomial":"schwartz-zippel",
- "repetition-hw2":"schnorr-recall",
+ "schnorr-recall":"fiat-shamir",
+ "repetition-hw2":"fiat-shamir",
  "hw3-schnorr-fs":"fiat-shamir",
  "hw3-schnorr-attacks":"fiat-shamir",
  "hw3-conceptual":"fiat-shamir",
