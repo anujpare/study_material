@@ -436,3 +436,93 @@ body{background:var(--page);color:var(--ink);font-family:-apple-system,BlinkMacS
   overflow-wrap:break-word;
 }
 #lessons .head .head-right{flex:none}
+
+
+/* A slider's current value belongs beside its label, never buried below a chart. */
+#lessons .reading .lab label.range-label{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;gap:7px 10px;margin:12px 0;
+  font-size:15px;line-height:1.35;
+}
+#lessons .reading .lab label.range-label > input[type="range"]{
+  grid-column:1/-1;grid-row:auto;width:100%;min-width:0;
+  min-height:35px;touch-action:pan-x;
+}
+#lessons .reading .lab .range-value{
+  display:inline-flex;justify-content:center;align-items:center;
+  justify-self:end;min-width:42px;
+  padding:4px 9px;border:1px solid #b9ccc0;border-radius:7px;
+  background:#e6efe7;color:#234c39;
+  font-size:15px;font-weight:760;line-height:1.4;
+  font-variant-numeric:tabular-nums;
+}
+#lessons .reading .lab .range-name{min-width:0}
+#lessons .reading .lab .address-summary{
+  display:grid;grid-template-columns:1.3fr 1fr;
+  gap:8px;margin:3px 0 12px;
+}
+#lessons .reading .lab .address-summary > div{
+  display:flex;flex-direction:column;gap:6px;
+  padding:13px 11px;background:#f3f6f1;
+  border:1px solid #d7e2d8;border-radius:9px;
+}
+#lessons .reading .lab .address-summary .small-label{
+  font-size:12px;line-height:1.35;color:#506354;
+}
+#lessons .reading .lab .address-summary strong{
+  font-size:19px;line-height:1.3;letter-spacing:-.02em;
+  color:#2d5f45;font-variant-numeric:tabular-nums;
+}
+#lessons .reading .lab .address-summary strong small{
+  font-weight:550;font-size:13px;color:#5b695e;
+}
+#lessons .reading .lab .address-rule{
+  margin:12px 0;padding:10px 6px;
+  overflow-x:auto;white-space:nowrap;
+  background:#f9faf8;border-radius:7px;text-align:center;
+}
+#lessons .reading .lab .address-grid{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:6px;margin:12px 0;
+}
+#lessons .reading .lab .address-cell{
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:3px;min-width:0;
+  padding:8px 3px;border:1px solid #d4ddd3;
+  background:#f8faf7;border-radius:7px;
+}
+#lessons .reading .lab .address-cell small{
+  font-size:11px;color:#6c766b;
+}
+#lessons .reading .lab .address-cell b{
+  font-size:13px;font-family:ui-monospace,Menlo,Consolas,monospace;
+  letter-spacing:.025em;color:#33473a;
+}
+#lessons .reading .lab .address-cell.last{
+  background:#dcecdf;border-color:#91b6a1;
+}
+#lessons .reading .lab .address-ends{
+  display:flex;flex-direction:column;gap:4px;margin:12px 0;
+}
+#lessons .reading .lab .address-ends span:not(.dots){
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
+  gap:6px;font-size:13px;padding:9px;
+  background:#f8faf7;border:1px solid #d4ddd3;border-radius:8px;
+}
+#lessons .reading .lab .address-ends .dots{
+  text-align:center;color:#718071;font-weight:700;
+}
+#lessons .reading .lab .address-ends code{
+  font-size:12px;font-weight:650;color:#28654b;
+  background:#e4efe7;padding:4px 6px;border-radius:5px;
+  white-space:nowrap;max-width:100%;overflow-x:auto;
+}
+#lessons .reading .lab .viz-insight{
+  margin:13px 0 0;font-size:14px;line-height:1.5;
+  border-left:3px solid #7ca68a;background:#eef4ee;
+  padding:9px 10px;
+}
+@media(max-width:360px){
+  #lessons .reading .lab .address-summary{grid-template-columns:1fr 1fr}
+  #lessons .reading .lab .address-summary strong{font-size:17px}
+}
