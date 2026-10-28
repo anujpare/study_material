@@ -430,7 +430,8 @@ async function start(){
   }));
   cards=sources.flat();
   if(cards.length<20)throw Error("Course chapters incomplete: "+cards.length);
-  if(coreIds.size!==22||[...coreIds].some(id=>!cards.some(c=>c.id===id)))throw Error("Main learning path is incomplete");
+  const missingCore=[...coreIds].filter(id=>!cards.some(c=>c.id===id));
+  if(missingCore.length)throw Error("Missing required syllabus lessons: "+missingCore.join(", "));
   chapter.innerHTML=chapters.map((c,i)=>'<option value="'+i+'">'+escape(c)+'</option>').join("");
   byId("menu-toggle").addEventListener("click",()=>setMenuOpen(byId("chapter-menu").dataset.open!=="true"));
   chapter.addEventListener("change",()=>{
