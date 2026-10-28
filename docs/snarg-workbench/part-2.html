@@ -61,7 +61,7 @@ f_{\rm fib}(i+2)&=f_{\rm fib}(i+1)+f_{\rm fib}(i)
 <p class="aim">We have a polynomial that represents the prover's Fibonacci sequence, but a false sequence can be interpolated just as easily as a correct one. We need a way to check equations about that polynomial without reading all its coefficients. Start with a simpler problem: how can we check whether two fixed polynomials are identical?</p>
 <p>Let \(f(X)\) and \(g(X)\) be polynomials over a field \(\mathbb F\), both of degree at most \(d\). If we compared their values at \(d+1\) different points, the root theorem below would make equality certain. But \(d+1\) evaluations would be expensive for a large computation. We will try just one random point.</p>
 <h2>EqualityTest: what the verifier does</h2>
-<p>The prover fixes \(f\) and \(g\) in the ideal polynomial oracle. The verifier then chooses \(r\) uniformly from \(\mathbb F\), requests \(f(r)\) and \(g(r)\), and accepts when \(f(r)=g(r)\). The polynomials must be fixed <em>before</em \(r\) is chosen; otherwise the prover could construct an equation that happens to hold at the known challenge.</p>
+<p>The prover fixes \(f\) and \(g\) in the ideal polynomial oracle. The verifier then chooses \(r\) uniformly from \(\mathbb F\), requests \(f(r)\) and \(g(r)\), and accepts when \(f(r)=g(r)\). The polynomials must be fixed <em>before</em> \(r\) is chosen; otherwise the prover could construct an equation that happens to hold at the known challenge.</p>
 <p>If \(f=g\), every possible evaluation agrees, so an honest proof always passes. If \(f\ne g\), define the <strong>difference polynomial</strong> \(h(X)=f(X)-g(X)\). The verifier accepts a false equality precisely when \(h(r)=0\). Such a point is called a <strong>root</strong> of \(h\). We therefore need to know how many roots a nonzero polynomial can have.</p>
 <div class="proof"><h3>Theorem 1: a nonzero degree-\(d\) polynomial has at most \(d\) roots</h3>
 <p>Suppose \(h(a)=0\). For every integer \(k\ge1\), the expression \(X^k-a^k\) has a factor \(X-a\). Applying this to the terms of \(h(X)-h(a)\), and using \(h(a)=0\), shows that \(h(X)=(X-a)q(X)\) for some polynomial \(q\) of degree \(d-1\).</p>
@@ -84,7 +84,7 @@ f_{\rm fib}(i+2)&=f_{\rm fib}(i+1)+f_{\rm fib}(i)
 <p>Because arithmetic modulo 6 is <em>not</em> a field. In particular \(2\cdot3\equiv0\pmod6\) although neither 2 nor 3 is zero. We cannot cancel nonzero factors here. The ordinary proof that a degree-\(d\) polynomial has at most \(d\) roots depends on being able to cancel such factors.</p>
 <p class="qed">The root-count claim is false over \(\mathbb Z_6\), and this shows exactly which algebraic assumption fails. The later soundness proofs will work over fields instead. \(\square\)</p>
 </div></details></div>
-<div class="bridge">We now know how to test an identity that should hold at <em>every</em field point. The Fibonacci recurrence, however, is required only at the positions \(0,\ldots,98\). Before returning to that distinction, the lecture extends the root bound to equations involving several variables. Then we will construct an identity that captures exactly the 99 required Fibonacci positions.</div>
+<div class="bridge">We now know how to test an identity that should hold at <em>every</em> field point. The Fibonacci recurrence, however, is required only at the positions \(0,\ldots,98\). Before returning to that distinction, the lecture extends the root bound to equations involving several variables. Then we will construct an identity that captures exactly the 99 required Fibonacci positions.</div>
 <p class="source">Official lecture §3, EqualityTest, Theorem 1 and Lemma 1; HW3 Problem 1(c) placed immediately after the theorem whose assumption it tests.</p>
 
 
@@ -211,7 +211,7 @@ D(X)=f_{\rm fib}(X+2)-f_{\rm fib}(X+1)-f_{\rm fib}(X).
 \]</div>
 <p>For each required step \(i\), the recurrence is correct if and only if \(D(i)=0\). Let \(\Omega=\{0,1,\ldots,98\}\) be the set of positions where this must happen. We want a polynomial that is zero at precisely these designated points.</p>
 <h2>Build a polynomial with the required roots</h2>
-<p>For one required point \(a\), the factor \(X-a\) is zero at \(X=a\). To make a polynomial zero at <em>every</em point of \(\Omega\), multiply one factor for each point:</p>
+<p>For one required point \(a\), the factor \(X-a\) is zero at \(X=a\). To make a polynomial zero at <em>every</em> point of \(\Omega\), multiply one factor for each point:</p>
 <div class="math">\[
 \boxed{Z_\Omega(X)=\prod_{a\in\Omega}(X-a).}
 \]</div>
@@ -239,7 +239,7 @@ D(X)=\left(\prod_{a\in\Omega}(X-a)\right)q(X)
 <h2>The protocol in the ideal polynomial oracle</h2>
 <p>The lecture states the test for a general polynomial \(f\) of degree at most \(d\) and a set \(\Omega\) of \(k\le d\) field points. The prover fixes \(f\) and a claimed quotient \(q\) in the oracle, with degree at most \(d\) for the quotient. The verifier chooses a uniformly random field point \(r\), requests \(f(r)\) and \(q(r)\), computes the known vanishing polynomial \(Z_\Omega(r)\), and accepts if</p>
 <div class="math">\[\boxed{f(r)=q(r)Z_\Omega(r).}\]</div>
-<p>Why choose \(r\) only <em>after</em the polynomials are fixed? If the prover learned \(r\) first, it could invent a quotient whose value at that point makes the equation pass. The random-root bound applies only to one fixed difference polynomial.</p>
+<p>Why choose \(r\) only <em>after</em> the polynomials are fixed? If the prover learned \(r\) first, it could invent a quotient whose value at that point makes the equation pass. The random-root bound applies only to one fixed difference polynomial.</p>
 <div class="lab" data-lab="zero"><div class="lab-top"><strong>Try an honest and a dishonest quotient identity</strong><p>Over \(\mathbb F_{17}\), the required zeros are at 1 and 2. Compare the honest polynomial \(f=Z_\Omega q\) with a dishonest polynomial that differs by \(X-3\). At \(r=3\), the false identity happens to pass.</p></div><div class="lab-content">
 <label class="range-label">Verifier's random point \(r\) <output class="range-value" data-live-for="r">3</output><input data-key="r" type="range" min="0" max="16" value="3"></label>
 <label style="flex-direction:row;align-items:center"><input data-key="fake" type="checkbox" checked> Use the dishonest polynomial</label>
@@ -271,7 +271,7 @@ D(X)&=f_{\rm fib}(X+2)-f_{\rm fib}(X+1)-f_{\rm fib}(X),\\
 Z_\Omega(X)&=\prod_{i=0}^{98}(X-i).
 \end{aligned}
 \]</div>
-<p>If the proposed sequence is correct, \(D\) vanishes at every point of \(\Omega\), so Theorem 2 gives a quotient polynomial \(q\) satisfying \(D=Z_\Omega q\). The prover fixes \(f_{\rm fib}\) and \(q\) in the ideal polynomial oracle <em>before</em the verifier chooses a random challenge.</p>
+<p>If the proposed sequence is correct, \(D\) vanishes at every point of \(\Omega\), so Theorem 2 gives a quotient polynomial \(q\) satisfying \(D=Z_\Omega q\). The prover fixes \(f_{\rm fib}\) and \(q\) in the ideal polynomial oracle <em>before</em> the verifier chooses a random challenge.</p>
 <h2>What the verifier checks</h2>
 <p>First, it requests the evaluations at positions 0, 1 and 100. These must equal the public starting values and claimed final result:</p>
 <div class="math">\[
