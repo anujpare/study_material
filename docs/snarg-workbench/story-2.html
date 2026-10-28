@@ -39,7 +39,7 @@
 <p class="chapter-tag">The main story · 08 of 12</p>
 <h1>Can one random field element expose the false result?</h1>
 <p class="lead">We've reduced all four additions to the identity \(D(X)=Z(X)q(X)\). So choose a random number \(r\) and check whether the two sides agree at that point. This is the protocol called <strong>ZeroTest</strong>.</p>
-<p>In our example we work in \(\mathbb F_{101}\), so the verifier chooses \(r\) uniformly from the 101 field elements 0 through 100. The prover must fix its polynomials \(f\) and \(q\) <em>before</em learning \(r\). The verifier then asks for their values at the required points and checks</p>
+<p>In our example we work in \(\mathbb F_{101}\), so the verifier chooses \(r\) uniformly from the 101 field elements 0 through 100. The prover must fix its polynomials \(f\) and \(q\) <em>before</em> learning \(r\). The verifier then asks for their values at the required points and checks</p>
 <div class="math">\[\boxed{f(r+2)-f(r+1)-f(r)\ \stackrel{?}{=}\ Z(r)q(r).}\]</div>
 <p>The left side is \(D(r)\). The verifier can calculate the four factors of \(Z(r)=r(r-1)(r-2)(r-3)\) itself. The question mark means that it tests equality; it doesn't assume equality beforehand.</p>
 <h2>Try the same lie that fooled our random step check</h2>
@@ -92,7 +92,7 @@
 <p><strong>Correctness:</strong> an honest opening of the committed polynomial's true value is accepted.</p>
 <p><strong>Binding:</strong> a dishonest prover cannot feasibly produce conflicting valid openings for the same committed polynomial and evaluation point. In a complete construction, the degree limit and consistency across all the requested evaluations must also be enforced.</p>
 <p class="qed">With these guarantees, the verifier can treat the short authenticated answers as if they came from a polynomial fixed before the question. The root-count proof from ZeroTest becomes applicable to a real cryptographic protocol, up to the probability of breaking its commitment assumptions. \(\square\)</p></div>
-<p>But this is still a conversation. The verifier has to choose \(r\) <em>after</em seeing \(c_f,c_q\), and send that random challenge to the prover. How do we turn the conversation into a proof string anyone can check later?</p>
+<p>But this is still a conversation. The verifier has to choose \(r\) <em>after</em> seeing \(c_f,c_q\), and send that random challenge to the prover. How do we turn the conversation into a proof string anyone can check later?</p>
 <h2>Replace the challenge message, not its security purpose</h2>
 <p>Both prover and verifier can compute the same challenge from a hash of the public statement and the commitments:</p>
 <div class="math">\[r=H(\text{public statement},c_f,c_q,\text{protocol parameters}).\]</div>
