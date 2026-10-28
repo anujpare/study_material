@@ -1,50 +1,64 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f1f3f3">
-  <meta name="description" content="A rigorous, interactive PETS Zero Knowledge tutorial: proofs, simulators, repetition, Sigma protocols, Schnorr, circuits and Fiat–Shamir.">
-  <title>PETS · Zero Knowledge</title>
-  <link rel="stylesheet" href="style.css?v=5">
-  <script>
-  window.MathJax = {
-    tex: {inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']], processEscapes: true},
-    svg: {fontCache: 'local'},
-    startup: {typeset: false, ready: () => { MathJax.startup.defaultReady(); window.dispatchEvent(new Event('mathjax-ready')); }}
-  };
-  </script>
-  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-  <script defer src="app.js?v=5"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f3f3f2">
+<meta name="description" content="Interactive Zero Knowledge learning lab, aligned with the PETS flashcard deck navigation.">
+<title>PETS · Zero Knowledge · Learning Lab</title>
+<link rel="stylesheet" href="./style.css?v=6">
+<link rel="stylesheet" href="../snarg-workbench/style.css?v=2">
+<link rel="stylesheet" href="./deck.css?v=1">
+<script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'local'},startup:{typeset:false,ready:()=>{MathJax.startup.defaultReady();window.dispatchEvent(new Event('mathjax-ready'));}}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script defer src="./app.js?v=6"></script>
 </head>
 <body>
-<div class="shell">
+<div class="shell" id="lessons">
+  <details class="chapter-menu" id="chapter-menu">
+    <summary aria-label="Choose deck or lesson" title="Choose deck or lesson">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 6h14M5 12h14M5 18h14"/></svg>
+    </summary>
+    <nav class="chapter-panel" aria-label="PETS decks and tutorial lessons">
+      <span class="menu-brand">PETS · Learning decks</span>
+      <a href="../">All PETS chapters</a>
+      <a href="../commitment/">Commitment</a>
+      <a href="../zero-knowledge/">Zero Knowledge · Flashcards</a>
+      <a href="./" aria-current="page">Zero Knowledge · Interactive lab</a>
+      <a href="../snarks/">SNARKs · Flashcards</a>
+      <a href="../snarg-workbench/">SNARGs → PLONK · Interactive lab</a>
+      <a href="../pir/">Private Information Retrieval</a>
+      <span class="menu-brand menu-sub">This tutorial</span>
+      <label for="jump">Jump to lesson</label>
+      <select id="jump" aria-label="Jump to a tutorial lesson"><option>Loading lessons…</option></select>
+      <a href="../hw2/">Original HW2 deck</a>
+    </nav>
+  </details>
   <header class="head">
-    <div class="toprow">
-      <a class="brand" href="../" aria-label="Return to PETS chapter selection">← PETS</a>
-      <select id="jump" class="pick" aria-label="Jump to a tutorial card">
-        <option>Loading lessons…</option>
-      </select>
-    </div>
-    <div class="headmeta">
-      <span>Zero Knowledge · Guided tutorial</span>
-      <strong id="counter" aria-live="polite">01 / 31</strong>
-    </div>
-    <div class="progress" aria-hidden="true"><div id="progress"></div></div>
+    <div class="section" id="header-title">Zero Knowledge · Learning Lab</div>
+    <div class="head-right"><span class="count" id="counter" aria-live="polite">1 / 31</span></div>
   </header>
-  <main id="lesson" class="main" tabindex="-1"><p class="loader">Loading the lesson…</p></main>
-  <footer class="bottom" aria-label="Lesson navigation">
-    <button class="arrow" type="button" id="previous" aria-label="Previous lesson" disabled>←</button>
-    <div class="bottom-center">
-      <span id="current-label">A claim and its witness</span>
-      <span class="small">Previous / next with the arrow keys</span>
+  <main id="lesson" class="reading" tabindex="-1" aria-label="Lesson content">
+    <p class="loader">Loading the lesson…</p>
+  </main>
+  <footer class="reader-footer" aria-label="Lesson navigation">
+    <div class="deck-jump" role="group" aria-label="Lesson slider">
+      <output class="deck-position" id="position" for="deck-slider">1 / 31</output>
+      <input class="deck-slider" id="deck-slider" aria-label="Jump to lesson" aria-valuetext="Lesson 1 of 31" type="range" min="1" max="31" step="1" value="1">
     </div>
-    <button class="arrow" type="button" id="next" aria-label="Next lesson">→</button>
+    <nav class="nav" aria-label="Previous or next lesson">
+      <button type="button" id="previous" class="navbtn" aria-label="Previous lesson" disabled>
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m14.5 6.5-5.5 5.5 5.5 5.5"/></svg>
+      </button>
+      <button type="button" id="next" class="navbtn" aria-label="Next lesson">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9.5 6.5 5.5 5.5-5.5 5.5"/></svg>
+      </button>
+    </nav>
   </footer>
 </div>
-<noscript>
-  <p>JavaScript is required for navigation and interactive demonstrations. Lesson files can be read individually:
-  <a href="./card-01.html">Card 1</a> and <a href="./card-02.html">Card 2</a>.</p>
-</noscript>
+<noscript><p>JavaScript is needed for navigation and interactive demonstrations. Individual lesson files can be opened directly:
+<a href="./card-01.html">first lesson</a>.</p></noscript>
 </body>
 </html>
