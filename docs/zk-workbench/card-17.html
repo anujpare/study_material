@@ -1,7 +1,7 @@
 <article class="lesson">
 <p class="chapter">Part VII · Schnorr identification</p>
 <h1>Schnorr: prove knowledge of a secret exponent</h1>
-<p class="lead">The Hamiltonicity protocol used an adjacency relation, a random permutation of vertices, and a verifier challenge. Schnorr proves knowledge of a discrete logarithm instead, using a different algebraic relation but the same three-message pattern: commitment, challenge, response. We'll verify its equation step by step.</p>
+<p class="lead">The Sigma-protocol definition tells us which guarantees to prove, but we still need a concrete example where the extraction equations can be calculated explicitly. Schnorr supplies one: the public statement is a group element, and the private witness is its discrete logarithm. The Hamiltonicity protocol used an adjacency relation, a random permutation of vertices, and a verifier challenge. Schnorr proves knowledge of a discrete logarithm instead, using a different algebraic relation but the same three-message pattern: commitment, challenge, response. We'll verify its equation step by step.</p>
 <h2>The public claim and the secret exponent</h2>
 <p>Work with multiplication modulo a prime \(p\): multiply ordinary integers and keep the remainder on division by \(p\). Choose a generator \(g\) whose powers form a cyclic group \(G\) of prime order \(q\). It has \(q\) distinct elements, and \(g^q=1_G\).</p>
 <p>The prover knows a secret exponent \(x\in\mathbb Z_q\), where \(\mathbb Z_q=\{0,\ldots,q-1\}\) with arithmetic modulo \(q\). The public value is \(h=g^x\). The goal is to convince the verifier that the prover <em>knows</em> \(x\), without revealing it.</p>
