@@ -1,26 +1,26 @@
 <article class="lesson">
 <p class="chapter">Part III · Graph Hamiltonicity</p>
-<h1>The two challenges test different claims about the same commitments</h1>
-<p class="lead">The prover sends commitments to a permuted graph \(B\) and its permutation \(\pi\). It must do so <strong>before</strong> learning which of two challenges the verifier will choose. The verifier then checks either that \(B\) is truly a relabeling of \(G\), or that \(B\) contains a Hamiltonian cycle.</p>
+<h1>Two questions about the same hidden graph</h1>
+<p class="lead">The prover has fixed a relabeled graph \(B\) and the renaming \(\pi\) inside commitments. The verifier will choose one of two questions. The prover must be able to answer either, but it won't know which one is coming when it commits.</p>
 <div class="timeline">
 <div class="message prover"><span class="who">Prover</span><span>Selects one random \(\pi\), computes \(B=\pi(G)\), and sends \(\mathrm{Commit}(\pi)\) plus commitments to every \(B_{ij}\).</span></div>
 <div class="message"><span class="who">Verifier</span><span>Samples a single fair bit \(c\in\{0,1\}\). Only one branch is requested in any real execution.</span></div>
 <div class="message prover"><span class="who">Prover</span><span>Provides the openings requested by the chosen \(c\), without altering the original commitments.</span></div>
 </div>
 <section class="lab">
-<div class="lab-head"><div class="tag">Two hypothetical challenges · fixed first message</div><h3>What exactly does the verifier inspect?</h3><p>The matrix below represents the already-committed graph. Select either challenge to see which entries are actually opened. A real run asks one challenge only; switching here compares alternative verification rules.</p></div>
+<div class="lab-head"><div class="tag">Two hypothetical challenges · fixed first message</div><h3>What exactly does the verifier inspect?</h3><p>Try both challenges in the diagram. We are changing what the verifier asks to reveal, not changing the committed graph. A real verifier sends just one challenge in any execution.</p></div>
 <div class="lab-body">
 <div class="control-row"><button data-demo="ham-challenge" data-value="0">Challenge \(c=0\) · graph check</button><button data-demo="ham-challenge" data-value="1">Challenge \(c=1\) · cycle check</button></div>
-<div id="ham-matrix" class="readout"><p>No commitments are open yet. Every matrix entry is fixed but hidden.</p></div>
+<div id="ham-matrix" class="readout"><p>Nothing is open yet. Every entry is fixed by its commitment, but the verifier cannot read it.</p></div>
 <div id="ham-openings" class="feedback" aria-live="polite">The verifier can inspect only the values whose commitments the prover opens. All unopened values remain concealed.</div>
 </div></section>
 <h2>Why two challenges?</h2>
 <div class="role-grid">
-<div class="role"><div class="tag">If \(c=0\): isomorphism</div><p>The prover opens <strong>all</strong> adjacency entries and the permutation. The verifier checks that the opened graph is exactly \(B=\pi(G)\). This ensures the committed graph is a true relabeling of the public input.</p></div>
-<div class="role prover"><div class="tag">If \(c=1\): cycle</div><p>The prover opens <strong>only</strong> the commitments for edges on a cycle in \(B\). The verifier checks that these edges form a Hamiltonian cycle covering all five vertices. It does <em>not</em> learn \(\pi\) or all edges of \(B\).</p></div>
+<div class="role"><div class="tag">If \(c=0\): isomorphism</div><p>For challenge \(c=0\), the prover reveals the permutation \(\pi\) and every graph entry. The verifier checks \(B=\pi(G)\): was this graph obtained by renaming the public graph correctly? This check does not require revealing a Hamiltonian cycle.</p></div>
+<div class="role prover"><div class="tag">If \(c=1\): cycle</div><p>For challenge \(c=1\), the prover reveals only the committed edge values along a cycle in \(B\). The verifier checks that every claimed edge exists and the cycle visits each vertex once. It does not learn \(\pi\) or the remaining graph entries.</p></div>
 </div>
-<p>Crucially, \(c=0\) does not require revealing a Hamiltonian cycle of \(G\); it just checks the graph's identity. Challenge \(c=1\) proves that the sealed graph contains a cycle, but by itself does not prove that this sealed graph was actually constructed from \(G\).</p>
-<p>That apparent weakness is intentional: an honest prover can pass either challenge, but a cheating prover attempting to prove a <em>false</em> graph statement cannot prepare commitments that answer both challenges successfully. The next card establishes this claim.</p>
-<div class="transition"><p><strong>Proof goal:</strong> Derive perfect completeness and soundness error at most \(1/2\) from the specific checks above, instead of merely asserting those properties.</p></div>
+<p>Notice the limitation of each question. The \(c=0\) question checks that \(B\) is the right graph, but not that it contains a cycle. The \(c=1\) question checks that \(B\) has a cycle, but not that it is a renamed copy of \(G\). Neither check alone proves everything.</p>
+<p>Why is that good enough? On a false claim, a cheater must fix a graph before the challenge. We will prove that no single fixed graph can make both answers valid. The verifier catches the cheater with probability at least one half.</p>
+<div class="transition"><p>We'll now prove the two promises: an honest prover passes both challenges, and a cheater claiming a cycle in a graph without one can pass at most one of the two equally likely challenges.</p></div>
 <p class="source">PETS · ZK lecture notes, Hamiltonicity protocol, p. 6. The visualized matrix uses the single fixed permutation from the preceding card.</p>
 </article>
