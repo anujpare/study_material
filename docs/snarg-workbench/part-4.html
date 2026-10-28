@@ -197,6 +197,7 @@ f_{\rm trace}(\omega^5)=f_{\rm trace}(\omega^7).
 <p>Repeat this reasoning through all gates. By induction on the gate order, the whole trace is a genuine evaluation of \(C(\mathbf x,\mathbf w)\). Finally, the output check says that this genuine evaluation reaches zero. Therefore</p>
 <div class="math">\[\boxed{C(\mathbf x,\mathbf w)=0.}\]</div>
 <p class="qed">We have proved the logical implication the protocol needs: if the four constraint families hold, the trace supplies an actual witness to the public circuit statement. This is why checking them is sufficient. \(\square\)</p></div>
+<p>The proof also explains soundness. If the public statement is false, every proposed trace must violate at least one of the four conditions. Otherwise that trace would provide a satisfying witness, contradicting the false statement. The polynomial tests must detect whichever condition fails. Their error bounds require fixed, degree-bounded polynomials, and the lecture leaves the detailed wiring test unspecified.</p>
 <h2>How is the final system organized?</h2>
 <p>The lecture divides the work into three stages, because some calculations depend only on the circuit, while others depend on the witness for a particular proof.</p>
 <div class="panel">
