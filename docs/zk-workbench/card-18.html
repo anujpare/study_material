@@ -1,7 +1,7 @@
 <article class="lesson">
 <p class="chapter">Part VII · Schnorr identification</p>
 <h1>Can we simulate Schnorr without knowing the secret?</h1>
-<p class="lead">An honest Schnorr prover calculates \(z=r+cx\), which uses secret \(x\). A simulator does not know \(x\). So we can't imitate the honest steps in the usual order. Instead, let's start with the verifier's equation and work backwards.</p>
+<p class="lead">Completeness showed that an honest Schnorr prover always satisfies the verification equation. That does not tell us whether its transcript reveals the secret exponent. To establish honest-verifier zero knowledge, we need a simulator producing the same transcript distribution without knowing that exponent. An honest Schnorr prover calculates \(z=r+cx\), which uses secret \(x\). A simulator does not know \(x\). So we can't imitate the honest steps in the usual order. Instead, let's start with the verifier's equation and work backwards.</p>
 <h2>Derive the simulator's formula from the verifier's equation</h2>
 <p>The verifier accepts when \(g^z=u h^c\). Suppose we first choose \(c\) and \(z\). Can we solve this equation for \(u\)? Multiply by the inverse \(h^{-c}\) to get</p>
 <div class="math">\[g^z=u\,h^c\quad\Longleftrightarrow\quad u=g^z\,h^{-c}\]<p class="math-caption">The negative exponent means group inversion. We know \(h\) publicly, so we can calculate \(h^{-c}\) without knowing the secret \(x\).</p></div>
