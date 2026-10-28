@@ -1,141 +1,112 @@
 <!doctype html><html lang="en"><meta charset="utf-8"><title>SNARGs · Part I</title><body>
-<article class="lesson" data-id="the-question" data-title="What would count as convincing evidence?">
-<p class="chapter-tag">I · Why SNARGs exist · Lecture §1</p>
-<h1>How can we check a calculation without repeating it?</h1>
-<p class="aim">Suppose a server does a million steps of a calculation and gives you the answer. If checking the answer takes another million steps, what have you gained?</p>
-<p>Imagine the server repeatedly applying the same public function \(H\), starting with a value \(a\). After a million steps, it tells you the answer is \(b\). We know the function, the starting value, the number of steps and the claimed result. We do <em>not</em> know whether the server actually performed the steps correctly.</p>
-<p>There is an obvious way to check. Ask the server for every intermediate value, then apply \(H\) to each value and see whether the next one matches. This is convincing, but it makes us do nearly the entire calculation ourselves.</p>
-<p>Could the server send something much shorter—something we can check quickly, but that a cheater cannot easily fake? That's the problem a succinct proof is meant to solve.</p>
-<h2>What must the server prove?</h2>
-<p>Let's give names to the pieces we already have. The <strong>statement</strong>, written \(x\), is the public claim. In this example, \(x\) contains the starting value \(a\), the reported result \(b\), and the rule to apply \(H\) one million times.</p>
-<p>The <strong>witness</strong>, written \(w\), is the extra evidence that makes the claim checkable. Here, \(w\) can be the list of intermediate values. If we had the list, we could check every step, and that would tell us whether the claimed result is right.</p>
-<p>Call this ordinary checking procedure \(R\). We write \(R(x,w)=1\) if all the steps check out, and \(R(x,w)=0\) otherwise. The number 1 simply means “accept.”</p>
-<p>A statement is <em>true</em> if at least one valid witness exists. Cryptographers collect all true statements in a set called a <strong>language</strong> \(L\):</p>
-<div class="math">\[L=\{x:\exists w\text{ with }R(x,w)=1\}.\]</div>
-<p>The symbol \(\exists\) means “there exists.” So the equation says only this: \(x\) belongs to \(L\) if there is some evidence \(w\) that passes the checker.</p>
-<p>We care about problems where checking a supplied witness is efficient, even if finding one is hard. Those are the kinds of problems studied in the complexity class NP. We won't need the complexity theory to follow the next construction; the key point is simply that <em>checking evidence</em> and <em>finding evidence</em> are different jobs.</p>
-<h2>Who sends what?</h2>
-<p>The <strong>prover</strong>, \(P\), knows the witness and wants to convince us. The <strong>verifier</strong>, \(V\), knows only the public statement and checks the claim. Our goal is for the prover to send a short string, called the <strong>proof</strong> \(\pi\) (the Greek letter “pi”), instead of the entire witness \(w\).</p>
-<div class="diagram"><div class="flow">
-<div class="stage"><strong>Prover \(P\)</strong><p>Has the public claim \(x\) and the long evidence \(w\).</p></div>
-<div class="arrow">⟶</div>
-<div class="stage"><strong>Verifier \(V\)</strong><p>Receives a short proof \(\pi\) and checks the claim \(x\).</p></div>
-</div><p class="diagram-note">The long witness stays with the prover. Whether a short proof can replace it is exactly what we still need to establish.</p></div>
-<h2>What would make this convincing?</h2>
-<p>Two things. First, when the claim is true and the prover follows the rules, the verifier should accept. This is <strong>completeness</strong>. The lecture asks for <em>perfect</em> completeness: an honest proof always passes.</p>
-<p>Second, when the claim is false, even a dishonest prover should have only a small chance of making the verifier accept. This is <strong>soundness</strong>. We call that small chance \(\varepsilon\), the soundness error:</p>
-<div class="math">\[
-\begin{aligned}
-\Pr[\text{accept}\mid\text{true, honest prover}]&=1,\\
-\Pr[\text{accept}\mid\text{false claim}]&\le\varepsilon.
-\end{aligned}
-\]</div>
-<p>Here \(\Pr\) means probability; the second guarantee must cover every cheating strategy allowed by the security model. The point is not that a proof <em>looks</em> persuasive. It must come with a reason a false claim is very unlikely to pass.</p>
-<div class="bridge">We now know what we're trying to replace: a long witness \(w\) that we could check ourselves. But if the proof \(\pi\) is just as long as \(w\), we've solved nothing. Next we'll look at what it means for the proof to be short.</div>
-<p class="source">Lecture 9–12, §1 and §5. The repeated-function calculation is an illustrative example; the definitions use the lecture's notation.</p>
+<article class="lesson" data-id="the-question" data-title="The question behind SNARGs">
+
+<p class="chapter-tag">Lecture §1 · SNARGs</p>
+<h1>How can somebody prove they did a calculation?</h1>
+<p class="aim">Imagine that a server takes an input and applies SHA-256 to it a million times. It tells you the final result. You could check the answer by doing the same million operations yourself—but then you haven't saved any work.</p>
+<p>There is another obvious way. Ask the server to send all the intermediate hashes. Each one is the input to the next SHA-256 operation, so you could check each transition. That would be convincing. Unfortunately, it still means checking a million operations, and you also have to receive a million values.</p>
+<p>Notice what makes this difficult. We aren't asking whether the answer <em>looks plausible</em>. We want to rule out a server that simply invents a result. Yet we don't want to repeat the very work we asked the server to do.</p>
+<h2>What are we being asked to believe?</h2>
+<p>Let's name the things already in our example. The <strong>statement</strong>, which we'll call \(x\), is the public claim: the starting input, the number of SHA-256 applications, and the claimed final result. It contains everything the client already knows.</p>
+<p>The server can produce more evidence: the list of intermediate hashes. We'll call this list \(w\), the <strong>witness</strong>. If we had \(w\), we could check the computation step by step. Let \(R(x,w)=1\) mean “all those checks pass”; otherwise the checker returns 0.</p>
+<p>For a general computational problem, a statement is <em>true</em> when some valid witness exists. We collect all true statements into a set called a <strong>language</strong> \(L\):</p>
+<div class="math">\[L=\{x:\exists w,\ R(x,w)=1\}.\]</div>
+<p>The symbol \(\exists\) just means “there exists.” In words: \(x\) belongs to \(L\) if there is at least one witness making the ordinary checker accept. The class NP consists of problems of this kind when the witness is reasonably short and can be checked in polynomial time. Finding that witness may be difficult; checking one that is supplied must be efficient.</p>
+<p>For now, the ordinary evidence \(w\) may still be enormous. That's the problem we're trying to solve, not a problem we've already solved by introducing notation.</p>
+<h2>What would a useful proof look like?</h2>
+<p>Call the server the <strong>prover</strong> \(P\), and the client the <strong>verifier</strong> \(V\). We'd like the prover to send a much shorter string \(\pi\), called a <strong>proof</strong>, instead of giving us the complete witness \(w\). The verifier would check \(\pi\) together with the public claim \(x\).</p>
+<div class="diagram"><div class="flow"><div class="stage"><strong>Prover \(P\)</strong><p>Knows the public claim \(x\) and the long evidence \(w\).</p></div><div class="arrow">⟶</div><div class="stage"><strong>Verifier \(V\)</strong><p>Receives a proposed short proof \(\pi\) and decides whether to accept \(x\).</p></div></div></div>
+<p>We have to insist on two promises. If the claim is true and the prover follows the protocol, the verifier should accept. This is <strong>completeness</strong>. If the claim is false, no cheating strategy should make the verifier accept except with a very small probability. This is <strong>soundness</strong>.</p>
+<p>The lecture seeks perfect completeness—honest proofs always pass—and a small soundness error, which we'll call \(\varepsilon\):</p>
+<div class="math">\[\Pr[\text{accept}\mid\text{honest, true claim}]=1,\qquad
+\Pr[\text{accept}\mid\text{false claim}]\le\varepsilon.\]</div>
+<p>Here \(\Pr\) denotes probability, and the second inequality must apply against all permitted dishonest provers. We do not know how to make such a short proof yet.</p>
+<div class="bridge">So the first question is very concrete: **how much smaller and easier to check must \(\pi\) be than the witness \(w\) before we can call this a real improvement?** The lecture answers that by defining <em>succinctness</em>.</div>
+<p class="source">Lecture §1, SHA-256 repeated-computation example, statement/witness language and security goals. The notation \(x,w,\pi\) follows the lecture.</p>
+
 </article>
 
-<article class="lesson" data-id="succinctness" data-title="How short is succinct?">
-<p class="chapter-tag">I · Why SNARGs exist · Lecture §1</p>
-<h1>How much shorter can a proof be?</h1>
-<p class="aim">The server could send us the whole list of intermediate results. We could check it, but we'd still have a huge amount of work. What does it take to make verification genuinely cheaper?</p>
-<p>We called the long evidence \(w\) and the short proof we hope to send \(\pi\). The notation \(|w|\) means the <strong>length of the witness in bits</strong>, and \(|\pi|\) means the length of the proof in bits. A list of intermediate numbers can always be written as a sequence of 0s and 1s. For example, if the list contains a million 256-bit results, its encoding uses roughly 256 million bits.</p>
-<p>Sending \(w\) directly would make the proof as long as the evidence. A <strong>succinct</strong> proof should instead stay small as the witness becomes large. How could that even be possible? Let's first see one simple reason why a large amount of information needn't always require a large <em>question</em>.</p>
-<h2>Naming one bit is cheaper than sending every bit</h2>
-<p>Imagine the witness consists of just eight bits, at positions 0 through 7. To ask for position 5, we don't have to list all eight bits. We can say “101,” because 101 is the number 5 written in binary. Every position from 0 to 7 has a three-digit binary address, from 000 to 111.</p>
-<p>Why three digits? A binary digit has two choices, 0 or 1. Three of them give \(2\times2\times2=2^3=8\) different addresses. If there are \(2^k\) positions, <strong>\(k\) binary digits can name any one of them</strong>. The letter \(k\) here is simply the number of address digits. The inverse statement is written \(\log_2(2^k)=k\), pronounced “log base two.”</p>
-<div class="lab" data-lab="growth">
-<div class="lab-top"><strong>How many digits does an address need?</strong><p>Change \(k\). Each additional binary digit doubles the number of bits we could address. The large number is the length of the imagined witness, not the length of a SNARG proof.</p></div>
-<div class="lab-content">
-<label class="range-label">Number of binary address digits \(k\)
-<output class="range-value" data-live-for="k">3</output>
-<input data-key="k" type="range" min="3" max="20" value="3" step="1" aria-label="Number of address digits k">
-</label>
-<div class="lab-output" aria-live="polite"></div>
-</div>
-</div>
-<p>There's a crucial difference between <em>naming</em> a bit and <em>checking</em> a proof. Knowing how to request a few positions doesn't tell us whether those positions are enough to catch cheating. We'll need a theorem for that in the next lesson.</p>
-<h2>Now define the kind of proof we want</h2>
-<p>Let \(|x|\) be the length of the public statement. Let \(T_V\) be the time the verifier spends checking the proof. Finally, \(\lambda\) is a security parameter: increasing it is meant to make attacks less likely. The lecture asks for a proof that remains small and a verifier that does little work compared with reading the witness:</p>
-<div class="math">\[
-|\pi|=O\!\left(\lambda,\operatorname{polylog}(|x|,|w|)\right)
-\]
-\[
-T_V=O\!\left(\lambda,|x|,\operatorname{polylog}(|w|)\right).
-\]</div>
-<p>Here's what the notation is saying. A <em>polylogarithm</em> is a fixed power of a logarithm, such as \((\log_2 n)^2\). The \(O\) notation describes how a cost grows, rather than an exact byte count. So the proof and its verification should depend on the very large witness mainly through logarithms, not by reading it all. The verifier may still need time proportional to \(|x|\) to read the public claim.</p>
-<h2>And why “non-interactive”?</h2>
-<p>If the verifier must send a fresh random question and wait for the prover's answer, the parties are still having a conversation. A <strong>non-interactive</strong> proof is one string the prover can send now and anybody can check later, without contacting the prover.</p>
-<p>Put the requirements together and we get a <strong>SNARG</strong>: a <em>Succinct Non-Interactive Argument</em>. “Argument” means that resistance to cheating relies on computational assumptions: we promise security against attackers with realistically bounded computing power, not an infinitely powerful attacker.</p>
-<p>A SNARG need not hide the witness. That stronger privacy property is called zero knowledge. Nor does the word SNARG alone promise a way to extract a witness from a successful prover.</p>
-<div class="bridge">We've seen why a question about a huge bit string can be short. Now for the difficult part: can we arrange a proof so that checking only a few chosen bits really tells us something about the whole statement? That's where the PCP theorem enters.</div>
-<p class="source">Official notes, §1; handwritten notes pp. 2–3. The binary-address example illustrates the logarithm; it does not derive the full SNARG size bound.</p>
-</article>
+<article class="lesson" data-id="succinctness" data-title="What does succinct mean?">
 
-<article class="lesson" data-id="pcp-box" data-title="Why three proof bits can be enough">
-<p class="chapter-tag">I · Why SNARGs exist · Lecture §2</p>
-<h1>Could checking just three bits catch a false proof?</h1>
-<p class="aim">We just learned to <em>name</em> a position in a long string using few bits. But if you inspected three random characters of an ordinary calculation, you probably wouldn't learn whether it was correct. The next theorem solves that harder problem.</p>
-<p>The <strong>PCP theorem</strong> says that the prover can write the evidence in a special encoded form so that a verifier can check a statement by reading only three bits of this encoded proof. The encoding is important: three bits of the original witness would not normally be enough.</p>
-<p>Let's call the long encoded bit string \(\pi_{\rm PCP}\), to distinguish it from the short SNARG proof \(\pi\) we eventually want. Let <strong>\(M\) be the number of bits in \(\pi_{\rm PCP}\)</strong>. This is a new length: \(M\) describes the specially encoded PCP proof, while \(|w|\) in the previous lesson described the original witness. They need not be the same size.</p>
-<p>We can use what we just learned about binary addresses. Even when the encoded proof has \(M\) bits, choosing a position needs only about \(\log_2 M\) bits. The remarkable new part is that, with this special encoding, inspecting only a constant number of chosen bits can actually detect false claims.</p>
-<h2>What does the theorem guarantee?</h2>
-<p>For a true statement, there is an encoded proof that passes every test. For a false statement, <em>every fixed bit string</em> the cheater might offer has at most a one-half chance of passing a randomly chosen test:</p>
+<p class="chapter-tag">Lecture §1 · Succinctness and non-interactivity</p>
+<h1>What would actually make the proof cheaper?</h1>
+<p class="aim">We don't want the server merely to repackage its million intermediate hashes. We need the amount of material the verifier reads—and the work it performs—to grow much more slowly than the calculation itself.</p>
+<p>Let's measure sizes in bits. We write \(|w|\) for the number of bits in the ordinary witness and \(|\pi|\) for the number of bits in the proof we hope to construct. For example, a list of a million 256-bit hashes already contains about 256 million bits. If the “proof” were that entire list, the verifier would still have to process essentially all of it.</p>
+<h2>A small question about a large list</h2>
+<p>Imagine a list containing eight bits. To ask for bit number 5, we don't need to transmit the whole list. We can send the binary address \(101\), which means five. Three binary digits have \(2^3=8\) different possible combinations, enough to name every position from 0 to 7.</p>
+<p>Now imagine the witness contains \(2^k\) bits, where \(k\) is simply the number of binary address digits. Each new digit doubles the number of positions we can address. Move the slider to see both quantities change together.</p>
+<div class="lab" data-lab="growth"><div class="lab-top"><strong>How many bits does it take to name a position?</strong><p>The small number \(k\) is the address length. The larger number \(|w|=2^k\) is the size of the imaginary witness. This is <em>not</em> the size of a SNARG proof.</p></div><div class="lab-content">
+<label class="range-label">Binary address digits \(k\) <output class="range-value" data-live-for="k">3</output><input data-key="k" type="range" min="3" max="20" value="3"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<p>We express the relationship as \(\log_2(2^k)=k\). The logarithm answers: “How many doublings does it take to reach this number?” That's why logarithms are attractive when we work with enormous objects.</p>
+<p>But a short <em>address</em> is not a short <em>proof</em>. Asking for a few bits from a long list is easy; deciding whether those few bits tell us anything about a million-step computation is the hard part. We'll have to solve that separately.</p>
+<h2>The lecture's actual requirement</h2>
+<p>Let \(|x|\) be the length in bits of the public statement, and \(T_V\) the verifier's running time. Let \(\lambda\) be a security parameter: larger \(\lambda\) is used to make successful attacks less likely. The lecture defines succinctness using the bounds</p>
 <div class="math">\[
-\Pr[\text{accept}\mid\text{true statement, honest PCP}]=1,
+|\pi|=O\bigl(\lambda,\operatorname{polylog}(|x|,|w|)\bigr),
 \qquad
-\Pr[\text{accept}\mid\text{false statement}]\le \tfrac12.
+T_V=O\bigl(\lambda,|x|,\operatorname{polylog}(|w|)\bigr).
 \]</div>
-<p>The theorem is a deep result, and the lecture asks us to use it rather than prove it. For now, what matters is exactly what it promises—and that the random test is applied to a proof string already fixed by the prover.</p>
-<h2>Imagine keeping the encoded proof in a locked box</h2>
-<p>The prover puts all \(M\) bits inside a box and closes it. The verifier can request position \(i\), and the box returns the bit \((\pi_{\rm PCP})_i\). The box always answers from the same string; the prover can't replace a bit after learning the question.</p>
-<div class="diagram"><div class="flow">
-<div class="stage"><strong>Prover</strong><p>Fixes the complete encoded proof.</p></div>
-<div class="arrow">⟶</div>
-<div class="stage"><strong>Proof box</strong><p>Answers queries from that fixed string.</p></div>
-<div class="arrow">⟷</div>
-<div class="stage"><strong>Verifier</strong><p>Chooses a few positions and checks a rule for the returned bits.</p></div>
-</div><p class="diagram-note">The box is an idealized device. The following little experiment shows how it answers one query; it is not a simulation of the PCP theorem.</p></div>
-<h2>How do we make the error smaller than one-half?</h2>
-<p>Repeat the test \(t\) times, choosing fresh independent random positions each time, but always testing the <em>same fixed</em> proof. Accept only if every test passes. For a false statement, the chance of passing each independent test is at most \(1/2\), so</p>
+<p>A <em>polylogarithm</em> is a fixed power of a logarithm, such as \((\log n)^2\). The big-\(O\) notation describes how cost scales as inputs become large; it does not give an exact number of bytes or milliseconds. The verifier is allowed time proportional to \(|x|\), because it must at least read the public claim. But it must not have to read the whole witness \(w\).</p>
+<p>So “succinct” requires <em>both</em> a short proof and fast checking. Either one alone would be insufficient.</p>
+<h2>Why must it also be non-interactive?</h2>
+<p>In a protocol with interaction, the verifier sends the prover questions and waits for answers. Imagine verifying a cryptocurrency transaction: every person who wants to check it shouldn't have to contact the original prover. We would prefer one fixed proof string that anybody can inspect later. That's what <strong>non-interactive</strong> means.</p>
+<p>Put the two properties together and we get a <strong>SNARG</strong>: a <em>Succinct Non-Interactive Argument</em>. “Argument” means the security relies on computational assumptions against efficient adversaries. A SNARG needn't be zero-knowledge: keeping the witness private is a separate property, which the lecture deliberately leaves aside at this stage.</p>
+<div class="bridge">We know exactly what we want now. But an ordinary NP proof reveals its witness, so it is usually not succinct. To see a possible way out, we'll first allow ourselves an <em>imaginary verifier</em> that can inspect only a few bits of a long encoded proof. Before using that idea, we must ask whether checking just a few bits could ever be convincing.</div>
+<p class="source">Lecture §1, formal succinctness requirements, non-interactivity, and the distinction between SNARGs and zero knowledge.</p>
+
+</article>
+
+<article class="lesson" data-id="pcp-box" data-title="Why PCP appears here">
+
+<p class="chapter-tag">Lecture §2 · The PCP box experiment</p>
+<h1>Can a verifier learn enough from three proof bits?</h1>
+<p class="aim">We want to avoid reading a long witness. Let's try the most obvious shortcut: the prover sends the list of intermediate calculation values, and the verifier checks only three randomly chosen steps. Is that convincing?</p>
+<p>Not in general. Suppose the server performs a million steps but changes only the final result. There can be almost a million correct transitions and just one false transition. If we sample only three of the transitions uniformly, the chance of finding that single bad one is tiny. The short question isn't the problem. The problem is that the evidence is written in a form where a single lie can hide among correct entries.</p>
+<p>What if we could <em>rewrite the evidence</em> so that a false claim cannot hide in that way? That's the motivation for a <strong>probabilistically checkable proof</strong>, or PCP. We are not just sampling the original witness anymore. We first encode it into a specially structured proof string; the verifier then checks a few positions selected according to a carefully designed random test.</p>
+<h2>The theorem, and what it does <em>not</em> say</h2>
+<p>The <strong>PCP theorem</strong> says that for statements in NP, such an encoding exists. In the form cited by our lecture, a verifier can decide whether to accept by reading just three bits of a polynomial-length encoded proof. Honest proofs of true statements always pass; every fixed encoded proof for a false statement passes with probability at most one-half.</p>
+<div class="math">\[\Pr[\text{accept}\mid\text{true claim, honest proof}]=1,\qquad
+\Pr[\text{accept}\mid\text{false claim}]\le\tfrac12.\]</div>
+<p>This is a deep theorem supplied by the lecture. We are <em>not</em> proving that encoding here, nor claiming that any three random bits of an ordinary witness are sufficient. The theorem's guarantee is precisely what makes the special encoding useful.</p>
+<p>Let's call the encoded proof \(\pi_{\rm PCP}\), and let \(M\) denote its length in bits. An index into those \(M\) positions requires only \(O(\log M)\) bits to specify. The verifier receives three proof bits, but the encoded proof itself may be very long—even longer than the original witness.</p>
+<h2>What is the “box” actually doing?</h2>
+<p>Imagine the prover locks the entire \(\pi_{\rm PCP}\) string inside a box before the verifier chooses any queries. Later the verifier asks for positions \(i,j,k\); the box returns the bits already stored there. The prover cannot change the contents to suit the question.</p>
+<div class="diagram"><div class="flow"><div class="stage"><strong>Prover</strong><p>Fixes the complete specially encoded proof \(\pi_{\rm PCP}\).</p></div><div class="arrow">⟶</div><div class="stage"><strong>Locked proof box</strong><p>Answers queries from the same unchanged string.</p></div><div class="arrow">⟷</div><div class="stage"><strong>Verifier</strong><p>Chooses a small number of positions and checks their values.</p></div></div></div>
+<p>The fixed string is essential. Without it, a dishonest prover could see the requested positions and invent whichever answers make the verifier's test pass. The PCP theorem bounds the acceptance probability only when all answers come from one proof fixed before the test is chosen.</p>
+<h2>Can we reduce the one-half error?</h2>
+<p>Yes. Repeat the PCP test \(t\) times with fresh independent randomness, always against that same fixed encoded proof. Accept only if every test passes. For a false claim, each test passes with probability at most \(1/2\), so</p>
 <div class="math">\[\Pr[\text{all }t\text{ tests pass}]\le(1/2)^t=2^{-t}.\]</div>
-<div class="lab" data-lab="pcp"><div class="lab-top"><strong>Try repeated random tests</strong><p>Increase the number \(t\) of independent tests. The figure shows the error bound, not an actual PCP encoding.</p></div>
-<div class="lab-content">
-<label class="range-label">Number of independent tests \(t\)
-<output class="range-value" data-live-for="t">4</output>
-<input data-key="t" type="range" min="1" max="10" value="4">
-</label><div class="lab-output" aria-live="polite"></div></div></div>
-<p>To build a real proof, we still have to replace the imaginary box. Sending all \(M\) bits defeats our aim of a short proof. Asking a dishonest prover for bits without fixing its string lets it change answers to suit our questions. We need a way to lock a long string using one small commitment.</p>
-<div class="bridge">The mathematical verifier works with a locked bit string. Cryptography will now give us a real way to lock the string and open just the positions we ask for.</div>
-<p class="source">Official notes, §2 pp. 2–3; handwritten notes pp. 4–6. The symbol \(M\) here means the encoded PCP proof length in bits.</p>
+<div class="lab" data-lab="pcp"><div class="lab-top"><strong>Repeat the test on one fixed encoded proof</strong><p>Change \(t\) to see the theoretical soundness bound. This illustrates the PCP theorem's guarantee; it does not generate a real PCP encoding.</p></div><div class="lab-content"><label class="range-label">Number of tests \(t\) <output class="range-value" data-live-for="t">4</output><input data-key="t" type="range" min="1" max="10" value="4"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<div class="bridge">This is the first real breakthrough: <em>mathematically</em>, a few queries can test a long specially encoded proof. But the locked box is imaginary. If the prover simply sends the entire PCP proof, the proof won't be succinct; if we ask it for bits directly, it may change its answers. We need a cryptographic way to make a short commitment to the whole string and later authenticate only the few positions the verifier asks for.</div>
+<p class="source">Lecture §2, “The box game,” the PCP theorem and its \(\tfrac12\) soundness bound. The hypothetical faulty final step is motivation, not a proof of the PCP theorem.</p>
+
 </article>
 
 
-<article class="lesson" data-id="merkle" data-title="One commitment for an entire vector">
-<p class="chapter-tag">I · Why SNARGs exist · Lecture §2 / HW1</p>
-<h1>How can one small value lock a long list?</h1>
-<p class="aim">The PCP prover has already written a long encoded proof. We want the verifier to read a few bits without receiving all of them, while preventing the prover from changing its answers after learning which positions are requested.</p>
-<p>We called the length of that encoded proof \(M\) bits. For now, think of it as an ordered list of \(M\) messages, one per position. Call the message at position \(i\) by the name \(m_i\). In our PCP application, each \(m_i\) is just one bit, but a vector commitment can also store larger messages.</p>
-<p>A <strong>vector commitment</strong> makes a short public value \(c\) that fixes the whole list. Later the prover reveals one \(m_i\) and supplies a short <strong>opening proof</strong> showing that this is the value committed at position \(i\).</p>
-<p>What exactly does “fixes” mean? After sending \(c\), a dishonest prover should not be able to open the same position \(i\) once as \(m_i\) and again as a different \(m_i'\), with both openings accepted. This is called <strong>position binding</strong>. It is precisely the property missing from our imaginary PCP box.</p>
-<h2>Build a tree from hashes</h2>
-<p>We need one more tool: a hash function \(H\) that turns an input into a short digest of \(\lambda\) bits. We assume it is hard for an efficient attacker to find two different inputs with the same digest; that property is called <strong>collision resistance</strong>. The security parameter \(\lambda\) controls the digest length.</p>
-<p>Start with eight messages so we can see what happens. Hash each message to make eight leaves. Hash each pair of neighboring hashes to make four parents. Repeat: two grandparents, then one root \(c\). The root is our short commitment to all eight messages.</p>
-<p>Now suppose the verifier asks for \(m_4\). We reveal \(m_4\), so it can calculate its leaf hash. To calculate that leaf's parent, the verifier only needs the neighboring leaf hash, not all the leaves. To go one level higher it needs the neighboring subtree hash. One sibling hash at each level is enough to reconstruct the root.</p>
-<div class="lab" data-lab="merkle"><div class="lab-top"><strong>Which hashes must be opened?</strong><p>Choose a message. Blue shows the path the verifier rebuilds; amber shows the sibling hashes it must receive.</p></div><div class="lab-content">
-<label class="range-label">Message position \(i\)
-<output class="range-value" data-live-for="i">4</output><input data-key="i" type="range" min="1" max="8" value="4"></label>
+<article class="lesson" data-id="merkle" data-title="Replace the imaginary proof box">
+
+<p class="chapter-tag">Lecture §2 · From PCPs to SNARGs</p>
+<h1>How can the prover lock the proof without sending it?</h1>
+<p class="aim">The PCP verifier needs a few bits from one fixed long string. The missing tool must let the prover commit to the entire string using a short value, then convincingly reveal whichever individual positions the verifier asks for. This is a <strong>vector commitment</strong>.</p>
+<p>Suppose the encoded PCP string has \(M\) bits. Think of it as a list \((m_1,\ldots,m_M)\), with one bit \(m_i\) at each position \(i\). A vector commitment creates a short public value \(c\) for that whole list. Later, to open position \(i\), the prover reveals \(m_i\) and some authentication data that the verifier checks against \(c\).</p>
+<p>The critical rule is <strong>position binding</strong>: once \(c\) has been sent, a computationally bounded prover must not be able to open the same position \(i\) to two different bit values with valid proofs. This is exactly what the locked PCP box gave us for free.</p>
+<h2>Build the commitment from hashes</h2>
+<p>A <strong>hash function</strong> \(H\) turns data into a short digest of \(\lambda\) bits. The security property we need is <em>collision resistance</em>: it should be infeasible to find two different inputs with the same digest. The parameter \(\lambda\) controls its security level.</p>
+<p>Hash each message to make the leaves of a binary tree. Hash pairs of neighboring hashes to make their parents. Keep going until one hash remains at the top. That one value, the <strong>Merkle root</strong> \(c\), is the commitment to the whole list.</p>
+<p>To open one message, the verifier already has the message and can hash it to get its leaf hash. It then needs only the neighboring hash to calculate that leaf's parent, one neighboring subtree hash for the next parent, and so on until the root. It compares the reconstructed root with the previously received \(c\).</p>
+<div class="lab" data-lab="merkle"><div class="lab-top"><strong>Open one position from a fixed tree</strong><p>Move the index. The blue nodes are the hashes the verifier reconstructs; the amber nodes are the neighboring hashes the prover supplies.</p></div><div class="lab-content">
+<label class="range-label">Position \(i\) <output class="range-value" data-live-for="i">4</output><input data-key="i" type="range" min="1" max="8" value="4"></label>
 <div id="merkle-svg"></div><div class="lab-output" aria-live="polite"></div></div></div>
-<div class="proof"><h3>Why is the opening short?</h3>
-<p>Suppose the tree has \(M=2^k\) leaves. The height is \(k\), because each level halves the number of hashes until one remains. The verifier needs exactly one sibling digest per level. Each digest has \(\lambda\) bits, so the opening uses \(k\lambda=\lambda\log_2 M\) bits of authentication hashes, in addition to the message and its index. The root itself has only \(\lambda\) bits.</p>
-<h3>Why can't the prover change the value?</h3>
-<p>Suppose two different messages at the same position both give the same committed root. If their leaf hashes are equal, we immediately have two different inputs with one hash output: a collision. If the leaf hashes differ, follow both proposed openings upward. Because they nevertheless end at the same root, at some parent two different child inputs must produce the same hash. That is also a collision.</p>
-<p>Collision resistance says an efficient attacker cannot feasibly do this, so it cannot feasibly make two conflicting openings for one position.</p>
-<p class="qed">We have proved the two properties we needed: one \(\lambda\)-bit root fixes a long list, and one position can be authenticated using only \(O(\lambda\log M)\) bits of path information. That's how cryptography gives the PCP verifier a practical substitute for its locked box. \(\square\)</p>
-</div>
-<div class="bridge">Now the PCP verifier's ideal box can be replaced: a Merkle commitment fixes the bit string, and authentication paths answer its position queries. Let's combine the two mechanisms and check whether the resulting argument is actually short and sound.</div>
-<div class="practice-link"><span class="practice-tag">Optional practice</span><a href="#hw1-vectors">HW1 4(a–c): compare three ways to commit to a list</a></div>
-<p class="source">Lecture §2; Homework 1, Problem 4(c). Hash input encodings should distinguish leaves from internal nodes in a concrete implementation.</p>
+<h2>Why is this short—and why can we trust it?</h2>
+<p>If the tree has \(M=2^k\) leaves, it has \(k=\log_2M\) levels. We need one neighboring digest per level, and each digest has \(\lambda\) bits. So the authentication data for one opening is \(O(\lambda\log M)\) bits. The commitment itself is only a single \(\lambda\)-bit digest.</p>
+<div class="proof"><h3>Where position binding comes from</h3>
+<p>Suppose a cheater manages to open the same leaf position as two different values under the same root \(c\). If the two leaf hashes are identical, it has found a hash collision. If they differ, follow the two authentication paths upward. At some stage different inputs must produce the same parent hash, since the paths ultimately reach the same root. That's also a collision.</p>
+<p>So, assuming the hash is collision-resistant, a feasible dishonest prover cannot construct two conflicting valid openings to the same position.</p>
+<p class="qed">A short Merkle root fixes the long encoded proof, and each requested bit can be authenticated by a logarithmic-length path. We have replaced the ideal PCP box with the specific cryptographic behavior it required. \(\square\)</p></div>
+<div class="practice-link"><span class="practice-tag">Relevant earlier homework</span><a href="#hw1-vectors">HW1 Problem 4(a–c): compare three vector commitments and prove binding</a></div>
+<div class="bridge">Merkle commitments make the answers trustworthy, but they don't determine whether a PCP test is <em>meaningful</em>. That's still the PCP theorem's job. Now put the two together: first commit, then ask random positions, then authenticate and test. The next lesson proves that this combined protocol has both short communication and small soundness error.</div>
+<p class="source">Lecture §2, “From PCPs to SNARGs,” and HW1 Problem 4(c). A concrete implementation also uses unambiguous encodings of leaves and internal nodes.</p>
+
 </article>
 
 <article class="lesson" data-id="hw1-vectors" data-title="HW1 · All three vector commitments">
@@ -210,21 +181,26 @@ T_V=O\!\left(\lambda,|x|,\operatorname{polylog}(|w|)\right).
 <p class="source">Original HW3, Problem 4(a); <a href="../hw3/">HW3 deck</a>.</p>
 </article>
 
-<article class="lesson" data-id="iop-types" data-title="Interactive oracle proofs">
-<p class="chapter-tag">I · Why SNARGs exist · Lecture §2.1</p>
-<h1>From checking proof bits to checking equations</h1>
-<p class="aim">The PCP construction is one route to a short proof: it checks a few carefully encoded bits. We now want to build a second route, which will lead to PLONK. Instead of asking about individual proof bits, can we ask whether a whole computation obeys an equation?</p>
-<p>The essential rule remains the same: the prover first fixes the entire object stored in the box. The verifier then chooses its question, and the box must answer consistently with that fixed object. A protocol using such boxes is called an <strong>Interactive Oracle Proof</strong>, or IOP. An <em>oracle</em> is simply the name we give to the idealized box.</p>
-<p>There are three interfaces in the lecture. You already know the first: the box stores a long bit string and reveals selected bits. For the next two, imagine that the proof is an ordered list of numbers, or a polynomial—a formula we can evaluate at a chosen number.</p>
-<div class="table-scroll"><table><thead><tr><th>The box stores</th><th>What the verifier asks</th></tr></thead><tbody>
-<tr><td><strong>PCP:</strong> a fixed bit string \(\pi\)</td><td>“What is bit \(i\)?” The box returns \(\pi_i\).</td></tr>
-<tr><td><strong>Linear IOP:</strong> a fixed list \((\pi_1,\ldots,\pi_M)\)</td><td>“Multiply each entry by my chosen weight \(q_i\), then add them.” The box returns \(\sum_i q_i\pi_i\).</td></tr>
-<tr><td><strong>Polynomial IOP:</strong> a fixed polynomial \(f(X)\)</td><td>“What does the formula give at \(X=z\)?” The box returns \(f(z)\).</td></tr>
+<article class="lesson" data-id="iop-types" data-title="The common SNARG blueprint">
+
+<p class="chapter-tag">Lecture §2.1 · Interactive Oracle Proofs</p>
+<h1>Why did we use an imaginary box first?</h1>
+<p class="aim">We've seen the same construction in two stages. First the PCP theorem told us that a few correctly selected bits can test a fixed encoded proof. Then a commitment scheme forced the real prover to supply bits from one fixed encoding. This separation is not peculiar to PCPs: it's the blueprint behind modern SNARG constructions.</p>
+<p>In the first stage, we pretend there is a trusted <strong>oracle</strong>, or proof box, storing one object supplied by the prover. It allows the verifier to ask only specific kinds of queries. We prove completeness and soundness <em>in that ideal model</em>, without cryptographic assumptions. This is called an <strong>Interactive Oracle Proof</strong> (IOP).</p>
+<p>In the second stage, a cryptographic commitment replaces the oracle. The prover must commit to the object before seeing the verifier's query, and authentication stops it from changing answers later. After that, Fiat–Shamir can often remove the verifier's interactive challenge. We won't yet assume that this last step is automatically secure; we'll return to its conditions.</p>
+<h2>Why might we want a different kind of box?</h2>
+<p>The PCP box stores <em>bits</em> and answers “what is the bit at position \(i\)?” But a long computation consists of numbers that satisfy equations. Perhaps it would be more natural if the box could answer questions about those numbers or equations directly.</p>
+<p>The lecture describes three interfaces. We already know the first one:</p>
+<div class="table-scroll"><table><thead><tr><th>IOP type</th><th>What the prover fixes</th><th>What the verifier can ask</th></tr></thead><tbody>
+<tr><td>PCP</td><td>A string \(\pi\) of bits.</td><td>“What is bit \(i\)?” The oracle reveals \(\pi_i\).</td></tr>
+<tr><td>Linear IOP</td><td>A list \(\boldsymbol\pi=(\pi_1,\ldots,\pi_n)\) of field values.</td><td>“Calculate the weighted sum \(\sum_i q_i\pi_i\),” where the verifier chooses weights \(q_i\).</td></tr>
+<tr><td>Polynomial IOP</td><td>A polynomial \(f(X)\) over a field.</td><td>“What is \(f(z)\)?” The verifier chooses the point \(z\).</td></tr>
 </tbody></table></div>
-<p>A weight \(q_i\) is just a number selected by the verifier for list position \(i\). A polynomial like \(f(X)=X^2+1\) can be evaluated by substituting a number: for example, \(f(3)=10\). We'll develop the needed arithmetic carefully in the next chapter, using a number system called a <em>field</em>.</p>
-<p>Why choose a polynomial box for PLONK? Because we can arrange the steps of a computation as values of one polynomial. Then the verifier can check equations about the steps by asking for the polynomial at just a few points. We'll prove why that works, rather than assuming it.</p>
-<div class="bridge">We will use the <strong>polynomial oracle</strong>. First we must show how one polynomial can hold many values. Then we need a reason why a false equation is unlikely to pass a random evaluation test. Both will come from elementary algebra over finite fields. This is the next step toward a PLONK proof, not a separate topic.</div>
-<p class="source">Official notes, §2.1 pp. 3–4. The three oracle interfaces are given in the lecture; the examples are explanatory.</p>
+<p>A linear combination is just a weighted sum: with values \((2,3,4)\) and weights \((1,0,2)\), the answer is \(1\cdot2+0\cdot3+2\cdot4=10\). A polynomial evaluation is just substitution: if \(f(X)=X^2+1\), asking at \(z=3\) gives \(f(3)=10\).</p>
+<p>These interfaces all describe <em>which questions are allowed</em>. They do not themselves prove that an oracle-based protocol is sound. We still have to construct a meaningful verifier test and prove its security.</p>
+<div class="bridge">This explains the next part of the lecture. The PCP route gave us a conceptually simple but inefficient SNARG construction. For PLONK, we'll use a polynomial IOP instead. Why polynomials? Because they let us represent the results of a long computation and express many required equations as a small number of polynomial identities. We'll see exactly how using Fibonacci, then prove why testing those identities at random points works.</div>
+<p class="source">Lecture §2, the two-stage SNARG blueprint, and §2.1, PCP/linear/polynomial interactive oracle proofs.</p>
+
 </article>
 
 </body></html>
