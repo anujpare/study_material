@@ -184,12 +184,22 @@
 <div class="lab-output" aria-live="polite"></div></div></div>
 <h2>How do those four requirements become polynomial tests?</h2>
 <p>The lecture arranges the original input values at the positions \(\omega^{-1},\omega^{-2},\omega^{-3}\). For gate \(l\), it puts its left input, right input and output at the three positions \(\omega^{3l},\omega^{3l+1},\omega^{3l+2}\). Here \(l=0,1,2\); negative powers wrap around because \(\omega^{12}=1\).</p>
-<p><strong>Public input:</strong> the verifier knows that \(f_{\rm trace}(\omega^{-1})=2\) and \(f_{\rm trace}(\omega^{-2})=4\). The third input is private and does not need to match a public value. A polynomial difference vanishing at the designated public-input positions expresses those requirements.</p>
+<p><strong>Public input:</strong> the verifier knows that \(f_{\rm trace}(\omega^{-1})=2\) and \(f_{\rm trace}(\omega^{-2})=4\). The third original input is private and is not required to equal a public value. How can we check the two known values together? Interpolate a polynomial \(f_{\rm in}\) through the public inputs: \(f_{\rm in}(\omega^{-1})=2\) and \(f_{\rm in}(\omega^{-2})=4\). Then the difference \(g(X)=f_{\rm trace}(X)-f_{\rm in}(X)\) must vanish at both public-input positions.</p>
+<p>That is equivalent to saying that \(g\) has the factor \((X-\omega^{-1})(X-\omega^{-2})\). We proved the equivalence in the Fibonacci lesson, so a suitable quotient and a randomized ZeroTest check can enforce the public inputs without opening every trace value.</p>
 <p><strong>Final result:</strong> the last gate's output is at \(\omega^{3\cdot2+2}=\omega^8\). For this public target, the verifier requires \(f_{\rm trace}(\omega^8)=56\). In the strict zero-output language, the analogous condition requires the last gate's output to equal 0 after including a target-checking gate.</p>
 <p><strong>Gate arithmetic:</strong> let \(L,R,O\) denote one gate's left, right and output values. Let \(s=1\) when the gate adds, and \(s=0\) when it multiplies. The same equation handles either gate:</p>
 <div class="math">\[\boxed{s(L+R)+(1-s)LR-O=0.}\]</div>
 <p>Substitute \(s=1\): we obtain \(L+R-O=0\), the addition rule. Substitute \(s=0\): we obtain \(LR-O=0\), the multiplication rule. So the equation really is equivalent to the chosen gate's arithmetic, not merely related to it.</p>
-<p>The selector \(s\) is part of the public circuit. The lecture interpolates these selector values into a polynomial \(f_{\rm sel}\). Using the fact that \(f_{\rm trace}(X)\), \(f_{\rm trace}(\omega X)\) and \(f_{\rm trace}(\omega^2X)\) are the three gate values at a gate-start point, we can form one <em>gate polynomial</em> that must vanish at each of the three gate-start positions \(1,\omega^3,\omega^6\). The same vanishing-polynomial and random-evaluation reasoning from Fibonacci can check that identity.</p>
+<p>The selector belongs to the public circuit: gate 0 multiplies, gate 1 adds and gate 2 multiplies. Interpolate a selector polynomial \(s(X)=f_{\rm sel}(X)\) that takes the values 0, 1 and 0 at the three gate-start points \(1,\omega^3,\omega^6\).</p>
+<p>At a gate-start point \(X=\omega^{3l}\), our trace encoding makes \(f_{\rm trace}(X)\) the left input, \(f_{\rm trace}(\omega X)\) the right input and \(f_{\rm trace}(\omega^2X)\) the output. Substitute those three expressions, together with \(s(X)\), into the one-gate equation. We obtain one polynomial:</p>
+<div class="math">\[
+\begin{aligned}
+G(X)={}&s(X)\bigl(f_{\rm trace}(X)+f_{\rm trace}(\omega X)\bigr)\\
+&+\bigl(1-s(X)\bigr)f_{\rm trace}(X)f_{\rm trace}(\omega X)\\
+&-f_{\rm trace}(\omega^2X).
+\end{aligned}
+\]</div>
+<p>Now the connection is exact: at \(X=\omega^{3l}\), the expression \(G(X)=0\) is just the required arithmetic equation for gate \(l\). Therefore <em>every gate is correct if and only if</em> \(G\) vanishes at all three points \(1,\omega^3,\omega^6\). The vanishing-polynomial theorem turns those three conditions into a quotient identity, and ZeroTest checks that identity at a random field point. The polynomial degrees must be bounded before that soundness argument applies.</p>
 <p><strong>Wiring:</strong> gate 0's output must equal gate 2's left input, and gate 1's output must equal gate 2's right input:</p>
 <div class="math">\[
 f_{\rm trace}(\omega^2)=f_{\rm trace}(\omega^6),\qquad
