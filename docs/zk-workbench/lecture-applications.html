@@ -1,7 +1,7 @@
 <article class="lesson">
 <p class="chapter">Lecture 5–8 · Why we need zero knowledge</p>
 <h1>When do we actually need zero knowledge?</h1>
-<p class="lead">Not every proof needs to keep a secret. Before asking for zero knowledge, first ask: what information would the verifier learn if the prover gave it an ordinary witness?</p>
+<p class="lead">Completeness and soundness establish that the verifier can trust the conclusion. They do <em>not</em> restrict what the verifier learns while reaching it. In the Hamiltonian-cycle example, sending the entire witness is convincing but reveals the cycle. We therefore need to identify which applications require proving a claim while withholding its witness. Not every proof needs to keep a secret. Before asking for zero knowledge, first ask: what information would the verifier learn if the prover gave it an ordinary witness?</p>
 <h2>Identify the secret in each application</h2>
 <div class="role prover"><div class="tag">Password-based authentication</div><p>For a password, the secret is \(p\). A server may know a verifier derived from it, such as \(H(p)\), but shouldn't learn \(p\) during authentication. A ZK-based authentication scheme might help, though a secure password protocol must also deal with guessing and active attacks. Zero knowledge alone does not solve those problems.</p></div>
 <div class="role sim"><div class="tag">Private payments</div><p>A payment system might need to check that a transaction is valid while hiding an amount or the identities involved. The private transaction details form part of the witness; the public statement says the validity rules are satisfied.</p></div>
