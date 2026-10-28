@@ -39,9 +39,28 @@ function wireDiagram(rows,input){
  return out+'</svg><div class="visual-note">Every arrow represents an equality required by the circuit wiring. A red arrow alone invalidates the proposed trace.</div></div>';
 }
 
+function syncRangeValues(lab){
+  lab.querySelectorAll('input[type="range"]').forEach(input=>{
+    const label=input.closest('label');
+    if(!label)return;
+    label.classList.add("range-label");
+    const key=input.dataset.key || input.id || "range";
+    let output=label.querySelector('output[data-live-for="'+key+'"]');
+    if(!output){
+      output=document.createElement('output');
+      output.className="range-value";
+      output.dataset.liveFor=key;
+      input.before(output);
+    }
+    output.value=input.value;
+    output.textContent=input.value;
+    input.setAttribute("aria-valuetext",key+" = "+input.value);
+  });
+}
 function initLab(lab){
  const type=lab.dataset.lab;
  const update=()=>{
+  syncRangeValues(lab);
   if(type==="ring"){
     const r=val(lab,"r",3),y=mod(2*r*r+4*r,6);
     txt(lab,'\\(f('+r+')='+y+'\\pmod 6\\). '+(y===0?'This is a root.':'This is not a root.')+' The four roots are 0, 1, 3, and 4.'+grid([0,1,2,3,4,5],x=>mod(2*x*x+4*x,6)===0,r));
@@ -125,8 +144,28 @@ function initLab(lab){
   }
 
   if(type==="growth"){
-    const k=val(lab,"k",10),M=2**k;
-    txt(lab,'<div class="two"><div class="stage"><strong>Witness length</strong><p>'+M.toLocaleString('en-US')+' values</p></div><div class="stage"><strong>Binary logarithm</strong><p>'+k+'</p></div></div><p class="viz-insight">\\(M=2^{'+k+'}\\), therefore \\(\\log_2 M='+k+'\\). This comparison concerns asymptotic growth. No exact SNARG proof length is inferred from it.</p>');
+    const k=val(lab,"k",3),count=2**k;
+    const last=count-1,allOnes="1".repeat(k),allZeros="0".repeat(k);
+    let addresses="";
+    if(k<=4){
+      addresses='<div class="address-grid" aria-label="All '+count+' binary addresses">'+
+        Array.from({length:count},(_,i)=>'<span class="address-cell '+(i===last?"last":"")+'"><small>'+i+'</small><b>'+i.toString(2).padStart(k,"0")+'</b></span>').join("")+'</div>';
+    }else{
+      addresses='<div class="address-ends" aria-label="First and last binary addresses">'+
+      '<span>First position <b>0</b><code>'+allZeros+'</code></span>'+
+      '<span class="dots" aria-hidden="true">···</span>'+
+      '<span>Last position <b>'+last.toLocaleString("en-US")+'</b><code>'+allOnes+'</code></span></div>';
+    }
+    txt(lab,
+      '<div class="address-summary"><div><span class="small-label">Witness length |w|</span><strong>'+
+         count.toLocaleString("en-US")+' <small>bits</small></strong></div>'+
+      '<div><span class="small-label">Digits to address one bit</span><strong>'+
+         k+' <small>bits</small></strong></div></div>'+
+      '<div class="address-rule">\\(|w|=2^{'+k+'}='+count.toLocaleString("en-US").replace(/,/g,"\\,")+
+         '\\quad\\Longrightarrow\\quad\\log_2|w|='+k+'\\)</div>'+
+      addresses+
+      '<p class="viz-insight">These '+k+' address digits can select <em>one</em> position among '+
+      count.toLocaleString("en-US")+' bits. They do not contain those bits or prove that the computation was correct. That is why we need the PCP theorem next.</p>');
   }
   if(type==="bitbox"){
     const i=val(lab,"i",4),bits=[1,0,1,1,0,0,1,0];
@@ -222,7 +261,7 @@ function extraBox(title,why,fields,type){
  return '<div class="lab" data-lab="'+type+'"><div class="lab-top"><strong>'+title+'</strong><p>'+why+'</p></div><div class="lab-content">'+fields+'<div class="lab-output" aria-live="polite"></div></div></div>';
 }
 function range(name,math,min,max,def){
- return '<label>'+math+'<input type="range" data-key="'+name+'" min="'+min+'" max="'+max+'" step="1" value="'+def+'"></label>';
+ return '<label class="range-label"><span class="range-name">'+math+'</span><output class="range-value" data-live-for="'+name+'">'+def+'</output><input type="range" data-key="'+name+'" min="'+min+'" max="'+max+'" step="1" value="'+def+'" aria-label="'+math.replace(/<[^>]*>/g,"")+'"></label>';
 }
 function choice(name,options){
  return '<label>Choose a case<select data-key="'+name+'">'+options.map(([v,t])=>'<option value="'+v+'">'+t+'</option>').join("")+'</select></label>';
@@ -265,7 +304,6 @@ function svgMatrix(size,test,selected){
 }
 function initLessonExtras(id){
  const extras={
-  "succinctness":extraBox("Watch the logarithm grow","Choose M = 2ᵏ witness values. See how slowly k grows as M gets larger.",range("k","Exponent k",3,20,10),"growth"),
   "pcp-box":extraBox("Ask the box for one bit","All eight bits are fixed first. Choose which one to reveal.",range("i","Query position i",1,8,4),"bitbox"),
   "equality-proof":extraBox("What if the cheater learns the question first?","Choose r first. The cheater can then invent gᵣ(X) = X − r, which agrees with f(X) = 0 exactly at r.",range("r","Challenge r",0,16,4),"adaptive"),
   "schwartz-zippel":extraBox("Which pairs make XY = 0?","There are 49 possible pairs in 𝔽₇². Green cells are the ones where XY = 0.",range("r1","First coordinate r₁",0,6,2)+range("r2","Second coordinate r₂",0,6,3),"szplot"),
@@ -282,7 +320,6 @@ function initLessonExtras(id){
  // Put the experiment beside the equation or question it tests, never
  // before the student knows the variables being manipulated.
  const placement={
-  "succinctness":["h2","beforebegin"],
   "equality-proof":['.lab[data-lab="eq"]',"afterend"],
   "midterm-polynomial":[".exercise details.worked","beforebegin"],
   "roots-unity-cost":[".warning","beforebegin"],
