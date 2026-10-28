@@ -111,31 +111,47 @@ h(X)=f(X)-q(X)(X-1)(X-2)(X-3).
 <p class="source">Constructed from ZeroTest in lecture §3; not an original homework question.</p>
 </article>
 
-<article class="lesson" data-id="coverage" data-title="Course and homework coverage">
-<p class="chapter-tag">V · Examination workshop · Source map</p>
-<h1>Find the lecture or homework problem</h1>
-<p>The tutorial follows the lecture's order. The original homework questions appear where their mathematics becomes useful, and the worked answers stay folded until you choose to open them.</p>
-<div class="table-scroll"><table><thead><tr><th>Source</th><th>Where to find it</th></tr></thead><tbody>
-<tr><td>Lecture §§1–2</td><td>Statements, succinctness, PCP theorem, IOPs, Merkle commitments, PCP argument.</td></tr>
-<tr><td>Lecture §3</td><td>Field arithmetic, interpolation, EqualityTest, Schwartz–Zippel, vanishing polynomials, ZeroTest, Fibonacci.</td></tr>
-<tr><td>Lecture §4</td><td>Polynomial commitments: Setup, Commit, Open, Verify, correctness, evaluation binding.</td></tr>
-<tr><td>Lecture §5</td><td>Arithmetic circuits, traces, roots of unity, public input, gate and wiring checks.</td></tr>
-<tr><td>Lecture §6</td><td>Universal setup, circuit preprocessing, polynomial IOP, commitments, Fiat–Shamir.</td></tr>
-<tr><td>HW1 4(a–c)</td><td><a href="#hw1-vectors">All three vector-commitment constructions and binding arguments.</a></td></tr>
-<tr><td>HW2 2(a–c)</td><td><a href="#repetition-hw2">Sequential, parallel and honest-verifier ZK simulation.</a></td></tr>
-<tr><td>HW2 3(a–c)</td><td><a href="#schnorr-recall">Schnorr completeness, HVZK and extraction.</a></td></tr>
-<tr><td>HW2 4(a–c)</td><td><a href="#hw2-circuit-sat">Circuit-SAT construction and proofs.</a></td></tr>
-<tr><td>HW3 1(a,b,d)</td><td><a href="#hw3-conceptual">Knowledge error, plain-model NIZK and statistical ZK.</a></td></tr>
-<tr><td>HW3 1(c)</td><td><a href="#field-foundation">Why root counting fails modulo 6.</a></td></tr>
-<tr><td>HW3 2(a–b)</td><td><a href="#hw3-schnorr-fs">Non-interactive Schnorr proof and verifier.</a></td></tr>
-<tr><td>HW3 2(c–d)</td><td><a href="#hw3-schnorr-attacks">Guessing attack and transferable proofs.</a></td></tr>
-<tr><td>HW3 3(a–b)</td><td><a href="#hw3-amplification">Parallel amplification before hashing.</a></td></tr>
-<tr><td>HW3 4(a)</td><td><a href="#hw3-pcp-argument">PCP + Merkle three-message argument.</a></td></tr>
-<tr><td>HW3 4(b)</td><td><a href="#hw3-fs-pcp">Fiat–Shamir compilation of that argument.</a></td></tr>
-<tr><td>2025 midterm 1(c)</td><td><a href="#midterm-interpolation">Polynomial commitment becomes a vector commitment.</a></td></tr>
-<tr><td>2025 midterm 3(c.1)</td><td><a href="#midterm-polynomial">Full Schwartz–Zippel vector test.</a></td></tr>
+<article class="lesson" data-id="coverage" data-title="Exact original lecture and homework coverage">
+<p class="chapter-tag">Official syllabus map · Lecture 9–12</p>
+<h1>Every item in the original lecture notes</h1>
+<p>This is a source-by-source map of the <strong>eleven pages of teaching material</strong> in “Building a Modern SNARG.” Every definition, theorem, security bound and PLONK protocol component listed below is taught in the main reading route. The homework solutions appear separately, but no lecture content is delegated to optional reading.</p>
+<div class="table-scroll"><table><thead><tr><th>Source</th><th>Required lecture content</th><th>Main lessons</th></tr></thead><tbody>
+<tr><td>§1 · pp. 1–2</td><td>Million-step SHA-256 motivation; SNARG definition; short proof and fast-verifier bounds; non-interactivity; zero knowledge is a separate property</td><td><a href="#the-question">the question</a> · <a href="#succinctness">succinctness</a></td></tr>
+<tr><td>§2 · p. 2</td><td>Two-stage blueprint: soundness first in an ideal restricted oracle model, then commitments, then Fiat–Shamir</td><td><a href="#iop-types">iop types</a></td></tr>
+<tr><td>§2 · pp. 2–3</td><td>Locked-box experiment; three-query PCP theorem; perfect completeness and 1/2 soundness; repetition; O(log n) query indices</td><td><a href="#pcp-box">pcp box</a></td></tr>
+<tr><td>§2 · p. 3</td><td>Why transmitting the entire PCP fails succinctness; vector commitments, position openings and Merkle authentication</td><td><a href="#merkle">merkle</a> · <a href="#hw3-pcp-argument">PCP + Merkle protocol</a></td></tr>
+<tr><td>§2.1 · pp. 3–4</td><td>Interactive oracle proofs (IOPs), bit-query PCP, linear IOP weighted sums, polynomial IOP evaluation queries</td><td><a href="#iop-types">iop types</a></td></tr>
+<tr><td>§3 · p. 4</td><td>Fibonacci claim, trace polynomial, its endpoint constraints and recurrence; why polynomial representations are useful</td><td><a href="#field-foundation">Field + Fibonacci setup</a> · <a href="#interpolation">interpolation</a> · <a href="#fibonacci-protocol">fibonacci protocol</a></td></tr>
+<tr><td>§3 · p. 5</td><td>EqualityTest, Lemma 1 and d/|F| bound; Theorem 1: nonzero degree-d polynomial has at most d roots</td><td><a href="#equality-proof">equality proof</a></td></tr>
+<tr><td>§3 · p. 5</td><td>Schwartz–Zippel, Lemma 2: multivariable total degree and d/|Ω| probability bound</td><td><a href="#schwartz-zippel">schwartz zippel</a></td></tr>
+<tr><td>§3 · pp. 5–6</td><td>Vanishing polynomial ZΩ; Theorem 2: zeros on Ω iff divisible by ZΩ; ZeroTest protocol, Lemma 3 and 2d/|F| bound</td><td><a href="#vanishing-polynomial">vanishing polynomial</a> · <a href="#zerotest-proof">zerotest proof</a></td></tr>
+<tr><td>§3 · pp. 6–7</td><td>Complete Fibonacci Poly-IOP: endpoints plus random recurrence check, quotient polynomial, and the costly product ZΩ(r)</td><td><a href="#fibonacci-protocol">fibonacci protocol</a></td></tr>
+<tr><td>§4 · p. 7</td><td>Polynomial commitments: Setup, Commit, Open, Verify; correctness and evaluation binding</td><td><a href="#polynomial-commitments">polynomial commitments</a></td></tr>
+<tr><td>§4 · pp. 7–8</td><td>Replace Fibonacci's ideal polynomial box with commitments/openings; Sigma-like message order; Fiat–Shamir</td><td><a href="#polynomial-commitments">polynomial commitments</a> · <a href="#fiat-shamir">fiat shamir</a></td></tr>
+<tr><td>§5 · p. 8</td><td>PLONK as a general polynomial IOP; arithmetic circuit definition; public input/private witness and C(x,w)=0; size goals</td><td><a href="#circuits-meaning">Circuit language</a> · <a href="#plonk-final">PLONK proof</a></td></tr>
+<tr><td>§5.1 · p. 9</td><td>Trace table; d=3|C|+|I|; roots-of-unity domain; interpolation of original inputs and each gate's three values</td><td><a href="#trace-encoding">trace encoding</a></td></tr>
+<tr><td>§5.2 · pp. 9–10</td><td>Output check; public-input polynomial f_in; consistency with f_trace; ZeroTest over the public-input positions; why direct openings break succinct proof size</td><td><a href="#plonk-output-input">plonk output input</a></td></tr>
+<tr><td>§5.2 · p. 10</td><td>Selector polynomial f_sel, addition/multiplication gate equation and f_gates; gate-domain ZeroTest; preprocessing of f_sel</td><td><a href="#plonk-gates">plonk gates</a></td></tr>
+<tr><td>§5.2 · p. 11</td><td>Repeated wire positions; equality constraints; rotation polynomial f_rot; wiring-IOP requirement and preprocessing</td><td><a href="#plonk-wiring">plonk wiring</a></td></tr>
+<tr><td>§6 · p. 11</td><td>Universal setup; circuit-specific preprocessing; exact four proof/verification steps; Fiat–Shamir; succinctness targets</td><td><a href="#plonk-final">PLONK proof</a></td></tr>
 </tbody></table></div>
-<p>The original homework decks remain available in <a href="../hw1/">HW1</a>, <a href="../hw2/">HW2</a>, and <a href="../hw3/">HW3</a>. The two additional applied problems in this chapter are written for practice; they are not presented as original course questions.</p>
-<p class="source">Based on the uploaded lecture notes, handwritten notes, prior homework solutions, previous midterm and common-mistakes report.</p>
+<p><strong>Important distinction:</strong> the PDF explicitly does <em>not</em> prove the PCP theorem, give a concrete polynomial commitment construction, derive the complete wiring Poly-IOP, or implement zero knowledge for PLONK. The tutorial identifies these boundaries instead of fabricating missing proofs or silently treating them as completed.</p>
+<p><strong>Source inconsistency:</strong> the lecture's written Fibonacci initial conditions use 1 and 1, while its claimed hundredth value matches the 0 and 1 indexing. The tutorial explains this before performing the example.</p>
+<h2>Original homework and previous midterm</h2>
+<p>The separate exercises are not substitutes for the main syllabus. Each keeps the original question, with its worked answer available beneath it.</p>
+<div class="table-scroll"><table><thead><tr><th>Source</th><th>Exercise</th></tr></thead><tbody>
+<tr><td>HW1 Problem 4(a–c)</td><td><a href="#hw1-vectors">Three vector commitments with binding proofs</a></td></tr>
+<tr><td>HW2 Problem 2(a–c)</td><td><a href="#repetition-hw2">Sequential versus parallel zero-knowledge repetition</a></td></tr>
+<tr><td>HW2 Problem 3(a–c)</td><td><a href="#schnorr-recall">Schnorr completeness, HVZK, and witness extraction</a></td></tr>
+<tr><td>HW2 Problem 4(a–c)</td><td><a href="#hw2-circuit-sat">Boolean circuit satisfiability</a></td></tr>
+<tr><td>HW3 Problem 1(a–d)</td><td><a href="#hw3-conceptual">Knowledge error, plain-model NIZK and statistical zero knowledge</a>; <a href="#field-foundation">root-bound counterexample</a></td></tr>
+<tr><td>HW3 Problem 2(a–d)</td><td><a href="#hw3-schnorr-fs">Fiat–Shamir Schnorr construction</a> and <a href="#hw3-schnorr-attacks">challenge guessing and transferability</a></td></tr>
+<tr><td>HW3 Problem 3(a–b)</td><td><a href="#hw3-amplification">Repetition and Fiat–Shamir soundness amplification</a></td></tr>
+<tr><td>HW3 Problem 4(a–b)</td><td><a href="#hw3-pcp-argument">PCP + Merkle protocol</a> and <a href="#hw3-fs-pcp">non-interactive compilation</a></td></tr>
+<tr><td>Previous midterm 1(c)</td><td><a href="#midterm-interpolation">Polynomial commitment to vector commitment</a></td></tr>
+<tr><td>Previous midterm 3(c.1)</td><td><a href="#midterm-polynomial">Schwartz–Zippel vector test</a></td></tr>
+</tbody></table></div>
+<p>The original homework decks remain accessible from <a href="../hw1/">HW1</a>, <a href="../hw2/">HW2</a>, and <a href="../hw3/">HW3</a>. The two additional applied exercises are labeled as new practice, not as original course questions.</p>
+<p class="source">Cross-checked against the user's original 12-page PDF, “Privacy Enhancing Technologies FS2026 · Lecture 9-10-11-12 – Building a Modern SNARG,” especially source pages 1–11 (page 12 is bibliography).</p>
 </article>
 </body></html>
