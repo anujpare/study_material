@@ -230,7 +230,7 @@
     drawGraph("graph-original",{route:fixedRoute});
     drawGraph("graph-permuted",{permuted:true,route:fixedPermRoute});
     const info=$("perm-result");
-    if(info)info.textContent=reveal?"The fixed relabeling is Π(1)=2, Π(2)=4, Π(3)=1, Π(4)=5, Π(5)=3. Applying Π to the original cycle 1→2→3→4→5→1 yields 2→4→1→5→3→2. Every mapped pair remains an edge, so the two graphs are isomorphic.":"The green edges represent the same Hamiltonian cycle under a permutation of the vertex labels. Choose “Show the vertex permutation” to inspect the mapping.";
+    if(info)info.textContent=reveal?"The lecture maps new labels back to original labels: Π(1)=3, Π(2)=1, Π(3)=5, Π(4)=2, Π(5)=4. Applying the inverse permutation to the original cycle 1→2→3→4→5→1 yields 2→4→1→5→3→2. Every mapped pair remains an edge, so the two graphs are isomorphic.":"The green edges represent the same Hamiltonian cycle under a permutation of the vertex labels. Choose “Show the vertex permutation” to inspect the mapping.";
   }
   function matrixForChallenge(c){
     const permEdges=new Set(edges.map(([a,b])=>edgeKey(permutation[a],permutation[b])));
