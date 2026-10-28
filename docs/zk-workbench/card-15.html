@@ -1,7 +1,7 @@
 <article class="lesson">
 <p class="chapter">Part VI · Proofs of knowledge</p>
 <h1>How can two answers reveal the secret witness?</h1>
-<p class="lead">Soundness says a cheater shouldn't convince us of a false claim. But sometimes the statement is already known to be true, and we want more: evidence that this particular prover actually <em>knows</em> the secret witness.</p>
+<p class="lead">The previous simulator rewound a verifier to create a transcript without the witness. Now consider the reverse question: could we rewind a prover that successfully answers challenges and extract a witness? This would establish a stronger property than ordinary soundness. Soundness says a cheater shouldn't convince us of a false claim. But sometimes the statement is already known to be true, and we want more: evidence that this particular prover actually <em>knows</em> the secret witness.</p>
 <h2>Knowledge needs a different experiment</h2>
 <p>A <strong>knowledge extractor</strong> \(\mathrm{Ext}\) is an efficient algorithm allowed to interact with a possibly dishonest prover \(P^\ast\). It can save the prover's state after its first message, then rewind to that exact state and ask a different challenge. An ordinary verifier does not have this power.</p>
 <p>The course gives a probability guarantee connecting the prover's chance of being accepted to the extractor's chance of returning a valid witness \(w\), where \(M(x,w)=1\).</p>
