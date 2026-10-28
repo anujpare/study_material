@@ -20,6 +20,9 @@
 </div></section>
 <div class="proof"><h3>Why soundness decreases in both schedules</h3><p>What about soundness? If the public graph has no cycle, each fixed repeated commitment can answer at most one challenge bit. Independent random challenges therefore make all \(\lambda\) tests pass with probability at most \(2^{-\lambda}\), in either message schedule.</p></div>
 <p>Don't claim we have proved that parallel repetition is never zero knowledge. We've only shown that the straightforward simulator from the single protocol becomes inefficient. A different simulator could exist. And a malicious verifier may correlate the challenges, so we cannot simply multiply independent honest-challenge probabilities in a malicious-verifier simulation proof.</p>
-<div class="transition"><p>That is the question in the homework: what can we prove about general zero knowledge in sequence, and about honest-verifier zero knowledge in parallel?</p></div>
+<div class="transition"><p>That is the question in Homework 2: what can we prove about zero knowledge under sequential and parallel repetition? You can work it through now, or follow the main explanation to the next idea.</p>
+<div class="practice-link"><span class="practice-tag">Optional worked problem</span><a href="#homework2">HW2 2(a–c): prove the sequential and parallel composition claims</a></div>
+<div class="transition"><p>We've used <em>rewinding the verifier</em> to create a transcript without knowing a witness. Now turn that idea around: if a prover can answer two different challenges to one fixed first message, can we <em>rewind the prover</em> to recover a witness? That leads to proofs of knowledge.</p></div>
+<p></p></div>
 <p class="source">PETS · ZK lecture notes, p. 7; Homework 2, Problem 2. The simulator costs are for the explicit guessing strategies, not lower bounds for all algorithms.</p>
 </article>
