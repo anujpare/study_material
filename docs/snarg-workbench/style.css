@@ -246,7 +246,8 @@ body{background:var(--page);color:var(--ink);font-family:-apple-system,BlinkMacS
 .reading .lab-grid span{font-size:12px;padding:6px 2px}
 .reading .lab-grid span.root{background:#c6e3d5;border-color:#91b4a1;color:#254b3c}
 .reading .lab-grid span.current{outline:2px solid #657e70}
-#merkle-svg svg{min-width:410px}
+#merkle-svg{width:100%;max-width:100%;overflow-x:auto}
+#merkle-svg svg{display:block;width:100%;min-width:0;max-width:100%;height:auto}
 .reader-footer{
   position:relative;z-index:5;height:68px;flex:none;
   display:flex;align-items:center;background:#ececeaf7;
@@ -572,3 +573,10 @@ body{background:var(--page);color:var(--ink);font-family:-apple-system,BlinkMacS
 #lessons .reading .obstacle-progress .next-obstacle{
   border-top:1px solid #d8e3d9;padding-top:10px;margin-top:11px;
 }
+
+/* Keep all mathematical figures inside the same compact card on phones. */
+#lessons .reading .lab svg,#lessons .reading .diagram svg{max-width:100%;height:auto}
+#lessons .reading .lab-output,#lessons .reading .proof,#lessons .reading .exercise{min-width:0;overflow-wrap:anywhere}
+#lessons .reading mjx-container[display="true"]{max-width:100%;overflow-x:auto;overflow-y:hidden}
+#lessons .reading .table-scroll{max-width:100%;overflow-x:auto}
+@media(max-width:460px){#lessons .reading .lab .lab-content{padding:11px 12px 14px}#lessons .reading .lab .lab-top{padding:12px 13px}}
