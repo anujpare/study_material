@@ -6,7 +6,7 @@
 <p>The verifier accepts when \(g^z=u h^c\). Suppose we first choose \(c\) and \(z\). Can we solve this equation for \(u\)? Multiply by the inverse \(h^{-c}\) to get</p>
 <div class="math">\[g^z=u\,h^c\quad\Longleftrightarrow\quad u=g^z\,h^{-c}\]<p class="math-caption">The negative exponent means group inversion. We know \(h\) publicly, so we can calculate \(h^{-c}\) without knowing the secret \(x\).</p></div>
 <div class="role sim"><div class="tag">Simulator \(\mathrm{Sim}(h)\) · public input only</div><p>Here is the simulator: pick \(c,z\) independently and uniformly from \(\mathbb Z_q\), calculate \(u=g^z h^{-c}\), and output \((u,c,z)\). The verifier accepts because \(u h^c=g^z h^{-c}h^c=g^z\).</p></div>
-<section class="lab"><div class="lab-head"><div class="tag">Construct a transcript without \(x\)</div><h3>The simulator never asks for the secret exponent</h3><p>Try the arithmetic with the small group modulo 23, where (g=2,q=11,h=8). The simulator uses only this public information.</p></div>
+<section class="lab"><div class="lab-head"><div class="tag">Construct a transcript without \(x\)</div><h3>The simulator never asks for the secret exponent</h3><p>Try the arithmetic with the small group modulo 23, where \(g=2\), \(q=11\), and \(h=8\). The simulator uses only this public information.</p></div>
 <div class="lab-body"><div class="control-row"><button data-demo="hvzk" data-value="new">Simulate another transcript</button></div>
 <div id="hvzk-result" class="feedback" aria-live="polite">Generate \(c,z\), compute \(u\), and check the verifier's equation.</div></div></section>
 <h2>A valid-looking answer is not enough: prove identical distribution</h2>
