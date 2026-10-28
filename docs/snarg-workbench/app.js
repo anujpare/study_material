@@ -299,7 +299,14 @@ function initLessonExtras(id){
 }
 
 function getHash(){try{return decodeURIComponent(location.hash.slice(1))}catch(e){return ""}}
-function closeMenu(){const menu=byId("chapter-menu");if(menu)menu.open=false}
+function setMenuOpen(open){
+ const drawer=byId("chapter-menu"),button=byId("menu-toggle"),panel=byId("chapter-panel");
+ if(!drawer||!button||!panel)return;
+ drawer.dataset.open=open?"true":"false";
+ button.setAttribute("aria-expanded",open?"true":"false");
+ panel.hidden=!open;
+}
+function closeMenu(){setMenuOpen(false)}
 function navigate(){
  const id=getHash();const found=cards.findIndex(c=>c.id===id);
  current=found>=0?found:0;
@@ -335,6 +342,7 @@ async function start(){
   cards=sources.flat();
   if(cards.length<20)throw Error("Course chapters incomplete: "+cards.length);
   chapter.innerHTML=chapters.map((c,i)=>'<option value="'+i+'">'+escape(c)+'</option>').join("");
+  byId("menu-toggle").addEventListener("click",()=>setMenuOpen(byId("chapter-menu").dataset.open!=="true"));
   chapter.addEventListener("change",()=>{
    const x=cards.find(c=>c.chapter===Number(chapter.value));
    if(x)location.hash=x.id;
@@ -358,8 +366,8 @@ async function start(){
    if(e.key==="ArrowLeft"&&current>0){e.preventDefault();location.hash=cards[current-1].id;}
   });
   document.addEventListener("pointerdown",e=>{
-   const menu=byId("chapter-menu");
-   if(menu?.open&&!menu.contains(e.target))closeMenu();
+   const drawer=byId("chapter-menu");
+   if(drawer?.dataset.open==="true"&&!drawer.contains(e.target))closeMenu();
   });
   window.addEventListener("hashchange",navigate);
   if(!getHash())history.replaceState(null,"","#"+cards[0].id);
