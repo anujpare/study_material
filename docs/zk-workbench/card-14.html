@@ -1,7 +1,7 @@
 <article class="lesson">
 <p class="chapter">Part V · Worked exercise</p>
 <h1>Homework: prove exactly which repetition works</h1>
-<p class="lead">The homework now asks whether the simulator can still run efficiently when several proofs are composed. We must not answer by merely multiplying soundness errors: that analyzes a cheating prover, not the simulator's ability to reproduce a verifier view. We have the timing difference in front of us. Now the homework asks for three different conclusions. Each answer needs to name the simulator and show why it works or why the usual construction fails.</p>
+<p class="lead">We have seen that repeating the Hamiltonicity proof reduces soundness error, but zero knowledge requires a simulator that still runs efficiently. This homework asks us to analyze both properties under sequential and parallel repetition. We will keep the two questions separate: first bound cheating acceptance, then construct or evaluate the simulator.</p>
 <div class="exercise">
 <div class="tag">Homework 2 · Problem 2: Composing ZK Protocols</div>
 <p>The Hamiltonian-cycle protocol has perfect completeness and soundness error \(1/2\). Run it \(\lambda\) times and accept only if every instance accepts. This reduces the soundness bound to \(2^{-\lambda}\) under the repeated challenge rules.</p>
