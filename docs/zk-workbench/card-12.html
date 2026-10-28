@@ -1,7 +1,7 @@
 <article class="lesson">
 <p class="chapter">Part V · Repeating a proof</p>
 <h1>What changes when we repeat the proof in parallel?</h1>
-<p class="lead">Suppose we repeat the same proof three times. We could finish one proof before starting the next, or send all three first messages together. These may sound equivalent, but a simulator has very different information at each moment.</p>
+<p class="lead">The Hamiltonicity proof has soundness error (1/2) in one execution. To make a false claim less likely to pass, we need repeated independent challenges. But we have <em>two</em> requirements to preserve: soundness against a cheating prover and efficient simulation without the witness. The way we schedule repeated messages can affect the second requirement. Suppose we repeat the same proof three times. We could finish one proof before starting the next, or send all three first messages together. These may sound equivalent, but a simulator has very different information at each moment.</p>
 <h2>First fix what one execution looks like</h2>
 <p>One execution has the order \(u\to c\to z\): commitment, challenge, response. The first message \(u\) contains the committed graph information. The verifier must choose \(c\) only after receiving \(u\).</p>
 <div class="math">\[\underbrace{P\rightarrow V:u}_{\text{commit}}\quad\longrightarrow\quad\underbrace{V\rightarrow P:c}_{\text{challenge}}\quad\longrightarrow\quad\underbrace{P\rightarrow V:z}_{\text{response}}\]<p class="math-caption">For repetition \(i\), write these messages as \(u_i,c_i,z_i\). The subscript \(i\) simply tells us which copy of the protocol we are discussing.</p></div>
