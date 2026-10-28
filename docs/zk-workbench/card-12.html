@@ -1,12 +1,12 @@
 <article class="lesson">
 <p class="chapter">Part V · Repeating a proof</p>
-<h1>Sequential and parallel repetition differ in the rules of communication</h1>
-<p class="lead">Running the same proof three times should be familiar. What is less obvious is that running those three proofs <em>sequentially</em> or <em>in parallel</em> changes when the verifier can see the commitments and when it can send its challenges. That timing difference becomes decisive for simulation.</p>
+<h1>What changes when we repeat the proof in parallel?</h1>
+<p class="lead">Suppose we repeat the same proof three times. We could finish one proof before starting the next, or send all three first messages together. These may sound equivalent, but a simulator has very different information at each moment.</p>
 <h2>First fix what one execution looks like</h2>
-<p>Our Hamiltonicity protocol has three communication stages: the prover sends committed graph data \(u\); the verifier sends a challenge \(c\); the prover sends openings \(z\). For convenience, call the entire first committed message \(u\), even though internally it contains many commitments.</p>
-<div class="math">\[\underbrace{P\rightarrow V:u}_{\text{commit}}\quad\longrightarrow\quad\underbrace{V\rightarrow P:c}_{\text{challenge}}\quad\longrightarrow\quad\underbrace{P\rightarrow V:z}_{\text{response}}\]<p class="math-caption">Each \(u_i,c_i,z_i\) below belongs to repetition \(i\); different repetitions use fresh randomness. This is a pattern of messages, not an equation about their values.</p></div>
+<p>One execution has the order \(u\to c\to z\): commitment, challenge, response. The first message \(u\) contains the committed graph information. The verifier must choose \(c\) only after receiving \(u\).</p>
+<div class="math">\[\underbrace{P\rightarrow V:u}_{\text{commit}}\quad\longrightarrow\quad\underbrace{V\rightarrow P:c}_{\text{challenge}}\quad\longrightarrow\quad\underbrace{P\rightarrow V:z}_{\text{response}}\]<p class="math-caption">For repetition \(i\), write these messages as \(u_i,c_i,z_i\). The subscript \(i\) simply tells us which copy of the protocol we are discussing.</p></div>
 <section class="lab">
-<div class="lab-head"><div class="tag">See the protocol schedule</div><h3>Move the same \(n\) executions between sequential and parallel modes</h3><p>Pay attention to the point at which the first challenge is revealed. Nothing else about the underlying single-round proof has changed.</p></div>
+<div class="lab-head"><div class="tag">See the protocol schedule</div><h3>Move the same \(n\) executions between sequential and parallel modes</h3><p>Use the control and watch when the first challenge arrives. What matters is how many first messages must already have been fixed.</p></div>
 <div class="lab-body">
 <div class="control-row"><button data-demo="schedule" data-value="sequential" aria-pressed="true">Sequential</button><button data-demo="schedule" data-value="parallel">Parallel</button></div>
 <div class="control-row"><label for="schedule-n">Number of instances: <strong id="schedule-n-label">3</strong></label><input id="schedule-n" data-demo="schedule-slider" type="range" min="2" max="5" value="3"></div>
@@ -14,9 +14,9 @@
 <div id="schedule-explain" class="feedback" aria-live="polite"></div>
 </div></section>
 <h2>Now identify the mathematical difference</h2>
-<p>In <strong>sequential repetition</strong>, the messages follow \(u_1,c_1,z_1,u_2,c_2,z_2,\ldots\). The prover does not have to commit to instance 2 until instance 1 is over. A simulator may complete and, if necessary, rewind instance 1 before moving on to instance 2.</p>
-<p>In <strong>parallel repetition</strong>, the prover first sends \((u_1,\ldots,u_n)\) all at once; only then does the verifier send \((c_1,\ldots,c_n)\); and finally the prover returns \((z_1,\ldots,z_n)\). The simulator must prepare <strong>all</strong> its committed graphs before seeing <strong>any</strong> challenges.</p>
-<div class="role risk"><div class="tag">Why “three challenges” alone is not a complete description</div><p>Both schedules involve three challenge bits and three responses when \(n=3\). They are not the same protocol, because <em>the messages that must be fixed before the challenges arrive are different</em>. You cannot infer simulation difficulty merely from the number of repetitions.</p></div>
-<div class="transition"><p>Soundness can improve in both schedules. What changes is the number of guesses a simulator must get right <em>at the same time</em>. We will calculate those costs explicitly.</p></div>
+<p><strong>Sequential:</strong> \(u_1,c_1,z_1,u_2,c_2,z_2,\ldots\). The simulator can finish, including any rewinds, the first session before constructing the first message of the second.</p>
+<p><strong>Parallel:</strong> send all \((u_1,\ldots,u_n)\) first, then receive all \((c_1,\ldots,c_n)\), then send all \((z_1,\ldots,z_n)\). Now the simulator has to prepare every first message before learning <em>any</em> challenge.</p>
+<div class="role risk"><div class="tag">Why “three challenges” alone is not a complete description</div><p>The number of repetitions hasn't changed. The difference is precisely which messages must be fixed before the verifier reveals its questions.</p></div>
+<div class="transition"><p>This changes the simulator's guessing problem. Let's calculate the cost rather than merely call parallel repetition “harder.”</p></div>
 <p class="source">PETS · ZK lecture notes, repetition discussion, p. 7; Homework 2, Problem 2.</p>
 </article>
