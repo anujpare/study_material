@@ -204,7 +204,7 @@ T_V=O\!\left(\lambda,|x|,\operatorname{polylog}(|w|)\right).
 <tr><td>Polynomial IOP</td><td>A polynomial \(f(X)\) over a field.</td><td>“What is \(f(z)\)?” The verifier chooses the point \(z\).</td></tr>
 </tbody></table></div>
 <p>A linear combination is just a weighted sum: with values \((2,3,4)\) and weights \((1,0,2)\), the answer is \(1\cdot2+0\cdot3+2\cdot4=10\). A polynomial evaluation is just substitution: if \(f(X)=X^2+1\), asking at \(z=3\) gives \(f(3)=10\).</p>
-<p>These interfaces all describe <em>which questions are allowed</em>. They do not themselves prove that an oracle-based protocol is sound. We still have to construct a meaningful verifier test and prove its security.</p>
+<p>These interfaces all describe <em>which questions are allowed</em>. They do not themselves prove that an oracle-based protocol is sound. We still have to construct a meaningful verifier test and prove its security. The lecture briefly introduces linear IOPs because a later lecture uses them for aggregating private statistics; our present goal is the polynomial IOP used by PLONK.</p>
 <div class="bridge">This explains the next part of the lecture. The PCP route gave us a conceptually simple but inefficient SNARG construction. For PLONK, we'll use a polynomial IOP instead. Why polynomials? Because they let us represent the results of a long computation and express many required equations as a small number of polynomial identities. We'll see exactly how using Fibonacci, then prove why testing those identities at random points works.</div>
 <p class="source">Lecture §2, the two-stage SNARG blueprint, and §2.1, PCP/linear/polynomial interactive oracle proofs.</p>
 
