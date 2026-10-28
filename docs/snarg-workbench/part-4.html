@@ -3,7 +3,7 @@
 
 <p class="chapter-tag">Lecture §5 · The PLONK IOP</p>
 <h1>Fibonacci was one calculation. What about every calculation?</h1>
-<p class="aim">We have learned how to verify the Fibonacci recurrence without checking every step. But that construction depended on every step obeying the <em>same addition rule</em>. A general computation may alternate addition and multiplication and reuse earlier outputs. To extend the method beyond Fibonacci, we first need a precise representation of such computations and the conditions that make an execution valid. That is why the lecture introduces arithmetic circuits.</p>
+<p class="aim">The Fibonacci method verifies one repeated addition rule. A general computation may add, multiply, and reuse earlier results. To apply the same method, we need to express those computations as simple equations. An arithmetic circuit provides that representation.</p>
 <p>That's what an <strong>arithmetic circuit</strong> provides. Its computational steps are <strong>gates</strong>, each implementing addition or multiplication of two field elements. Directed <strong>wires</strong> carry the output of one gate to the inputs of later gates. The circuit specifies the operations and their connections, so the result is determined by its input values.</p>
 <p>The lecture defines an arithmetic circuit \(C\) over a field \(\mathbb F\), with two kinds of inputs: public values \(\mathbf x\), known to the verifier, and private values \(\mathbf w\), known to the prover. The bold notation means an ordered list of numbers, called a vector.</p>
 <p>Rather than proving the output equals an arbitrary target directly, the lecture uses the equivalent <strong>zero-output form</strong>: the prover must show that some private witness makes</p>
@@ -35,7 +35,7 @@
 
 <p class="chapter-tag">Lecture §5.1 · From Circuits to Polynomials</p>
 <h1>How can one polynomial remember every gate value?</h1>
-<p class="aim">The circuit now tells us which operations must occur, but a verifier checking every gate and wire would repeat work proportional to the entire computation. In Fibonacci, interpolation let us replace a list of proposed values with one polynomial whose evaluations recover those values. We want the same representation for the circuit's inputs and gate values. First we must count those values and assign them distinct polynomial evaluation points.</p>
+<p class="aim">A circuit tells us what each gate must compute. But checking every gate would repeat the full calculation. We will use interpolation, as we did for Fibonacci, to represent all the proposed input and gate values in one polynomial.</p>
 <p>First count the numbers we have to store. Every gate gives us three values: its left input, right input and output. There are \(|C|\) gates, where \(|C|\) means the number of gates. There are also \(|I|\) original inputs, including public and private ones. So the total number of trace entries is</p>
 <div class="math">\[\boxed{d=3|C|+|I|.}\]</div>
 <p>In the three-gate example, \(|C|=3\), and the original inputs are 2, 4, 3, so \(|I|=3\). Thus \(d=3\cdot3+3=12\) values. Those twelve values are what our polynomial must remember.</p>
@@ -75,7 +75,7 @@ f_{\rm trace}(\omega^{3l+2})&=\text{output of gate }l.
 
 <p class="chapter-tag">Lecture §§3 and 5.2 · Efficient vanishing polynomials</p>
 <h1>Why use these special evaluation points?</h1>
-<p class="aim">The Fibonacci verifier still faced an expensive operation: evaluating the vanishing polynomial as a product of one factor for each required step. We therefore need evaluation points whose vanishing polynomial has a cheaper formula. This is the reason for the roots-of-unity domain chosen in the preceding lesson; we will now prove the simplification it provides.</p>
+<p class="aim">The Fibonacci verifier still had to evaluate a product with one factor per recurrence position. That becomes expensive for a large computation. We chose the circuit's evaluation points as powers of a root of unity because their vanishing polynomial has a much simpler form. We will prove that form now.</p>
 <p>For the entire set \(\Omega=\{1,\omega,\ldots,\omega^{d-1}\}\), the vanishing polynomial is, by definition,</p>
 <div class="math">\[Z_\Omega(X)=\prod_{j=0}^{d-1}(X-\omega^j).\]</div>
 <p>There are \(d\) factors. But every point \(\omega^j\) also makes the much simpler polynomial \(X^d-1\) equal to zero, because \((\omega^j)^d=(\omega^d)^j=1\).</p>
@@ -95,7 +95,7 @@ f_{\rm trace}(\omega^{3l+2})&=\text{output of gate }l.
 
 <p class="chapter-tag">Lecture §5.2 · Verifying the circuit trace, conditions 1–2</p>
 <h1>How do we know the trace is for our statement?</h1>
-<p class="aim">Interpolation has produced a polynomial for the prover's proposed circuit trace, but it works for dishonest values too. We need to establish four independent facts: the final output is the required value, the public inputs have not changed, every gate computes its prescribed operation, and connected wire occurrences carry equal values. The first two checks anchor the trace to the <em>particular public statement</em> being proved.</p>
+<p class="aim">The trace polynomial records the prover's proposed values, whether correct or not. To verify the actual circuit, we must check its output, public inputs, gate operations, and wire connections. We start with the output and public inputs because these connect the trace to the statement the verifier wants proved.</p>
 <p>The lecture lists four requirements: the final output, the public inputs, correctness of every gate, and consistency of the wires. We'll handle them one at a time. The first two anchor the trace to the particular statement we're proving.</p>
 <h2>1. The circuit must reach the required output</h2>
 <p>For gate \(l\), the output is stored at \(f_{\rm trace}(\omega^{3l+2})\). The last gate has number \(|C|-1\), so its output is at exponent \(3(|C|-1)+2=3|C|-1\).</p>
@@ -122,7 +122,7 @@ f_{\rm trace}(\omega^{3l+2})&=\text{output of gate }l.
 
 <p class="chapter-tag">Lecture §5.2 · Verifying the circuit trace, condition 3</p>
 <h1>How can one equation check both addition and multiplication?</h1>
-<p class="aim">The output and public-input checks do not tell us whether the prover performed the required intermediate operations. A trace could begin and end with the right values while containing incorrect gate calculations. We must enforce the arithmetic equation for <em>every</em> gate, but checking gates one by one would lose succinctness. We will combine their addition and multiplication rules into one polynomial vanishing condition.</p>
+<p class="aim">The trace may contain the correct public inputs and final output while lying about intermediate calculations. We must check every addition and multiplication gate without inspecting them individually. The selector polynomial lets us express all those gate equations as one polynomial condition.</p>
 <p>Start with just one gate. Call its left input \(L\), its right input \(R\), and its output \(O\). For addition we need \(L+R=O\). For multiplication we need \(LR=O\).</p>
 <p>The circuit already tells us which operation each gate performs. Encode that public choice with a bit \(s\), called a <strong>selector</strong>: set \(s=1\) for addition and \(s=0\) for multiplication. Now consider</p>
 <div class="math">\[\boxed{s(L+R)+(1-s)LR-O=0.}\]</div>
@@ -155,7 +155,7 @@ f_{\rm gates}(X)={}&f_{\rm sel}(X)\bigl(f_{\rm trace}(X)+f_{\rm trace}(\omega X)
 
 <p class="chapter-tag">Lecture §5.2 · Verifying the circuit trace, condition 4</p>
 <h1>Three correct gates can still describe the wrong computation</h1>
-<p class="aim">The gate polynomial ensures that each row of the trace computes its own addition or multiplication correctly. But it does not ensure that the input of a later gate equals the output of the gate connected to it. A prover could use a different number and still satisfy both local gate equations. We need a separate constraint for <em>equality of repeated wire values</em>. This is the purpose of the rotation polynomial.</p>
+<p class="aim">Correct gate arithmetic is not enough. A gate could use a value different from the output of the gate connected to it. We must also check that every occurrence of a wire carries the same value. The rotation polynomial describes which trace positions must agree.</p>
 <p>In our original circuit, gate 0 produces 8, and gate 2 must use that 8 as its left input. Gate 1 produces 7, and gate 2 must use 7 as its right input. In terms of the trace polynomial, the required equalities are</p>
 <div class="math">\[
 f_{\rm trace}(\omega^2)=f_{\rm trace}(\omega^6),
@@ -190,7 +190,7 @@ f_{\rm trace}(\omega^5)=f_{\rm trace}(\omega^7).
 
 <p class="chapter-tag">Lecture §6 · A PLONK SNARG</p>
 <h1>Why do these checks prove the circuit statement?</h1>
-<p class="aim">We now have four constraint families, each ruling out a different way to falsify a circuit trace. The final question is whether those constraints together establish the original claim \(C(\mathbf x,\mathbf w)=0\). We will prove that implication by following the gates in circuit order. Only after that proof can we explain how the lecture packages the checks into a succinct argument.</p>
+<p class="aim">We have four requirements: correct public inputs, correct output, correct gate arithmetic, and consistent wires. We must now prove that satisfying all four means the prover has supplied a genuine execution of the public circuit. Then we can assemble the polynomial checks into the final SNARG construction.</p>
 <div class="proof"><h3>From a valid trace to a satisfying witness</h3>
 <p>Take a trace that passes all four checks. The public-input check fixes the known inputs to the values the verifier supplied. The other original input positions determine a candidate private witness \(\mathbf w\).</p>
 <p>Now process the circuit in gate order. For the first gate, its input wires have definite values. The gate equation forces its output to be the correct sum or product. The wiring check forces every later occurrence of that output wire to carry exactly that same value. So the next gate receives the outputs specified by the circuit, rather than values invented independently by the prover.</p>
