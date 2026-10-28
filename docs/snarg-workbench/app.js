@@ -115,6 +115,16 @@ function initLab(lab){
     const r=val(lab,"r",3),y=mod(2*r*r+4*r,6);
     txt(lab,'\\(f('+r+')='+y+'\\pmod 6\\). '+(y===0?'This is a root.':'This is not a root.')+' The four roots are 0, 1, 3, and 4.'+grid([0,1,2,3,4,5],x=>mod(2*x*x+4*x,6)===0,r));
   }
+  if(type==="naive"){
+    const n=val(lab,"n",100),detection=3/n,miss=1-detection;
+    const percent=(100*miss).toFixed(2);
+    const diagram='<div class="address-summary"><div><span class="small-label">Checked transitions</span><strong>3 of '+n+'</strong></div>'+
+      '<div><span class="small-label">Probability of missing the error</span><strong>'+percent+'%</strong></div></div>'+
+      '<div style="height:14px;border-radius:8px;background:#e4e9e4;overflow:hidden;margin:12px 0">'+
+      '<div style="height:100%;width:'+(100*miss)+'%;background:#ba715b"></div></div>';
+    txt(lab,diagram+'<p>\\(\\Pr[\\text{miss the single bad transition}]=1-\\frac{3}{'+n+'}='+miss.toFixed(6)+'\\).</p>'+
+      '<p class="viz-insight">This calculation applies only to sampling three distinct positions uniformly from the ordinary trace. It does not describe the PCP verifier, whose query rule and encoded proof are different.</p>');
+  }
   if(type==="pcp"){
     const t=val(lab,"t",4),err=1/Math.pow(2,t);
     txt(lab,'<b>'+t+' independent PCP tests</b> involve up to '+(3*t)+' queried proof-bit positions in the three-query version. For a fixed false-proof string, \\(\\Pr[\\mathrm{all\\ pass}]\\le 2^{-'+t+'}='+err.toFixed(6)+'\\).<p class="note">This is a bound, not a simulation of a PCP encoding. Independence holds because fresh verifier randomness is used for each test against the same fixed proof.</p>');
