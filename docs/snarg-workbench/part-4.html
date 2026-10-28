@@ -180,9 +180,10 @@ f_{\rm trace}(\omega^5)=f_{\rm trace}(\omega^7).
 
 </article>
 
-<article class="lesson" data-id="plonk-final" data-title="The complete PLONK SNARG blueprint">
+<article class="lesson" data-id="plonk-correctness" data-title="PLONK · Why the four constraints are sufficient">
 
-<p class="chapter-tag">Lecture §6 · A PLONK SNARG</p>
+
+<p class="chapter-tag">Lecture §6 · Why the constraints are sufficient</p>
 <h1>Why do the four constraints prove the circuit statement?</h1>
 <p class="aim">We have four requirements for the trace polynomial: correct public inputs, correct final output, correct arithmetic at every gate, and equal values at every occurrence of a wire. Before combining them into a proof system, we must establish that these conditions actually imply the public statement \(C(\mathbf x,\mathbf w)=0\).</p>
 <div class="proof"><h3>From four valid constraints to a genuine computation</h3>
@@ -191,6 +192,15 @@ f_{\rm trace}(\omega^5)=f_{\rm trace}(\omega^7).
 <p>Repeat this reasoning through the gates. By induction, every stored gate output equals the value obtained by genuinely evaluating the circuit on \((\mathbf x,\mathbf w)\). The final-output condition says this genuine evaluation equals zero. Hence</p>
 <div class="math">\[\boxed{C(\mathbf x,\mathbf w)=0.}\]</div>
 <p>We have proved that a trace satisfying the four constraint families supplies an actual witness for the public statement. Conversely, an honest evaluation produces values satisfying all four families. This is the logical correctness argument the polynomial checks must implement. \(\square\)</p></div>
+<div class="lab" data-lab="plonkstages"><div class="lab-top"><strong>Follow the circuit-correctness proof</strong><p>At each stage, the gate equation and wiring constraints force the next value. This example illustrates the induction proved above; it does not replace the general argument.</p></div><div class="lab-content"><label class="range-label">Step <output class="range-value" data-live-for="stage">1</output><input data-key="stage" type="range" min="1" max="4" value="1"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<div class="bridge">We have proved that the four conditions force a genuine satisfying circuit execution. That is the mathematical claim PLONK must establish. The next lesson explains how the prover commits to the required polynomials and how the verifier checks those conditions without reading the full trace.</div>
+<p class="source">Official lecture §5.2–§6: the four circuit constraints and their sufficiency for a valid execution.</p>
+</article>
+
+<article class="lesson" data-id="plonk-final" data-title="PLONK · The complete SNARG protocol">
+<p class="chapter-tag">Lecture §6 · A PLONK SNARG</p>
+<h1>How does PLONK verify those constraints succinctly?</h1>
+<p class="aim">The previous lesson proved that satisfying all four circuit constraints implies a valid witness. We now need a practical argument: the prover must authenticate the relevant polynomial values, while the verifier checks the constraints without examining the entire circuit trace.</p>
 <h2>How does the final SNARG organize the work?</h2>
 <p>The lecture separates work that can be reused from work that depends on a particular witness. This matters because computing the full circuit-specific polynomials during every verification would destroy succinctness.</p>
 <p><strong>Universal setup.</strong> Run the polynomial commitment scheme's \(\operatorname{Setup}\) algorithm to produce public parameters \(pp\) for a supported maximum degree or circuit size. This setup does not depend on the particular circuit \(C\).</p>
@@ -201,7 +211,7 @@ f_{\rm trace}(\omega^5)=f_{\rm trace}(\omega^7).
 <p><strong>2. Public inputs.</strong> Build \(f_{\rm in}\) from the public statement. The prover commits to \(f_{\rm trace}-f_{\rm in}\) and the quotient for its ZeroTest over the public-input positions. The verifier checks consistency and the vanishing identity at random points.</p>
 <p><strong>3. Gate arithmetic.</strong> Use the preprocessed selector polynomial and the trace to form the gate polynomial \(f_{\rm gates}\). The prover commits to its vanishing-polynomial quotient over the gate-start positions. The verifier checks the corresponding identity using authenticated random evaluations.</p>
 <p><strong>4. Wiring.</strong> Use the preprocessed rotation polynomial to check that every occurrence of a logical wire has the same value. The lecture states this requirement but does not derive its full polynomial IOP; the detailed protocol is another polynomial-checking component.</p>
-<div class="lab" data-lab="plonkstages"><div class="lab-top"><strong>Follow the circuit-correctness proof</strong><p>At each stage, the gate equation and wiring constraints force the next value. This example illustrates the induction proved above; it does not replace the general argument.</p></div><div class="lab-content"><label class="range-label">Step <output class="range-value" data-live-for="stage">1</output><input data-key="stage" type="range" min="1" max="4" value="1"></label><div class="lab-output" aria-live="polite"></div></div></div>
+
 <h2>Where does succinctness come from?</h2>
 <p>The prover still performs the computation and constructs the required polynomials. The verifier, however, checks a small number of authenticated polynomial evaluations rather than every gate. The structured domain makes important vanishing-polynomial evaluations efficient, while circuit-specific preprocessing avoids rebuilding the selector and rotation polynomials for each proof.</p>
 <p>Let \(|C|\) be the number of gates, \(|\mathbf x|\) the public-input length, \(|\pi|\) the proof length, \(T_V\) the verifier's time, and \(\lambda\) the security parameter. The lecture's intended succinctness bounds are</p>
@@ -215,6 +225,7 @@ T_V=O\bigl(\lambda,|\mathbf x|,\operatorname{polylog}|C|\bigr).
 <p>Different polynomial commitment schemes lead to different setup and security properties, including whether a trusted setup is required or whether post-quantum security is available. The lecture does not give a concrete commitment construction, the full wiring IOP, or the zero-knowledge randomization of PLONK; we should not claim those missing details have been proved here.</p>
 <div class="practice-link"><span class="practice-tag">Source and exam coverage</span><a href="#coverage">Check every lecture definition, theorem and related homework question</a></div>
 <p class="source">Official lecture §6: universal setup, circuit-specific preprocessing, four proof components, Fiat–Shamir and succinctness bounds.</p>
+
 
 </article>
 </body></html>
