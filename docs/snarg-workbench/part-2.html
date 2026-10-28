@@ -1,171 +1,238 @@
 <!doctype html><html lang="en"><meta charset="utf-8"><title>SNARGs · Part II</title><body>
 <article class="lesson" data-id="field-foundation" data-title="Fields: the rule behind the proofs">
 <p class="chapter-tag">II · Polynomial reasoning · Lecture §3</p>
-<h1>Fields: the rule behind the proofs</h1>
-<p class="aim"><strong>Question.</strong> The coming soundness proofs count the roots of polynomials. Under what arithmetic rules is that root count valid?</p>
-<p>In elementary algebra, a polynomial is an expression such as \(f(X)=3X^2-7X+6\). The variable \(X\) is a placeholder: \(f(2)\) means replace every \(X\) by \(2\). The degree is the largest exponent with nonzero coefficient; here it is \(2\). A <strong>root</strong> is a value \(a\) for which \(f(a)=0\).</p>
-<p>Cryptographic protocols usually perform the arithmetic in a finite <strong>field</strong> rather than over the real numbers. The notation \(\mathbb F_p\), for a prime \(p\), means the residue classes \(0,1,\ldots,p-1\), with addition and multiplication taken modulo \(p\). For example in \(\mathbb F_{17}\), \(15+5=3\) and \(5\cdot4=3\), because both integer results leave remainder 3 when divided by 17.</p>
-<p>What makes this a field is that every nonzero element has a multiplicative inverse. For instance \(5^{-1}=7\) modulo 17 because \(5\cdot7=35\equiv1\pmod{17}\). Multiplying by an inverse permits cancellation: if \(ab=0\) in a field and \(a\ne0\), then \(b=a^{-1}ab=0\).</p>
-<p>This is not a merely technical condition. It is the exact step that makes our coming proof work: from \((b-a)h(b)=0\) and \(b-a\ne0\), we will conclude \(h(b)=0\).</p>
-<div class="exercise"><span class="exercise-kicker">HW3 · Problem 1(c) · Original question</span>
-<h3>Does the polynomial root bound hold modulo 6?</h3>
-<p>True or false: the polynomial \(f(X)=2X^2+4X\) has at most two roots in \(\mathbb Z_6\). Here \(\mathbb Z_6\) is arithmetic modulo 6.</p>
-<div class="lab" data-lab="ring"><div class="lab-top"><strong>Evaluate every possible input</strong><p>The highlighted values are the actual roots, so the display is a direct test of the claimed count.</p></div><div class="lab-content"><label>Input \(r\)<input type="range" data-key="r" min="0" max="5" value="3"></label><div class="lab-output" aria-live="polite"></div></div></div>
-<details class="worked"><summary>Reveal the answer and its explanation</summary><div class="answer">
-<p><strong>False.</strong> Direct substitution shows \(f(0)=f(1)=f(3)=f(4)=0\pmod6\). There are four distinct roots, although the degree is two.</p>
-<p>The missing assumption is that \(\mathbb Z_6\) is not a field: \(2\cdot3=0\pmod6\) even though neither factor is zero. This invalidates the cancellation step that underlies the field root bound.</p>
-<p class="qed">The numerical counterexample disproves the statement, and the zero-divisor calculation identifies exactly why the theorem cannot be applied. \(\square\)</p>
+<h1>First, we need numbers we can divide</h1>
+<p class="aim">A wonderful property of ordinary polynomials is that a degree-two polynomial cannot have more than two roots. We're going to use this fact to catch cheating. But it works only if our arithmetic obeys one important rule.</p>
+<p>A polynomial is an expression such as \(f(X)=3X^2-7X+6\). The symbol \(X\) stands for a number we can substitute. For instance, \(f(2)=3\cdot4-7\cdot2+6=4\). The largest exponent here is 2, so the polynomial has <strong>degree 2</strong>. A <strong>root</strong> is a number \(a\) for which \(f(a)=0\).</p>
+<p>Instead of using the real numbers, cryptography often uses a small arithmetic world called a <strong>finite field</strong>. For a prime number \(p\), the field \(\mathbb F_p\) contains \(0,1,\ldots,p-1\). We add and multiply normally, then keep the remainder after division by \(p\).</p>
+<p>For example, in \(\mathbb F_{17}\), we have \(15+5=20\equiv3\pmod{17}\). The symbol \(\equiv\) means the two sides leave the same remainder when divided by 17.</p>
+<h2>What matters about a field?</h2>
+<p>Every nonzero number has a multiplicative inverse: another number you can multiply it by to get 1. In \(\mathbb F_{17}\), the inverse of 5 is 7, because \(5\cdot7=35\equiv1\pmod{17}\).</p>
+<p>That gives us a simple but powerful rule. If \(ab=0\) and \(a\ne0\), then multiplying both sides by \(a^{-1}\) gives \(b=0\). In other words, <strong>two nonzero field elements cannot multiply to zero</strong>.</p>
+<p>Keep that rule in mind. It's the reason the polynomial root proof works.</p>
+<div class="exercise"><span class="exercise-kicker">HW3 · Problem 1(c)</span>
+<h3>Now try the same thing modulo 6</h3>
+<p>True or false: \(f(X)=2X^2+4X\) has at most two roots in \(\mathbb Z_6\), where all arithmetic is modulo 6.</p>
+<div class="lab" data-lab="ring"><div class="lab-top"><strong>Check all six possible numbers</strong><p>Move \(r\) to see where the polynomial becomes zero.</p></div><div class="lab-content"><label>Choose \(r\)<input type="range" data-key="r" min="0" max="5" value="3"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<details class="worked"><summary>Show why the statement is false</summary><div class="answer">
+<p>Substitution gives \(f(0)=f(1)=f(3)=f(4)=0\pmod6\). That's four distinct roots of a degree-two polynomial, so the proposed statement is <strong>false</strong>.</p>
+<p>What went wrong with our arithmetic rule? Modulo 6, \(2\cdot3\equiv0\), even though neither 2 nor 3 is zero. We cannot cancel a nonzero factor unless it has an inverse. Since 2 has no inverse modulo 6, \(\mathbb Z_6\) is <em>not</em> a field.</p>
+<p class="qed">The root-count claim fails, and we can point to the exact reason: the field cancellation rule is missing. When we use polynomial root bounds later, we'll make sure we're working over a field. \(\square\)</p>
 </div></details></div>
-<div class="bridge"><strong>What we need next.</strong> We now have a valid arithmetic domain, a meaning for polynomial degree, and the field cancellation rule. The next task is to represent many computation values using one polynomial.</div>
-<p class="source">Source: lecture §3; original HW3 Problem 1(c).</p>
+<p class="source">Official notes, §3; HW3 Problem 1(c).</p>
 </article>
 
 <article class="lesson" data-id="interpolation" data-title="One polynomial can encode many values">
 <p class="chapter-tag">II · Polynomial reasoning · Lecture §3</p>
-<h1>One polynomial can encode many values</h1>
-<p class="aim"><strong>Question.</strong> How can one mathematical object represent an entire list of computed values without listing a separate variable for each one?</p>
-<p>Suppose we have prescribed values \(y_0,y_1,y_2\) at the distinct points \(0,1,2\). We seek a polynomial \(f\) that takes exactly those values. This reverse process, from evaluated values to the polynomial, is called <strong>interpolation</strong>.</p>
-<p>Start with two values, \(f(0)=2\) and \(f(1)=5\). Try a degree-one polynomial \(f(X)=aX+b\). Substitution gives \(b=2\) and \(a+b=5\), hence \(a=3\). The resulting polynomial \(f(X)=3X+2\) agrees with both values.</p>
-<p>Three prescribed points generally require degree at most two. A useful construction that makes the first two conditions hold automatically is</p>
-<div class="math">\[f(X)=y_0+(y_1-y_0)X+bX(X-1).\]</div>
-<p>At \(X=0\), both terms containing \(X\) vanish, leaving \(y_0\). At \(X=1\), the last term vanishes, leaving \(y_0+(y_1-y_0)=y_1\). Only the third condition remains. Substituting \(X=2\) gives \(y_2=2y_1-y_0+2b\), so</p>
-<div class="math">\[b=\frac{y_2-2y_1+y_0}{2}.\]</div>
-<p>Division by two is valid because we choose a field of odd characteristic. This formula constructs the desired polynomial directly, without assuming that it already exists.</p>
-<div class="lab" data-lab="interp"><div class="lab-top"><strong>Interpolate three field values</strong><p>Changing any prescribed value changes the unique degree-at-most-two polynomial that fits all three points.</p></div><div class="lab-content"><label>\(y_0=f(0)\)<input data-key="a" type="range" min="0" max="16" value="1"></label><label>\(y_1=f(1)\)<input data-key="b" type="range" min="0" max="16" value="3"></label><label>\(y_2=f(2)\)<input data-key="c" type="range" min="0" max="16" value="2"></label><div class="lab-output" aria-live="polite"></div></div></div>
-<div class="proof"><h3>Why is the interpolating polynomial unique?</h3>
-<p>Suppose \(f\) and \(g\) both have degree at most two and agree at \(0,1,2\). Their difference \(h=f-g\) has degree at most two and has three distinct roots. We will prove in the next lesson that any <em>nonzero</em> degree-two polynomial over a field has at most two roots. Therefore \(h\) must be the zero polynomial, so \(f=g\).</p>
-<p class="qed">The construction establishes existence; the root bound establishes uniqueness. More generally, \(M\) values at \(M\) distinct field points determine exactly one polynomial of degree at most \(M-1\). \(\square\)</p>
-</div>
-<p>Notice the distinction between representing and compressing. Interpolation encodes the entire list algebraically, but representing its coefficients may still require linear space. The benefit is that a verifier can exploit algebraic identities of this polynomial without reading every encoded value.</p>
-<p class="source">Source: lecture §3 and §5.1; the three-point derivation is added prerequisite mathematics.</p>
+<h1>How can one polynomial remember a list of values?</h1>
+<p class="aim">Suppose we have the numbers 2, 5, and 10, and we want a polynomial whose value is 2 at input 0, 5 at input 1, and 10 at input 2. Can we find one?</p>
+<p>Let's begin with just the first two conditions. Try the simplest polynomial with two unknown coefficients, \(f(X)=aX+b\). Asking for \(f(0)=2\) gives \(b=2\). Asking for \(f(1)=5\) gives \(a+b=5\), so \(a=3\). We obtain \(f(X)=3X+2\).</p>
+<p>But this polynomial gives \(f(2)=8\), not 10. We need a little more freedom. Add a term that is zero at both 0 and 1, so it won't spoil what we already fitted:</p>
+<div class="math">\[f(X)=2+3X+cX(X-1).\]</div>
+<p>At \(X=0\), the last term is zero. At \(X=1\), it's also zero. At \(X=2\), the condition becomes \(10=2+6+2c\), so \(c=1\). Our polynomial is</p>
+<div class="math">\[f(X)=2+3X+X(X-1)=X^2+2X+2.\]</div>
+<p>Check all three points: \(f(0)=2\), \(f(1)=5\), and \(f(2)=10\). We've made a single degree-two polynomial hold three specified numbers.</p>
+<p>This process is called <strong>interpolation</strong>: given values at certain points, construct a polynomial that takes those values.</p>
+<div class="lab" data-lab="interp"><div class="lab-top"><strong>Change the values the polynomial must remember</strong><p>Choose three outputs over \(\mathbb F_{17}\). The displayed polynomial changes to fit all three.</p></div><div class="lab-content"><label>\(f(0)\)<input data-key="a" type="range" min="0" max="16" value="1"></label><label>\(f(1)\)<input data-key="b" type="range" min="0" max="16" value="3"></label><label>\(f(2)\)<input data-key="c" type="range" min="0" max="16" value="2"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<h2>Why do we care?</h2>
+<p>We could place the outputs of a long computation at points \(0,1,2,\ldots\) and choose a polynomial that matches them. If there are \(M\) distinct points over a field, there is exactly one polynomial of degree at most \(M-1\) that fits their prescribed values.</p>
+<p>There is a reason it is <em>unique</em>. If two degree-at-most-\((M-1)\) polynomials agreed at all \(M\) points, their difference would have \(M\) roots. We're about to prove that a nonzero polynomial of that degree cannot have so many roots. The two polynomials must therefore be the same.</p>
+<p>We're not claiming that the coefficients magically compress the list. The advantage is different: once the values are encoded in a polynomial, we can test mathematical relations among them by asking for only a few evaluations.</p>
+<div class="bridge">So we need to establish that root-count fact properly. Without it, we'd have no reason to trust a random evaluation test.</div>
+<p class="source">Official notes, §3 and §5.1. The three-point construction supplies prerequisite mathematics omitted from the lecture.</p>
 </article>
 
 <article class="lesson" data-id="equality-proof" data-title="EqualityTest and the complete root argument">
-<p class="chapter-tag">II · Polynomial reasoning · Lecture §3, Theorem 1 / Lemma 1</p>
-<h1>EqualityTest: why one random point works</h1>
-<p class="aim"><strong>Question.</strong> Given two fixed polynomials of degree at most \(d\), can a verifier test equality without comparing all their coefficients?</p>
-<p>Let \(f,g\in\mathbb F[X]\) with degree at most \(d\). The verifier chooses a field element \(r\) uniformly at random, queries the two polynomials at \(r\), and accepts if \(f(r)=g(r)\).</p>
-<p>If the polynomials really are equal, their values agree at every point; honest verification therefore never fails. But if they differ, could they still agree at many points? The answer follows from a theorem about roots.</p>
-<div class="proof"><h3>Theorem 1 · A nonzero degree-\(d\) polynomial has at most \(d\) distinct roots</h3>
-<p>First recall the polynomial remainder theorem: dividing \(h(X)\) by the linear polynomial \(X-a\) leaves the constant remainder \(h(a)\). In particular, \(h(a)=0\) implies</p>
-<div class="math">\[h(X)=(X-a)k(X).\]</div>
-<p>Now assume \(a\) and \(b\) are distinct roots. Substitute \(X=b\) into the factorization: \(0=h(b)=(b-a)k(b)\). Because \(b-a\ne0\) and we are in a field, we can cancel it to conclude \(k(b)=0\). Thus after extracting the factor for one root, every other root remains a root of the quotient \(k\).</p>
-<p>Each extracted factor reduces the degree by one. Repeating cannot extract more than \(d\) distinct factors from a nonzero degree-\(d\) polynomial: otherwise the degree would have to be at least \(d+1\), a contradiction.</p>
-<p class="qed">Hence a nonzero polynomial of degree \(d\) has at most \(d\) distinct roots. The proof succeeds precisely because field cancellation preserves the remaining roots after each factor is extracted. \(\square\)</p></div>
-<div class="proof"><h3>Lemma 1 · EqualityTest</h3>
-<p><strong>Completeness.</strong> If \(f=g\), the equality \(f(r)=g(r)\) holds for every \(r\); the verifier accepts with probability 1.</p>
-<p><strong>Soundness.</strong> If \(f\ne g\), define \(h(X)=f(X)-g(X)\). Because the polynomials differ, \(h\) is <em>nonzero</em>. Subtraction cannot increase maximum degree, so \(\deg h\le d\). The verifier accepts the false claim exactly when \(h(r)=0\).</p>
-<p>The root theorem proves that at most \(d\) of the \(|\mathbb F|\) uniformly likely choices of \(r\) can cause such an error:</p>
-<div class="math">\[\Pr_{r\leftarrow\mathbb F}[f(r)=g(r)\mid f\ne g]\le\frac{d}{|\mathbb F|}.\]</div>
-<p class="qed">This is the desired soundness guarantee, not merely a related fact: we identified the event “false acceptance” with a root of a specific nonzero degree-bounded polynomial, then counted those roots. \(\square\)</p></div>
-<div class="lab" data-lab="eq"><div class="lab-top"><strong>EqualityTest: exact false-acceptance points</strong><p>Compare \(f(X)=X^2+1\) with \(g(X)=f(X)+(X-1)(X-4)\) over \(\mathbb F_{17}\). Their difference has exactly two roots.</p></div><div class="lab-content"><label>Challenge \(r\)<input data-key="r" type="range" min="0" max="16" value="1"></label><div class="lab-output" aria-live="polite"></div></div></div>
-<div class="warning"><p><strong>Essential condition.</strong> Both low-degree polynomials must be fixed before the verifier samples \(r\). Otherwise the prover could choose different polynomials that agree at the already-revealed point. The commitment mechanism later enforces this order.</p></div>
-<p class="source">Source: official notes, Theorem 1 and Lemma 1 (p. 5).</p>
+<p class="chapter-tag">II · Polynomial reasoning · Lecture §3, Theorem 1 and Lemma 1</p>
+<h1>How can one random point catch a false equation?</h1>
+<p class="aim">Suppose a prover tells us that two polynomials \(f(X)\) and \(g(X)\) are identical. We don't want to check all their coefficients. Would comparing them at one randomly chosen number be enough?</p>
+<p>Of course it might fail sometimes. Two different polynomials can happen to agree at one point. The question is: <em>how often?</em> We can answer that exactly enough to build a proof system.</p>
+<div class="proof"><h3>Theorem 1: a nonzero degree-\(d\) polynomial has at most \(d\) roots</h3>
+<p>First, if \(a\) is a root of a polynomial \(h\), the factor theorem lets us write \(h(X)=(X-a)k(X)\). This comes from polynomial division: dividing \(h\) by \(X-a\) leaves remainder \(h(a)\), and a root makes that remainder zero.</p>
+<p>Now suppose \(b\) is another root, distinct from \(a\). Substitute it into our factorization:</p>
+<div class="math">\[0=h(b)=(b-a)k(b).\]</div>
+<p>Because \(a\ne b\), the field number \(b-a\) is nonzero. A field has no product of two nonzero elements equal to zero. So \(k(b)=0\). Notice what happened: after removing the factor for root \(a\), the remaining polynomial still has root \(b\).</p>
+<p>Every different root lets us remove one more linear factor, reducing the degree by one. We cannot remove more than \(d\) such factors from a nonzero polynomial of degree \(d\).</p>
+<p class="qed">Therefore a nonzero polynomial of degree \(d\) has at most \(d\) distinct roots. The argument works because field arithmetic lets us cancel every nonzero factor. \(\square\)</p>
+</div>
+<h2>Now use the theorem to test equality</h2>
+<p>Assume both \(f\) and \(g\) have degree at most \(d\). The verifier picks a uniformly random point \(r\) from the field \(\mathbb F\) and accepts if \(f(r)=g(r)\).</p>
+<p>If \(f=g\), the verifier always accepts. That's perfect completeness. For soundness, suppose the claim is false: \(f\ne g\). Define</p>
+<div class="math">\[h(X)=f(X)-g(X).\]</div>
+<p>Because \(f\) and \(g\) are different, \(h\) is <strong>not the zero polynomial</strong>. Its degree is at most \(d\), since subtraction cannot increase the largest exponent.</p>
+<p>The verifier accepts by mistake exactly when \(f(r)=g(r)\), which is exactly when \(h(r)=0\). So a false acceptance corresponds to a root of this nonzero polynomial. Our theorem says there are at most \(d\) such points among the \(|\mathbb F|\) equally likely choices.</p>
+<div class="math">\[\boxed{\Pr[f(r)=g(r)\mid f\ne g]\le\frac{d}{|\mathbb F|}.}\]</div>
+<p>Here \(|\mathbb F|\) is the number of field elements. For example, if the field has 17 elements and the difference has degree 2, at most two choices of \(r\) can make the false equality pass.</p>
+<div class="lab" data-lab="eq"><div class="lab-top"><strong>Find the bad random choices yourself</strong><p>Over \(\mathbb F_{17}\), compare \(f(X)=X^2+1\) with \(g(X)=f(X)+(X-1)(X-4)\). They're different, but at two points they agree.</p></div><div class="lab-content"><label>Verifier's random point \(r\)<input data-key="r" type="range" min="0" max="16" value="1"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<p class="qed">This completes the EqualityTest proof: a false claim gives a nonzero polynomial; the verifier is fooled only at its roots; and there are few roots. That is why one random test works. \(\square\)</p>
+<div class="warning"><p>One condition is essential: both polynomials must be fixed <em>before</em the random point is chosen. If the prover learned \(r\) first, it could arrange for two different polynomials to agree at that point. The commitment scheme will later enforce this order.</p></div>
+<p class="source">Official notes, Theorem 1 and Lemma 1, p. 5.</p>
 </article>
 
 <article class="lesson" data-id="schwartz-zippel" data-title="Schwartz–Zippel, proved rather than named">
 <p class="chapter-tag">II · Polynomial reasoning · Lecture §3, Lemma 2</p>
-<h1>Schwartz–Zippel: several random variables</h1>
-<p class="aim"><strong>Question.</strong> If a verifier's consistency equation depends on several random field elements, what replaces the one-variable root bound?</p>
-<p>A polynomial may use several variables. For example, \(h(X,Y,Z)=3X^2Y^3Z+2XY^2\). The <strong>total degree</strong> of a term is the sum of its exponents, so the first term has degree \(2+3+1=6\); the polynomial has total degree 6.</p>
-<p><strong>Lemma 2 (Schwartz–Zippel).</strong> Let \(h(X_1,\ldots,X_m)\) be a nonzero polynomial of total degree at most \(d\) over a field \(\mathbb F\). Choose \(r_1,\ldots,r_m\) independently and uniformly from a finite subset \(\Omega\subseteq\mathbb F\). Then</p>
-<div class="math">\[\Pr[h(r_1,\ldots,r_m)=0]\le\frac{d}{|\Omega|}.\]</div>
-<div class="proof"><h3>Proof by induction on the number of variables</h3>
-<p>For one variable, the statement is Theorem 1: at most \(d\) of the \(|\Omega|\) choices are roots.</p>
-<p>Assume the result for \(m-1\) variables. Collect powers of the last variable \(X_m\), writing</p>
-<div class="math">\[h(X_1,\ldots,X_m)=\sum_{j=0}^{t}g_j(X_1,\ldots,X_{m-1})X_m^j,\quad g_t\ne0.\]</div>
-<p>The exponent \(t\) is the highest power of \(X_m\) that occurs. Since total degree is at most \(d\), the coefficient polynomial \(g_t\) has total degree at most \(d-t\).</p>
-<p>First choose the values \(r_1,\ldots,r_{m-1}\). By the induction hypothesis, the probability that \(g_t(r_1,\ldots,r_{m-1})=0\) is at most \((d-t)/|\Omega|\).</p>
-<p>On every remaining choice, \(g_t(r_1,\ldots,r_{m-1})\ne0\). Holding those coordinates fixed now makes \(h\) a <em>nonzero one-variable polynomial in \(X_m\)</em> of degree \(t\). The root theorem bounds the conditional chance that a uniform \(r_m\) makes it zero by \(t/|\Omega|\).</p>
-<p>The event “\(h=0\)” lies either in the first bad case (leading coefficient vanishes) or in the second (a root of the remaining one-variable polynomial). Adding the two upper bounds gives</p>
-<div class="math">\[\Pr[h(\mathbf r)=0]\le\frac{d-t}{|\Omega|}+\frac{t}{|\Omega|}=\frac d{|\Omega|}.\]</div>
-<p class="qed">This completes the induction. At every step the polynomial remains nonzero on the branch where we apply the root theorem, which is the necessary logical condition. \(\square\)</p></div>
-<p><strong>How to use it in an exam:</strong> first form the polynomial that is zero exactly when the verifier accepts, then prove it is nonzero for a false statement, then bound its total degree, and <em>only then</em> apply Schwartz–Zippel. Last year's common-mistakes report explicitly warns against omitting the nonzero step.</p>
-<p class="source">Source: lecture Lemma 2 (p. 5); professor's notes pp. 11–12; midterm common mistakes, Problem 3.</p>
+<h1>What if the equation has several variables?</h1>
+<p class="aim">The polynomial test worked for \(f(X)\), with one variable. An exam problem may give us \(h(X,Y)\) or even more variables. We need the same kind of error bound there.</p>
+<p>Take \(h(X,Y,Z)=3X^2Y^3Z+2XY^2\). In the first term the exponents add up to \(2+3+1=6\); in the second they add to \(1+2=3\). The largest sum, 6, is the <strong>total degree</strong>.</p>
+<p><strong>Schwartz–Zippel lemma.</strong> Let \(h(X_1,\ldots,X_m)\) be a nonzero polynomial of total degree at most \(d\) over a field. Choose each \(r_i\) independently and uniformly from a finite subset \(\Omega\) of the field. Then</p>
+<div class="math">\[\boxed{\Pr[h(r_1,\ldots,r_m)=0]\le\frac d{|\Omega|}.}\]</div>
+<p>The bound looks exactly like the one-variable bound. That's no accident. Here's why it works.</p>
+<div class="proof"><h3>Proof: treat the last variable separately</h3>
+<p>We'll prove the result by adding one variable at a time. With one variable, we already know the root theorem, so the result is true.</p>
+<p>Now suppose we've proved it for \(m-1\) variables. Write our polynomial by collecting the powers of its last variable \(X_m\):</p>
+<div class="math">\[
+h(X_1,\ldots,X_m)=
+g_0(X_1,\ldots,X_{m-1})+\cdots+
+g_t(X_1,\ldots,X_{m-1})X_m^t.
+\]</div>
+<p>The coefficient \(g_t\) is not the zero polynomial, because \(t\) is the highest power of \(X_m\) that actually occurs. And since the entire expression has total degree at most \(d\), the total degree of \(g_t\) is at most \(d-t\).</p>
+<p>Choose random values for the first \(m-1\) variables. Two things can happen.</p>
+<p><strong>First case:</strong> the leading coefficient \(g_t\) evaluates to zero. By the induction assumption, that happens with probability at most \((d-t)/|\Omega|\).</p>
+<p><strong>Second case:</strong> the leading coefficient is nonzero. Now the first \(m-1\) values are fixed, leaving a nonzero polynomial of degree \(t\) in the single variable \(X_m\). The root theorem says a uniform value for \(X_m\) makes it zero with probability at most \(t/|\Omega|\).</p>
+<p>Every way the full polynomial can become zero belongs to one of these cases. Adding their probability bounds gives</p>
+<div class="math">\[
+\Pr[h(\mathbf r)=0]\le
+\frac{d-t}{|\Omega|}+\frac t{|\Omega|}
+=\frac d{|\Omega|}.
+\]</div>
+<p class="qed">That's the lemma. We reduced the multivariable problem to a smaller multivariable problem plus the one-variable root bound. The degrees add to \(d\), so the probability bounds do too. \(\square\)</p>
+</div>
+<p>Before using the lemma in an exam, check one thing above all: is your polynomial really <em>nonzero when the statement is false</em>? A zero polynomial evaluates to zero at every point, so no random test could distinguish it.</p>
+<p class="source">Official notes, Lemma 2 (p. 5); handwritten notes pp. 11–12; prior midterm common mistakes.</p>
 </article>
 
 <article class="lesson" data-id="midterm-polynomial" data-title="Midterm 3(c.1) · Full soundness proof">
-<p class="chapter-tag">II · Polynomial reasoning · Previous midterm, Problem 3(c.1)</p>
-<h1>Midterm exercise: a one-hot vector test</h1>
-<p class="aim"><strong>Exam objective.</strong> Prove perfect completeness and soundness at most \(2/p\) for a random polynomial test, including the two separate reasons why a false input produces a nonzero polynomial.</p>
-<div class="exercise"><span class="exercise-kicker">2025 midterm · Problem 3(c.1) · Four marks</span>
-<p>A vector \(\mathbf x=(x_1,\ldots,x_N)\in\mathbb Z_p^N\), for an odd prime \(p\), is valid if it is the all-zero vector or a standard basis vector \(\mathbf e_i\) with a single \(1\) and all other entries zero. Let \(\mathbf r=(r_1,\ldots,r_N)\) be uniform over \(\mathbb Z_p^N\) and define \(\mathbf r_{\rm sq}=(r_1^2,\ldots,r_N^2)\).</p>
-<p>The verifier accepts exactly when</p>
-<div class="math">\[\langle\mathbf x,\mathbf r\rangle^2=\langle\mathbf x,\mathbf r_{\rm sq}\rangle\pmod p.\]</div>
-<p>Prove perfect completeness and soundness error at most \(2/p\).</p>
-<details class="worked"><summary>Full written-exam solution</summary><div class="answer">
-<p><strong>Completeness.</strong> If \(\mathbf x=\mathbf0\), both inner products are zero, so the equality always holds. If \(\mathbf x=\mathbf e_i\), the first inner product equals \(r_i\), and the second equals \(r_i^2\); squaring the first gives exactly the second. This covers all valid inputs and all possible verifier randomness.</p>
-<p><strong>Soundness.</strong> For an invalid \(\mathbf x\), define the polynomial in the random coordinates</p>
-<div class="math">\[h(\mathbf r)=\Bigl(\sum_{i=1}^Nx_ir_i\Bigr)^2-\sum_{i=1}^Nx_ir_i^2.\]</div>
-<p>It has total degree at most 2. We must prove it is <em>nonzero</em>. There are two exhaustive cases.</p>
-<p><strong>Case A: exactly one nonzero component.</strong> Let \(x_j=a\ne0\). Since the vector is invalid, \(a\ne1\). Then \(h(\mathbf r)=(a^2-a)r_j^2=a(a-1)r_j^2\). Both factors are nonzero in the field, so this is a nonzero polynomial.</p>
-<p><strong>Case B: at least two nonzero components.</strong> Choose \(i\ne j\) with \(x_i,x_j\ne0\). Expanding the square creates a cross-term \(2x_ix_jr_ir_j\). The other sum contains only terms \(r_k^2\), so it cannot cancel the cross-term. Because \(p\) is odd, \(2x_ix_j\ne0\). Hence \(h\ne0\).</p>
-<p>These cases cover every invalid vector. Schwartz–Zippel now applies to a nonzero polynomial of total degree at most 2 sampled over \(\mathbb Z_p\):</p>
-<div class="math">\[\Pr_{\mathbf r}[V\text{ accepts invalid }\mathbf x]=\Pr_{\mathbf r}[h(\mathbf r)=0]\le\frac2p.\]</div>
-<p class="qed">The accepted equality is exactly the event \(h=0\); nonzeroness and total degree 2 were proved for every invalid input. Therefore the claimed soundness bound follows. \(\square\)</p>
+<p class="chapter-tag">II · Polynomial reasoning · 2025 midterm, Problem 3(c.1)</p>
+<h1>Exam problem: can a vector hide more than one vote?</h1>
+<p class="aim">This problem is important because the arithmetic is simple but the logic must be exact. You have to prove that <em>every invalid vector</em> gives a nonzero polynomial—not just the invalid examples you can think of.</p>
+<div class="exercise"><span class="exercise-kicker">Previous midterm · Problem 3(c.1) · Four marks</span>
+<p>We work in \(\mathbb Z_p\), for an odd prime \(p\). A vector \(\mathbf x=(x_1,\ldots,x_N)\) is allowed to be either all zero, or a <strong>standard basis vector</strong> \(\mathbf e_i\), which has exactly one entry equal to 1 and all others zero.</p>
+<p>The verifier chooses \(\mathbf r=(r_1,\ldots,r_N)\) uniformly at random and makes \(\mathbf r_{\mathrm{sq}}=(r_1^2,\ldots,r_N^2)\). It accepts if</p>
+<div class="math">\[
+\langle\mathbf x,\mathbf r\rangle^2=
+\langle\mathbf x,\mathbf r_{\mathrm{sq}}\rangle.
+\]</div>
+<p>The angle brackets mean \(\langle\mathbf x,\mathbf r\rangle=\sum_i x_i r_i\): multiply matching entries and add. Prove perfect completeness and soundness error at most \(2/p\).</p>
+<details class="worked"><summary>Show every step of the proof</summary><div class="answer">
+<h3>1. An allowed vector always passes</h3>
+<p>If \(\mathbf x=\mathbf0\), both sums are zero. If \(\mathbf x=\mathbf e_j\), the left inner product picks out \(r_j\), and squaring it gives \(r_j^2\). The right inner product also picks out \(r_j^2\). So every allowed vector passes for every choice of \(\mathbf r\). That's perfect completeness.</p>
+<h3>2. What would make an invalid vector pass?</h3>
+<p>Put both sides of the acceptance equation on one side:</p>
+<div class="math">\[
+h(\mathbf r)=\left(\sum_{i=1}^N x_i r_i\right)^2
+-\sum_{i=1}^N x_i r_i^2.
+\]</div>
+<p>For the fixed vector \(\mathbf x\), this is a polynomial in the random numbers \(r_i\). The verifier accepts exactly when \(h(\mathbf r)=0\). It has total degree at most 2. We still need to show it is nonzero for every invalid vector.</p>
+<h3>3. Every invalid vector falls into one of two cases</h3>
+<p><strong>Case A: exactly one entry is nonzero.</strong> Say \(x_j=a\). Since the vector is invalid, \(a\ne1\); since it's the nonzero entry, \(a\ne0\). Then</p>
+<div class="math">\[
+h(\mathbf r)=(ar_j)^2-ar_j^2
+=a(a-1)r_j^2.
+\]</div>
+<p>Neither \(a\) nor \(a-1\) is zero, so their product is nonzero in a field. Thus \(h\) is not the zero polynomial.</p>
+<p><strong>Case B: two or more entries are nonzero.</strong> Choose two, \(x_i\ne0\) and \(x_j\ne0\), with \(i\ne j\). Squaring the first sum creates the term \(2x_ix_jr_ir_j\). The second sum contains only squared terms \(r_k^2\), so it cannot cancel a term containing \(r_ir_j\) with two distinct indices. Since \(p\) is odd, \(2x_ix_j\ne0\). Again \(h\) is nonzero.</p>
+<p>These cases exhaust the invalid possibilities. The all-zero vector is valid; any other invalid vector has either one nonzero entry that is not 1, or more than one nonzero entry.</p>
+<h3>4. Apply Schwartz–Zippel</h3>
+<p>For every invalid vector we've proved that \(h\) is nonzero and has total degree at most 2. Each random coordinate comes from the \(p\)-element field. So</p>
+<div class="math">\[
+\boxed{\Pr[\text{invalid vector passes}]=
+\Pr[h(\mathbf r)=0]\le\frac2p.}
+\]</div>
+<p class="qed">That's the soundness proof. We established the precise polynomial whose zero means acceptance, showed it can't be identically zero for an invalid vote, and then used its degree to bound false acceptance. \(\square\)</p>
 </div></details></div>
-<div class="warning"><p>The condition \(p\ne2\) is essential to the cross-term argument: in characteristic 2, the coefficient \(2x_ix_j\) would vanish. The original midterm works over a large prime field.</p></div>
-<p class="source">Source: previous midterm with solutions, Problem 3(c.1); associated common-mistakes feedback.</p>
+<div class="warning"><p>The assumption that \(p\) is odd matters. If \(p=2\), the coefficient 2 in Case B becomes zero, and that argument no longer works.</p></div>
+<p class="source">Previous midterm Problem 3(c.1) and its common-mistakes feedback.</p>
 </article>
 
 <article class="lesson" data-id="vanishing-polynomial" data-title="Vanishing polynomials: make many equalities one">
 <p class="chapter-tag">II · Polynomial reasoning · Lecture §3, Theorem 2</p>
-<h1>Vanishing polynomials</h1>
-<p class="aim"><strong>Question.</strong> EqualityTest checks that two polynomials agree everywhere. What if we only need to check an identity at certain designated positions?</p>
-<p>Suppose we want \(f(a)=0\) for every element \(a\) of a finite set \(\Omega\). Checking every element separately would require \(|\Omega|\) evaluations. Instead construct the <strong>vanishing polynomial</strong></p>
-<div class="math">\[Z_\Omega(X)=\prod_{a\in\Omega}(X-a).\]</div>
-<p>The product symbol means one factor for each distinct \(a\in\Omega\). The resulting polynomial has degree \(|\Omega|\) and, by construction, evaluates to zero at every element of \(\Omega\).</p>
-<div class="proof"><h3>Theorem 2 · Divisibility is equivalent to vanishing</h3>
-<div class="math">\[\boxed{\ f(a)=0\text{ for all }a\in\Omega\quad\Longleftrightarrow\quad f(X)=Z_\Omega(X)q(X)\text{ for some polynomial }q.\ }\]</div>
-<p><strong>Right to left.</strong> If \(f=Z_\Omega q\), then for each \(a\in\Omega\) one factor of \(Z_\Omega(a)\) is zero, so \(f(a)=0\). This proves that divisibility is sufficient.</p>
-<p><strong>Left to right.</strong> List the distinct elements as \(a_1,\ldots,a_k\). Since \(f(a_1)=0\), the factor theorem gives \(f(X)=(X-a_1)q_1(X)\). For the next root \(a_2\ne a_1\), substituting yields \(0=(a_2-a_1)q_1(a_2)\). Field cancellation implies \(q_1(a_2)=0\), so \(q_1\) also has factor \(X-a_2\). Continuing through all \(k\) distinct roots yields \(f(X)=(X-a_1)\cdots(X-a_k)q(X)=Z_\Omega(X)q(X)\).</p>
-<p class="qed">We proved both directions. Therefore a condition at every point of \(\Omega\) is <em>equivalent</em> to the existence of one quotient polynomial \(q\), which is what the prover will supply. \(\square\)</p></div>
-<div class="panel"><strong>A concrete factorization</strong><div class="math">\[f(X)=X^3-7X+6=(X-1)(X-2)(X+3).\]</div>
-<p>For \(\Omega=\{1,2\}\), we obtain \(Z_\Omega=(X-1)(X-2)\) and quotient \(q=X+3\). This example illustrates the theorem; the preceding proof establishes it for any finite set of distinct field points.</p></div>
-<p class="source">Source: official notes, Theorem 2 (pp. 5–6).</p>
+<h1>What if we need the equation to hold at many specific points?</h1>
+<p class="aim">EqualityTest asks whether two polynomials are identical everywhere. But a computation might require an equation only at certain steps—say, at positions 1, 2, and 3. How can we check all those positions together?</p>
+<p>Suppose we need a polynomial \(f\) to be zero at every point in a set \(\Omega\). Make a new polynomial that is guaranteed to be zero at exactly those designated points:</p>
+<div class="math">\[\boxed{Z_\Omega(X)=\prod_{a\in\Omega}(X-a).}\]</div>
+<p>The symbol \(\prod\) means multiply all the listed factors. For example, when \(\Omega=\{1,2\}\), we have \(Z_\Omega(X)=(X-1)(X-2)\). The product is zero at 1 and at 2 because one factor becomes zero in each case.</p>
+<p>Now here's the useful fact: <strong>\(f\) is zero at all points of \(\Omega\) exactly when \(f\) is divisible by \(Z_\Omega\).</strong> Divisible means there is some polynomial \(q\) with \(f(X)=Z_\Omega(X)q(X)\).</p>
+<div class="proof"><h3>Theorem 2: prove both directions</h3>
+<p><strong>If \(f=Z_\Omega q\):</strong> pick any \(a\in\Omega\). One factor of \(Z_\Omega(a)\) is zero, so \(f(a)=Z_\Omega(a)q(a)=0\). Therefore divisibility makes \(f\) zero at every required point.</p>
+<p><strong>Now the other direction.</strong> Suppose \(f(a)=0\) for every \(a\in\Omega\). List the distinct points as \(a_1,\ldots,a_k\). Because \(a_1\) is a root, the factor theorem gives \(f(X)=(X-a_1)q_1(X)\).</p>
+<p>Substitute \(a_2\). We get \(0=(a_2-a_1)q_1(a_2)\). The points are different, so \(a_2-a_1\ne0\); field cancellation tells us \(q_1(a_2)=0\). Thus \(q_1\) also has factor \(X-a_2\). Continue through all the points. We obtain \(f(X)=(X-a_1)\cdots(X-a_k)q(X)=Z_\Omega(X)q(X)\). If \(f\) is the zero polynomial, the same conclusion holds by taking \(q=0\).</p>
+<div class="math">\[
+\boxed{f(a)=0\ \forall a\in\Omega
+\iff f(X)=Z_\Omega(X)q(X)\text{ for some }q.}
+\]</div>
+<p class="qed">We have both implications, so the two conditions are equivalent. Checking that \(f\) vanishes at many places can now become checking one polynomial equation. That's exactly the kind of thing a random equality test can handle. \(\square\)</p>
+</div>
+<div class="panel"><strong>Try a concrete factorization.</strong><p>Let \(f(X)=X^3-7X+6\). Then \(f(X)=(X-1)(X-2)(X+3)\). For \(\Omega=\{1,2\}\), the vanishing polynomial is \((X-1)(X-2)\), and the quotient is \(q(X)=X+3\).</p></div>
+<p class="source">Official notes, Theorem 2, pp. 5–6.</p>
 </article>
 
 <article class="lesson" data-id="zerotest-proof" data-title="ZeroTest: protocol and exact soundness">
 <p class="chapter-tag">II · Polynomial reasoning · Lecture §3, Lemma 3</p>
-<h1>ZeroTest: a complete proof</h1>
-<p class="aim"><strong>Question.</strong> Given the equivalence \(f=Z_\Omega q\), how can the verifier check it with one random challenge rather than calculating or receiving the whole polynomial?</p>
-<p>Fix \(f\) of degree at most \(d\) and a set \(\Omega\) of \(k\le d\) distinct field points. The prover provides a polynomial \(q\), claiming that it is the quotient \(f/Z_\Omega\). In the ideal polynomial oracle model, the prover fixes both polynomials before the verifier selects \(r\leftarrow\mathbb F\). The verifier asks for \(f(r),q(r)\), computes \(Z_\Omega(r)\), and accepts exactly when</p>
+<h1>One random check for many required zeros</h1>
+<p class="aim">We've proved that \(f\) is zero at all required points precisely when \(f=Z_\Omega q\) for some polynomial \(q\). So instead of checking every required zero, let's ask the prover to supply that quotient.</p>
+<p>Suppose \(f\) has degree at most \(d\) and \(\Omega\) contains \(k\le d\) distinct field elements. The prover gives the quotient polynomial \(q\), claiming that</p>
+<div class="math">\[f(X)=q(X)Z_\Omega(X).\]</div>
+<p>The prover must fix both polynomials first, with \(\deg q\le d\) as required by the lecture's protocol. The verifier then picks a uniform random field element \(r\), queries \(f(r)\) and \(q(r)\), computes the known value \(Z_\Omega(r)\), and checks</p>
 <div class="math">\[\boxed{f(r)=q(r)Z_\Omega(r).}\]</div>
-<div class="lab" data-lab="zero"><div class="lab-top"><strong>ZeroTest at a random field point</strong><p>Compare an honest polynomial with a false claim whose error is nonzero except at one challenge.</p></div><div class="lab-content"><label>Challenge \(r\)<input data-key="r" type="range" min="0" max="16" value="3"></label><label style="flex-direction:row;align-items:center"><input data-key="fake" type="checkbox" checked> Cheating polynomial: add \(X-3\) to the honest \(f\)</label><div class="lab-output" aria-live="polite"></div></div></div>
-<div class="proof"><h3>Lemma 3 · Completeness and soundness</h3>
-<p><strong>Completeness.</strong> If \(f\) really vanishes on all of \(\Omega\), Theorem 2 supplies a polynomial \(q\) with the identity \(f=Z_\Omega q\). Evaluating a true polynomial identity at any \(r\) preserves equality, so the verifier accepts with probability 1.</p>
-<p><strong>Soundness.</strong> Suppose the claim is false, so \(f\) does not vanish over all of \(\Omega\). Then Theorem 2 proves that \(f\) is not divisible by \(Z_\Omega\). Consequently no polynomial \(q\) can make the identity \(f=Z_\Omega q\) hold. For any cheating candidate \(q\), the difference</p>
+<p>Try it with \(\Omega=\{1,2\}\), \(q(X)=X+3\), and \(f(X)=(X-1)(X-2)(X+3)\). You can also choose a false claim obtained by adding \(X-3\) to \(f\).</p>
+<div class="lab" data-lab="zero"><div class="lab-top"><strong>Which random choices catch the cheat?</strong><p>Choose the challenge and switch between the honest and dishonest polynomial.</p></div><div class="lab-content"><label>Random point \(r\)<input data-key="r" type="range" min="0" max="16" value="3"></label><label style="flex-direction:row;align-items:center"><input data-key="fake" type="checkbox" checked> Dishonest \(f(X)\): add \(X-3\)</label><div class="lab-output" aria-live="polite"></div></div></div>
+<div class="proof"><h3>Why ZeroTest works</h3>
+<p><strong>Completeness.</strong> If \(f\) is zero on \(\Omega\), Theorem 2 guarantees a polynomial \(q\) satisfying \(f=qZ_\Omega\). The equation holds at every point, so the verifier always accepts the honest prover.</p>
+<p><strong>Soundness.</strong> Suppose \(f\) fails to be zero at some required point. Theorem 2 says no polynomial \(q\) can satisfy the claimed identity everywhere. So, for any cheating quotient, the difference</p>
 <div class="math">\[h(X)=f(X)-q(X)Z_\Omega(X)\]</div>
-<p>is therefore <em>nonzero</em>. Suppose the protocol restricts \(\deg q\le d\), as in the lecture's bound. The degree of \(Z_\Omega\) is \(k\); multiplying polynomials adds their degrees, and subtracting cannot increase their maximum. Therefore</p>
-<div class="math">\[\deg h\le\max\{d,d+k\}\le2d.\]</div>
-<p>False acceptance is exactly the event \(h(r)=0\). Applying Theorem 1 to this nonzero degree-at-most-\(2d\) polynomial gives</p>
-<div class="math">\[\Pr[\text{false acceptance}]\le\frac{2d}{|\mathbb F|}.\]</div>
-<p class="qed">The soundness proof succeeds because Theorem 2 establishes \(h\ne0\) whenever the original claim is false, and the degree restriction bounds the number of challenges at which \(h\) could nevertheless vanish. \(\square\)</p></div>
-<p><strong>Why degree restrictions are necessary.</strong> Without a degree bound, a cheating prover could choose a high-degree \(q\) that agrees with the proposed identity at many selected points. Later, polynomial-commitment setup parameters and degree-enforcement guarantees restrict the admissible polynomials.</p>
-<div class="bridge"><strong>Where this goes.</strong> Our Fibonacci computation is a collection of recurrence equations at consecutive indices. Vanishing polynomials now let us replace those many equations by one quotient identity, and ZeroTest lets the verifier inspect it at one random point.</div>
-<p class="source">Source: official notes, ZeroTest and Lemma 3 (pp. 5–6); handwritten notes pp. 12–15.</p>
+<p>is a <em>nonzero</em> polynomial. The verifier accepts a false claim exactly when \(h(r)=0\).</p>
+<p>How many roots can it have? The degree of \(f\) is at most \(d\). The degree of \(Z_\Omega\) is \(k\), and the prover's quotient has degree at most \(d\). Thus the product has degree at most \(d+k\), and subtraction cannot increase this bound:</p>
+<div class="math">\[\deg h\le\max(d,d+k)\le2d.\]</div>
+<p>Our root theorem now says a uniform random \(r\) is one of the at most \(2d\) roots with probability at most \(2d/|\mathbb F|\).</p>
+<div class="math">\[\boxed{\Pr[\text{false acceptance}]\le\frac{2d}{|\mathbb F|}.}\]</div>
+<p class="qed">That proves ZeroTest soundness. A false claim makes \(h\) nonzero; the degree limit keeps the number of roots small; and an error occurs only when the random challenge hits one of those roots. \(\square\)</p>
+</div>
+<div class="bridge">We now have the missing tool for the Fibonacci example: a way to check that a recurrence holds at every required step by using just a few polynomial evaluations.</div>
+<p class="source">Official notes, ZeroTest and Lemma 3, pp. 5–6.</p>
 </article>
 
 <article class="lesson" data-id="fibonacci-protocol" data-title="Fibonacci: assemble the entire polynomial IOP">
 <p class="chapter-tag">II · Polynomial reasoning · Lecture §3</p>
-<h1>Proving a long Fibonacci computation</h1>
-<p class="aim"><strong>Question.</strong> We can now test a polynomial identity. Which identity expresses that every Fibonacci step was computed correctly, and how does the verifier recover the claimed last value?</p>
-<p>We use the standard indexing \(F_0=0,F_1=1,F_{i+2}=F_i+F_{i+1}\), for which \(F_{100}=354\,224\,848\,179\,261\,915\,075\). The source notes write \(f_{\rm fib}(0)=f_{\rm fib}(1)=1\) but retain this \(F_{100}\) number; those two conditions are inconsistent. Our correction makes the calculation coherent while retaining the exact protocol method of the lecture.</p>
-<p>Choose a prime field large enough to represent the required integers without wraparound. The prover interpolates one polynomial \(f_{\rm fib}\) through the 101 values \(F_0,\ldots,F_{100}\); it can have degree at most 100. We must enforce three kinds of facts: the two initial values, the claimed last value, and the 99 recurrence relations.</p>
-<div class="math">\[\begin{aligned}f_{\rm fib}(0)&=0,\quad f_{\rm fib}(1)=1,\\f_{\rm fib}(100)&=354\,224\,848\,179\,261\,915\,075,\\f_{\rm fib}(i+2)&=f_{\rm fib}(i+1)+f_{\rm fib}(i),\quad i=0,\ldots,98.\end{aligned}\]</div>
-<h2>Turn the recurrence into a ZeroTest</h2>
-<p>Define the <strong>recurrence discrepancy polynomial</strong></p>
-<div class="math">\[R(X)=f_{\rm fib}(X+2)-f_{\rm fib}(X+1)-f_{\rm fib}(X).\]</div>
-<p>For each \(i\in\Omega=\{0,\ldots,98\}\), the original recurrence equation holds <em>if and only if</em> \(R(i)=0\). Theorem 2 therefore says all 99 recurrence equations hold precisely when there exists a polynomial \(q\) satisfying</p>
-<div class="math">\[R(X)=q(X)Z_\Omega(X),\qquad Z_\Omega(X)=\prod_{i=0}^{98}(X-i).\]</div>
-<p>The prover commits to \(f_{\rm fib}\) and \(q\) in the ideal oracle. The verifier checks three fixed evaluations for the endpoints, chooses uniform \(r\in\mathbb F\), and queries the values at \(r,r+1,r+2\) and \(q(r)\). Its last check is</p>
-<div class="math">\[f_{\rm fib}(r+2)-f_{\rm fib}(r+1)-f_{\rm fib}(r)=q(r)Z_\Omega(r).\]</div>
-<div class="lab" data-lab="fib"><div class="lab-top"><strong>The recurrence conditions determine the trace</strong><p>Inspect the smaller computation \(F_0,\ldots,F_8\), which uses exactly the same recurrence equations.</p></div><div class="lab-content"><label>Output index \(i\)<input data-key="n" type="range" min="0" max="8" value="6"></label><div class="lab-output" aria-live="polite"></div></div></div>
-<div class="proof"><h3>Why these checks imply the intended statement</h3>
-<p>Suppose the endpoint checks pass and the recurrence ZeroTest identity is genuinely valid. At index zero we know \(f_{\rm fib}(0)=0\) and \(f_{\rm fib}(1)=1\). The recurrence at index zero then forces \(f_{\rm fib}(2)=1\). The recurrence at index one forces \(f_{\rm fib}(3)=2\). Continuing inductively: if \(f_{\rm fib}(i)=F_i\) and \(f_{\rm fib}(i+1)=F_{i+1}\), the recurrence forces \(f_{\rm fib}(i+2)=F_i+F_{i+1}=F_{i+2}\).</p>
-<p>Thus every interpolated value must equal the corresponding Fibonacci value, including the value at 100. The final endpoint check then establishes the claimed number. A false computation can pass only if the randomized identity test errs; the ZeroTest root bound controls that probability.</p>
-<p class="qed">This closes the connection between the algebra and the original goal: the quotient certifies every recurrence step, the initial conditions determine the entire sequence, and the last evaluation checks the claimed result. \(\square\)</p></div>
-<div class="warning"><p><strong>Unresolved efficiency issue.</strong> The verifier still appears to need all 99 factors of \(Z_\Omega(r)\) to evaluate the vanishing polynomial. The lecture explicitly flags this as not succinct enough for the intended application. Later, a special roots-of-unity domain or preprocessing eliminates this expensive product.</p></div>
-<p class="source">Source: official notes, Fibonacci Poly-IOP, pp. 4–7; the indexing correction is a pedagogical erratum.</p>
+<h1>Can a verifier check the hundredth Fibonacci number cheaply?</h1>
+<p class="aim">We know how to test a polynomial identity at one random point. Now let's make that identity express an entire calculation, so the verifier does not have to redo every step.</p>
+<p>The Fibonacci rule is simple: each value is the sum of the two before it. With the standard initial values</p>
+<div class="math">\[F_0=0,\quad F_1=1,\quad F_{i+2}=F_{i+1}+F_i,\]</div>
+<p>the hundredth value is \(F_{100}=354\,224\,848\,179\,261\,915\,075\).</p>
+<div class="warning"><p><strong>Notation correction in the lecture example:</strong> the official notes use initial values 1 and 1 but give the number corresponding to the 0, 1 convention. We use 0 and 1 here so the example is arithmetically consistent; the proof method is the same.</p></div>
+<p>We ask the prover to construct a polynomial \(f_{\mathrm{fib}}(X)\) whose value at each integer \(i=0,\ldots,100\) equals the claimed Fibonacci number at that step. Interpolation gives a polynomial of degree at most 100. We work over a prime field large enough that these integers remain distinct from any modular wraparound in the computation.</p>
+<h2>Which claims must we check?</h2>
+<p>Two initial conditions, the proposed result, and the rule at every intermediate step:</p>
+<div class="math">\[
+\begin{aligned}
+f_{\mathrm{fib}}(0)&=0,\quad f_{\mathrm{fib}}(1)=1,\\
+f_{\mathrm{fib}}(100)&=354\,224\,848\,179\,261\,915\,075,\\
+f_{\mathrm{fib}}(i+2)&=f_{\mathrm{fib}}(i+1)+f_{\mathrm{fib}}(i),
+\qquad i=0,\ldots,98.
+\end{aligned}
+\]</div>
+<p>Checking the first three values is easy: ask the polynomial oracle at 0, 1, and 100. The difficulty is the 99 recurrence equations. Define one polynomial measuring how much each equation fails:</p>
+<div class="math">\[
+R(X)=f_{\mathrm{fib}}(X+2)-f_{\mathrm{fib}}(X+1)-f_{\mathrm{fib}}(X).
+\]</div>
+<p>The recurrence holds at step \(i\) precisely when \(R(i)=0\). Thus all 99 steps are right precisely when \(R\) is zero on \(\Omega=\{0,1,\ldots,98\}\).</p>
+<p>But we just proved what that means: there must be a quotient \(q\) with</p>
+<div class="math">\[
+R(X)=q(X)Z_\Omega(X),\qquad
+Z_\Omega(X)=\prod_{i=0}^{98}(X-i).
+\]</div>
+<p>The prover puts \(f_{\mathrm{fib}}\) and \(q\) in the ideal polynomial oracle. The verifier asks for the fixed initial and final evaluations, then chooses a random \(r\) and checks</p>
+<div class="math">\[
+f_{\mathrm{fib}}(r+2)-f_{\mathrm{fib}}(r+1)-f_{\mathrm{fib}}(r)
+=q(r)Z_\Omega(r).
+\]</div>
+<div class="lab" data-lab="fib"><div class="lab-top"><strong>See why the initial values determine the rest</strong><p>Walk through a shorter sequence using exactly the same rule.</p></div><div class="lab-content"><label>Position \(i\)<input data-key="n" type="range" min="0" max="8" value="6"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<div class="proof"><h3>Does this actually prove the claimed result?</h3>
+<p>Suppose the conditions hold. We know the values at positions 0 and 1. The recurrence at \(i=0\) forces the value at 2 to be \(0+1=1\). The next recurrence forces the value at 3 to be \(1+1=2\). The same reasoning continues: once two consecutive values are known, the next is forced.</p>
+<p>So by induction the polynomial's values at every integer step must equal the Fibonacci sequence defined by \(F_0=0,F_1=1\). In particular its value at step 100 is the true \(F_{100}\). The separate final check makes sure it equals the number the prover claimed.</p>
+<p>If the claim is false, the prover cannot satisfy all the equations, so the ZeroTest has a nonzero discrepancy polynomial. Its root bound controls the probability of a false acceptance.</p>
+<p class="qed">We have connected the random polynomial test to the original calculation: it checks the recurrence at all required steps, and the initial values then force the entire sequence. \(\square\)</p>
+</div>
+<p>There is one important efficiency problem. To evaluate \(Z_\Omega(r)\) directly, the verifier must multiply 99 factors. For a much longer calculation this would become expensive again. The PLONK construction will choose special evaluation points that make the corresponding product easy to compute.</p>
+<p class="source">Official lecture §3, pp. 4–7; the initial-value inconsistency is indicated explicitly above.</p>
 </article>
 </body></html>
