@@ -15,11 +15,11 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],proc
 </head>
 <body>
 <div class="shell" id="lessons">
-  <details class="chapter-menu" id="chapter-menu">
-    <summary aria-label="Choose deck, chapter or lesson" title="Choose deck, chapter or lesson">
+  <div class="chapter-menu" id="chapter-menu" data-open="false">
+    <button type="button" class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="chapter-panel" aria-label="Choose deck, chapter or lesson" title="Choose deck, chapter or lesson">
       <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 6h14M5 12h14M5 18h14"/></svg>
-    </summary>
-    <nav class="chapter-panel" aria-label="Deck and chapter navigation">
+    </button>
+    <nav id="chapter-panel" class="chapter-panel" hidden aria-label="Deck and chapter navigation">
       <span class="menu-brand">PETS · Learning decks</span>
       <a href="../">All PETS chapters</a>
       <a href="../commitment/">Commitment</a>
@@ -34,7 +34,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],proc
       <select id="lesson-select" aria-label="Jump to lesson"><option>Loading lessons…</option></select>
       <a href="../hw3/">Original HW3 deck</a>
     </nav>
-  </details>
+  </div>
   <header class="head">
     <div class="section" id="header-title">SNARGs → PLONK</div>
     <div class="head-right"><span class="count" id="counter" aria-live="polite">1 / 36</span></div>
