@@ -9,18 +9,18 @@
 <p>Construct a new graph \(B\) by assigning its edge \(\{i,j\}\) exactly when the original graph has edge \(\{\Pi(i),\Pi(j)\}\). Equivalently, each original edge \(\{u,v\}\) becomes \(\{\Pi^{-1}(u),\Pi^{-1}(v)\}\) in \(B\). This is a graph <strong>isomorphism</strong>. An edge remains an edge; only its endpoints' labels change.</p>
 <div class="two-diagrams">
 <div class="diagram"><div class="graph-title">Original public graph \(G\)</div><div id="graph-original"></div></div>
-<div class="diagram"><div class="graph-title">Relabeled graph \(B=\pi(G)\)</div><div id="graph-permuted"></div></div>
+<div class="diagram"><div class="graph-title">Relabeled graph \(B\)</div><div id="graph-permuted"></div></div>
 </div>
 <div class="graph-legend"><span>Edges of the known Hamiltonian cycle</span><span class="gray">Other edges in the same graph</span></div>
-<p>Follow one edge through the permutation. The original edge \(\{1,2\}\) becomes \(\{\pi(1),\pi(2)\}=\{2,4\}\). Applying \(\pi\) to every vertex of the known cycle gives \(2\to4\to1\to5\to3\to2\). The sequence uses the same graph structure, expressed in new vertex labels.</p>
+<p>Follow one edge through the permutation. The original edge \(\{1,2\}\) becomes \(\{\Pi^{-1}(1),\Pi^{-1}(2)\}=\{2,4\}\). Applying \(\Pi^{-1}\) to every vertex of the known cycle gives \(2\to4\to1\to5\to3\to2\). The sequence uses the same graph structure, expressed in new vertex labels.</p>
 <section class="lab"><div class="lab-head"><div class="tag">Follow the graph isomorphism</div><h3>Why is the relabeled cycle still Hamiltonian?</h3><p>Reveal the permutation. Every green edge in the relabeled graph must correspond to an edge in the original graph.</p></div><div class="lab-body"><div class="control-row"><button data-demo="perm-view" data-value="reveal">Show the vertex permutation</button></div><div class="feedback" id="perm-result" aria-live="polite">The permutation acts on both endpoints of every edge. No edge is added or deleted by relabeling.</div></div></section>
 <h2>Express the relabeling using an adjacency matrix</h2>
-<p>Let \(B_{ij}\) denote the adjacency-matrix entry for the relabeled graph. It equals 1 precisely when vertices \(i\) and \(j\) are adjacent in \(B\). To determine whether that edge exists, use \(\pi^{-1}\) to recover the two original vertices and check membership in \(E\):</p>
+<p>Let \(B_{ij}\) denote the adjacency-matrix entry for the relabeled graph. It equals 1 precisely when vertices \(i\) and \(j\) are adjacent in \(B\). To determine whether that edge exists, use \(\Pi\) to recover the two original vertices and check membership in \(E\):</p>
 <div class="math">\[B_{ij}=1\quad\Longleftrightarrow\quad
-\{\pi^{-1}(i),\pi^{-1}(j)\}\in E\]<p class="math-caption">For this undirected graph, the unordered pair \(\{a,b\}\in E\) means that \(a\) and \(b\) are adjacent. The inverse permutation restores the original vertex labels.</p></div>
-<div class="proof"><h3>Why Hamiltonicity is preserved in both directions</h3><p>Suppose \(v_1,\ldots,v_5,v_1\) is a Hamiltonian cycle in \(G\). Because \(\pi\) is a bijection, its five relabeled vertices are still distinct and cover all vertices. Because edges are preserved, every consecutive pair in \(\pi(v_1),\ldots,\pi(v_5),\pi(v_1)\) is an edge of \(B\). So \(B\) has a Hamiltonian cycle.</p>
-<p>Conversely, if \(B\) has a Hamiltonian cycle, applying \(\pi^{-1}\) to every vertex preserves distinctness, coverage and edges, giving a Hamiltonian cycle in \(G\).</p>
-<p class="qed">Thus \(G\) has a Hamiltonian cycle if and only if \(B=\pi(G)\) has one. Relabeling preserves the claim's truth while obscuring the original witness labels. \(\square\)</p></div>
+\{\Pi(i),\Pi(j)\}\in E\]<p class="math-caption">For this undirected graph, the unordered pair \(\{a,b\}\in E\) means that \(a\) and \(b\) are adjacent. The permutation maps a vertex label in B back to the original graph.</p></div>
+<div class="proof"><h3>Why Hamiltonicity is preserved in both directions</h3><p>Suppose \(v_1,\ldots,v_5,v_1\) is a Hamiltonian cycle in \(G\). Because \(\Pi^{-1}\) is a bijection, its five relabeled vertices are still distinct and cover all vertices. Because edges are preserved, every consecutive pair in \(\Pi^{-1}(v_1),\ldots,\Pi^{-1}(v_5),\Pi^{-1}(v_1)\) is an edge of \(B\). So \(B\) has a Hamiltonian cycle.</p>
+<p>Conversely, if \(B\) has a Hamiltonian cycle, applying \(\Pi\) to every vertex preserves distinctness, coverage and edges, giving a Hamiltonian cycle in \(G\).</p>
+<p class="qed">Thus \(G\) has a Hamiltonian cycle if and only if \(B\) has one. Relabeling preserves the claim's truth while obscuring the original witness labels. \(\square\)</p></div>
 <div class="transition"><p>Why commit to \(B\) before the verifier chooses a challenge? The verifier will ask either whether \(B\) is an isomorphic copy of \(G\), or whether \(B\) contains a Hamiltonian cycle. The prover must be unable to change the committed graph between those alternatives.</p></div>
 <p class="source">PETS · Zero Knowledge lecture notes, Definition 3 and the Graph Hamiltonicity protocol, pp. 5–6.</p>
 </article>
