@@ -113,6 +113,25 @@
 
 </article>
 
+<article class="lesson" data-id="story-iop" data-title="The SNARG blueprint: interactive oracle proofs">
+
+<p class="chapter-tag">Lecture §2.1 · Interactive Oracle Proofs</p>
+<h1>What was special about the proof box?</h1>
+<p class="lead">We proved the PCP test works by pretending the prover has to fix a complete encoded proof in a box before the verifier asks any questions. Only then did we build a Merkle tree to make that restriction enforceable. This separation is the important idea behind modern SNARGs.</p>
+<p>An <strong>oracle</strong> is our name for that imaginary trusted box. A proof system in which the prover fixes information inside one or more such boxes and the verifier is restricted to particular queries is called an <strong>Interactive Oracle Proof</strong>, or IOP. We first prove that the test is sound and complete in this ideal model, with no cryptographic hardness assumptions. Then a commitment scheme replaces the ideal box and forces a real prover to behave consistently.</p>
+<p>Different oracles answer different kinds of questions. In a PCP the fixed object is a bit string. The verifier asks for individual positions. In a <strong>linear IOP</strong> the box holds a list of field numbers \(\boldsymbol\pi=(\pi_1,\ldots,\pi_M)\), and the verifier supplies weights \(\mathbf q=(q_1,\ldots,q_M)\). The answer is their weighted sum:</p>
+<div class="math">\[\langle\mathbf q,\boldsymbol\pi\rangle=\sum_{i=1}^M q_i\pi_i.\]</div>
+<p>The angle brackets are simply shorthand for multiply-then-add. For example, if \(\boldsymbol\pi=(2,3,4)\) and \(\mathbf q=(1,0,2)\), the box answers \(1\cdot2+0\cdot3+2\cdot4=10\).</p>
+<p>In a <strong>polynomial IOP</strong>, the prover fixes a polynomial \(f(X)\) over a field. The verifier chooses a field element \(z\), and the box returns \(f(z)\). For example, if \(f(X)=X^2+1\), asking at \(z=3\) returns 10.</p>
+<div class="proof"><h3>The common blueprint</h3>
+<p><strong>First:</strong> construct the mathematical verification protocol under the rule that the oracle's answers must be consistent with one fixed encoding. Prove its completeness and information-theoretic soundness.</p>
+<p><strong>Second:</strong> use a cryptographic commitment to enforce that rule. The prover can no longer alter the encoding after seeing the verifier's query. Then apply Fiat–Shamir, where appropriate, so the verifier can derive the random challenges without an interactive conversation.</p>
+<p class="qed">The box lets us reason separately about <em>whether the test detects a false statement</em> and <em>whether a cheater can adapt the answers</em>. Modern SNARGs combine the two guarantees. \(\square\)</p></div>
+<p>We'll now follow the polynomial route. Unlike PCPs, which test selected proof bits, polynomials can represent a whole list of computed numbers and the equations connecting them. We will start by constructing that representation for the very same Fibonacci example.</p>
+<p class="source">Official lecture §§2–2.1. Includes PCPs, linear IOPs, polynomial IOPs, and the two-stage information-theoretic/cryptographic blueprint.</p>
+
+</article>
+
 <article class="lesson" data-id="story-polynomial" data-title="Make the calculation into a polynomial">
 
 <p class="chapter-tag">The main story · 05 of 12</p>
@@ -165,4 +184,34 @@
 <p class="source">Lecture §3, Theorem 1, Lemmas 1–2. Schwartz–Zippel appears in the optional reference lesson.</p>
 
 </article>
+
+<article class="lesson" data-id="story-sz" data-title="Schwartz–Zippel: random tests with many variables">
+
+<p class="chapter-tag">Lecture §3 · Schwartz–Zippel lemma</p>
+<h1>Does the root argument work with more than one variable?</h1>
+<p class="lead">We proved that a nonzero polynomial in one variable has at most as many roots as its degree. But some verification equations have several random inputs. Does the same kind of bound still hold?</p>
+<p>Consider \(h(X,Y)=XY\) in \(\mathbb F_7\). The verifier picks two independent uniform numbers \(r_1,r_2\) from 0 through 6. The product is zero if \(r_1=0\) or \(r_2=0\). There are seven pairs of the first kind and seven of the second, with \((0,0)\) counted twice. So exactly \(7+7-1=13\) of the \(7^2=49\) possible pairs make this nonzero polynomial vanish.</p>
+<div class="lab" data-lab="szplot"><div class="lab-top"><strong>Count all zero pairs</strong><p>The green squares satisfy \(r_1r_2=0\). Change either number to inspect one pair.</p></div><div class="lab-content">
+<label class="range-label">First value \(r_1\) <output class="range-value" data-live-for="r1">2</output><input data-key="r1" type="range" min="0" max="6" value="2"></label>
+<label class="range-label">Second value \(r_2\) <output class="range-value" data-live-for="r2">3</output><input data-key="r2" type="range" min="0" max="6" value="3"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<p>For several variables, we use <strong>total degree</strong>: in each term, add the exponents and take the largest sum. Thus \(3X^2Y^3Z+2XY^2\) has total degree \(2+3+1=6\).</p>
+<h2>The general result</h2>
+<p>Let \(h(X_1,\ldots,X_m)\) be a <strong>nonzero</strong> polynomial with total degree at most \(d\). Choose each \(r_i\) independently and uniformly from a finite set \(\Omega\) of field elements. The <strong>Schwartz–Zippel lemma</strong> says</p>
+<div class="math">\[\Pr[h(r_1,\ldots,r_m)=0]\le\frac d{|\Omega|}.\]</div>
+<div class="proof"><h3>Proof by reducing one variable at a time</h3>
+<p>For one variable, this is the root bound we already proved. Assume it holds for \(m-1\) variables. Group terms of \(h\) by powers of the last variable:</p>
+<div class="math">\[h=\sum_{j=0}^{t}g_j(X_1,\ldots,X_{m-1})X_m^j,\qquad g_t\ne0.\]</div>
+<p>The leading coefficient polynomial \(g_t\) is nonzero. Because the total degree of \(h\) is at most \(d\), the total degree of \(g_t\) is at most \(d-t\).</p>
+<p>First choose \(r_1,\ldots,r_{m-1}\). By the induction assumption, the chance that \(g_t\) evaluates to zero is at most \((d-t)/|\Omega|\). Otherwise the leading coefficient stays nonzero. Fixing those first values turns \(h\) into a <em>nonzero one-variable polynomial in \(X_m\) of degree \(t\)</em>. The root bound gives a conditional probability at most \(t/|\Omega|\) that the final random \(r_m\) makes it zero.</p>
+<p>Every zero falls into one of those two cases. Adding the bounds yields</p>
+<div class="math">\[\Pr[h(\mathbf r)=0]\le\frac{d-t}{|\Omega|}+\frac t{|\Omega|}=\frac d{|\Omega|}.\]</div>
+<p class="qed">The induction is complete. The crucial step was checking that the polynomial is nonzero before applying the root bound. \(\square\)</p></div>
+<p>For our example \(h(X,Y)=XY\), the total degree is 2. The bound is \(2/7=14/49\); we counted 13 actual zeros, so the example fits. More importantly, the proof covers <em>every</em> nonzero polynomial of that total degree.</p>
+<div class="practice-link"><span class="practice-tag">Previous midterm</span><a href="#midterm-polynomial">Problem 3(c.1): use this lemma to bound false acceptance of a vector test</a></div>
+<p>The Fibonacci recurrence is a one-variable case. We will now use its required zeros at specific positions to make one identity. The same soundness reasoning will apply to that identity, and Schwartz–Zippel remains available when the verifier uses several random variables.</p>
+<p class="source">Official lecture §3, Lemma 2, with a complete induction proof and the lecture's total-degree convention.</p>
+
+</article>
+
+
 </body></html>
