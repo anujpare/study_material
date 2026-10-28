@@ -1,6 +1,6 @@
 <article class="lesson">
 <p class="chapter">Part IV · Proving zero knowledge</p>
-<h1>How do we fake a convincing transcript without the cycle?</h1>
+<h1>How do we simulate a verifier's view without a witness?</h1>
 <p class="lead">To prove zero knowledge, we need a simulator \(\mathrm{Sim}\) that does not know a Hamiltonian cycle of \(G\), but still produces a verifier view that looks like a real conversation. We cannot simply run the honest prover, because it uses the secret cycle.</p>
 <h2>Construct a response to one guessed challenge</h2>
 <p>The trick is to guess the question before preparing the commitments. The simulator picks \(\hat c\in\{0,1\}\) at random, and makes a first message it can open correctly if the verifier asks \(\hat c\).</p>
@@ -18,7 +18,7 @@
 </div></section>
 <p>If the verifier asks \(c=\hat c\), the simulator opens its commitments and keeps the resulting conversation. If \(c\ne\hat c\), it discards the attempt and runs the verifier again from the state saved before that first message, with new randomness. This is called <strong>rewinding</strong>. It is a power of the simulated experiment, not something the real prover is allowed to do after sending messages.</p>
 <div class="math">\[\hat c\ \xleftarrow{\$}\ \{0,1\},\qquad \text{keep attempt only if }\hat c=c\]<p class="math-caption">The symbol \(\hat c\) means the simulator's guess. It is chosen before the verifier's real challenge \(c\) becomes known.</p></div>
-<p>We have a method for making acceptable transcripts. But a convincing-looking transcript is not enough for zero knowledge. We still have to prove it looks like a <em>real</em> one and that making it doesn't take too long.</p>
+<p>We have a method for producing accepting transcripts without the witness. But acceptance alone does not establish zero knowledge. We must prove that the simulated verifier view is indistinguishable from the real view and that the simulator runs efficiently.</p>
 <div class="transition"><p>Those are the two questions we'll answer next.</p></div>
 <p class="source">PETS · ZK lecture notes, Hamiltonicity simulator, p. 7.</p>
 </article>
