@@ -244,7 +244,7 @@
     out+='</tbody></table></div>';
     $("ham-matrix").innerHTML=out;
     $("ham-openings").textContent=c===0?
-      "Challenge c=0: reveal Π and every B[i,j]. The verifier checks that B[i,j]=1 exactly when the corresponding original vertices Π⁻¹(i), Π⁻¹(j) are joined in G. The full permuted graph is disclosed.":
+      "Challenge c=0: reveal Π and every B[i,j]. The verifier checks that B[i,j]=1 exactly when the corresponding original vertices Π(i), Π(j) are joined in G. The full permuted graph is disclosed.":
       "Challenge c=1: reveal only the five committed edges on the cycle 2→4→1→5→3→2. All five visible entries are 1. The verifier checks that the cycle visits every vertex once; Π and the other committed edges stay concealed.";
   }
   function drawFalseGraph(id,withCycle){
