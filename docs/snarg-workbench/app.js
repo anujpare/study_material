@@ -12,7 +12,7 @@ const coreIds=new Set([
  "field-foundation","interpolation","root-bound","equality-proof","schwartz-zippel","midterm-polynomial","vanishing-polynomial",
  "zerotest-proof","fibonacci-protocol","polynomial-commitments",
  "fiat-shamir","hw3-fs-pcp","circuits-meaning","trace-encoding","roots-unity-cost","plonk-output-input",
- "plonk-gates","plonk-wiring","plonk-final"
+ "plonk-gates","plonk-wiring","plonk-correctness","plonk-final"
 ]);
 const exerciseSources={
  "hw1-vectors":"merkle",
