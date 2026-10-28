@@ -3,7 +3,7 @@
 
 <p class="chapter-tag">Lecture §4 · Polynomial Commitments</p>
 <h1>How can the verifier trust the polynomial's answers?</h1>
-<p class="aim">The Fibonacci ZeroTest is sound only when the polynomial (f_{m fib}) and its claimed quotient \(q\) are fixed <em>before</em> the verifier chooses the random point \(r\). In our ideal polynomial oracle that restriction was automatic. A real prover could instead choose its answers after seeing \(r\), making a false identity appear true at the chosen point. We need a way to fix each polynomial first and later authenticate its evaluations. That is the exact purpose of a polynomial commitment.</p>
+<p class="aim">ZeroTest assumes the prover fixes its polynomials before the verifier chooses a random evaluation point. Our ideal polynomial oracle enforced that rule. A real prover could instead invent answers after seeing the challenge. A polynomial commitment fixes the polynomial first and lets the verifier authenticate its later evaluations.</p>
 <p>The problem is nearly identical to the one we solved for PCPs. There, a Merkle commitment fixed a long <em>bit string</em>, and an opening proved which bit belonged at one position. Now the object is a <em>polynomial</em>, and the verifier asks for its value at a chosen field point. We therefore need a <strong>polynomial commitment scheme</strong>.</p>
 <p>Think of the prover committing to our Fibonacci trace \(f_{\rm fib}\) before the verifier chooses \(r\). Later it should be able to prove “the polynomial I committed to has value \(y\) at point \(r\)” without sending all its coefficients.</p>
 <h2>What operations would such a scheme need?</h2>
@@ -41,7 +41,7 @@
 
 <p class="chapter-tag">Prerequisite · Earlier Sigma-protocol coursework for Lecture §4</p>
 <h1>Why does the Fibonacci proof resemble a Sigma protocol?</h1>
-<p class="aim">Look at the Fibonacci exchange. First the prover sends commitments. Next the verifier chooses a random challenge. Finally the prover responds with authenticated evaluations. The lecture says this “looks like a Sigma protocol.” Before applying Fiat–Shamir, let's see what that three-message pattern buys us in a simpler example.</p>
+<p class="aim">The Fibonacci protocol has three stages: the prover commits, the verifier sends a random challenge, and the prover responds. This is the same message pattern used by Sigma protocols. Schnorr's protocol gives a small example in which we can prove why that order matters.</p>
 <p>A <strong>Sigma protocol</strong> has three stages: a first message fixed by the prover, a random verifier challenge, and a response. Our earlier course used <strong>Schnorr's protocol</strong> as an example. Its purpose is different from proving Fibonacci: the prover wants to show it knows a secret exponent \(x\) satisfying a public relation \(h=g^x\).</p>
 <p>For this example, \(G\) is a cyclic group of prime order \(q\), and \(g\) is a generator. Every group element is a power of \(g\). Exponents are calculated modulo \(q\). The verifier knows \(g,h,q\); the prover also knows the exponent \(x\).</p>
 <div class="protocol">
@@ -112,7 +112,7 @@
 
 <p class="chapter-tag">Lecture §4 and §6 · From Poly-IOP to SNARG</p>
 <h1>Can we make the random challenge without a conversation?</h1>
-<p class="aim">Polynomial commitments solve the consistency problem: the prover fixes its polynomials before answering random evaluation queries. But the verifier still has to send those queries after receiving the commitments. Our original goal was a <em>non-interactive</em> proof that anybody can verify later. Fiat–Shamir addresses this remaining message, not the polynomial mathematics: it lets both parties derive the challenge from the already-fixed first message and public statement.</p>
+<p class="aim">Polynomial commitments make the prover's answers consistent, but the verifier still has to send a random challenge. Our goal is a proof that anybody can verify without contacting the prover. Fiat–Shamir replaces the challenge message with a value derived from the already-fixed commitments and the public statement.</p>
 <p>Look again at the three stages. In the general Sigma-protocol notation, the prover first sends \(u\), the verifier chooses challenge \(c\), and the prover answers \(z\). What is essential is not who physically transmits the bits of \(c\), but that the challenge is unpredictable before \(u\) has been fixed.</p>
 <p>Suppose prover and verifier use a hash function \(H\) modeled as a <strong>random oracle</strong>. In this model each new input receives a random output that is remembered so the same input always gets the same output. The prover can fix \(u\) first and then calculate</p>
 <div class="math">\[\boxed{c=H(\operatorname{Encode}(x,u,\text{parameters})).}\]</div>
