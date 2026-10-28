@@ -248,7 +248,7 @@ f_{\rm fib}(r+2)-f_{\rm fib}(r)-f_{\rm fib}(r+1)
 <div class="math">\[h(X)=D(X)-q(X)Z_\Omega(X)\]</div>
 <p>is <strong>nonzero for every permitted quotient</strong>. Its degree is at most 199: the recurrence discrepancy \(D\) has degree at most 100, while \(Z_\Omega\) has degree 99 and the oracle restricts \(q\) to degree at most 100. A uniformly random \(r\) therefore satisfies \(h(r)=0\) with probability at most \(199/|\mathbb F|\), and hence at most the lecture's simpler bound</p>
 <div class="math">\[\boxed{\Pr[\text{false claim accepted}]\le\frac{200}{|\mathbb F|}.}\]</div>
-<p>This probability argument applies because \(f_{\rm fib}\) and \(q\) are fixed <em>before</em the verifier samples \(r\). We have established the exact link between a false computation and the root theorem: a false claim forces a fixed, nonzero polynomial of bounded degree.</p>
+<p>This probability argument applies because \(f_{\rm fib}\) and \(q\) are fixed <em>before</em> the verifier samples \(r\). We have established the exact link between a false computation and the root theorem: a false claim forces a fixed, nonzero polynomial of bounded degree.</p>
 <p class="qed">So the protocol checks precisely what we needed: it ties the public result to a sequence forced by the recurrence, without reading every recurrence step. That's the reason the polynomial test can replace the long explicit computation. \(\square\)</p></div>
 <h2>Two problems remain</h2>
 <p><strong>First, our polynomial oracle is imaginary.</strong> A real prover could wait for \(r\) and invent values that make the check pass. We need a commitment scheme that fixes the polynomials and authenticates their answers before the random point is chosen.</p>
