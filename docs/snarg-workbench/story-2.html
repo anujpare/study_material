@@ -242,6 +242,13 @@ f_{\rm trace}(\omega^5)=f_{\rm trace}(\omega^7).
 <span>↓</span><div><b>Authenticated random checks</b><small>Short proof, bounded cheating probability</small></div>
 </div>
 <p>The intended result is a <strong>succinct non-interactive argument</strong>: a proof whose size and verification cost grow slowly with the large computation, rather than requiring the verifier to rerun it. The prover still does the expensive computation; it is the verifier whose work we are trying to save.</p>
+<p>Now that we know <em>what</em> is being shortened, we can read the formal size requirement without guessing. Let \(|w|\) be the length in bits of the long witness, \(|x|\) the length of the public statement, \(|\pi|\) the length of the new proof, and \(T_V\) the verifier's running time. The parameter \(\lambda\) controls cryptographic security. The lecture's succinctness targets are</p>
+<div class="math">\[
+|\pi|=O\bigl(\lambda,\operatorname{polylog}(|x|,|w|)\bigr),
+\qquad
+T_V=O\bigl(\lambda,|x|,\operatorname{polylog}(|w|)\bigr).
+\]</div>
+<p>Here \(\operatorname{polylog}(n)\) means a fixed power of a logarithm, and big-\(O\) describes asymptotic growth. These expressions say the proof and verifier should not grow linearly with the entire witness; the verifier may still need time to read the public statement. They are goals for suitable schemes, not size bounds we established just by checking our six-value example.</p>
 <h2>Exactly what has and hasn't been established</h2>
 <p>The lecture gives the polynomial-IOP blueprint, the root and ZeroTest soundness arguments, and the circuit constraints. It does not fully construct and prove every cryptographic ingredient: the precise commitment scheme, degree enforcement, Fiat–Shamir reduction and detailed wiring IOP require additional arguments. We should not claim a complete end-to-end security theorem from the abbreviated lecture alone.</p>
 <p>We also haven't automatically obtained <strong>zero knowledge</strong>. A SNARG can convince the verifier without necessarily hiding the witness. Making the proof zero-knowledge requires further hiding and randomization steps.</p>
