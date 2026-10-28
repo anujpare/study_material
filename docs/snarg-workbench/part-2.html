@@ -15,7 +15,7 @@
 <p>For a prime \(p\), the field \(\mathbb F_p\) contains the integers \(0,1,\ldots,p-1\). We add and multiply as usual, then keep the remainder modulo \(p\). For example, in \(\mathbb F_{17}\), \(15+5\equiv3\), since 20 leaves remainder 3 upon division by 17.</p>
 <p>We can divide by any nonzero field element because it has a multiplicative inverse. In \(\mathbb F_{17}\), the inverse of 5 is 7, since \(5\cdot7=35\equiv1\). This will let us use the familiar rule: if \(ab=0\) and \(a\ne0\), then \(b=0\).</p>
 <p>For the actual hundredth Fibonacci value, the prime field must be large enough that the integer target and intermediate sequence values are represented without unwanted wraparound if we mean to prove that exact integer value. The smaller fields in the interactive examples are only for learning the algebra.</p>
-<div class="bridge">The field is not an independent topic. We chose it because the prover must interpolate the claimed Fibonacci values, and the verifier later needs a sound randomized polynomial test. Let's first construct a polynomial through the familiar values (0,1,1,2,ldots). That will also make the need for division concrete.</div>
+<div class="bridge">The field is not an independent topic. We chose it because the prover must interpolate the claimed Fibonacci values, and the verifier later needs a sound randomized polynomial test. Let's first construct a polynomial through the familiar values \(0,1,1,2,\ldots\). That will also make the need for division concrete.</div>
 <p class="source">Official lecture §3, Fibonacci example and field-based polynomial methods. The initial-condition inconsistency is identified rather than silently corrected.</p>
 
 </article>
@@ -54,9 +54,9 @@
 
 <p class="chapter-tag">Lecture §3 · EqualityTest, Theorem 1 and Lemma 1</p>
 <h1>If two polynomials agree once, are they equal?</h1>
-<p class="aim">Interpolation lets the prover create a polynomial (f_{\rm fib}(X)) through its claimed Fibonacci values, but that does not prove the values are correct. The actual rule is (f_{\rm fib}(i+2)=f_{\rm fib}(i+1)+f_{\rm fib}(i)) at each step (i=0,\ldots,98). Subtract the right side and call the result the <strong>recurrence discrepancy</strong>:</p>
+<p class="aim">Interpolation lets the prover create a polynomial \(f_{\rm fib}(X)\) through its claimed Fibonacci values, but that does not prove the values are correct. The actual rule is \(f_{\rm fib}(i+2)=f_{\rm fib}(i+1)+f_{\rm fib}(i)\) at each step \(i=0,\ldots,98\). Subtract the right side and call the result the <strong>recurrence discrepancy</strong>:</p>
 <div class="math">\[D(X)=f_{\rm fib}(X+2)-f_{\rm fib}(X+1)-f_{\rm fib}(X).\]</div>
-<p>We need (D(i)=0) at every required step. Eventually we'll express those many requirements as one polynomial identity. But first we need to know whether a verifier can test <em>any fixed polynomial identity</em> without inspecting every coefficient. That is the simpler problem EqualityTest solves.</p>
+<p>We need \(D(i)=0\) at every required step. Eventually we'll express those many requirements as one polynomial identity. But first we need to know whether a verifier can test <em>any fixed polynomial identity</em> without inspecting every coefficient. That is the simpler problem EqualityTest solves.</p>
 <p>One matching value doesn't prove equality with certainty. For example, \(f(X)=0\) and \(g(X)=X-3\) differ as polynomials but both give zero at \(X=3\). The useful question is not whether they <em>could</em> match by accident; it is <em>how many choices of \(r\) would make that accident happen</em>.</p>
 <p>Call \(h(X)=f(X)-g(X)\) the difference. The verifier is fooled exactly when \(h(r)=0\). A number that makes a polynomial zero is called a <strong>root</strong>. So we need to know how many roots a nonzero polynomial can have.</p>
 <div class="proof"><h3>Theorem 1: a nonzero degree-\(d\) polynomial has at most \(d\) roots</h3>
@@ -112,7 +112,7 @@
 <p class="qed">We have proved the lemma by induction from the one-variable root theorem. As before, a soundness proof must first establish that a false claim produces a <em>nonzero</em> polynomial. \(\square\)</p></div>
 <p>For the example \(XY\), the total degree is 2, so the lemma gives the bound \(2/7=14/49\). We counted 13 zeros. The bound is correct, and it applies to every nonzero polynomial with the stated total degree, not just this example.</p>
 <div class="practice-link"><span class="practice-tag">Use the lemma in an exam problem</span><a href="#midterm-polynomial">Previous midterm 3(c.1): derive a soundness bound for a vector test</a></div>
-<div class="bridge">Schwartz–Zippel gives the same type of guarantee when a false statement produces a nonzero polynomial of several variables. It also supports the related midterm question. But the Fibonacci proof has one variable, so we return to its concrete unresolved task: the discrepancy (D(X)) must equal zero at the 99 specific points (0,1,\ldots,98). How can we turn all those local equalities into one identity that EqualityTest can check?</div>
+<div class="bridge">Schwartz–Zippel gives the same type of guarantee when a false statement produces a nonzero polynomial of several variables. It also supports the related midterm question. But the Fibonacci proof has one variable, so we return to its concrete unresolved task: the discrepancy \(D(X)\) must equal zero at the 99 specific points \(0,1,\ldots,98\). How can we turn all those local equalities into one identity that EqualityTest can check?</div>
 <p class="source">Lecture §3, Lemma 2, including the total-degree definition; its full induction proof is supplied here rather than treating the lemma as unexplained.</p>
 
 </article>
@@ -164,7 +164,7 @@ h(\mathbf r)=(ar_j)^2-ar_j^2
 
 <p class="chapter-tag">Lecture §3 · Vanishing polynomial, Theorem 2</p>
 <h1>How can 99 equations become one equation?</h1>
-<p class="aim">Return to the Fibonacci discrepancy polynomial (D(X)) introduced before EqualityTest. We need (D(i)=0) at each of the 99 recurrence positions (i=0,ldots,98). EqualityTest cannot be applied directly to (D(X)=0) everywhere, because a valid Fibonacci interpolation need not satisfy the recurrence at points outside those positions. We need an identity that holds everywhere <em>if and only if</em> those 99 positions are correct.</p>
+<p class="aim">Return to the Fibonacci discrepancy polynomial \(D(X)\) introduced before EqualityTest. We need \(D(i)=0\) at each of the 99 recurrence positions (i=0,ldots,98). EqualityTest cannot be applied directly to \(D(X)=0\) everywhere, because a valid Fibonacci interpolation need not satisfy the recurrence at points outside those positions. We need an identity that holds everywhere <em>if and only if</em> those 99 positions are correct.</p>
 <p>Recall the exact discrepancy polynomial we already defined in the EqualityTest lesson:</p>
 <div class="math">\[D(X)=f_{\rm fib}(X+2)-f_{\rm fib}(X)-f_{\rm fib}(X+1).\]</div>
 <p>At a step \(i\), the recurrence is correct exactly when \(D(i)=0\). So our 99 equations become the single statement “\(D\) is zero at every point of the set \(\Omega=\{0,1,\ldots,98\}\).” That is still many values to check—but now we can use polynomial algebra.</p>
@@ -180,7 +180,7 @@ h(\mathbf r)=(ar_j)^2-ar_j^2
 <p>The points are different, so \(a_2-a_1\ne0\). The field's cancellation property forces \(q_1(a_2)=0\), which means \(q_1\) has the factor \(X-a_2\). Continue through all distinct required points. We obtain \(D=Z_\Omega q\). If \(D\) is the zero polynomial, simply take \(q=0\).</p>
 <p class="qed">So the 99 recurrence equations are satisfied <em>exactly when</em> one polynomial identity \(D(X)=Z_\Omega(X)q(X)\) holds. That's not a heuristic: we've proved both implications. \(\square\)</p></div>
 <p>Here's a small example that will also appear in the next interactive test. Let \(\Omega=\{1,2\}\) and \(D(X)=X^3-7X+6\). We can factor \(D(X)=(X-1)(X-2)(X+3)\). The first two factors are \(Z_\Omega\), so the quotient is \(q(X)=X+3\).</p>
-<div class="bridge">We now have the identity we were missing: all 99 recurrence constraints are equivalent to (D=Z_\Omega q) for some quotient polynomial (q). The question is no longer “does the recurrence hold at 99 separate places?” but “is this claimed identity true?” We've already proved how a random point can test a fixed polynomial identity. Applying that result to the vanishing-polynomial identity is precisely ZeroTest.</div>
+<div class="bridge">We now have the identity we were missing: all 99 recurrence constraints are equivalent to \(D=Z_\Omega q\) for some quotient polynomial \(q\). The question is no longer “does the recurrence hold at 99 separate places?” but “is this claimed identity true?” We've already proved how a random point can test a fixed polynomial identity. Applying that result to the vanishing-polynomial identity is precisely ZeroTest.</div>
 <p class="source">Lecture §3, Theorem 2 and the transition from Fibonacci recurrence equations to a vanishing-polynomial identity.</p>
 
 </article>
@@ -189,7 +189,7 @@ h(\mathbf r)=(ar_j)^2-ar_j^2
 
 <p class="chapter-tag">Lecture §3 · ZeroTest and Lemma 3</p>
 <h1>Can one random point check all the required zeros?</h1>
-<p class="aim">The vanishing-polynomial theorem gives the missing identity: all 99 Fibonacci steps are correct exactly when (D(X)=Z_Omega(X)q(X)) for some quotient polynomial (q). Unlike the recurrence, this identity must hold at <em>every</em> field point. We can therefore use EqualityTest to check it at one random point rather than inspect every step.</p>
+<p class="aim">The vanishing-polynomial theorem gives the missing identity: all 99 Fibonacci steps are correct exactly when \(D(X)=Z_\Omega(X)q(X)\) for some quotient polynomial \(q\). Unlike the recurrence, this identity must hold at <em>every</em> field point. We can therefore use EqualityTest to check it at one random point rather than inspect every step.</p>
 <p>Before building the full Fibonacci protocol, the lecture names this reusable operation <strong>ZeroTest</strong>. It handles <em>any</em> requirement that one polynomial vanish on a specified set of points. The exact same operation will later check public inputs and gate equations in PLONK, which is why we now state and prove it in general form.</p>
 <p>We first describe the lecture's general protocol. Suppose a polynomial \(f\) of degree at most \(d\) should be zero on a set \(\Omega\) of \(k\le d\) field points. The prover puts the polynomial \(f\) and a claimed quotient \(q\) in our ideal polynomial oracle, with the enforced degree bound \(\deg q\le d\). The verifier chooses a uniform random field element \(r\), asks for \(f(r)\) and \(q(r)\), calculates the known \(Z_\Omega(r)\), and checks</p>
 <div class="math">\[\boxed{f(r)\stackrel{?}{=}q(r)Z_\Omega(r).}\]</div>
@@ -217,7 +217,7 @@ h(\mathbf r)=(ar_j)^2-ar_j^2
 
 <p class="chapter-tag">Lecture §3 · Putting the polynomial IOP together</p>
 <h1>Have we really proved the hundredth Fibonacci number?</h1>
-<p class="aim">We can now answer the question that started this chapter. The prover claims a value for (F_{100}). We must establish that its sequence begins with the correct values, follows the recurrence at every required position, and ends at the claimed result. Interpolation represents the sequence; the vanishing-polynomial theorem turns the recurrence into one identity; ZeroTest checks that identity probabilistically. Now we combine these obligations and prove they force the original claim.</p>
+<p class="aim">We can now answer the question that started this chapter. The prover claims a value for \(F_{100}\). We must establish that its sequence begins with the correct values, follows the recurrence at every required position, and ends at the claimed result. Interpolation represents the sequence; the vanishing-polynomial theorem turns the recurrence into one identity; ZeroTest checks that identity probabilistically. Now we combine these obligations and prove they force the original claim.</p>
 <p>Let \(f_{\rm fib}(X)\) be the polynomial that the prover claims encodes the sequence at positions \(0,1,\ldots,100\). Its degree is at most 100. Let \(\Omega=\{0,1,\ldots,98\}\) be the positions where the recurrence must hold. Define</p>
 <div class="math">\[
 D(X)=f_{\rm fib}(X+2)-f_{\rm fib}(X)-f_{\rm fib}(X+1),
