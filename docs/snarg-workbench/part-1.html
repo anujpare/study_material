@@ -94,29 +94,30 @@ T_V=O\!\left(\lambda,|x|,\operatorname{polylog}(|w|)\right).
 
 
 <article class="lesson" data-id="merkle" data-title="Replace the imaginary proof box">
-
-<p class="chapter-tag">Lecture §2 · From PCPs to SNARGs</p>
-<h1>How can the prover lock the proof without sending it?</h1>
-<p class="aim">The PCP verifier asks for three bits of a proof that must already be fixed. The ideal proof box guarantees this, but a real prover could invent answers after seeing the questions. We need a short commitment that fixes every bit before the verifier asks for any of them.</p>
-<p>Suppose the encoded PCP string has \(M\) bits. Think of it as a list \((m_1,\ldots,m_M)\), with one bit \(m_i\) at each position \(i\). A vector commitment creates a short public value \(c\) for that whole list. Later, to open position \(i\), the prover reveals \(m_i\) and some authentication data that the verifier checks against \(c\).</p>
-<p>The critical rule is <strong>position binding</strong>: once \(c\) has been sent, a computationally bounded prover must not be able to open the same position \(i\) to two different bit values with valid proofs. If we had this, the verifier's random queries could no longer influence what the proof says at each position. The PCP soundness guarantee would become applicable to the answers it receives.</p>
-<h2>Build the commitment from hashes</h2>
-<p>A <strong>hash function</strong> \(H\) turns data into a short digest of \(\lambda\) bits. The security property we need is <em>collision resistance</em>: it should be infeasible to find two different inputs with the same digest. The parameter \(\lambda\) controls its security level.</p>
-<p>Hash each message to make the leaves of a binary tree. Hash pairs of neighboring hashes to make their parents. Keep going until one hash remains at the top. That one value, the <strong>Merkle root</strong> \(c\), is the commitment to the whole list.</p>
-<p>To open one message, the verifier already has the message and can hash it to get its leaf hash. It then needs only the neighboring hash to calculate that leaf's parent, one neighboring subtree hash for the next parent, and so on until the root. It compares the reconstructed root with the previously received \(c\).</p>
-<div class="lab" data-lab="merkle"><div class="lab-top"><strong>Open one position from a fixed tree</strong><p>Move the index. The blue nodes are the hashes the verifier reconstructs; the amber nodes are the neighboring hashes the prover supplies.</p></div><div class="lab-content">
-<label class="range-label">Position \(i\) <output class="range-value" data-live-for="i">4</output><input data-key="i" type="range" min="1" max="8" value="4"></label>
-<div id="merkle-svg"></div><div class="lab-output" aria-live="polite"></div></div></div>
-<h2>Why is this short—and why can we trust it?</h2>
-<p>If the tree has \(M=2^k\) leaves, it has \(k=\log_2M\) levels. We need one neighboring digest per level, and each digest has \(\lambda\) bits. So the authentication data for one opening is \(O(\lambda\log M)\) bits. The commitment itself is only a single \(\lambda\)-bit digest.</p>
-<div class="proof"><h3>Where position binding comes from</h3>
-<p>Suppose a cheater manages to open the same leaf position as two different values under the same root \(c\). If the two leaf hashes are identical, it has found a hash collision. If they differ, follow the two authentication paths upward. At some stage different inputs must produce the same parent hash, since the paths ultimately reach the same root. That's also a collision.</p>
-<p>So, assuming the hash is collision-resistant, a feasible dishonest prover cannot construct two conflicting valid openings to the same position.</p>
-<p class="qed">A short Merkle root fixes the long encoded proof, and each requested bit can be authenticated by a logarithmic-length path. We have replaced the ideal PCP box with the specific cryptographic behavior it required. \(\square\)</p></div>
-<div class="practice-link"><span class="practice-tag">Relevant earlier homework</span><a href="#hw1-vectors">HW1 Problem 4(a–c): compare three vector commitments and prove binding</a></div>
-<div class="bridge">Merkle commitments make the answers trustworthy, but they don't determine whether a PCP test is <em>meaningful</em>. That's still the PCP theorem's job. Now put the two together: first commit, then ask random positions, then authenticate and test. The next lesson proves that this combined protocol has both short communication and small soundness error.</div>
-<p class="source">Lecture §2, “From PCPs to SNARGs,” and HW1 Problem 4(c). A concrete implementation also uses unambiguous encodings of leaves and internal nodes.</p>
-
+<p class="chapter-tag">Lecture §2 · Vector commitments and Merkle trees</p>
+<h1>How can we replace the imaginary PCP box?</h1>
+<p class="aim">The PCP theorem gives us a randomized test of three bits from one fixed encoded proof. In the ideal model, a proof oracle stores that string and answers queries consistently. A real prover could wait to see the three positions and invent favorable bits. We therefore need a way to fix the complete string <em>before</em> the queries, without sending the string itself.</p>
+<h2>What must a real replacement provide?</h2>
+<p>Call the encoded proof \(\pi=(\pi_1,\ldots,\pi_M)\), a list of \(M\) bits. A <strong>vector commitment</strong> lets the prover produce a short commitment \(c\) to the entire list. Later, when the verifier asks for position \(i\), the prover sends the bit \(\pi_i\) and an <strong>opening proof</strong> that authenticates this answer against \(c\).</p>
+<p>Why isn't simply sending \(\pi_i\) enough? The prover could send 0 or 1 depending on which answer passes the verifier's test. The commitment must be <strong>position-binding</strong>: once \(c\) is fixed, a computationally bounded prover cannot successfully open the same position to two different values. That is the rule the ideal oracle enforced automatically.</p>
+<h2>How can one short value commit to a long list?</h2>
+<p>We need a hash function \(H\), which maps an input string to a fixed-length digest. The security property used here is <strong>collision resistance</strong>: finding two distinct inputs with the same digest should be computationally infeasible. Let \(\lambda\) be the digest length in bits, chosen to provide the desired security level.</p>
+<p>Start by hashing each proof bit, together with its unambiguous leaf encoding. These digests are the <strong>leaves</strong> of a binary Merkle tree. For each pair of neighboring leaf digests, concatenate their encodings and hash the result to obtain a parent digest. Continue pairing and hashing until one digest remains. That final digest is the <strong>Merkle root</strong> \(c\).</p>
+<p>The root has \(\lambda\) bits regardless of how many leaves the tree contains. It is not a compressed copy from which the verifier can recover the proof. It is a short value against which individual entries can later be authenticated.</p>
+<h2>How does an opening work?</h2>
+<p>Suppose the verifier asks for bit \(i\). The prover supplies that bit and the neighboring digest at each level of the tree. The verifier hashes the bit to reconstruct its leaf digest, combines it with the first neighboring digest in the correct left-right order, and continues upward. It accepts the opening only if the reconstructed root equals the previously received \(c\).</p>
+<div class="lab" data-lab="merkle"><div class="lab-top"><strong>Authenticate one queried proof bit</strong><p>Move the index to change the opening. The root stays fixed. The highlighted authentication path shows which hashes are recomputed and which neighboring hashes must be supplied.</p></div><div class="lab-content"><label class="range-label">Queried position \(i\) <output class="range-value" data-live-for="i">4</output><input data-key="i" type="range" min="1" max="8" value="4"></label><div id="merkle-svg"></div><div class="lab-output" aria-live="polite"></div></div></div>
+<p>For \(M=2^k\) leaves, the tree has \(k=\log_2M\) levels. One sibling digest is needed at each level, so the opening contains \(k\) digests of \(\lambda\) bits each. Its authentication data therefore has length \(O(\lambda\log M)\). This is the reason the binary tree is useful: authenticating one position does not require transmitting all \(M\) proof bits.</p>
+<div class="proof"><h3>Why does a Merkle root bind each position?</h3>
+<p>Assume a dishonest prover opens the <em>same position</em> to two different bit values, and both openings reconstruct the same committed root \(c\). Follow the two authentication computations upward from that position.</p>
+<p>If the two differently encoded leaf values produce the same leaf digest, the prover has found a collision in \(H\). Otherwise their leaf digests differ. Since both paths end at the same root, there must be a first level at which two different hash inputs produce the same parent digest. That is also a collision.</p>
+<p>Thus two conflicting accepted openings would yield a hash collision. Under the collision-resistance assumption, no efficient prover can produce such openings with more than negligible probability.</p>
+<p class="qed">The Merkle root enforces the fixed-answer property that the PCP theorem requires. This is the cryptographic reason a real prover can replace the ideal proof oracle. \(\square\)</p></div>
+<h2>Does Merkle authentication prove the computation is correct?</h2>
+<p>No. A prover can commit perfectly consistently to an entirely false encoded proof. Merkle authentication establishes only that the returned bits belong to the fixed string. The <strong>PCP test</strong> is what makes a false claim unlikely to pass. We must apply both checks to the same openings.</p>
+<div class="practice-link"><span class="practice-tag">HW1 · Vector commitments</span><a href="#hw1-vectors">Compare three constructions and prove their binding properties</a></div>
+<div class="bridge">We now have the two pieces the ideal experiment lacked: the PCP theorem supplies a meaningful local test, and the Merkle root authenticates the answers to one fixed proof. The next lesson combines them into an actual three-message protocol. We will prove both its soundness error and its communication cost; neither follows merely from naming the two ingredients.</div>
+<p class="source">Official lecture §2, vector commitments, Merkle-tree construction, binding, opening cost and the PCP-to-SNARG blueprint.</p>
 </article>
 
 <article class="lesson" data-id="hw1-vectors" data-title="HW1 · All three vector commitments">
