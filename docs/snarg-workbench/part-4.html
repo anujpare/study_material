@@ -163,7 +163,7 @@ f_{\rm trace}(\omega^2)=f_{\rm trace}(\omega^6),
 f_{\rm trace}(\omega^5)=f_{\rm trace}(\omega^7).
 \]</div>
 <p>And we must also ensure the original input entries agree with the copies inside the gates. For example, public \(x_2=4\) appears at \(\omega^{-2}\), gate 0's right input at \(\omega^1\), and gate 1's left input at \(\omega^3\). All three places refer to one logical wire and must contain the same number.</p>
-<div class="lab" data-lab="trace"><div class="lab-top"><strong>Make a trace lie in different ways</strong><p>Choose a proposed trace. See which checks fail. The simulator includes an extra target-check gate in \(\mathbb F_{97}\) so that the desired final output is zero; this is a gate-value illustration, not the earlier twelve-point polynomial encoding.</p></div><div class="lab-content"><label>Trace the prover claims <select data-key="mode">
+<div class="lab" data-lab="trace"><div class="lab-top"><strong>Make a trace lie in different ways</strong><p>Choose a proposed trace. See which checks fail. This uses the original three-gate circuit. Its output is compared with the public target 56; the formal zero-output statement would require an additional target-check gate and a new trace.</p></div><div class="lab-content"><label>Trace the prover claims <select data-key="mode">
 <option value="honest">Honest trace</option>
 <option value="wire">Wrong wiring, locally correct gates</option>
 <option value="gate">Wrong multiplication</option>
