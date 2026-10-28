@@ -425,7 +425,7 @@ function initLessonExtras(id){
   "midterm-polynomial":[".exercise details.worked","beforebegin"],
   "roots-unity-cost":[".warning","beforebegin"],
   "circuits-meaning":[".bridge","beforebegin"],
-  "plonk-gates":["h2","beforebegin"]
+  "plonk-gates":[".math","afterend"]
  }[id];
  if(placement){
   const target=main.querySelector(placement[0]);
