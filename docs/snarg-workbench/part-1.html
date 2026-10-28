@@ -112,42 +112,44 @@ T_V=O\!\left(\lambda,|x|,\operatorname{polylog}(|w|)\right).
 
 <article class="lesson" data-id="iop-types" data-title="Interactive oracle proofs">
 <p class="chapter-tag">I · Why SNARGs exist · Lecture §2.1</p>
-<h1>What is the proof box allowed to answer?</h1>
-<p class="aim">The important trick in the PCP example was not the physical box. It was that the prover had to fix its proof first, and the verifier could request only certain kinds of information from it.</p>
-<p>We call this idea an <strong>Interactive Oracle Proof</strong>, or IOP. An <em>oracle</em> is simply our name for the trusted box that stores the prover's fixed information and answers the allowed queries. At this stage we're studying the mathematics, assuming the box behaves honestly. Later cryptography will replace that assumption.</p>
-<p>Different types of IOPs allow different questions:</p>
-<div class="table-scroll"><table><thead><tr><th>Type</th><th>What the prover fixes</th><th>What the verifier asks</th></tr></thead><tbody>
-<tr><td>PCP</td><td>A bit string \(\pi\)</td><td>“What is bit \(i\)?” Answer: \(\pi_i\).</td></tr>
-<tr><td>Linear IOP</td><td>A vector \(\boldsymbol\pi\)</td><td>“What is \(\sum_i q_i\pi_i\)?” The \(q_i\) values specify a weighted sum.</td></tr>
-<tr><td>Polynomial IOP</td><td>A polynomial \(\pi(X)\)</td><td>“What is its value at \(z\)?” Answer: \(\pi(z)\).</td></tr>
+<h1>What else could the proof box answer?</h1>
+<p class="aim">Our PCP box answers one simple question: “What bit is at position \(i\)?” But to verify a calculation, sometimes the useful question is about a <em>number</em> or an <em>equation</em>, not an individual bit. What if the box could answer a different kind of query?</p>
+<p>The essential rule remains the same: the prover first fixes the entire object stored in the box. The verifier then chooses its question, and the box must answer consistently with that fixed object. A protocol using such boxes is called an <strong>Interactive Oracle Proof</strong>, or IOP. An <em>oracle</em> is simply the name we give to the idealized box.</p>
+<p>There are three interfaces in the lecture. You already know the first: the box stores a long bit string and reveals selected bits. For the next two, imagine that the proof is an ordered list of numbers, or a polynomial—a formula we can evaluate at a chosen number.</p>
+<div class="table-scroll"><table><thead><tr><th>The box stores</th><th>What the verifier asks</th></tr></thead><tbody>
+<tr><td><strong>PCP:</strong> a fixed bit string \(\pi\)</td><td>“What is bit \(i\)?” The box returns \(\pi_i\).</td></tr>
+<tr><td><strong>Linear IOP:</strong> a fixed list \((\pi_1,\ldots,\pi_M)\)</td><td>“Multiply each entry by my chosen weight \(q_i\), then add them.” The box returns \(\sum_i q_i\pi_i\).</td></tr>
+<tr><td><strong>Polynomial IOP:</strong> a fixed polynomial \(f(X)\)</td><td>“What does the formula give at \(X=z\)?” The box returns \(f(z)\).</td></tr>
 </tbody></table></div>
-<p>A <em>vector</em> is just an ordered list of numbers. In a linear IOP the verifier chooses weights \(q_i\), multiplies each by the corresponding list entry \(\pi_i\), and adds the products. In a polynomial IOP the verifier chooses one number \(z\) and asks the polynomial to be evaluated there.</p>
-<p>Why would we want the polynomial version? Because a polynomial can be arranged to represent a whole computation, and there are mathematical rules that let us test it at only a few points. That's the idea behind PLONK.</p>
-<p>But first return to the simpler bit box. If we can make it real, we'll already have a way to build a SNARG from the PCP theorem.</p>
-<div class="bridge">What we need from cryptography is quite specific: a short value that fixes a long list, together with a small proof for any one list entry. That's a vector commitment.</div>
-<p class="source">Official notes, §2.1 pp. 3–4.</p>
+<p>A weight \(q_i\) is just a number selected by the verifier for list position \(i\). A polynomial like \(f(X)=X^2+1\) can be evaluated by substituting a number: for example, \(f(3)=10\). We'll develop the needed arithmetic carefully in the next chapter, using a number system called a <em>field</em>.</p>
+<p>Why choose a polynomial box for PLONK? Because we can arrange the steps of a computation as values of one polynomial. Then the verifier can check equations about the steps by asking for the polynomial at just a few points. We'll prove why that works, rather than assuming it.</p>
+<div class="bridge">First, though, we still owe ourselves a real replacement for the original bit box. That requires only a way to fix a long list and authenticate a few of its entries. A Merkle tree will do it.</div>
+<p class="source">Official notes, §2.1 pp. 3–4. The three oracle interfaces are given in the lecture; the examples are explanatory.</p>
 </article>
 
 <article class="lesson" data-id="merkle" data-title="One commitment for an entire vector">
 <p class="chapter-tag">I · Why SNARGs exist · Lecture §2 / HW1</p>
-<h1>How do you lock a million bits with one small value?</h1>
-<p class="aim">We want the prover to fix a whole list of proof bits, then let us inspect any chosen position. The proof for one position should be small. And the prover must not be able to change its answer later.</p>
-<p>Suppose our list is \(m_1,\ldots,m_M\). A <strong>vector commitment</strong> makes a short value \(c\) that commits to the entire list. To reveal the value at position \(i\), the prover sends \(m_i\) and an opening proof that the verifier checks against \(c\).</p>
-<p>What stops cheating? The property called <strong>position binding</strong>. Once the commitment is fixed, the prover must not be able to make two different values \(m_i\ne m'_i\) both look valid at the same position \(i\).</p>
-<h2>Build a tree of hashes</h2>
-<p>Take a hash function \(H\) with \(\lambda\)-bit outputs. Hash each message. Pair the hashes and hash each pair. Continue until one hash remains at the top. That final hash, called the <em>root</em>, is the commitment \(c\).</p>
-<p>Why a tree? Suppose you want to open only \(m_4\). The verifier already knows \(H(m_4)\) once you reveal \(m_4\). To compute the parent hash, it needs only the hash of \(m_4\)'s sibling. To compute the next parent, it needs one hash for the next sibling subtree. One hash at each level is enough.</p>
-<div class="lab" data-lab="merkle"><div class="lab-top"><strong>Open one message without revealing the rest</strong><p>Choose the message. The blue nodes are the hashes the verifier reconstructs; the amber nodes are the sibling hashes it needs to receive.</p></div><div class="lab-content"><label>Open position \(i\)<input data-key="i" type="range" min="1" max="8" value="4"></label><div id="merkle-svg"></div><div class="lab-output" aria-live="polite"></div></div></div>
-<div class="proof"><h3>How long is an opening?</h3>
-<p>For simplicity, let \(M=2^k\). A tree with \(M\) leaves has \(k\) levels from leaf to root. We just saw that we need one sibling hash per level. Therefore an opening uses \(k=\log_2M\) sibling hashes, each of \(\lambda\) bits:</p>
-<div class="math">\[\text{authentication-path length}=\lambda\log_2M\text{ bits}.\]</div>
-<p>The commitment itself is just the root, so it has \(\lambda\) bits. We count the opened message and its index separately.</p>
-<h3>Why can't the prover change a message?</h3>
-<p>Suppose two different messages at the same leaf both lead to the same committed root. Follow their two hash calculations upward. At the first point where different child inputs produce the same hash, we've found a <em>collision</em> in \(H\): two different inputs with the same output.</p>
-<p>Our cryptographic assumption says a computationally bounded adversary cannot feasibly find such a collision. Hence it cannot feasibly open one position to two different messages.</p>
-<p class="qed">That is exactly position binding. The root fixes the list, and a logarithmic-length path lets us check any selected entry. This is the “locked box” behavior the PCP construction needs. \(\square\)</p>
+<h1>How can one small value lock a long list?</h1>
+<p class="aim">The PCP prover has already written a long encoded proof. We want the verifier to read a few bits without receiving all of them, while preventing the prover from changing its answers after learning which positions are requested.</p>
+<p>We called the length of that encoded proof \(M\) bits. For now, think of it as an ordered list of \(M\) messages, one per position. Call the message at position \(i\) by the name \(m_i\). In our PCP application, each \(m_i\) is just one bit, but a vector commitment can also store larger messages.</p>
+<p>A <strong>vector commitment</strong> makes a short public value \(c\) that fixes the whole list. Later the prover reveals one \(m_i\) and supplies a short <strong>opening proof</strong> showing that this is the value committed at position \(i\).</p>
+<p>What exactly does “fixes” mean? After sending \(c\), a dishonest prover should not be able to open the same position \(i\) once as \(m_i\) and again as a different \(m_i'\), with both openings accepted. This is called <strong>position binding</strong>. It is precisely the property missing from our imaginary PCP box.</p>
+<h2>Build a tree from hashes</h2>
+<p>We need one more tool: a hash function \(H\) that turns an input into a short digest of \(\lambda\) bits. We assume it is hard for an efficient attacker to find two different inputs with the same digest; that property is called <strong>collision resistance</strong>. The security parameter \(\lambda\) controls the digest length.</p>
+<p>Start with eight messages so we can see what happens. Hash each message to make eight leaves. Hash each pair of neighboring hashes to make four parents. Repeat: two grandparents, then one root \(c\). The root is our short commitment to all eight messages.</p>
+<p>Now suppose the verifier asks for \(m_4\). We reveal \(m_4\), so it can calculate its leaf hash. To calculate that leaf's parent, the verifier only needs the neighboring leaf hash, not all the leaves. To go one level higher it needs the neighboring subtree hash. One sibling hash at each level is enough to reconstruct the root.</p>
+<div class="lab" data-lab="merkle"><div class="lab-top"><strong>Which hashes must be opened?</strong><p>Choose a message. Blue shows the path the verifier rebuilds; amber shows the sibling hashes it must receive.</p></div><div class="lab-content">
+<label class="range-label">Message position \(i\)
+<output class="range-value" data-live-for="i">4</output><input data-key="i" type="range" min="1" max="8" value="4"></label>
+<div id="merkle-svg"></div><div class="lab-output" aria-live="polite"></div></div></div>
+<div class="proof"><h3>Why is the opening short?</h3>
+<p>Suppose the tree has \(M=2^k\) leaves. The height is \(k\), because each level halves the number of hashes until one remains. The verifier needs exactly one sibling digest per level. Each digest has \(\lambda\) bits, so the opening uses \(k\lambda=\lambda\log_2 M\) bits of authentication hashes, in addition to the message and its index. The root itself has only \(\lambda\) bits.</p>
+<h3>Why can't the prover change the value?</h3>
+<p>Suppose two different messages at the same position both give the same committed root. If their leaf hashes are equal, we immediately have two different inputs with one hash output: a collision. If the leaf hashes differ, follow both proposed openings upward. Because they nevertheless end at the same root, at some parent two different child inputs must produce the same hash. That is also a collision.</p>
+<p>Collision resistance says an efficient attacker cannot feasibly do this, so it cannot feasibly make two conflicting openings for one position.</p>
+<p class="qed">We have proved the two properties we needed: one \(\lambda\)-bit root fixes a long list, and one position can be authenticated using only \(O(\lambda\log M)\) bits of path information. That's how cryptography gives the PCP verifier a practical substitute for its locked box. \(\square\)</p>
 </div>
-<p class="source">Lecture §2; Homework 1, Problem 4(c).</p>
+<p class="source">Lecture §2; Homework 1, Problem 4(c). Hash input encodings should distinguish leaves from internal nodes in a concrete implementation.</p>
 </article>
 
 <article class="lesson" data-id="hw1-vectors" data-title="HW1 · All three vector commitments">
