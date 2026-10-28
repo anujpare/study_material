@@ -1,0 +1,60 @@
+/* Zero Knowledge lab: component refinements on top of shared PETS deck shell. */
+:root{--prover:#315f53;--prover-bg:#e8f1e9;--verifier:#365e78;--verifier-bg:#eaf0f3;--sim:#655b77;--sim-bg:#eeeaf3;--risk:#816c47;--risk-bg:#f5efe4;--error:#934a4e;--error-bg:#f8ecec;--quiet:#f5f5f3;--good:#315f53}
+.shell .reading{padding-bottom:86px}
+.reading .lesson{max-width:none;min-width:0}
+.reading .chapter{font-size:12px;font-weight:750;letter-spacing:.045em;color:#69746c;margin-bottom:10px}
+.reading .lead{font-size:18px;line-height:1.54;color:#414b42}
+.reading .lab{border:1px solid #c9d4d0;background:#f8f9f7;border-radius:13px;margin:21px 0}
+.reading .lab-head{background:#edf1ed;border-color:#d2dad3;padding:13px 15px}
+.reading .lab-head .tag{color:#44634f;font-size:13px}
+.reading .lab-head h3{font-size:17px;margin:4px 0}
+.reading .lab-head p{font-size:14.5px;line-height:1.5;color:#506457}
+.reading .lab-body{padding:14px 15px 17px}
+.reading .control-row{gap:7px;margin:12px 0}
+.reading .control-row button,.reading .control-row select{
+  border:1px solid #b7c8bc;border-radius:8px;
+  background:#fff;color:#355444;font-size:15px;
+  font-weight:660;min-height:40px;line-height:1.2;padding:9px 11px
+}
+.reading .control-row button:hover{background:#eef2ed;border-color:#6f937e}
+.reading .control-row button[aria-pressed=true]{background:#426f5b;color:#fff;border-color:#426f5b}
+.reading .control-row label{font-size:15px;color:#414d43}
+.reading input[type=range]{accent-color:#65816b}
+.reading .feedback{border:1px solid #cbd8cc;background:#f0f5f0;color:#324e3d;border-radius:9px;font-size:15.5px;line-height:1.54;padding:12px 13px;margin:12px 0 0}
+.reading .feedback.good{background:#e9f4e9;border-color:#b8d3be;color:#315e48}
+.reading .feedback.bad{background:#f8eeee;border-color:#dfc5c5;color:#824448}
+.reading .data-grid{gap:8px;margin:12px 0}
+.reading .data-box{background:#f7f8f6;border-color:#d5ddd6;padding:12px;border-radius:9px}
+.reading .data-box b,.reading .data-box strong{font-size:17px}
+.reading .data-box .label{font-size:13px}
+.reading .diagram{border:1px solid #d1dad2;background:#fbfcfa;border-radius:11px;padding:12px;margin:17px 0}
+.reading .diagram svg{max-height:290px}
+.reading .graph-title{font-size:16px}
+.reading .graph-legend{font-size:13px;gap:10px}
+.reading .readout{font-size:15.5px;line-height:1.52}
+.reading .message{display:grid;grid-template-columns:77px minmax(0,1fr);gap:8px;padding:10px;border-radius:9px;font-size:14.5px;line-height:1.44;background:#edf2f4;border-color:#6a8d9f}
+.reading .message.prover{background:#e8f1e9;border-color:#719585}
+.reading .message.sim{background:#eeeaf3;border-color:#8c80a6}
+.reading .message .who{font-size:14px}
+.reading .definition{background:#f2f4f1;border:1px solid #d4ddd4;border-radius:9px;padding:14px}
+.reading .definition h3{font-size:17px}
+.reading .transition{border-left:3px solid #8e8398;background:#f1eff4;padding:13px 15px;border-radius:0 9px 9px 0}
+.reading .role{padding:13px 14px;border-left-width:3px;border-radius:0 9px 9px 0}
+.reading .role .tag{font-size:13px}
+.reading .proof{border-left:3px solid #819b88}
+.reading .proof h3{font-size:18px}
+.reading .source{border-top-color:#d4dad5}
+.reading .loader{font-size:16px;padding:44px 0}
+.reading .lab .math{background:#fff}
+.reading .matrix th,.reading .matrix td{padding:6px;min-width:32px}
+.reading table{font-size:14.5px}
+.reading th,.reading td{font-size:14.5px;padding:7px 6px}
+.reading .two-diagrams,.reading .role-grid{grid-template-columns:1fr;gap:9px}
+.reading .exercise{background:#f9f8f4;border:1px solid #dcd6c9}
+.reading .exercise .tag{font-size:12px;color:#806a4d}
+.reading details{background:#fafbfa;border-color:#d2dcd4;border-radius:9px}
+.reading details summary{font-size:16px;padding:12px 13px;background:#eff2ef;color:#374c3d}
+.reading details .inside{padding:13px 14px}
+.reading .math{font-size:17px}
+#merkle-tree svg{width:590px;min-width:590px}
+@media(max-width:460px){.reading .message{grid-template-columns:68px minmax(0,1fr);font-size:14px}}
