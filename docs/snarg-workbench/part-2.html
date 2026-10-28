@@ -69,6 +69,7 @@ f_{\rm fib}(i+2)&=f_{\rm fib}(i+1)+f_{\rm fib}(i)
 <p>The factor \(b-a\) is nonzero. In a field, a product can be zero only if one factor is zero, so \(q(b)=0\). In other words, after removing the factor for root \(a\), the other roots remain roots of the quotient.</p>
 <p>Each new distinct root therefore supplies another linear factor and reduces the degree by one. A nonzero degree-\(d\) polynomial cannot have more than \(d\) different linear factors.</p>
 <p class="qed">Thus it has at most \(d\) distinct roots. The proof depends on being able to cancel the nonzero factor \(b-a\), which explains the field assumption. \(\square\)</p></div>
+<p>The same theorem settles a question from interpolation: if two polynomials of degree at most \(N-1\) agree at \(N\) distinct points, their difference has at least \(N\) roots. The root bound forces that difference to be zero. Therefore the interpolating polynomial is unique.</p>
 <p>HW3 Problem 1(c) tests why the field assumption matters. Try it before opening the solution.</p>
 <div class="exercise"><span class="exercise-kicker">HW3 · Problem 1(c)</span>
 <h3>Does the polynomial root bound hold modulo 6?</h3>
@@ -95,7 +96,7 @@ f_{\rm fib}(i+2)&=f_{\rm fib}(i+1)+f_{\rm fib}(i)
 <div class="math">\[\boxed{\Pr[f(r)=g(r)\mid f\ne g]\le\frac{d}{|\mathbb F|}.}\]</div>
 <p>That is <strong>Lemma 1</strong> in the lecture: perfect completeness and soundness error at most \(d/|\mathbb F|\).</p>
 <div class="lab" data-lab="eq"><div class="lab-top"><strong>Find exactly which checks miss a false claim</strong><p>Over \(\mathbb F_{17}\), compare \(f(X)=X^2+1\) with \(g(X)=f(X)+(X-1)(X-4)\). They're different, but agree at two points.</p></div><div class="lab-content"><label class="range-label">Random point \(r\) <output class="range-value" data-live-for="r">1</output><input data-key="r" type="range" min="0" max="16" value="1"></label><div class="lab-output" aria-live="polite"></div></div></div>
-<p>We can also settle the uniqueness question from interpolation. If two degree-at-most-\((N-1)\) polynomials agreed at \(N\) distinct points, their difference would have at least \(N\) roots while having degree at most \(N-1\). Unless the difference is zero everywhere, that contradicts Theorem 1. So the interpolation polynomial is unique.</p>
+
 <p>There is one further condition that makes the probability argument work. The polynomials must be <em>fixed before the verifier chooses \(r\)</em>. Otherwise a cheater who learns \(r\) could invent \(g(X)=f(X)+(X-r)\), which is a different polynomial but guaranteed to agree with \(f\) at that already-known point. Later we'll use commitments to enforce the correct order.</p>
 <div class="bridge">EqualityTest provides the missing <em>testing method</em>: if two low-degree polynomials are fixed before the challenge, one random evaluation can reveal a false identity with high probability. But Fibonacci's recurrence is required only at the 99 step positions, not at every field element. We still need to turn those 99 local conditions into a genuine polynomial identity. The lecture next generalizes the root argument to several variables. We will then return to the Fibonacci obstacle.</div>
 <p class="source">Official lecture §3, EqualityTest and Lemma 1. Interpolation uniqueness follows from Theorem 1.</p>
