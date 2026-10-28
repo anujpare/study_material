@@ -3,7 +3,7 @@
 
 <p class="chapter-tag">Lecture §1 · SNARGs</p>
 <h1>How can we trust a calculation without repeating it?</h1>
-<p class="aim">Suppose you ask a server to apply SHA-256 to a starting value a million times. It sends back a final value. You want to know whether it is correct—but calculating a million hashes yourself defeats the reason you used the server.</p>
+<p class="aim">A server claims to have applied SHA-256 a million times. The final hash is short, but checking it by repeating the computation takes a million steps. We want a proof that lets the verifier trust the result without doing that work.</p>
 <p>What could the server send to convince you? An obvious suggestion is the entire chain of intermediate hashes. You could check that the first comes from your starting value, every subsequent hash comes from the previous one, and the last is the claimed result. That would settle the matter. But it makes you perform nearly a million checks.</p>
 <p>The problem isn't that the server's result is difficult to <em>state</em>. Its final hash is short. The problem is that the evidence needed to <em>trust</em> it seems to require following the entire computation again.</p>
 <h2>Separate the claim from the evidence</h2>
@@ -30,7 +30,7 @@
 
 <p class="chapter-tag">Lecture §1 · Succinctness and non-interactivity</p>
 <h1>What does a genuinely short proof save us?</h1>
-<p class="aim">If the server sends us its entire chain of intermediate hashes, we can check the answer but still have to perform almost every step. A useful new proof must avoid transmitting and checking that chain.</p>
+<p class="aim">The server could send every intermediate hash. That would make the claim easy to check, but the verifier would still process a million steps. We therefore need two savings: a short proof and a fast check. Succinctness makes those requirements precise.</p>
 <p>Let's measure the two kinds of evidence. The witness \(w\) is the long list of intermediate results. Its length in bits is written \(|w|\). The proposed new proof is \(\pi\), with length \(|\pi|\). These vertical bars mean <em>size</em>, not absolute value. If the witness contains one million 256-bit hashes, then \(|w|\) is roughly 256 million bits. Sending all of them wouldn't be a succinct proof.</p>
 <p>But how small could the verifier's work conceivably become? Suppose it somehow needed to inspect only one chosen part of a huge object. At least naming that part need not be expensive.</p>
 <h2>What counts as saving the verifier work?</h2>
@@ -97,7 +97,7 @@ T_V=O\!\left(\lambda,|x|,\operatorname{polylog}(|w|)\right).
 
 <p class="chapter-tag">Lecture §2 · From PCPs to SNARGs</p>
 <h1>How can the prover lock the proof without sending it?</h1>
-<p class="aim">The PCP verifier now knows which three bit positions to ask for. What prevents the prover from choosing answers that pass the test <em>after</em> seeing those positions? Nothing—unless the prover has already committed to one complete encoded string. This is the sole problem the next cryptographic tool must solve.</p>
+<p class="aim">The PCP verifier asks for three bits of a proof that must already be fixed. The ideal proof box guarantees this, but a real prover could invent answers after seeing the questions. We need a short commitment that fixes every bit before the verifier asks for any of them.</p>
 <p>Suppose the encoded PCP string has \(M\) bits. Think of it as a list \((m_1,\ldots,m_M)\), with one bit \(m_i\) at each position \(i\). A vector commitment creates a short public value \(c\) for that whole list. Later, to open position \(i\), the prover reveals \(m_i\) and some authentication data that the verifier checks against \(c\).</p>
 <p>The critical rule is <strong>position binding</strong>: once \(c\) has been sent, a computationally bounded prover must not be able to open the same position \(i\) to two different bit values with valid proofs. If we had this, the verifier's random queries could no longer influence what the proof says at each position. The PCP soundness guarantee would become applicable to the answers it receives.</p>
 <h2>Build the commitment from hashes</h2>
@@ -122,7 +122,7 @@ T_V=O\!\left(\lambda,|x|,\operatorname{polylog}(|w|)\right).
 <article class="lesson" data-id="hw1-vectors" data-title="HW1 · All three vector commitments">
 <p class="chapter-tag">I · Why SNARGs exist · HW1, Problem 4</p>
 <h1>Homework: three ways to commit to a list</h1>
-<p class="aim">We know what a vector commitment must do. This problem asks us to change its size in three different ways. Each time, the key question is the same: why can't one commitment be opened to two different values at the same index?</p>
+<p class="aim">We need to fix a long list before the verifier chooses which entry to inspect. A vector commitment does exactly that. This homework compares three ways to construct one and asks why the prover cannot later open the same position to different values.</p>
 <p>Let \(H:\{0,1\}^{\ast}\to\{0,1\}^{\lambda}\) be a random oracle. We have \(M\) messages, each of \(|m|\) bits. The symbol \(\{0,1\}^{\ast}\) means any finite bit string.</p>
 <div class="exercise"><span class="exercise-kicker">HW1 · Problem 4(a)</span>
 <h3>Long commitment, no extra opening proof</h3>
@@ -158,7 +158,7 @@ T_V=O\!\left(\lambda,|x|,\operatorname{polylog}(|w|)\right).
 <article class="lesson" data-id="hw3-pcp-argument" data-title="Putting PCP and Merkle together">
 <p class="chapter-tag">I · Why SNARGs exist · HW3, Problem 4(a)</p>
 <h1>Put the PCP theorem and Merkle tree together</h1>
-<p class="aim">We now have exactly what we needed: a proof that can be checked by reading a few bits, and a way to authenticate those bits without sending the full proof. Does combining them actually give us cheap and reliable verification?</p>
+<p class="aim">We have two ingredients: the PCP theorem supplies a meaningful three-bit test, and a Merkle commitment authenticates the answers against one fixed proof. This homework asks whether combining them really produces a protocol with low soundness error and short communication. We will calculate both rather than assume they follow.</p>
 <p>The PCP theorem supplies the test. The Merkle root makes all answers refer to one fixed proof string. Neither works alone: the PCP box was imaginary, while Merkle authentication tells us that a bit is <em>unchanged</em>, not that the whole statement is <em>true</em>. We need both.</p>
 <h2>Follow the construction before proving it</h2>
 <p>There is no need to invent a complicated new protocol. Start with the question the PCP verifier would have asked its ideal box. The only change is that the prover must now <em>prove that each answer belongs to the string it committed to</em>.</p>
@@ -200,7 +200,7 @@ T_V=O\!\left(\lambda,|x|,\operatorname{polylog}(|w|)\right).
 
 <p class="chapter-tag">Lecture §2.1 · Interactive Oracle Proofs</p>
 <h1>Why did we use an imaginary box first?</h1>
-<p class="aim">We've seen the same construction in two stages. First the PCP theorem told us that a few correctly selected bits can test a fixed encoded proof. Then a commitment scheme forced the real prover to supply bits from one fixed encoding. This separation is not peculiar to PCPs: it's the blueprint behind modern SNARG constructions.</p>
+<p class="aim">PCPs and Merkle trees give us one way to check a large computation. But the PCP encoding is expensive. We want to keep the useful part—the verifier asks only a few questions about fixed evidence—while choosing a representation better suited to arithmetic. That leads to interactive oracle proofs and, eventually, polynomial queries.</p>
 <p>In the first stage, we pretend there is a trusted <strong>oracle</strong>, or proof box, storing one object supplied by the prover. It allows the verifier to ask only specific kinds of queries. We prove completeness and soundness <em>in that ideal model</em>, without cryptographic assumptions. This is called an <strong>Interactive Oracle Proof</strong> (IOP).</p>
 <p>In the second stage, a cryptographic commitment replaces the oracle. The prover must commit to the object before seeing the verifier's query, and authentication stops it from changing answers later. After that, Fiat–Shamir can often remove the verifier's interactive challenge. We won't yet assume that this last step is automatically secure; we'll return to its conditions.</p>
 <p>At this point we could stop with the PCP-and-Merkle construction: it demonstrates the blueprint, and the homework proves its communication and soundness bounds. But the lecture warns that this route is extremely inefficient for practical verification. PCPs require a complicated, potentially very long encoding of an arbitrary NP witness. We need the same <em>fixed evidence, few queries</em> principle in a form that exploits the structure of computations instead.</p>
