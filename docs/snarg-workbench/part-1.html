@@ -110,22 +110,6 @@ T_V=O\!\left(\lambda,|x|,\operatorname{polylog}(|w|)\right).
 <p class="source">Official notes, §2 pp. 2–3; handwritten notes pp. 4–6. The symbol \(M\) here means the encoded PCP proof length in bits.</p>
 </article>
 
-<article class="lesson" data-id="iop-types" data-title="Interactive oracle proofs">
-<p class="chapter-tag">I · Why SNARGs exist · Lecture §2.1</p>
-<h1>What else could the proof box answer?</h1>
-<p class="aim">Our PCP box answers one simple question: “What bit is at position \(i\)?” But to verify a calculation, sometimes the useful question is about a <em>number</em> or an <em>equation</em>, not an individual bit. What if the box could answer a different kind of query?</p>
-<p>The essential rule remains the same: the prover first fixes the entire object stored in the box. The verifier then chooses its question, and the box must answer consistently with that fixed object. A protocol using such boxes is called an <strong>Interactive Oracle Proof</strong>, or IOP. An <em>oracle</em> is simply the name we give to the idealized box.</p>
-<p>There are three interfaces in the lecture. You already know the first: the box stores a long bit string and reveals selected bits. For the next two, imagine that the proof is an ordered list of numbers, or a polynomial—a formula we can evaluate at a chosen number.</p>
-<div class="table-scroll"><table><thead><tr><th>The box stores</th><th>What the verifier asks</th></tr></thead><tbody>
-<tr><td><strong>PCP:</strong> a fixed bit string \(\pi\)</td><td>“What is bit \(i\)?” The box returns \(\pi_i\).</td></tr>
-<tr><td><strong>Linear IOP:</strong> a fixed list \((\pi_1,\ldots,\pi_M)\)</td><td>“Multiply each entry by my chosen weight \(q_i\), then add them.” The box returns \(\sum_i q_i\pi_i\).</td></tr>
-<tr><td><strong>Polynomial IOP:</strong> a fixed polynomial \(f(X)\)</td><td>“What does the formula give at \(X=z\)?” The box returns \(f(z)\).</td></tr>
-</tbody></table></div>
-<p>A weight \(q_i\) is just a number selected by the verifier for list position \(i\). A polynomial like \(f(X)=X^2+1\) can be evaluated by substituting a number: for example, \(f(3)=10\). We'll develop the needed arithmetic carefully in the next chapter, using a number system called a <em>field</em>.</p>
-<p>Why choose a polynomial box for PLONK? Because we can arrange the steps of a computation as values of one polynomial. Then the verifier can check equations about the steps by asking for the polynomial at just a few points. We'll prove why that works, rather than assuming it.</p>
-<div class="bridge">First, though, we still owe ourselves a real replacement for the original bit box. That requires only a way to fix a long list and authenticate a few of its entries. A Merkle tree will do it.</div>
-<p class="source">Official notes, §2.1 pp. 3–4. The three oracle interfaces are given in the lecture; the examples are explanatory.</p>
-</article>
 
 <article class="lesson" data-id="merkle" data-title="One commitment for an entire vector">
 <p class="chapter-tag">I · Why SNARGs exist · Lecture §2 / HW1</p>
@@ -149,6 +133,8 @@ T_V=O\!\left(\lambda,|x|,\operatorname{polylog}(|w|)\right).
 <p>Collision resistance says an efficient attacker cannot feasibly do this, so it cannot feasibly make two conflicting openings for one position.</p>
 <p class="qed">We have proved the two properties we needed: one \(\lambda\)-bit root fixes a long list, and one position can be authenticated using only \(O(\lambda\log M)\) bits of path information. That's how cryptography gives the PCP verifier a practical substitute for its locked box. \(\square\)</p>
 </div>
+<div class="bridge">Now the PCP verifier's ideal box can be replaced: a Merkle commitment fixes the bit string, and authentication paths answer its position queries. Let's combine the two mechanisms and check whether the resulting argument is actually short and sound.</div>
+<div class="practice-link"><span class="practice-tag">Optional practice</span><a href="#hw1-vectors">HW1 4(a–c): compare three ways to commit to a list</a></div>
 <p class="source">Lecture §2; Homework 1, Problem 4(c). Hash input encodings should distinguish leaves from internal nodes in a concrete implementation.</p>
 </article>
 
@@ -190,8 +176,9 @@ T_V=O\!\left(\lambda,|x|,\operatorname{polylog}(|w|)\right).
 
 <article class="lesson" data-id="hw3-pcp-argument" data-title="HW3 4(a) · Construct the argument">
 <p class="chapter-tag">I · Why SNARGs exist · HW3, Problem 4(a)</p>
-<h1>Homework: make the PCP box real</h1>
-<p class="aim">We have two useful pieces. The PCP verifier needs to read only a few proof bits. A Merkle tree lets us authenticate a few bits from a fixed string. Put them together and we should get a short argument—but we must prove that the pieces really fit.</p>
+<h1>Put the PCP theorem and Merkle tree together</h1>
+<p class="aim">We now have exactly what we needed: a proof that can be checked by reading a few bits, and a way to authenticate those bits without sending the full proof. Does combining them actually give us cheap and reliable verification?</p>
+<p>The PCP theorem supplies the test. The Merkle root makes all answers refer to one fixed proof string. Neither works alone: the PCP box was imaginary, while Merkle authentication tells us that a bit is <em>unchanged</em>, not that the whole statement is <em>true</em>. We need both.</p>
 <div class="exercise"><span class="exercise-kicker">HW3 · Problem 4(a) · Original task</span>
 <p>A PCP proof for a statement of length \(n\) has \(M=\operatorname{poly}(n)\) bits. A PCP test queries a constant \(k\) positions, chosen before seeing their answers, with perfect completeness and soundness error \(1/2\). Merkle commitments have \(\lambda\)-bit roots and openings of \(O(\lambda\log M)\) bits. Construct a three-message argument with negligible soundness error and communication polynomial in \(\lambda\) and \(\log n\).</p>
 <details class="worked"><summary>Work through the construction and proof</summary><div class="answer">
@@ -218,7 +205,26 @@ T_V=O\!\left(\lambda,|x|,\operatorname{polylog}(|w|)\right).
 <p>The PCP length is polynomial in \(n\), so \(\log M=O(\log n)\). The indices and opened bits do not change this leading bound. The entire communication is therefore \(O(\lambda^2\log n)\).</p>
 <p class="qed">We have now proved the two things the question asked: negligible soundness error and succinct communication. Merkle binding makes the PCP tests apply to one fixed proof; the PCP theorem makes those few tests meaningful. \(\square\)</p>
 </div></details></div>
-<div class="bridge">This protocol still has three messages: the commitment, the random queries, and the openings. Once we understand how a hash can replace the verifier's random challenge, we'll make it non-interactive in HW3 4(b).</div>
+<div class="bridge">We have our first real construction: a <em>succinct interactive argument</em>. It has short communication and small soundness error. But the verifier still sends random queries, so it isn't non-interactive yet. We'll remove that message later with Fiat–Shamir.</div>
+<p>Now notice something else. This construction checks an encoded proof <em>bit by bit</em>. For PLONK we want a different approach: put computation values into a polynomial and test algebraic equations about them. We already understand the principle of a fixed oracle; let's change what the oracle stores and what the verifier may ask it.</p>
 <p class="source">Original HW3, Problem 4(a); <a href="../hw3/">HW3 deck</a>.</p>
 </article>
+
+<article class="lesson" data-id="iop-types" data-title="Interactive oracle proofs">
+<p class="chapter-tag">I · Why SNARGs exist · Lecture §2.1</p>
+<h1>From checking proof bits to checking equations</h1>
+<p class="aim">The PCP construction is one route to a short proof: it checks a few carefully encoded bits. We now want to build a second route, which will lead to PLONK. Instead of asking about individual proof bits, can we ask whether a whole computation obeys an equation?</p>
+<p>The essential rule remains the same: the prover first fixes the entire object stored in the box. The verifier then chooses its question, and the box must answer consistently with that fixed object. A protocol using such boxes is called an <strong>Interactive Oracle Proof</strong>, or IOP. An <em>oracle</em> is simply the name we give to the idealized box.</p>
+<p>There are three interfaces in the lecture. You already know the first: the box stores a long bit string and reveals selected bits. For the next two, imagine that the proof is an ordered list of numbers, or a polynomial—a formula we can evaluate at a chosen number.</p>
+<div class="table-scroll"><table><thead><tr><th>The box stores</th><th>What the verifier asks</th></tr></thead><tbody>
+<tr><td><strong>PCP:</strong> a fixed bit string \(\pi\)</td><td>“What is bit \(i\)?” The box returns \(\pi_i\).</td></tr>
+<tr><td><strong>Linear IOP:</strong> a fixed list \((\pi_1,\ldots,\pi_M)\)</td><td>“Multiply each entry by my chosen weight \(q_i\), then add them.” The box returns \(\sum_i q_i\pi_i\).</td></tr>
+<tr><td><strong>Polynomial IOP:</strong> a fixed polynomial \(f(X)\)</td><td>“What does the formula give at \(X=z\)?” The box returns \(f(z)\).</td></tr>
+</tbody></table></div>
+<p>A weight \(q_i\) is just a number selected by the verifier for list position \(i\). A polynomial like \(f(X)=X^2+1\) can be evaluated by substituting a number: for example, \(f(3)=10\). We'll develop the needed arithmetic carefully in the next chapter, using a number system called a <em>field</em>.</p>
+<p>Why choose a polynomial box for PLONK? Because we can arrange the steps of a computation as values of one polynomial. Then the verifier can check equations about the steps by asking for the polynomial at just a few points. We'll prove why that works, rather than assuming it.</p>
+<div class="bridge">We will use the <strong>polynomial oracle</strong>. First we must show how one polynomial can hold many values. Then we need a reason why a false equation is unlikely to pass a random evaluation test. Both will come from elementary algebra over finite fields. This is the next step toward a PLONK proof, not a separate topic.</div>
+<p class="source">Official notes, §2.1 pp. 3–4. The three oracle interfaces are given in the lecture; the examples are explanatory.</p>
+</article>
+
 </body></html>
