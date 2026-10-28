@@ -122,9 +122,10 @@
 <div class="table-scroll"><table><thead><tr><th>Position \(i\)</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead><tbody><tr><td>Claimed value</td><td>0</td><td>1</td><td>1</td><td>2</td><td>3</td><td>5</td></tr></tbody></table></div>
 <p>Imagine a polynomial \(f(X)\)—an expression made of powers of a variable \(X\), like \(3X^2+X+1\). We'd like to arrange for \(f(0)=0\), \(f(1)=1\), \(f(2)=1\), and so on up to \(f(5)=5\). Then asking for the value of the computation at position \(i\) would amount to asking for \(f(i)\).</p>
 <h2>Can we always make such a polynomial?</h2>
-<p>Start with just the first three values. One polynomial that gives 0, 1 and 1 at positions 0, 1 and 2 is</p>
-<div class="math">\[f_2(X)=\frac{X(3-X)}2.\]</div>
-<p>Check: at \(X=0\) it is 0. At \(X=1\) it is \((1)(2)/2=1\). At \(X=2\) it is \((2)(1)/2=1\). This polynomial was chosen to fit only the first three positions; we haven't yet fitted all six.</p>
+<p>Start with just the first three values. We want a polynomial whose outputs at positions 0, 1 and 2 are 0, 1 and 1. Try a degree-two polynomial \(f_2(X)=aX^2+bX+c\). Why degree two? It gives us three coefficients to choose for our three conditions.</p>
+<p>The condition \(f_2(0)=0\) forces \(c=0\). The condition \(f_2(1)=1\) gives \(a+b=1\). The condition \(f_2(2)=1\) gives \(4a+2b=1\). Subtract twice the first equation from the second: \(2a=-1\), so \(a=-1/2\), and then \(b=3/2\).</p>
+<div class="math">\[f_2(X)=-\tfrac12X^2+\tfrac32X=\frac{X(3-X)}2.\]</div>
+<p>Now check the result: \(f_2(0)=0\), \(f_2(1)=1\), and \(f_2(2)=1\). This polynomial fits only the first three positions, not the entire six-value list. To fit all six we'll allow degree at most five.</p>
 <p>Making a polynomial fit a given list of values is called <strong>interpolation</strong>. For any six distinct input points in a field, there is exactly one polynomial of degree at most five that fits six prescribed outputs. We'll establish the reason for uniqueness in the next lesson, using a fact about polynomial roots.</p>
 <h2>Why are we using a field?</h2>
 <p>Cryptographic polynomial protocols work with a <strong>finite field</strong>, a number system where we can add, multiply and divide by any nonzero number. For this small example use \(\mathbb F_{101}\): the integers 0 through 100, with results taken modulo 101. Because 101 is prime, every nonzero element has a multiplicative inverse.</p>
