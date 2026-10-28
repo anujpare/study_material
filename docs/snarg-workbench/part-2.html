@@ -226,6 +226,7 @@ D(X)=\left(\prod_{a\in\Omega}(X-a)\right)q(X)
 <div class="math">\[\boxed{\Pr[\text{false ZeroTest acceptance}]\le\frac{2d}{|\mathbb F|}.}\]</div>
 <p>This proves the lecture's Lemma 3. The proof succeeds because a false vanishing claim produces a <em>fixed, nonzero, low-degree</em> difference polynomial. \(\square\)</p></div>
 <p>The bound may be uninformative if the field is too small. A cryptographic implementation uses a sufficiently large field and enforces the polynomial degree bounds; our small numerical example is only a demonstration.</p>
+<div class="practice-link"><span class="practice-tag">Applied exam practice</span><a href="#exam-security-proof">Derive a ZeroTest soundness bound for a new set of required zeros</a></div>
 <div class="bridge">ZeroTest now gives the verifier a sound way to check that a polynomial is zero at many prescribed points. We can apply it to the Fibonacci discrepancy \(D\), but the final protocol must also check the two starting values and the claimed output. Next we assemble those checks and prove that together they establish the original Fibonacci claim.</div>
 <p class="source">Official lecture §3, ZeroTest protocol and Lemma 3, with its \(2d/|\mathbb F|\) soundness bound.</p>
 </article>
