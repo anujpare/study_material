@@ -156,7 +156,7 @@
 <div class="lab-top"><strong>Find the random values that fool the verifier</strong><p>Use \(\mathbb F_{101}\). The two polynomials differ by \((X-1)(X-4)\), so they agree only when that difference is zero.</p></div>
 <div class="lab-content"><label class="range-label">Random value \(r\) <output class="range-value" data-live-for="r">1</output><input data-key="r" type="range" min="0" max="100" value="1"></label><div class="lab-output" aria-live="polite"></div></div></div>
 <p>This also completes a claim we made about interpolation. If two degree-at-most-five polynomials agreed at the six distinct positions 0 through 5, their nonzero difference would need six roots, which is impossible. So the polynomial representing our six values is unique.</p>
-<p>There is one condition we must remember: the polynomials must be <em>fixed before</em the random challenge is chosen. Otherwise the prover could pick a different polynomial that happens to agree at the already-known point.</p>
+<p>There is one condition we must remember: the polynomials must be <em>fixed before</em> the random challenge is chosen. Otherwise the prover could pick a different polynomial that happens to agree at the already-known point.</p>
 <div class="practice-link"><span class="practice-tag">A useful extension</span><a href="#schwartz-zippel">Schwartz–Zippel: the same idea for several variables</a><a href="#midterm-polynomial">Previous midterm: apply the multivariable root bound</a></div>
 <div class="obstacle-progress"><h3>What did the random check give us?</h3>
 <p>If a fixed polynomial identity is false, its difference is nonzero and can vanish at only a limited number of random points.</p>
