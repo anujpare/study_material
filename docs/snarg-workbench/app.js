@@ -1,41 +1,69 @@
 (() => {
 "use strict";
-const chapterFiles=["part-1.html","part-2.html","part-3.html","part-4.html","part-5.html"];
-const chapters=["I · Why SNARGs exist","II · Polynomial reasoning","III · Commitments & Fiat–Shamir","IV · PLONK from circuits","V · Examination workshop"];
+const chapterFiles=["story-1.html","story-2.html","part-1.html","part-2.html","part-3.html","part-4.html","part-5.html"];
+const chapters=["Guided story · The problem and the mathematical idea","Guided story · Proving the computation","Reference · SNARGs and PCPs","Reference · Polynomial mathematics","Reference · Commitments and Fiat–Shamir","Reference · PLONK details","Reference · Homework and midterm"];
 const byId=id=>document.getElementById(id);
 const main=byId("lesson"), select=byId("lesson-select"), chapter=byId("chapter-select");
 const prev=byId("previous"), next=byId("next");
 let cards=[],current=0,req=0,mathReady=false,readingMode="guided";
 /* Main teaching route. Every other card is still available at its lesson link. */
 const coreIds=new Set([
- "the-question","succinctness","pcp-box","merkle","hw3-pcp-argument","iop-types",
- "field-foundation","interpolation","equality-proof","schwartz-zippel","vanishing-polynomial",
- "zerotest-proof","fibonacci-protocol","polynomial-commitments","schnorr-recall",
- "fiat-shamir","circuits-meaning","trace-encoding","roots-unity-cost","plonk-output-input",
- "plonk-gates","plonk-wiring","plonk-final"
+ "story-claim","story-sampling","story-pcp","story-merkle","story-polynomial",
+ "story-random-check","story-constraints","story-zerotest","story-commit",
+ "story-circuit","story-plonk-checks","story-conclusion"
 ]);
+/* All previous reference lessons remain navigable, with explicit returns
+   to the exact concept that made the detour relevant. */
 const exerciseSources={
- "hw1-vectors":"merkle",
- "midterm-polynomial":"schwartz-zippel",
- "repetition-hw2":"schnorr-recall",
- "hw3-schnorr-fs":"fiat-shamir",
- "hw3-schnorr-attacks":"fiat-shamir",
- "hw3-conceptual":"fiat-shamir",
- "hw3-amplification":"fiat-shamir",
- "hw3-fs-pcp":"fiat-shamir",
- "hw2-circuit-sat":"circuits-meaning",
- "midterm-interpolation":"polynomial-commitments",
- "exam-fake-trace":"plonk-wiring",
- "exam-security-proof":"zerotest-proof",
- "coverage":"plonk-final"
+ "the-question":"story-claim",
+ "succinctness":"story-sampling",
+ "pcp-box":"story-pcp",
+ "merkle":"story-merkle",
+ "hw1-vectors":"story-merkle",
+ "hw3-pcp-argument":"story-merkle",
+ "iop-types":"story-polynomial",
+ "field-foundation":"story-polynomial",
+ "interpolation":"story-polynomial",
+ "equality-proof":"story-random-check",
+ "schwartz-zippel":"story-random-check",
+ "midterm-polynomial":"story-random-check",
+ "vanishing-polynomial":"story-constraints",
+ "zerotest-proof":"story-zerotest",
+ "fibonacci-protocol":"story-zerotest",
+ "polynomial-commitments":"story-commit",
+ "schnorr-recall":"story-commit",
+ "repetition-hw2":"story-commit",
+ "fiat-shamir":"story-commit",
+ "hw3-schnorr-fs":"story-commit",
+ "hw3-schnorr-attacks":"story-commit",
+ "hw3-conceptual":"story-commit",
+ "hw3-amplification":"story-commit",
+ "hw3-fs-pcp":"story-commit",
+ "circuits-meaning":"story-circuit",
+ "trace-encoding":"story-circuit",
+ "roots-unity-cost":"story-plonk-checks",
+ "plonk-output-input":"story-plonk-checks",
+ "plonk-gates":"story-plonk-checks",
+ "plonk-wiring":"story-plonk-checks",
+ "plonk-final":"story-conclusion",
+ "hw2-circuit-sat":"story-circuit",
+ "midterm-interpolation":"story-commit",
+ "exam-fake-trace":"story-plonk-checks",
+ "exam-security-proof":"story-zerotest",
+ "coverage":"story-conclusion"
 };
 function routeCards(){return readingMode==="all"?cards:cards.filter(c=>coreIds.has(c.id));}
 function neighbor(delta){
  const list=routeCards(),currentId=cards[current]?.id;
  const index=list.findIndex(c=>c.id===currentId);
  if(index>=0)return list[index+delta]||null;
- if(delta>0)return list.find(c=>cards.findIndex(x=>x.id===c.id)>current)||null;
- return [...list].reverse().find(c=>cards.findIndex(x=>x.id===c.id)<current)||null;
+ if(readingMode==="guided"){
+   const source=exerciseSources[currentId];
+   const originIndex=list.findIndex(c=>c.id===source);
+   if(originIndex>=0)return list[delta<0?originIndex:Math.min(originIndex+1,list.length-1)]||null;
+ }
+ if(delta>0)return list.find(c=>cards.indexOf(c)>current)||null;
+ return [...list].reverse().find(c=>cards.indexOf(c)<current)||null;
 }
 function jumpRelative(delta){const target=neighbor(delta);if(target)location.hash=target.id;}
 function syncRouteFooter(){
@@ -431,7 +459,7 @@ async function start(){
   }));
   cards=sources.flat();
   if(cards.length<20)throw Error("Course chapters incomplete: "+cards.length);
-  if(coreIds.size!==23||[...coreIds].some(id=>!cards.some(c=>c.id===id)))throw Error("Main learning path is incomplete");
+  if(coreIds.size!==12||[...coreIds].some(id=>!cards.some(c=>c.id===id)))throw Error("Main learning path is incomplete");
   chapter.innerHTML=chapters.map((c,i)=>'<option value="'+i+'">'+escape(c)+'</option>').join("");
   byId("menu-toggle").addEventListener("click",()=>setMenuOpen(byId("chapter-menu").dataset.open!=="true"));
   chapter.addEventListener("change",()=>{
