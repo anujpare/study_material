@@ -1,7 +1,7 @@
 <article class="lesson">
 <p class="chapter">Part V · Repeating a proof</p>
 <h1>Why sequential simulation is cheaper than parallel</h1>
-<p class="lead">One guess of a fair challenge bit succeeds with probability \(1/2\). If we need \(\lambda\) such guesses, we must ask whether we can retry each one separately or whether all must be correct together.</p>
+<p class="lead">The preceding lesson distinguished sequential from parallel message order. We can now calculate why the simulator's work changes. In a sequential execution, it can finish and, if needed, rewind one session before starting the next. In a parallel execution, the verifier chooses the full challenge vector after all first messages are fixed, so the straightforward simulator must guess the entire vector correctly. One guess of a fair challenge bit succeeds with probability \(1/2\). If we need \(\lambda\) such guesses, we must ask whether we can retry each one separately or whether all must be correct together.</p>
 <h2>Sequential schedule: finish one repetition before preparing the next</h2>
 <p><strong>Sequentially:</strong> guess the challenge in the first session, rewind that session until it works, and then move to the second. Each session takes two attempts on average. With \(\lambda\) sessions, the expected total is \(2\lambda\) one-session attempts.</p>
 <div class="math">\[\mathbb E[\text{single-round attempts in sequence}]=2+2+\cdots+2=2\lambda\]<p class="math-caption">An unsuccessful guess in session 3 does not require restarting sessions 1 and 2. That's why we add the expected costs rather than multiplying the chance of guessing everything in a single attempt.</p></div>
