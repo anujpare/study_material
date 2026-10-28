@@ -350,3 +350,78 @@ body{background:var(--page);color:var(--ink);font-family:-apple-system,BlinkMacS
 /* The menu must never occupy reading space until explicitly opened. */
 .chapter-menu:not([open]) > .chapter-panel{display:none!important}
 .chapter-menu[open] > .chapter-panel{display:flex}
+
+
+/* Menu interaction — shared by both interactive PETS labs. Unlike the older
+   <details> reader, this button cannot inherit the legacy overflow:hidden. */
+#lessons .chapter-menu{
+  position:absolute;top:16px;right:83px;z-index:50;
+  margin:0!important;border:0!important;padding:0!important;
+  width:38px;height:38px;max-width:none!important;overflow:visible!important;
+  background:transparent!important;box-shadow:none!important;
+}
+#lessons .chapter-menu .menu-toggle{
+  appearance:none;display:grid;place-items:center;
+  width:38px;height:38px;min-height:38px;
+  margin:0;padding:0;background:transparent;color:#56615b;
+  border:1px solid transparent;border-radius:8px;
+  cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+}
+#lessons .chapter-menu .menu-toggle svg{
+  width:21px;height:21px;stroke:currentColor;stroke-width:1.85;
+  fill:none;stroke-linecap:round;pointer-events:none;
+}
+#lessons .chapter-menu[data-open="true"] .menu-toggle{
+  background:#e1e5df;border-color:#cbd5cd;
+}
+#lessons .chapter-menu .chapter-panel{
+  position:absolute;top:43px;right:-69px;
+  box-sizing:border-box;width:min(365px,calc(100vw - 24px));
+  max-height:min(78dvh,710px);overflow-y:auto;overscroll-behavior:contain;
+  background:#fdfdfb;border:1px solid #c6cec5;border-radius:12px;
+  box-shadow:0 14px 36px rgba(22,31,27,.20);
+  padding:11px;z-index:51;display:flex;flex-direction:column;
+  visibility:visible;pointer-events:auto;
+}
+#lessons .chapter-menu .chapter-panel[hidden]{
+  display:none!important;visibility:hidden!important;pointer-events:none!important;
+}
+#lessons .chapter-panel a,#lessons .chapter-panel label,
+#lessons .chapter-panel select{position:relative;z-index:1;pointer-events:auto}
+#lessons .chapter-panel select{appearance:auto}
+#lessons .chapter-menu .menu-toggle:focus-visible{
+  outline:2px solid #648b75;outline-offset:2px;
+}
+/* Keep formulas readable. Long equations scroll horizontally inside the card
+   instead of clipping or widening the entire viewport. */
+#lessons .reading{min-width:0;overflow-x:hidden;overflow-y:auto;}
+#lessons .reading .math{
+  display:block;box-sizing:border-box;max-width:100%;
+  overflow-x:auto!important;overflow-y:hidden!important;
+  -webkit-overflow-scrolling:touch;touch-action:pan-x;
+  white-space:normal;scrollbar-width:thin;
+}
+#lessons .reading .math mjx-container[jax="SVG"]{
+  display:block!important;box-sizing:content-box;
+  width:max-content!important;max-width:none!important;
+  min-width:0;margin:0 auto!important;overflow:visible!important;
+}
+#lessons .reading .math mjx-container svg{
+  display:block!important;max-width:none!important;
+  width:auto!important;height:auto!important;overflow:visible!important;
+}
+#lessons .reading .math-caption{
+  text-align:left;max-width:100%;white-space:normal;
+}
+#lessons .reading .lab,#lessons .reading .diagram,
+#lessons .reading .panel,#lessons .reading .proof,
+#lessons .reading .exercise{min-width:0;max-width:100%;overflow-wrap:break-word;}
+#lessons .reading .lab .lab-content,#lessons .reading .lab .lab-body,
+#lessons .reading .feedback{min-width:0;overflow-wrap:break-word;}
+#lessons .reading .table-scroll{overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch;}
+#lessons .reading .data-box{min-width:0;}
+#lessons .reading .plot svg{max-width:100%;}
+@media(max-width:460px){
+  #lessons .chapter-menu{top:12px;right:79px;}
+  #lessons .chapter-menu .chapter-panel{right:-66px;}
+}
