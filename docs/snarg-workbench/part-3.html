@@ -127,7 +127,8 @@
 <p><strong>Soundness needs an additional argument.</strong> A dishonest prover could try different first messages and hash them until it finds a favorable challenge. A real security proof must analyze those attempts in the random-oracle model. We cannot simply say “the hash is random-looking” and assume the original soundness theorem remains unchanged.</p>
 <p class="qed">Fiat–Shamir removes interaction while preserving honest verification, provided both parties reconstruct the same challenge. Its resistance to cheating comes from the appropriate cryptographic analysis, not from the notation alone. \(\square\)</p></div>
 <p>There's a related trap in the homework. If a challenge has only one bit, a cheater who can answer one of its two values may still get lucky with probability \(1/2\). Applying a hash does not make that constant probability negligible. The homework first amplifies the challenge, then applies Fiat–Shamir. This is why the details of the original protocol matter.</p>
-<div class="practice-link"><span class="practice-tag">Fiat–Shamir exam exercises</span>
+<div class="practice-link"><span class="practice-tag">Fiat–Shamir practice and prerequisite</span>
+<a href="#schnorr-recall">Optional: derive the earlier Sigma/Schnorr protocol if its challenge timing is unfamiliar</a>
 <a href="#hw3-schnorr-fs">HW3 Problem 2(a–b): non-interactive Schnorr</a>
 <a href="#hw3-schnorr-attacks">HW3 Problem 2(c–d): guessing and transferability</a>
 <a href="#hw3-amplification">HW3 Problem 3(a–b): amplify before hashing</a>
