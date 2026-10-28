@@ -230,7 +230,7 @@
     drawGraph("graph-original",{route:fixedRoute});
     drawGraph("graph-permuted",{permuted:true,route:fixedPermRoute});
     const info=$("perm-result");
-    if(info)info.textContent=reveal?"The fixed relabeling is π(1)=2, π(2)=4, π(3)=1, π(4)=5, π(5)=3. Applying π to the original cycle 1→2→3→4→5→1 yields 2→4→1→5→3→2. Every mapped pair remains an edge, so the two graphs are isomorphic.":"The green edges represent the same Hamiltonian cycle under a permutation of the vertex labels. Choose “Show the vertex permutation” to inspect the mapping.";
+    if(info)info.textContent=reveal?"The fixed relabeling is Π(1)=2, Π(2)=4, Π(3)=1, Π(4)=5, Π(5)=3. Applying Π to the original cycle 1→2→3→4→5→1 yields 2→4→1→5→3→2. Every mapped pair remains an edge, so the two graphs are isomorphic.":"The green edges represent the same Hamiltonian cycle under a permutation of the vertex labels. Choose “Show the vertex permutation” to inspect the mapping.";
   }
   function matrixForChallenge(c){
     const permEdges=new Set(edges.map(([a,b])=>edgeKey(permutation[a],permutation[b])));
@@ -244,8 +244,8 @@
     out+='</tbody></table></div>';
     $("ham-matrix").innerHTML=out;
     $("ham-openings").textContent=c===0?
-      "Challenge c=0: reveal π and every B[i,j]. The verifier checks that B[i,j]=1 exactly when the corresponding original vertices π⁻¹(i), π⁻¹(j) are joined in G. The full permuted graph is disclosed.":
-      "Challenge c=1: reveal only the five committed edges on the cycle 2→4→1→5→3→2. All five visible entries are 1. The verifier checks that the cycle visits every vertex once; π and the other committed edges stay concealed.";
+      "Challenge c=0: reveal Π and every B[i,j]. The verifier checks that B[i,j]=1 exactly when the corresponding original vertices Π⁻¹(i), Π⁻¹(j) are joined in G. The full permuted graph is disclosed.":
+      "Challenge c=1: reveal only the five committed edges on the cycle 2→4→1→5→3→2. All five visible entries are 1. The verifier checks that the cycle visits every vertex once; Π and the other committed edges stay concealed.";
   }
   function drawFalseGraph(id,withCycle){
     const target=$(id);if(!target)return;
@@ -350,9 +350,9 @@
     const result=$("extract-result");if(!result)return;
     drawGraph("extract-b",{permuted:true,route:which==="c0"?null:fixedPermRoute});
     drawGraph("extract-g",{route:which==="combine"?fixedRoute:null});
-    if(which==="c0"){result.textContent="From an accepting c=0 opening, the extractor learns the permutation π and every edge in the committed graph B. It has not yet seen a cycle.";
+    if(which==="c0"){result.textContent="From an accepting c=0 opening, the extractor learns the permutation Π and every edge in the committed graph B. It has not yet seen a cycle.";
     }else if(which==="c1"){result.textContent="From an accepting c=1 opening with the SAME first commitments, the extractor learns a Hamiltonian cycle of B: 2→4→1→5→3→2. It has not yet learned which original vertices the labels represent.";
-    }else{result.textContent="Combine BOTH accepting responses to the SAME committed first message: inverse-permute the revealed cycle. Since π⁻¹(2)=1, π⁻¹(4)=2, π⁻¹(1)=3, π⁻¹(5)=4, and π⁻¹(3)=5, we recover 1→2→3→4→5→1 in G. This is a valid witness, not merely a statement about the likelihood of cheating.";}
+    }else{result.textContent="Combine BOTH accepting responses to the SAME committed first message: inverse-permute the revealed cycle. Since Π⁻¹(2)=1, Π⁻¹(4)=2, Π⁻¹(1)=3, Π⁻¹(5)=4, and Π⁻¹(3)=5, we recover 1→2→3→4→5→1 in G. This is a valid witness, not merely a statement about the likelihood of cheating.";}
   }
   function sigmaUpdate(n){
     feedback("sigma-result","For a false statement and a fixed commitment u, special soundness forbids two distinct accepting challenges: otherwise extraction would yield an impossible witness. So at most one of "+n+" uniformly chosen challenges may pass, which gives soundness error ≤ 1/"+n+".","good");
