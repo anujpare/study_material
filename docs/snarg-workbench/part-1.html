@@ -163,33 +163,30 @@ T_V=O\!\left(\lambda,|x|,\operatorname{polylog}(|w|)\right).
 <p class="chapter-tag">I · Why SNARGs exist · HW3, Problem 4(a)</p>
 <h1>Put the PCP theorem and Merkle tree together</h1>
 <p class="aim">We have two ingredients: the PCP theorem supplies a meaningful three-bit test, and a Merkle commitment authenticates the answers against one fixed proof. This homework asks whether combining them really produces a protocol with low soundness error and short communication. We will calculate both rather than assume they follow.</p>
-<p>The PCP theorem supplies the test. The Merkle root makes all answers refer to one fixed proof string. Neither works alone: the PCP box was imaginary, while Merkle authentication tells us that a bit is <em>unchanged</em>, not that the whole statement is <em>true</em>. We need both.</p>
-<h2>Follow the construction before proving it</h2>
-<p>There is no need to invent a complicated new protocol. Start with the question the PCP verifier would have asked its ideal box. The only change is that the prover must now <em>prove that each answer belongs to the string it committed to</em>.</p>
-<p><strong>First message:</strong> the prover constructs an encoded PCP proof, commits to its complete bit string using a Merkle tree, and sends the root \(c\). The verifier has received no proof bits yet. What the root accomplishes is to fix them <em>before</em> the questions are known.</p>
-<p><strong>Second message:</strong> the verifier chooses random PCP tests and sends their requested bit positions. It chooses these positions only after receiving \(c\). A false prover cannot know beforehand which bits it will have to open.</p>
-<p><strong>Third message:</strong> the prover returns the requested bits along with their Merkle authentication paths. The verifier checks the paths against \(c\), then applies the PCP test to the authenticated bits.</p>
-<p>Why check both? An authenticated bit can be part of a completely false proof string. Merkle verifies <em>consistency</em> with the committed string; PCP supplies the rule that makes a false statement unlikely to pass. That is the division of labor behind the construction. The homework below asks you to prove the soundness and communication bounds formally.</p>
+<p>In the ideal PCP model, the verifier's random test is meaningful because all answers come from one fixed proof string. A Merkle commitment can enforce that consistency without transmitting the string. The exercise asks you to combine these two results, then prove that the resulting protocol has <em>both</em> negligible soundness error and short communication.</p>
+<p>Try to identify the required message order before opening the solution: the prover must fix the string first, the verifier must choose queries second, and only then may the prover reveal authenticated answers.</p>
 <div class="exercise"><span class="exercise-kicker">HW3 · Problem 4(a) · Original task</span>
 <p>A PCP proof for a statement of length \(n\) has \(M=\operatorname{poly}(n)\) bits. A PCP test queries a constant \(k\) positions, chosen before seeing their answers, with perfect completeness and soundness error \(1/2\). Merkle commitments have \(\lambda\)-bit roots and openings of \(O(\lambda\log M)\) bits. Construct a three-message argument with negligible soundness error and communication polynomial in \(\lambda\) and \(\log n\).</p>
 <p><em>Read the quantities before solving:</em> \(n\) is the public statement length; \(M\) is the number of bits in the <em>encoded</em> PCP proof; “\(\operatorname{poly}(n)\)” means bounded by a fixed power of \(n\). In this problem \(k\) is the fixed number of positions read per PCP test (three in our lecture's version), <em>not</em> the number of address digits called \(k\) in the earlier logarithm example. Here \(\lambda\) is used as both the security parameter and the number of repetitions needed to drive the error down.</p>
 <details class="worked"><summary>Work through the construction and proof</summary><div class="answer">
-<h3>Choose enough tests to get negligible error</h3>
-<p>Use the three messages we just constructed. We now specify the number of tests: ask \(\lambda\) independent PCP tests, each involving \(k\) requested positions. If the same position appears several times it need only be opened once; counting \(k\lambda\) openings gives a simple valid upper bound.</p>
+<h3>1. Construct the three messages</h3>
+<p>First the prover constructs the encoded PCP proof and sends a Merkle root \(c\) committing to the entire string. Only <em>after receiving \(c\)</em> does the verifier choose its random PCP tests and send their requested positions. Finally the prover returns the bits and Merkle authentication paths. The verifier checks each path against \(c\) and then evaluates the PCP predicates on those authenticated bits.</p>
+<h3>2. Choose the repetition count</h3>
+<p>One PCP test has soundness error at most \(1/2\), which is too large. Run \(\lambda\) independent tests against the same committed proof and accept only if all pass. If one test reads \(k\) bits, at most \(k\lambda\) positions must be opened. Repeated positions can share an opening, but counting all of them gives a valid upper bound.</p>
 <div class="protocol">
 <div class="who">Prover \(P\)</div><div class="send">⟶</div><div class="who">Verifier \(V\)</div>
 <div class="msg">Send root \(c\)</div><div class="send">⟶</div><div class="local">Store the fixed commitment</div>
 <div class="local">Retain the proof and tree</div><div class="send">⟵</div><div class="msg">Send all test positions</div>
 <div class="msg">Return bits + Merkle paths</div><div class="send">⟶</div><div class="local">Check paths and PCP tests</div>
 </div>
-<h3>Does an honest proof pass?</h3>
+<h3>3. Prove completeness</h3>
 <p>Yes. A true statement has a PCP proof that passes every test. Every honest Merkle path also reconstructs the root. Thus the combined protocol has perfect completeness.</p>
-<h3>Can a false statement pass?</h3>
+<h3>4. Prove soundness</h3>
 <p>Assume the statement is false. After sending \(c\), a computationally bounded prover cannot change any authenticated bit except by breaking Merkle binding. So, apart from a negligible cryptographic failure, the verifier is testing one fixed PCP string.</p>
 <p>For that fixed false proof, the PCP theorem bounds each independent test's acceptance by \(1/2\). All \(\lambda\) tests pass with probability at most \(2^{-\lambda}\). Adding the chance of breaking the Merkle commitment gives</p>
 <div class="math">\[\Pr[\text{false acceptance}]\le2^{-\lambda}+\operatorname{negl}(\lambda).\]</div>
 <p>Here \(\operatorname{negl}(\lambda)\) denotes a probability that becomes smaller than the reciprocal of any fixed polynomial in \(\lambda\), for large enough \(\lambda\).</p>
-<h3>Have we kept communication short?</h3>
+<h3>5. Bound communication</h3>
 <p>We send one root of \(\lambda\) bits. We authenticate \(k\lambda\) proof positions. Since \(k\) is constant and each path has \(O(\lambda\log M)\) bits, all paths together cost</p>
 <div class="math">\[O(k\lambda\cdot\lambda\log M)=O(\lambda^2\log M).\]</div>
 <p>Why can we replace \(\log M\) by \(O(\log n)\)? The PCP theorem gives a polynomial bound on \(M\). If \(M\le n^a\) for some fixed constant \(a\), taking logarithms gives \(\log M\le\log(n^a)=a\log n\). That is exactly what \(O(\log n)\) means. The query indices and opened bits don't change the leading asymptotic bound, so total communication is \(O(\lambda^2\log n)\).</p>
