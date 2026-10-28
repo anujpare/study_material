@@ -1,7 +1,7 @@
 <article class="lesson">
 <p class="chapter">Part VIII · Combining Sigma protocols</p>
 <h1>How can little gate proofs establish a whole circuit?</h1>
-<p class="lead">Imagine a program built only from small boxes. Each box takes two bits and outputs one bit. We can prove each box calculated correctly without revealing the inputs. But will those separate proofs also show the whole program calculated correctly?</p>
+<p class="lead">Consider a Boolean circuit composed of gates, where each gate computes a prescribed Boolean operation on its input bits. We can prove that each gate's committed input and output values satisfy its relation. But does verifying all gate relations also establish that the complete circuit was evaluated correctly?</p>
 <h2>Begin with one gate, then connect the wires</h2>
 <p>The homework uses XOR and AND gates. XOR returns 1 when exactly one input is 1, so \(d=a\oplus b\). AND returns 1 when both are 1, so \(d=a\land b\). Here \(a,b\) are input bits and \(d\) is the output bit.</p>
 <section class="lab"><div class="lab-head"><div class="tag">Understand the local statement</div><h3>What must a gate-level proof establish?</h3><p>Choose a gate and its two inputs. The prover should convince the verifier that the three hidden bits satisfy the right rule, using commitments and a gate-level Sigma proof.</p></div>
