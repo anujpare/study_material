@@ -135,6 +135,7 @@ function initLab(lab){
     const domain=Array.from({length:17},(_,i)=>i);
     txt(lab,'\\(f('+r+')='+lhs+'\\), \\(Z_\\Omega('+r+')q('+r+')='+rhs+'\\). <b>'+(lhs===rhs?'Accept':'Reject')+'</b>.'+
      grid(domain,x=>!fake||x===3,r)+
+     (fake?'<div class="two"><div class="stage"><strong>Required point 1</strong><p>f(1) = 15, Z(1) = 0</p></div><div class="stage"><strong>Required point 2</strong><p>f(2) = 16, Z(2) = 0</p></div></div><p class="visual-note">At both required points the right side Z(i)q(i) equals zero for every q, while f(i) is nonzero. This proves the example is false; Theorem 2 establishes the general equivalence.</p>':'')+
      '<p class="viz-insight">'+(fake?'The dishonest difference polynomial is \\(h(X)=X-3\\), so only challenge r = 3 gives false acceptance.':'The honest identity holds at every challenge, establishing perfect completeness.')+'</p>');
   }
   if(type==="interp"){
