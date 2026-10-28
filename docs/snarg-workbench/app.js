@@ -190,22 +190,24 @@ function initLab(lab){
     const mode=lab.querySelector('[data-key="mode"]')?.value??"honest";
     const rows=[[2,4,8,0],[4,3,7,1],[8,7,56,0]];
     const traceInputs=[2,4,3],publicX=[2,4];
-    const target=mode==="output"?55:56;
+    const target=56;
     let explain="Every gate equation, wire equality, public input and output condition holds.";
     if(mode==="public"){
-      traceInputs[0]=5;
-      explain="The trace claims x₁ = 5 although the verifier supplied x₁ = 2. Gate 0 still uses 2, so both the public-input check and one wire-copy equality fail.";
+      traceInputs[0]=5;traceInputs[2]=57;
+      rows[0]=[5,4,20,0];rows[1]=[4,57,61,1];rows[2]=[20,61,56,0];
+      explain="Only the public-input check fails: the trace uses x₁ = 5 instead of the stated x₁ = 2. All gates and wires agree, and 20 × 61 ≡ 56 (mod 97). This is why the verifier must bind the trace to the public statement.";
     }
     if(mode==="gate"){
-      rows[2][2]=55;
-      explain="Gate 2 claims 8 × 7 = 55. This fails its multiplication equation and also fails the public target 56. Its wire inputs remain consistent.";
+      rows[0][2]=9;rows[2][0]=9;
+      explain="Only the gate-arithmetic family fails: gate 0 falsely claims 2 × 4 = 9, and gate 2 falsely claims 9 × 7 = 56. Every copied wire agrees, the public inputs match, and the final output is 56.";
     }
     if(mode==="wire"){
       rows[2]=[9,17,56,0];
       explain="All three gate equations pass: 9 × 17 = 153 ≡ 56 (mod 97). The public inputs and final output also pass. But gate 0 produced 8, not 9, and gate 1 produced 7, not 17. Only the wiring check catches this false trace.";
     }
     if(mode==="output"){
-      explain="The three gates and every wire are correct, but the public statement now claims output 55. The trace ends at 56, so only the output check fails.";
+      traceInputs[2]=4;rows[1]=[4,4,8,1];rows[2]=[8,8,64,0];
+      explain="Only the output check fails: the witness w₁ = 4 makes the circuit compute 64 instead of the public target 56. All gate equations and wire equalities hold, and the public inputs remain 2 and 4.";
     }
     const gateok=rows.every(r=>mod(r[3]===1?r[0]+r[1]-r[2]:r[0]*r[1]-r[2],97)===0);
     const pubok=traceInputs[0]===publicX[0]&&traceInputs[1]===publicX[1];
