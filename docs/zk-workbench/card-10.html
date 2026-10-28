@@ -1,7 +1,7 @@
 <article class="lesson">
 <p class="chapter">Part IV · Proving zero knowledge</p>
 <h1>How do we simulate a verifier's view without a witness?</h1>
-<p class="lead">To prove zero knowledge, we need a simulator \(\mathrm{Sim}\) that does not know a Hamiltonian cycle of \(G\), but still produces a verifier view that looks like a real conversation. We cannot simply run the honest prover, because it uses the secret cycle.</p>
+<p class="lead">The graph protocol has shown how a verifier can be convinced. But conviction alone does not establish <em>zero knowledge</em>: the conversation might still reveal something about the hidden cycle. We need a way to test whether the verifier learned anything beyond the truth of the claim. The standard test is to construct a simulator \(\mathrm{Sim}\) that produces an indistinguishable verifier view <em>without knowing the cycle</em>. If it can do that efficiently, the view itself cannot serve as evidence that the verifier learned the witness. The next construction shows how to simulate each possible challenge.</p>
 <h2>Construct a response to one guessed challenge</h2>
 <p>The trick is to guess the question before preparing the commitments. The simulator picks \(\hat c\in\{0,1\}\) at random, and makes a first message it can open correctly if the verifier asks \(\hat c\).</p>
 <div class="role-grid">
