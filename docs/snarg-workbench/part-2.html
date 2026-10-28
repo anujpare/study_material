@@ -25,17 +25,17 @@
 <p class="chapter-tag">Lecture §3 · Preparing the polynomial IOP</p>
 <h1>Can one polynomial remember a hundred Fibonacci numbers?</h1>
 <p class="aim">Before checking the recurrence, the prover needs a way to represent its proposed sequence. It has a value for each position \(0,1,\ldots,100\). Can one polynomial be made to return precisely those values when we ask for them?</p>
-<p>Let's solve a three-value version first. Suppose we want \(f(0)=2\), \(f(1)=5\) and \(f(2)=10\).</p>
-<p>Start with a straight-line polynomial \(f(X)=aX+b\). The first condition gives \(b=2\). The second says \(a+b=5\), giving \(a=3\). So \(f(X)=3X+2\). But at \(X=2\), this gives 8, not 10. A line is not flexible enough.</p>
-<p>We need to change the value at 2 <em>without changing what we already fitted at 0 and 1</em>. The expression \(X(X-1)\) is zero at both 0 and 1. So adding a multiple of that expression leaves the first two conditions untouched:</p>
-<div class="math">\[f(X)=2+3X+cX(X-1).\]</div>
-<p>At \(X=2\), we get \(10=2+6+2c\), so \(c=1\). Thus</p>
-<div class="math">\[f(X)=2+3X+X(X-1).\]</div>
-<p>Check the three values yourself: at 0 it is 2; at 1 it is 5; and at 2 it is 10. We have constructed a degree-two polynomial that holds three prescribed numbers.</p>
-<div class="lab" data-lab="interp"><div class="lab-top"><strong>Make the polynomial fit new values</strong><p>Change what the polynomial must return at positions 0, 1 and 2. The interpolating polynomial is rebuilt over \(\mathbb F_{17}\).</p></div><div class="lab-content">
-<label class="range-label">Desired \(f(0)\) <output class="range-value" data-live-for="a">1</output><input data-key="a" type="range" min="0" max="16" value="1"></label>
-<label class="range-label">Desired \(f(1)\) <output class="range-value" data-live-for="b">3</output><input data-key="b" type="range" min="0" max="16" value="3"></label>
-<label class="range-label">Desired \(f(2)\) <output class="range-value" data-live-for="c">2</output><input data-key="c" type="range" min="0" max="16" value="2"></label>
+
+<p>Use the first three Fibonacci values from our running calculation: \(F_0=0\), \(F_1=1\), and \(F_2=1\). We want one polynomial whose values at \(X=0,1,2\) are exactly 0, 1, 1. Try the simplest possibility first: a straight line \(f_2(X)=aX+b\). The first condition makes \(b=0\), and the second makes \(a=1\). Our line is therefore \(f_2(X)=X\). But at \(X=2\) it gives 2, not the required 1.</p>
+<p>To correct the value at \(X=2\) without changing the first two values, add a term that is zero at 0 and 1. The product \(X(X-1)\) has precisely that property. So try</p>
+<div class="math">\[f_2(X)=X+cX(X-1).\]</div>
+<p>At \(X=2\), the required value 1 gives \(2+2c=1\). Hence \(c=-1/2\), which we can calculate because we're working in a field and 2 has an inverse. Our polynomial is</p>
+<div class="math">\[\boxed{f_2(X)=X-\tfrac12X(X-1)=\tfrac12X(3-X).}\]</div>
+<p>Check every condition: \(f_2(0)=0\), \(f_2(1)=1\), and \(f_2(2)=1\). We have <em>represented</em> the first three Fibonacci numbers, not proved their correctness. If the prover changed one of those numbers, another interpolating polynomial would still exist.</p>
+<div class="lab" data-lab="interp"><div class="lab-top"><strong>Fit the first three Fibonacci values</strong><p>Start with 0, 1, 1. Change one value to see that a polynomial will also fit an incorrect sequence. The arithmetic is over \(\mathbb F_{17}\).</p></div><div class="lab-content">
+<label class="range-label">Desired \(f(0)\) <output class="range-value" data-live-for="a">0</output><input data-key="a" type="range" min="0" max="16" value="0"></label>
+<label class="range-label">Desired \(f(1)\) <output class="range-value" data-live-for="b">1</output><input data-key="b" type="range" min="0" max="16" value="1"></label>
+<label class="range-label">Desired \(f(2)\) <output class="range-value" data-live-for="c">1</output><input data-key="c" type="range" min="0" max="16" value="1"></label>
 <div class="lab-output" aria-live="polite"></div></div></div>
 <h2>What if there are a hundred values?</h2>
 <p>Exactly the same trick continues. Suppose we've already fitted values at \(0,1,\ldots,j\). To fit the next point \(j+1\), add a multiple of</p>
@@ -45,7 +45,7 @@
 <p>So the prover can encode the proposed Fibonacci values \(F_0,\ldots,F_{100}\) in one polynomial \(f_{\rm fib}\) of degree at most 100. Asking for \(f_{\rm fib}(i)\) is asking for the number it placed at position \(i\).</p>
 <p>This does <em>not</em> mean a hundred values have magically been compressed into a few bits. The polynomial can still have 101 coefficients, and the prover must do the work of constructing it. The advantage will come later: the verifier can test equations involving those values from just a few polynomial evaluations instead of reading the entire list.</p>
 <p>One question remains: could there be <em>two</em> different degree-at-most-100 polynomials fitting the same 101 values? We'll answer that after proving a key fact about polynomial roots. For now we have shown how a fitting polynomial can be constructed.</p>
-<div class="bridge">Notice the limitation. Interpolation doesn't know anything about Fibonacci: it will just as happily encode a false list. We need to verify <em>equations among the recorded values</em> without checking each one separately. A random polynomial evaluation may allow that—but only if we can prove that a false polynomial identity has very few chances to look true.</div>
+<div class="bridge">We now have an algebraic representation of the witness: one polynomial gives the claimed value at each Fibonacci index. But interpolation ignores the recurrence. The prover can choose any list and construct a polynomial through it. To certify the actual computation, we need to enforce the relation (f_{m fib}(i+2)=f_{m fib}(i+1)+f_{m fib}(i)) at every required step. The next lesson turns the failure of this relation into a polynomial, and asks what a random evaluation can tell us about it.</div>
 <p class="source">Lecture §3, encoding the Fibonacci sequence into a polynomial; the three-point and incremental constructions supply the algebra needed to understand the lecture's use of interpolation.</p>
 
 </article>
