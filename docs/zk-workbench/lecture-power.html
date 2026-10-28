@@ -1,7 +1,7 @@
 <article class="lesson">
 <p class="chapter">Lecture 5–8 · Interactive proof systems · Why interaction matters</p>
 <h1>Why ask the prover questions?</h1>
-<p class="lead">We've seen that an NP witness can convince a verifier by being checked. So why have a conversation at all? Because allowing the verifier to ask unpredictable questions can change what can be proved, how much must be sent, and how much the prover reveals. These are three separate advantages.</p>
+<p class="lead">We just learned why an unpredictable challenge helps catch cheating, and what completeness and soundness promise. So why do cryptographers bother with interaction? It can improve three different things: which problems the verifier can handle, how much information is sent, and how much of the witness stays secret.</p>
 <h2>More expressive proofs: NP versus PSPACE</h2>
 <p>NP concerns problems with short, efficiently checkable YES witnesses. Another class, PSPACE, concerns problems solvable using a polynomial amount of working memory. An algorithm may reuse the same memory for many steps, so using little memory does not mean running quickly.</p>
 <section class="lab">
@@ -18,6 +18,6 @@
 <p>Our main interest is privacy. Suppose the prover knows a secret witness \(w\). Sending it would convince the verifier, but it would also reveal the secret. A <strong>zero-knowledge proof</strong> aims to establish the truth of the statement without teaching the verifier anything it could not learn without \(w\). We'll make that claim precise using a simulator.</p>
 <div class="definition"><h3>Do not interchange these three goals</h3>
 <p>Keep these questions distinct: Which claims can be proved? How much work and communication does the proof require? What new information does the verifier learn?</p></div>
-<div class="transition"><p>To reason about these benefits, we'll first say exactly what it means for an interactive proof to accept an honest prover and reject a cheater.</p></div>
+<div class="transition"><p>We already know the completeness and soundness rules. What we'll pursue next is the privacy question. When is hiding the witness genuinely necessary, and what would it mean for the verifier to learn nothing extra?</p></div>
 <p class="source">PETS · Lecture 5–8, pp. 1–2, including Shamir's \(\mathrm{IP}=\mathrm{PSPACE}\) theorem. The formal proof of that theorem is outside these lecture notes.</p>
 </article>
