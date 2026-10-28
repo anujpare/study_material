@@ -1,7 +1,7 @@
 <article class="lesson">
 <p class="chapter">Lecture 5–8 · Interactive proof systems · Why interaction matters</p>
 <h1>Why ask the prover questions?</h1>
-<p class="lead">We just learned why an unpredictable challenge helps catch cheating, and what completeness and soundness promise. So why do cryptographers bother with interaction? It can improve three different things: which problems the verifier can handle, how much information is sent, and how much of the witness stays secret.</p>
+<p class="lead">We have defined when an interactive protocol is convincing. Before turning to privacy, the lecture asks whether interaction has any advantage over simply sending a conventional witness. This matters because the extra messages impose a cost: if they offer no benefit, we could avoid them. Interaction can change the class of problems admitting efficient verification and the communication required. So why do cryptographers bother with interaction? It can improve three different things: which problems the verifier can handle, how much information is sent, and how much of the witness stays secret.</p>
 <h2>More expressive proofs: NP versus PSPACE</h2>
 <p>NP concerns problems with short, efficiently checkable YES witnesses. Another class, PSPACE, concerns problems solvable using a polynomial amount of working memory. An algorithm may reuse the same memory for many steps, so using little memory does not mean running quickly.</p>
 <section class="lab">
