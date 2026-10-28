@@ -331,6 +331,9 @@ async function start(){
   byId("deck-slider").addEventListener("input",e=>{
    const v=Math.max(1,Math.min(cards.length,Number(e.target.value)));
    byId("position").textContent=v+" / "+cards.length;
+  });
+  byId("deck-slider").addEventListener("change",e=>{
+   const v=Math.max(1,Math.min(cards.length,Number(e.target.value)));
    if(cards[v-1]?.id!==getHash())location.hash=cards[v-1].id;
   });
   document.addEventListener("keydown",e=>{
