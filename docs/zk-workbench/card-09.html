@@ -1,34 +1,34 @@
 <article class="lesson">
 <p class="chapter">Part III · Graph Hamiltonicity</p>
-<h1>Prove completeness and soundness of the Hamiltonicity protocol</h1>
-<p class="lead">We want two precise results. If \(G\) really has a Hamiltonian cycle, an honest prover should always be accepted. If it has no Hamiltonian cycle, no cheating prover should succeed with probability more than \(1/2\).</p>
+<h1>Prove the graph protocol's two guarantees</h1>
+<p class="lead">We know the two questions the verifier may ask. Let's prove exactly what they guarantee. A real cycle must pass either question. If \(G\) has no cycle, a cheater with fixed commitments cannot answer both.</p>
 <div class="proof"><h3>Proof 1 · Perfect completeness</h3>
-<p>Assume \(G\) has a Hamiltonian cycle \(w\) and the prover knows it. The prover chooses \(\pi\) and commits to the genuine relabeled graph \(B=\pi(G)\).</p>
-<p><strong>Case \(c=0\):</strong> Opening \(\pi\) and every \(B_{ij}\) lets the verifier compare all entries with the public graph. They agree by the way \(B\) was constructed, so the verifier accepts.</p>
-<p><strong>Case \(c=1\):</strong> By the relabeling argument on the previous card, applying \(\pi\) to \(w\) produces a Hamiltonian cycle of \(B\). Each edge on that cycle is genuinely present and can be opened, so the verifier accepts.</p>
-<p>Those are the only two possible challenges. Therefore the honest prover succeeds for either challenge, and \(\Pr[\mathrm{accept}\mid G\text{ has a Hamiltonian cycle}]=1\). This is <strong>perfect completeness</strong>.</p></div>
+<p>For completeness, assume \(G\) has a Hamiltonian cycle \(w\). The honest prover chooses a random permutation \(\pi\) and commits to \(B=\pi(G)\).</p>
+<p>If \(c=0\), it opens the full graph and the permutation. By construction every edge agrees with \(B=\pi(G)\), so the verifier accepts.</p>
+<p>If \(c=1\), it takes its known cycle \(w\), renames every vertex using \(\pi\), and reveals the corresponding edges of \(B\). Renaming preserves the roads and the fact that every vertex appears once, so the verifier accepts.</p>
+<p>Those are the only possible challenges. An honest prover therefore passes with probability \(1\). That proves <strong>perfect completeness</strong>.</p></div>
 <h2>Soundness starts with the assumption that the claim is false</h2>
-<p>Now assume \(G\) has <strong>no</strong> Hamiltonian cycle. The cheating prover still has to send all its commitments before the verifier chooses \(c\). Because the commitment scheme is <strong>perfectly binding</strong>, the prover cannot alter the committed graph after learning the challenge.</p>
-<p>Call the already-committed graph \(B\), whether or not it was constructed honestly. There are only two possibilities:</p>
+<p>Now assume the claim is false: \(G\) has no Hamiltonian cycle. The cheating prover must commit to a graph \(B\) before the verifier picks \(c\). Perfect binding is needed here: without it, the prover could change \(B\) after seeing the question.</p>
+<p>There are only two possibilities for the graph the cheater fixed:</p>
 <div class="role-grid">
-<div class="role bad"><div class="tag">Case A</div><p>If \(B\) really is isomorphic to \(G\), then \(B\) has no Hamiltonian cycle because isomorphisms preserve cycles. Thus challenge \(c=1\) must fail, although \(c=0\) might pass.</p></div>
-<div class="role bad"><div class="tag">Case B</div><p>If \(B\) is <em>not</em> isomorphic to \(G\), then challenge \(c=0\) must fail, although \(c=1\) might pass if the cheating prover selected a different graph containing a cycle.</p></div>
+<div class="role bad"><div class="tag">Case A</div><p><strong>Case A.</strong> \(B\) really is a relabeling of \(G\). Then \(B\) cannot contain a Hamiltonian cycle, because renaming preserves whether a cycle exists. Challenge \(c=1\) must therefore fail.</p></div>
+<div class="role bad"><div class="tag">Case B</div><p><strong>Case B.</strong> \(B\) is not a relabeling of \(G\). Challenge \(c=0\) must fail, because opening everything would reveal a graph that does not match the public one.</p></div>
 </div>
 <section class="lab">
 <div class="lab-head"><div class="tag">A falsifiable claim · See which challenge MUST fail</div><h3>Fix the cheating prover’s graph before choosing the challenge</h3>
-<p>Unlike the earlier example, this public graph \(G_0\) has <strong>no Hamiltonian cycle</strong>: cities 1 and 5 have only one road each, whereas a cycle would need two different roads at every city.</p></div>
+<p>The example graph \(G_0\) has no Hamiltonian cycle: vertices 1 and 5 each have only one road, but a cycle would need two different roads incident to each visited vertex. Try cheating with a faithful copy or with a different graph that contains a cycle.</p></div>
 <div class="lab-body">
 <div class="two-diagrams">
 <div class="diagram"><div class="graph-title">Public graph \(G_0\): no cycle</div><div id="ham-false-public"></div></div>
 <div class="diagram"><div class="graph-title">Committed graph \(B\)</div><div id="ham-false-hidden"><p>Choose a cheating preparation below.</p></div></div>
 </div>
-<p class="diagram-note">Gray = real road. Red dashed = a <strong>missing</strong> road. Green = extra road in the cheater’s graph. For teaching, we show the hidden committed graph; the real verifier sees only sealed commitments until opening.</p>
-<p>Stage 1 · The dishonest prover fixes one committed graph \(B\):</p>
+<p class="diagram-note">Gray means a road, red dashed means a missing road, and green marks a road added by the cheater. The diagram reveals the cheating preparation only so you can see why the test fails; the real verifier would see commitments.</p>
+<p>First, the dishonest prover fixes one graph \(B\):</p>
 <div class="control-row">
 <button data-demo="ham-false" data-value="isomorphic">Commit to \(B=G_0\)</button>
 <button data-demo="ham-false" data-value="different">Commit to \(B\) WITH a cycle</button>
 </div>
-<p>Stage 2 · The verifier independently chooses one challenge. Binding prevents the prover from changing \(B\) now.</p>
+<p>Then the verifier chooses \(c=0\) or \(c=1\). The prover cannot change \(B\) now.</p>
 <div class="control-row">
 <button data-demo="ham-false-random" data-value="random">Flip one fair challenge</button>
 <button data-demo="ham-false-challenge" data-value="0">Inspect \(c=0\): isomorphism?</button>
@@ -36,8 +36,8 @@
 </div>
 <div id="ham-false-result" class="feedback" aria-live="polite">Select and fix a committed graph before choosing one challenge. Start a new preparation to try the other challenge.</div>
 </div></section>
-<div class="proof"><h3>Proof 2 · Soundness error at most \(1/2\)</h3><p>In either case, <strong>at least one of the two challenges necessarily fails</strong>. The verifier chooses its challenge uniformly, which means each of 0 and 1 has probability \(1/2\). The prover can therefore succeed with probability at most \(1/2\):</p><div class="math">\[\Pr[\mathrm{accept}\mid G\notin L]\ \leq\ \tfrac12\]</div><p>The point is not that a typical cheater gets caught half the time. We have shown that <em>every</em> cheating strategy has at least one unavoidable failing challenge, because a graph with a cycle cannot simultaneously be an isomorphic copy of a graph with no cycle.</p></div>
-<p>Hiding did not establish soundness here. <em>Binding</em> was the essential assumption because the committed graph had to remain fixed. Hiding enters in the next, harder claim: zero knowledge.</p>
-<div class="transition"><p>How can a simulator prepare a transcript that looks like either honest response if it does not know any Hamiltonian cycle of \(G\)? The answer uses a guess about the verifier's challenge and carefully controlled rewinding.</p></div>
+<div class="proof"><h3>Proof 2 · Soundness error at most \(1/2\)</h3><p>We've covered <em>every</em> possible committed graph: either it is a relabeling of \(G\) or it is not. In the first case \(c=1\) fails; in the second case \(c=0\) fails. Since the verifier chooses each challenge with probability \(1/2\), the cheater can succeed with probability at most \(1/2\).</p><div class="math">\[\Pr[\mathrm{accept}\mid G\notin L]\ \leq\ \tfrac12\]</div><p>That is the soundness proof. It isn't a guess about how an ordinary cheater behaves. It shows that for every fixed cheating commitment, at least one of the two questions is impossible to answer correctly.</p></div>
+<p>Only binding was needed for this soundness argument. Hiding serves a different purpose: it will let a simulator imitate what the verifier sees without knowing the secret cycle.</p>
+<div class="transition"><p>Now comes the harder question: can we produce a convincing-looking conversation without knowing any cycle? That will be our zero-knowledge proof.</p></div>
 <p class="source">PETS · ZK lecture notes, Theorem 1, p. 6; the proof above fills in the contradiction that each challenge pair creates.</p>
 </article>
