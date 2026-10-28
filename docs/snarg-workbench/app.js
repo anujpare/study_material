@@ -288,6 +288,22 @@ function initLab(lab){
       grid(Array.from({length:17},(_,i)=>i),n=>n===1||n===2,r)+
       '<p class="viz-insight">The product is zero at r = 1 or r = 2 because a factor is zero. At all other field points both factors are nonzero, so their product cannot be zero in a field.</p>');
   }
+  if(type==="story-protocol"){
+    const mode=lab.querySelector('[data-key="protocol"]')?.value??"interactive";
+    const stage=val(lab,"stage",1);
+    const steps=mode==="interactive"?[
+      ["Prover fixes polynomials","The prover commits to f_fib and q and sends c_f and c_q. The verifier has not chosen r yet."],
+      ["Verifier chooses r","After receiving the commitments, the verifier samples a uniform field element r and sends it to the prover."],
+      ["Prover opens and verifier checks","The prover opens the required evaluations at 0, 1, 100, r, r+1, r+2 and q(r). The verifier authenticates them and checks the endpoint and ZeroTest equations."]
+    ]:[
+      ["Prover fixes polynomials","The prover commits to f_fib and q and fixes c_f and c_q. These commitments become part of the public proof."],
+      ["Both parties derive r","They calculate r from the public statement, the fixed commitments, and the public parameters using the random-oracle hash. No verifier message is sent."],
+      ["Prover publishes one proof","The prover publishes commitments, evaluation values and opening proofs. Any verifier recomputes r and checks the same equations."]
+    ];
+    const row=steps.map((x,i)=>'<div class="stage" style="opacity:'+(i===stage-1?'1':'.52')+';border-color:'+(i===stage-1?'#346b67':'#ccd6d1')+'"><strong>'+(i+1)+'. '+x[0]+'</strong><p>'+x[1]+'</p></div>').join("");
+    txt(lab,'<div class="flow" style="flex-wrap:wrap;gap:10px">'+row+'</div>'+
+      '<p class="viz-insight">'+steps[stage-1][1]+'</p>');
+  }
   if(type==="opening"){
     const stage=val(lab,"stage",1),r=val(lab,"r",3),y=mod(r*r+1,17);
     const info=[
