@@ -356,12 +356,10 @@ function initLessonExtras(id){
   "schwartz-zippel":extraBox("Which pairs make XY = 0?","There are 49 possible pairs in 𝔽₇². Green cells are the ones where XY = 0.",range("r1","First coordinate r₁",0,6,2)+range("r2","Second coordinate r₂",0,6,3),"szplot"),
   "midterm-polynomial":extraBox("Which random checks accept the vote?","Choose a two-entry vote. Green squares show which random challenges make the verifier accept.",choice("case",[["valid","Valid x = (1,0)"],["two","Invalid x = (1,1)"],["single","Invalid x = (2,0)"]])+range("r1","First challenge r₁",0,6,2)+range("r2","Second challenge r₂",0,6,3),"onehot"),
   "vanishing-polynomial":extraBox("Where does the product become zero?","For Ω = {1,2}, try different r in ZΩ(r) = (r−1)(r−2).",range("r","Evaluation point r",0,16,1),"vanish"),
-  "polynomial-commitments":extraBox("Follow a polynomial opening","Follow what the prover sends and what the verifier checks. The diagram shows the steps, not a real cryptographic implementation.",range("stage","Protocol stage",1,3,1)+range("r","Evaluation point r",0,16,3),"opening"),
   "roots-unity-cost":extraBox("A big product becomes one power","Try different r in 𝔽₉₇. Both formulas must give the same value.",range("r","Field element r",0,96,8),"unitycost"),
   "circuits-meaning":extraBox("Change the secret input","The public target is 56. Change w and see whether the circuit's final check equals zero.",range("w","Candidate witness w",0,8,3),"circuit"),
   "plonk-output-input":extraBox("What if the prover changes our public input?","The real input is x₁ = 2. Change the value written into the trace and watch the difference.",range("x","Claimed trace input",0,8,2),"public"),
-  "plonk-gates":extraBox("Switch the gate from addition to multiplication","The inputs are 4 and 3; the claimed output is 7. Change only the selector.",choice("s",[["1","Addition selector s = 1"],["0","Multiplication selector s = 0"]]),"selector"),
-  "plonk-final":extraBox("What does each PLONK check rule out?","Choose each check to see what kind of cheating it prevents.",range("stage","Verification check",1,4,1),"plonkstages")
+  "plonk-gates":extraBox("Switch the gate from addition to multiplication","The inputs are 4 and 3; the claimed output is 7. Change only the selector.",choice("s",[["1","Addition selector s = 1"],["0","Multiplication selector s = 0"]]),"selector")
  };
  const html=extras[id];if(!html)return;
  // Put the experiment beside the equation or question it tests, never
