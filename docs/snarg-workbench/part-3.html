@@ -9,7 +9,7 @@
 <p>Let \(d\) be the maximum permitted degree, \(\lambda\) the security parameter, \(f\) a polynomial over \(\mathbb F\), and \(z\) a point at which the verifier wants to evaluate \(f\). The lecture defines a polynomial commitment scheme by four algorithms:</p>
 <div class="table-scroll"><table><thead><tr><th>Algorithm</th><th>Why it is needed</th></tr></thead><tbody>
 <tr><td>\(\operatorname{Setup}(d,\lambda)\to pp\)</td><td>Generate public parameters \(pp\) for the degree bound and security level.</td></tr>
-<tr><td>\(\operatorname{Commit}(pp,f)\to c\)</td><td>Produce a short commitment \(c\) to \(f\) <em>before</em the query is known.</td></tr>
+<tr><td>\(\operatorname{Commit}(pp,f)\to c\)</td><td>Produce a short commitment \(c\) to \(f\) <em>before</em> the query is known.</td></tr>
 <tr><td>\(\operatorname{Open}(pp,f,z)\to\pi_z\)</td><td>Generate a proof \(\pi_z\) for the claimed evaluation \(y=f(z)\).</td></tr>
 <tr><td>\(\operatorname{Verify}(pp,c,z,y,\pi_z)\to\{0,1\}\)</td><td>Check that the earlier commitment authenticates the claimed value \(y\) at \(z\).</td></tr>
 </tbody></table></div>
