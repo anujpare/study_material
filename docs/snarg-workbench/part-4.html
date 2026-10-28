@@ -10,7 +10,8 @@
 <div class="math">\[\boxed{C(\mathbf x,\mathbf w)=0.}\]</div>
 <p>We can write the set of true statements as</p>
 <div class="math">\[L=\{\mathbf x\in\mathbb F^m:\exists\mathbf w\in\mathbb F^n,\ C(\mathbf x,\mathbf w)=0\}.\]</div>
-<p>This is the same statement-and-witness definition we began with. The difference is that we have given the checking computation a fixed structure: a circuit made of addition and multiplication gates. In the field \(\mathbb F_2\), where the only values are 0 and 1, those two gates correspond to XOR and AND, so Boolean circuits fit into this picture.</p>
+<p>Why does this help with the NP statements from the very first lesson? Remember the ordinary checker \(R(x,w)\), which returned 1 for a valid witness. If we know how to check the witness by a finite sequence of steps, we can draw those steps as a circuit: inputs are the public statement \(x\) and witness \(w\), and each elementary operation becomes a gate. Instead of asking whether the checker returns 1, we can subtract 1 at the end and ask whether the resulting circuit outputs zero. So the circuit statement is a new <em>representation of the original witness-checking problem</em>, not a different problem.</p>
+<p>For Boolean checks this translation is especially concrete. In the field \(\mathbb F_2\), where 0 and 1 are the only elements, multiplication acts as AND and addition acts as XOR. NOT of a bit \(a\) can be written \(1+a\), and OR of bits \(a,b\) can be written \(a+b+ab\), all modulo 2. Thus ordinary Boolean verification logic can be assembled from additions and multiplications. We use the same arithmetic-circuit idea over larger fields for the polynomial proofs.</p>
 <h2>Work through the lecture's three-gate example</h2>
 <p>Take public inputs \(x_1=2\) and \(x_2=4\), and private input \(w_1=3\). The circuit performs</p>
 <div class="math">\[t=(x_1x_2)(x_2+w_1).\]</div>
