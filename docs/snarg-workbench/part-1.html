@@ -144,6 +144,7 @@ T_V=O\bigl(\lambda,|x|,\operatorname{polylog}(|w|)\bigr).
 <p>The verifier hashes upward to reconstruct the root. If two different messages at the same position reconstructed the same root, somewhere on the two paths different inputs would yield the same hash. This would break collision resistance.</p>
 <p class="qed">So both size requirements and position binding hold. The tree combines the useful features of parts (a) and (b). \(\square\)</p>
 </div></details></div>
+<div class="bridge">The three constructions show why Merkle trees are useful here: they keep both the commitment and a single opening short. We can now combine those authenticated openings with the PCP verifier and prove the resulting protocol works.</div>
 <p class="source">Original HW1, Problem 4(a–c); <a href="../hw1/">HW1 flashcard deck</a>.</p>
 </article>
 
