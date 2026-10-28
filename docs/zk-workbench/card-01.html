@@ -1,9 +1,9 @@
 <article class="lesson">
 <p class="chapter">Part I · What counts as a proof?</p>
-<h1>A claim is not the same thing as its evidence</h1>
-<p class="lead">We want to prove a statement without revealing a secret. Before asking how that could work, we must understand what an ordinary proof reveals. A small road-map problem lets us separate the claim, the evidence and the act of checking the evidence.</p>
+<h1>What would convince us that a graph has a cycle?</h1>
+<p class="lead">Suppose I tell you there is a route through five cities that visits every city exactly once and comes back to the start. You needn't trust me. I can show you the route, and you can check it yourself.</p>
 <h2>A precise question</h2>
-<p>Consider a map with five cities numbered 1 to 5. A line means that a road connects two cities. Our claim is: <strong>there exists a route that visits every city exactly once and returns to its starting city, travelling only along the drawn roads.</strong> Such a route is called a <em>Hamiltonian cycle</em>.</p>
+<p>Look at the map. The cities are numbered 1 through 5, and a line means there is a road. Our claim is that we can visit all five cities exactly once and return to the start without ever using a missing road. Such a route is called a <em>Hamiltonian cycle</em>.</p>
 <div class="diagram"><div id="witness-graph"></div><p class="diagram-note">Gray lines are available roads. Choosing a candidate below marks each claimed road green if it exists, or dashed red if it does not.</p></div>
 <section class="lab">
 <div class="lab-head"><div class="tag">Explore the crucial distinction</div><h3>Can the verifier check this proposed proof?</h3><p>The graph itself is unchanged. Only the proposed route changes.</p></div>
@@ -12,11 +12,11 @@
 <div id="route-result" class="feedback" aria-live="polite">Choose one route. The verifier will inspect every road rather than trusting the claim.</div>
 </div>
 </section>
-<p>Even if Route B fails verification, that does <strong>not</strong> establish that the graph has no Hamiltonian cycle: it establishes only that <em>this proposed route</em> is not valid. Route A, however, is enough to establish that the original claim is true because it exhibits a valid cycle.</p>
+<p>Try both routes. Route A shows that the claim is true: every required road exists and every city is visited once. Route B fails because one of its roads is missing. But that only proves <em>Route B</em> is invalid; it does not prove the graph has no valid route. One successful witness settles a YES claim, while one failed witness cannot settle a NO claim.</p>
 <h2>From a road map to mathematical language</h2>
-<p>We call the claim's input the <strong>statement</strong>, denoted \(x\). Here \(x\) is the complete road map. We call a proposed piece of evidence a <strong>witness</strong>, denoted \(w\). Here \(w\) is the ordered list of visited cities. Finally, \(M\) is the algorithm that checks whether the witness satisfies the statement.</p>
+<p>Let's name the pieces. The <strong>statement</strong> \(x\) is the graph. The <strong>witness</strong> \(w\) is the proposed route. The checking algorithm \(M\) takes both and returns 1 if the route is valid, or 0 if it is not. Notice that the verifier never has to know <em>how</em> the route was found.</p>
 <div class="math">\[M(x,w)=1\]<p class="math-caption">The value 1 means that the checker accepts the witness. The value 0 means that this particular witness fails. The equation does not claim that every possible witness succeeds.</p></div>
-<p>A proof need not explain how the prover <em>found</em> the route. It only needs to supply evidence that the verifier can check. This difference becomes important when we study complexity, and later when we ask how to hide the witness itself.</p>
-<div class="transition"><p><strong>Why the next card?</strong> The verifier checks one proposed route quickly. Does that imply that finding such a route—or determining that none exists—is equally quick? Answering that requires a precise definition of <em>NP</em>.</p></div>
+<p>We've learned something useful: a proof can be evidence that the verifier checks, rather than a description of how the prover solved the problem. We will soon want to convince the verifier without handing over the witness.</p>
+<div class="transition"><p>Checking the supplied route is quick. But how much work would it take to <em>find</em> a route when nobody gives us one? That's the distinction behind NP.</p></div>
 <p class="source">PETS · ZK lecture notes, p. 1. The road-map example is an explanatory construction; the graph-Hamiltonicity problem is used formally later.</p>
 </article>
