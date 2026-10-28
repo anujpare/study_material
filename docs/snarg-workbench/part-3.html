@@ -77,7 +77,7 @@ g^{z-z'}=h^{c-c'}=g^{x(c-c')}.
 <p class="qed">Two valid answers to different challenges force a recoverable witness. This is the special-soundness property we'll need when counting cheating challenges. \(\square\)</p>
 </div></details></div>
 <div class="practice-link"><span class="practice-tag">Background exercise</span><a href="#repetition-hw2">HW2 2(a–c): why sequential and parallel challenges behave differently</a></div>
-<div class="bridge">The reason for this Schnorr detour is now visible. The prover must fix \(u\) <em>before</em learning \(c\); the verifier's acceptance equation uses both. If we can derive \(c\) from a hash of that fixed first message, everybody could reproduce the challenge without another round of communication. That's Fiat–Shamir.</div>
+<div class="bridge">The reason for this Schnorr detour is now visible. The prover must fix \(u\) <em>before</em> learning \(c\); the verifier's acceptance equation uses both. If we can derive \(c\) from a hash of that fixed first message, everybody could reproduce the challenge without another round of communication. That's Fiat–Shamir.</div>
 <p class="source">Homework 2, Problem 3(a–c), and the earlier Sigma-protocol lectures.</p>
 </article>
 
@@ -115,7 +115,7 @@ g^{z-z'}=h^{c-c'}=g^{x(c-c')}.
 <article class="lesson" data-id="fiat-shamir" data-title="Fiat–Shamir: remove the challenge safely">
 <p class="chapter-tag">III · Commitments and Fiat–Shamir · Lecture §§2, 4, 6</p>
 <h1>How can we remove the verifier's message?</h1>
-<p class="aim">We have now seen the same three-message pattern twice. In Schnorr, the verifier asks for a random group challenge; in our polynomial proof, it asks for a random evaluation point. Both questions must arrive only <em>after</em the prover has fixed its first message. Can we make that order work without an actual conversation?</p>
+<p class="aim">We have now seen the same three-message pattern twice. In Schnorr, the verifier asks for a random group challenge; in our polynomial proof, it asks for a random evaluation point. Both questions must arrive only <em>after</em> the prover has fixed its first message. Can we make that order work without an actual conversation?</p>
 <p>Look at the order of messages. First the prover fixes a first message \(u\). Then the verifier chooses a random challenge \(c\). The prover uses \(c\) to calculate a response \(z\).</p>
 <p>Suppose both sides have access to a hash function \(H\) modeled as a <strong>random oracle</strong>. It returns a random-looking, consistently stored answer for each new input. Instead of waiting for a verifier, the prover can set</p>
 <div class="math">\[c=H(\operatorname{Encode}(x,u)),\]</div>
