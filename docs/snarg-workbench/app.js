@@ -1,69 +1,41 @@
 (() => {
 "use strict";
-const chapterFiles=["story-1.html","story-2.html","part-1.html","part-2.html","part-3.html","part-4.html","part-5.html"];
-const chapters=["Guided story · The problem and the mathematical idea","Guided story · Proving the computation","Reference · SNARGs and PCPs","Reference · Polynomial mathematics","Reference · Commitments and Fiat–Shamir","Reference · PLONK details","Reference · Homework and midterm"];
+const chapterFiles=["part-1.html","part-2.html","part-3.html","part-4.html","part-5.html"];
+const chapters=["I · Why SNARGs exist","II · Polynomial reasoning","III · Commitments & Fiat–Shamir","IV · PLONK from circuits","V · Examination workshop"];
 const byId=id=>document.getElementById(id);
 const main=byId("lesson"), select=byId("lesson-select"), chapter=byId("chapter-select");
 const prev=byId("previous"), next=byId("next");
 let cards=[],current=0,req=0,mathReady=false,readingMode="guided";
 /* Main teaching route. Every other card is still available at its lesson link. */
 const coreIds=new Set([
- "story-claim","story-sampling","story-pcp","story-merkle","story-polynomial",
- "story-random-check","story-constraints","story-zerotest","story-commit",
- "story-circuit","story-plonk-checks","story-conclusion"
+ "the-question","succinctness","pcp-box","merkle","hw3-pcp-argument","iop-types",
+ "field-foundation","interpolation","equality-proof","schwartz-zippel","vanishing-polynomial",
+ "zerotest-proof","fibonacci-protocol","polynomial-commitments","schnorr-recall",
+ "fiat-shamir","circuits-meaning","trace-encoding","roots-unity-cost","plonk-output-input",
+ "plonk-gates","plonk-wiring","plonk-final"
 ]);
-/* All previous reference lessons remain navigable, with explicit returns
-   to the exact concept that made the detour relevant. */
 const exerciseSources={
- "the-question":"story-claim",
- "succinctness":"story-sampling",
- "pcp-box":"story-pcp",
- "merkle":"story-merkle",
- "hw1-vectors":"story-merkle",
- "hw3-pcp-argument":"story-merkle",
- "iop-types":"story-polynomial",
- "field-foundation":"story-polynomial",
- "interpolation":"story-polynomial",
- "equality-proof":"story-random-check",
- "schwartz-zippel":"story-random-check",
- "midterm-polynomial":"story-random-check",
- "vanishing-polynomial":"story-constraints",
- "zerotest-proof":"story-zerotest",
- "fibonacci-protocol":"story-zerotest",
- "polynomial-commitments":"story-commit",
- "schnorr-recall":"story-commit",
- "repetition-hw2":"story-commit",
- "fiat-shamir":"story-commit",
- "hw3-schnorr-fs":"story-commit",
- "hw3-schnorr-attacks":"story-commit",
- "hw3-conceptual":"story-commit",
- "hw3-amplification":"story-commit",
- "hw3-fs-pcp":"story-commit",
- "circuits-meaning":"story-circuit",
- "trace-encoding":"story-circuit",
- "roots-unity-cost":"story-plonk-checks",
- "plonk-output-input":"story-plonk-checks",
- "plonk-gates":"story-plonk-checks",
- "plonk-wiring":"story-plonk-checks",
- "plonk-final":"story-conclusion",
- "hw2-circuit-sat":"story-circuit",
- "midterm-interpolation":"story-commit",
- "exam-fake-trace":"story-plonk-checks",
- "exam-security-proof":"story-zerotest",
- "coverage":"story-conclusion"
+ "hw1-vectors":"merkle",
+ "midterm-polynomial":"schwartz-zippel",
+ "repetition-hw2":"schnorr-recall",
+ "hw3-schnorr-fs":"fiat-shamir",
+ "hw3-schnorr-attacks":"fiat-shamir",
+ "hw3-conceptual":"fiat-shamir",
+ "hw3-amplification":"fiat-shamir",
+ "hw3-fs-pcp":"fiat-shamir",
+ "hw2-circuit-sat":"circuits-meaning",
+ "midterm-interpolation":"polynomial-commitments",
+ "exam-fake-trace":"plonk-wiring",
+ "exam-security-proof":"zerotest-proof",
+ "coverage":"plonk-final"
 };
 function routeCards(){return readingMode==="all"?cards:cards.filter(c=>coreIds.has(c.id));}
 function neighbor(delta){
  const list=routeCards(),currentId=cards[current]?.id;
  const index=list.findIndex(c=>c.id===currentId);
  if(index>=0)return list[index+delta]||null;
- if(readingMode==="guided"){
-   const source=exerciseSources[currentId];
-   const originIndex=list.findIndex(c=>c.id===source);
-   if(originIndex>=0)return list[delta<0?originIndex:Math.min(originIndex+1,list.length-1)]||null;
- }
- if(delta>0)return list.find(c=>cards.indexOf(c)>current)||null;
- return [...list].reverse().find(c=>cards.indexOf(c)<current)||null;
+ if(delta>0)return list.find(c=>cards.findIndex(x=>x.id===c.id)>current)||null;
+ return [...list].reverse().find(c=>cards.findIndex(x=>x.id===c.id)<current)||null;
 }
 function jumpRelative(delta){const target=neighbor(delta);if(target)location.hash=target.id;}
 function syncRouteFooter(){
@@ -136,122 +108,6 @@ function initLab(lab){
  const type=lab.dataset.lab;
  const update=()=>{
   syncRangeValues(lab);
-  if(type==="story-divisibility"){
-    const i=val(lab,"i",3),claim=lab.querySelector('[data-key="claim"]')?.value??"8";
-    const bad=claim==="8"&&i===3,D=bad?3:0;
-    txt(lab,'<div class="zero-sides"><div><small>Recurrence at step '+i+'</small>'+
-      '<strong>D('+i+') = '+D+'</strong><span>'+(bad?'8 − 3 − 2 = 3':'The addition is correct')+'</span></div>'+
-      '<div><small>Vanishing polynomial</small><strong>Z('+i+') = 0</strong><span>A factor X − '+i+' is zero</span></div></div>'+
-      '<div class="exam-result '+(bad?'failure':'success')+'"><strong>'+
-      (bad?'No quotient can repair this step':'This step allows the identity')+'</strong><p>'+
-      (bad?'At this required position, the identity would demand 3 = 0 × q('+i+'). The right side is zero for every possible q. Impossible.':
-      'Both sides can equal zero here. This is necessary, but we must check all four positions for the full recurrence.')+
-      '</p></div>');
-  }
-  if(type==="story-protocol"){
-    const stage=val(lab,"stage",1);
-    const fs=lab.querySelector('[data-key="protocol"]')?.value==="fiat-shamir";
-    const names=fs?["Fix and commit","Derive hash challenge","Publish and verify"]:
-      ["Fix and commit","Verifier chooses r","Open the values"];
-    const bodies=fs?[
-      "The prover fixes polynomials f and q, sends commitments c_f and c_q. A hash must not determine r until those commitments are fixed.",
-      "Both parties derive r = H(public statement, c_f, c_q, parameters). There is no verifier-to-prover challenge message.",
-      "The prover publishes claimed evaluations and opening proofs. Anyone recomputes r, authenticates the values, and performs ZeroTest."
-    ]:[
-      "The prover fixes f and q and sends commitments c_f and c_q. The verifier still has not picked r.",
-      "After receiving the commitments, the verifier draws a fresh uniform field element r and sends it to the prover.",
-      "The prover returns f(r), f(r+1), f(r+2), q(r), and their authentication proofs. The verifier checks the commitment openings and the polynomial identity."
-    ];
-    txt(lab,'<div class="protocol-stages">'+names.map((name,j)=>
-      '<div class="'+(j===stage-1?'selected':'')+'"><span>Stage '+(j+1)+'</span>'+
-      '<strong>'+name+'</strong><p>'+(j===stage-1?bodies[j]:'')+'</p></div>').join('')+'</div>'+
-      '<p class="viz-insight">'+(fs?
-      'Fiat–Shamir removes the interactive challenge message, but soundness needs a suitable random-oracle argument.':
-      'The order is what makes the root-count proof meaningful: the polynomial is fixed before r is random.')+'</p>');
-  }
-  if(type==="story-step"){
-    const i=val(lab,"i",0),v=[0,1,1,2,3,8];
-    const expected=v[i]+v[i+1],claimed=v[i+2],ok=expected===claimed;
-    const rows=[0,1,2,3].map(j=>
-      '<div class="step-chip '+(j===i?'selected ':'')+(v[j]+v[j+1]===v[j+2]?'pass':'fail')+'">'+
-      '<strong>Step '+j+'</strong><span>'+v[j]+' + '+v[j+1]+' '+(v[j]+v[j+1]===v[j+2]?'=':'≠')+' '+v[j+2]+'</span></div>').join("");
-    txt(lab,'<div class="step-grid">'+rows+'</div>'+
-      '<div class="exam-result '+(ok?'success':'failure')+'"><strong>'+(ok?'Verifier accepts this step':'Verifier catches the false step')+'</strong>'+
-      '<p>At step '+i+' the rule expects '+v[i]+' + '+v[i+1]+' = '+expected+
-      ', but the server reported '+claimed+'.</p></div>'+
-      '<p class="visual-note">Only step 3 is wrong. One uniform random step catches the lie with probability 1/4 and misses it with probability 3/4.</p>');
-  }
-  if(type==="story-poly"){
-    const r=val(lab,"r",1),h=mod((r-1)*(r-4),101),accepted=h===0;
-    txt(lab,'<div class="math-calc"><span>Difference polynomial at the selected point</span>'+
-      '<strong>h('+r+') = ('+r+' − 1)('+r+' − 4) ≡ '+h+' (mod 101)</strong></div>'+
-      '<div class="exam-result '+(accepted?'failure':'success')+'"><strong>'+
-      (accepted?'False equality passes at this point':'False equality is detected')+'</strong>'+
-      '<p>The two polynomials differ. A false equality passes only if h(r) = 0.</p></div>'+
-      '<div class="root-location"><span class="root-highlight">Root r = 1</span>'+
-      '<span class="root-highlight">Root r = 4</span>'+
-      '<span>99 other points reject</span></div>'+
-      '<p class="visual-note">Exactly two of 101 possible field values are roots. Choosing a uniform r gives false acceptance probability 2/101 in this example.</p>');
-  }
-  if(type==="story-zero"){
-    const claim=lab.querySelector('[data-key="claim"]')?.value??"8",honest=claim==="5",r=val(lab,"r",3),p=101;
-    const f=honest?[0,46,75,32,71,80]:[0,87,99,96,96,27],q=honest?[51,21]:[79,74];
-    const poly=(coef,x)=>{let a=0;for(let i=coef.length-1;i>=0;i--)a=mod(a*x+coef[i],p);return a;};
-    const f0=poly(f,r),f1=poly(f,r+1),f2=poly(f,r+2);
-    const lhs=mod(f2-f1-f0,p),Z=mod(r*(r-1)*(r-2)*(r-3),p),qv=mod(q[0]+q[1]*r,p);
-    const rhs=mod(Z*qv,p),h=mod(lhs-rhs,p),ok=lhs===rhs,expected=honest?0:mod(51*r*(r-1)*(r-2),p);
-    if(h!==expected)throw Error("Fibonacci example inconsistent at r="+r);
-    const checks=[0,1,2,3].map(i=>'<span class="'+(!honest&&i===3?'failed-step':'')+'">Step '+i+': '+(!honest&&i===3?'wrong by 3':'correct')+'</span>').join("");
-    txt(lab,'<div class="sequence-mini">'+checks+'</div>'+
-      '<div class="zero-sides"><div><small>Recurrence difference</small><strong>D('+r+') = '+lhs+'</strong>'+
-      '<span>f(r+2) − f(r+1) − f(r)</span></div>'+
-      '<div><small>Claimed identity</small><strong>Z(r)q(r) = '+rhs+'</strong>'+
-      '<span>'+Z+' × '+qv+' (mod 101)</span></div></div>'+
-      '<div class="exam-result '+(ok?'success':'failure')+'"><strong>'+
-      (ok?(honest?'Honest proof accepted':'False claim slips through at this r'):'False claim rejected')+
-      '</strong><p>Discrepancy h('+r+') = '+lhs+' − '+rhs+' ≡ '+h+' (mod 101).</p></div>'+
-      '<div class="root-location"><span class="root-highlight">r = 0</span><span class="root-highlight">r = 1</span>'+
-      '<span class="root-highlight">r = 2</span><span>'+(honest?'All 101 choices accept':'Only these 3 choices accept the lie')+'</span></div>'+
-      '<p class="viz-insight">'+(honest?
-      'The honest identity holds at every point, giving perfect completeness.':
-      'The dishonest remainder is h(X)=51X(X−1)(X−2). Exactly 3 of 101 challenges are roots, below the general bound of 5/101.')+'</p>');
-  }
-  if(type==="story-circuit"){
-    const mode=lab.querySelector('[data-key="mode"]')?.value??"honest",p=97;
-    let input=[2,4,3],rows=[[2,4,8,0],[4,3,7,1],[8,7,56,0]],target=56;
-    let reason="Every gate is correct, all wires match, and the output equals the public target 56.";
-    if(mode==="wire"){
-      rows[2]=[9,17,56,0];
-      reason="All gate arithmetic, public inputs and output checks pass. But gate 0 produced 8, not 9; gate 1 produced 7, not 17. Only the wire-copy checks fail.";
-    }else if(mode==="input"){
-      input=[5,4,57];rows=[[5,4,20,0],[4,57,61,1],[20,61,56,0]];
-      reason="This is a consistent circuit computing 56, but with x₁=5 instead of the public x₁=2. Only the public-input check fails.";
-    }else if(mode==="gate"){
-      rows=[[2,4,9,0],[4,3,7,1],[9,7,56,0]];
-      reason="All wires agree and the final value is 56. But 2×4≠9 and 9×7≠56 (mod 97). The gate arithmetic checks fail.";
-    }else if(mode==="target"){
-      target=55;
-      reason="The actual computation is valid, but the public statement now demands 55 rather than 56. Only the final-output check fails.";
-    }
-    const gateok=rows.every(r=>mod((r[3]===1?r[0]+r[1]:r[0]*r[1])-r[2],p)===0);
-    const pubok=input[0]===2&&input[1]===4;
-    const wireok=input[0]===rows[0][0]&&input[1]===rows[0][1]&&
-      input[1]===rows[1][0]&&input[2]===rows[1][1]&&
-      rows[0][2]===rows[2][0]&&rows[1][2]===rows[2][1];
-    const outputok=rows[2][2]===target;
-    const table='<div class="table-scroll"><table class="trace-table"><thead><tr><th>Gate</th><th>Left</th><th>Rule</th><th>Right</th><th>Output</th></tr></thead><tbody>'+
-      rows.map((r,i)=>'<tr><td>'+i+'</td><td>'+r[0]+'</td><td>'+(r[3]===1?'+':'×')+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>').join('')+'</tbody></table></div>';
-    const status=(name,ok)=>'<div class="constraint-status '+(ok?'pass':'fail')+'"><span>'+(ok?'✓':'×')+'</span><b>'+name+'</b></div>';
-    const copy=(name,a,b)=>'<div class="copy-check '+(a===b?'pass':'fail')+'"><span>'+name+'</span><strong>'+
-      a+(a===b?' = ':' ≠ ')+b+'</strong></div>';
-    txt(lab,'<p class="visual-note">Trace inputs: '+input.join(', ')+'. Public inputs: 2, 4. Claimed target: '+target+'.</p>'+
-      table+'<div class="wire-pairs">'+
-      copy("Gate 0 output → Gate 2 left",rows[0][2],rows[2][0])+
-      copy("Gate 1 output → Gate 2 right",rows[1][2],rows[2][1])+'</div>'+
-      '<div class="constraint-status-grid">'+status("Public inputs",pubok)+status("Final output",outputok)+
-      status("Gate arithmetic",gateok)+status("Wire copies",wireok)+'</div>'+
-      '<p class="viz-insight">'+reason+'</p>');
-  }
   if(type==="ring"){
     const r=val(lab,"r",3),y=mod(2*r*r+4*r,6);
     txt(lab,'\\(f('+r+')='+y+'\\pmod 6\\). '+(y===0?'This is a root.':'This is not a root.')+' The four roots are 0, 1, 3, and 4.'+grid([0,1,2,3,4,5],x=>mod(2*x*x+4*x,6)===0,r));
@@ -575,7 +431,7 @@ async function start(){
   }));
   cards=sources.flat();
   if(cards.length<20)throw Error("Course chapters incomplete: "+cards.length);
-  if(coreIds.size!==12||[...coreIds].some(id=>!cards.some(c=>c.id===id)))throw Error("Main learning path is incomplete");
+  if(coreIds.size!==23||[...coreIds].some(id=>!cards.some(c=>c.id===id)))throw Error("Main learning path is incomplete");
   chapter.innerHTML=chapters.map((c,i)=>'<option value="'+i+'">'+escape(c)+'</option>').join("");
   byId("menu-toggle").addEventListener("click",()=>setMenuOpen(byId("chapter-menu").dataset.open!=="true"));
   chapter.addEventListener("change",()=>{
