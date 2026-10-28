@@ -1,7 +1,7 @@
 <article class="lesson">
 <p class="chapter">Part II · Zero knowledge</p>
 <h1>What would it mean to learn nothing?</h1>
-<p class="lead">The previous examples establish a concrete goal: the verifier should accept a true public claim without acquiring information that depends on the private witness. Simply withholding the witness is insufficient; individual protocol messages might still reveal it indirectly. We therefore need a <em>testable definition</em> of what it means to reveal nothing beyond the statement. Suppose a verifier watches a proof and learns something about the secret witness. How could we tell? Try a strange experiment: make a record of the conversation without ever knowing the secret. Could anyone tell which record was real?</p>
+<p class="lead">An ordinary NP proof reveals the witness. We want the verifier to accept the statement without learning the witness—or any other useful information that depends on it. Simply hiding the witness text is not enough, because the protocol's messages might still leak it. How can we make “learns nothing” into a condition we can prove? We will compare the verifier's real conversation with a simulated one generated without the witness.</p>
 <h2>The verifier’s view is what it actually sees</h2>
 <p>The verifier's <strong>view</strong> includes the public statement \(x\), everything the verifier sees in the conversation, and its own random choices and internal state. In a real run, prover \(P\) knows witness \(w\) and interacts with verifier \(V^\ast\). In a simulated run, an algorithm \(\mathrm{Sim}_{V^\ast}\) must produce a comparable view using only \(x\), without \(w\). The star means the verifier may behave maliciously.</p>
 <div class="role-grid">
