@@ -115,16 +115,6 @@ function initLab(lab){
     const r=val(lab,"r",3),y=mod(2*r*r+4*r,6);
     txt(lab,'\\(f('+r+')='+y+'\\pmod 6\\). '+(y===0?'This is a root.':'This is not a root.')+' The four roots are 0, 1, 3, and 4.'+grid([0,1,2,3,4,5],x=>mod(2*x*x+4*x,6)===0,r));
   }
-  if(type==="naive"){
-    const n=val(lab,"n",100),detection=3/n,miss=1-detection;
-    const percent=(100*miss).toFixed(2);
-    const diagram='<div class="address-summary"><div><span class="small-label">Checked transitions</span><strong>3 of '+n+'</strong></div>'+
-      '<div><span class="small-label">Probability of missing the error</span><strong>'+percent+'%</strong></div></div>'+
-      '<div style="height:14px;border-radius:8px;background:#e4e9e4;overflow:hidden;margin:12px 0">'+
-      '<div style="height:100%;width:'+(100*miss)+'%;background:#ba715b"></div></div>';
-    txt(lab,diagram+'<p>\\(\\Pr[\\text{miss the single bad transition}]=1-\\frac{3}{'+n+'}='+miss.toFixed(6)+'\\).</p>'+
-      '<p class="viz-insight">This calculation applies only to sampling three distinct positions uniformly from the ordinary trace. It does not describe the PCP verifier, whose query rule and encoded proof are different.</p>');
-  }
   if(type==="pcp"){
     const t=val(lab,"t",4),err=1/Math.pow(2,t);
     txt(lab,'<b>'+t+' independent PCP tests</b> involve up to '+(3*t)+' queried proof-bit positions in the three-query version. For a fixed false-proof string, \\(\\Pr[\\mathrm{all\\ pass}]\\le 2^{-'+t+'}='+err.toFixed(6)+'\\).<p class="note">This is a bound, not a simulation of a PCP encoding. Independence holds because fresh verifier randomness is used for each test against the same fixed proof.</p>');
@@ -230,30 +220,6 @@ function initLab(lab){
       ].map(v=>'<div>'+v+'</div>').join("")+'</div><p class="viz-insight">'+explain+'</p>');
   }
 
-  if(type==="growth"){
-    const k=val(lab,"k",3),count=2**k;
-    const last=count-1,allOnes="1".repeat(k),allZeros="0".repeat(k);
-    let addresses="";
-    if(k<=4){
-      addresses='<div class="address-grid" aria-label="All '+count+' binary addresses">'+
-        Array.from({length:count},(_,i)=>'<span class="address-cell '+(i===last?"last":"")+'"><small>'+i+'</small><b>'+i.toString(2).padStart(k,"0")+'</b></span>').join("")+'</div>';
-    }else{
-      addresses='<div class="address-ends" aria-label="First and last binary addresses">'+
-      '<span>First position <b>0</b><code>'+allZeros+'</code></span>'+
-      '<span class="dots" aria-hidden="true">···</span>'+
-      '<span>Last position <b>'+last.toLocaleString("en-US")+'</b><code>'+allOnes+'</code></span></div>';
-    }
-    txt(lab,
-      '<div class="address-summary"><div><span class="small-label">Encoded proof length M</span><strong>'+
-         count.toLocaleString("en-US")+' <small>bits</small></strong></div>'+
-      '<div><span class="small-label">Digits to address one bit</span><strong>'+
-         k+' <small>bits</small></strong></div></div>'+
-      '<div class="address-rule">\\(M=2^{'+k+'}='+count.toLocaleString("en-US").replace(/,/g,"\\,")+
-         '\\quad\\Longrightarrow\\quad\\log_2 M='+k+'\\)</div>'+
-      addresses+
-      '<p class="viz-insight">These '+k+' address digits can select <em>one</em> position among '+
-      count.toLocaleString("en-US")+' bits. They do not contain those bits or prove that the computation was correct. The PCP theorem explains why those positions matter; this figure measures only the cost of specifying them.</p>');
-  }
   if(type==="bitbox"){
     const i=val(lab,"i",4),bits=[1,0,1,1,0,0,1,0];
     const cells='<div class="lab-grid">'+bits.map((b,j)=>'<span class="'+(i===j+1?"root current":"")+'">'+(i===j+1?b:"?")+'</span>').join("")+'</div>';
