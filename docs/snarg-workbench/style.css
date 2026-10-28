@@ -408,7 +408,7 @@ body{background:var(--page);color:var(--ink);font-family:-apple-system,BlinkMacS
 }
 #lessons .reading .math mjx-container svg{
   display:block!important;max-width:none!important;
-  width:auto!important;height:auto!important;overflow:visible!important;
+  height:auto!important;overflow:visible!important;
 }
 #lessons .reading .math-caption{
   text-align:left;max-width:100%;white-space:normal;
