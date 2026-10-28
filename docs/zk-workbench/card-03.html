@@ -1,7 +1,7 @@
 <article class="lesson">
 <p class="chapter">Part I · Interactive proofs</p>
 <h1>Why the verifier asks a surprise question</h1>
-<p class="lead">In the Hamiltonian-cycle example, a witness can be checked once it is revealed. But our larger goal is to convince the verifier <em>without simply handing over the witness</em>. We need another way to distinguish a prover who knows the witness from one who merely guesses convincing messages. An interactive proof lets the verifier choose an unpredictable challenge <em>after</em the prover has committed to its first message. We will first study why this timing helps, then construct the actual graph protocol.</p>
+<p class="lead">In the Hamiltonian-cycle example, a witness can be checked once it is revealed. But our larger goal is to convince the verifier <em>without simply handing over the witness</em>. We need another way to distinguish a prover who knows the witness from one who merely guesses convincing messages. An interactive proof lets the verifier choose an unpredictable challenge <em>after</em> the prover has committed to its first message. We will first study why this timing helps, then construct the actual graph protocol.</p>
 <h2>The order of the messages creates the security</h2>
 <div class="timeline">
 <div class="message prover"><span class="who">Prover P</span><span>Prepares and sends a first message \(u\), before knowing the verifier's question.</span></div>
