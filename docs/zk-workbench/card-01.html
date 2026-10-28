@@ -1,22 +1,24 @@
 <article class="lesson">
 <p class="chapter">Part I · What counts as a proof?</p>
-<h1>What would convince us that a graph has a cycle?</h1>
-<p class="lead">Suppose I tell you there is a route through five cities that visits every city exactly once and comes back to the start. You needn't trust me. I can show you the route, and you can check it yourself.</p>
-<h2>A precise question</h2>
-<p>Look at the map. The cities are numbered 1 through 5, and a line means there is a road. Our claim is that we can visit all five cities exactly once and return to the start without ever using a missing road. Such a route is called a <em>Hamiltonian cycle</em>.</p>
-<div class="diagram"><div id="witness-graph"></div><p class="diagram-note">Gray lines are available roads. Choosing a candidate below marks each claimed road green if it exists, or dashed red if it does not.</p></div>
+<h1>How do we verify a claimed Hamiltonian cycle?</h1>
+<p class="lead">Consider a graph \(G\) with five vertices. Someone claims that \(G\) contains a Hamiltonian cycle. We want to understand what evidence would establish that claim, and what the verifier actually needs to check.</p>
+<h2>Define the graph and the claim</h2>
+<p>Write \(G=(V,E)\). The set \(V\) contains the <strong>vertices</strong>, and \(E\) contains the <strong>edges</strong>. In this example, \(V=\{1,2,3,4,5\}\). An undirected edge \(\{u,v\}\in E\) means that vertices \(u\) and \(v\) are adjacent. The graph is undirected, so \(\{u,v\}\) and \(\{v,u\}\) refer to the same edge.</p>
+<p>A <strong>Hamiltonian cycle</strong> is a sequence \(v_1,v_2,\ldots,v_n,v_1\) in which \(v_1,\ldots,v_n\) are all distinct, cover every vertex of the graph, and every consecutive pair—including \(\{v_n,v_1\}\)—belongs to \(E\). We repeat \(v_1\) at the end only to indicate that the sequence forms a cycle.</p>
+<p>The claim is that such a sequence exists. The following graph is our public instance; we will inspect two proposed vertex sequences.</p>
+<div class="diagram"><div id="witness-graph"></div><p class="diagram-note">Gray segments represent edges in \(E\). For the selected candidate, green segments correspond to existing edges; a dashed red segment indicates a consecutive vertex pair that is <em>not</em> an edge of \(G\).</p></div>
 <section class="lab">
-<div class="lab-head"><div class="tag">Explore the crucial distinction</div><h3>Can the verifier check this proposed proof?</h3><p>The graph itself is unchanged. Only the proposed route changes.</p></div>
+<div class="lab-head"><div class="tag">Verify a proposed witness</div><h3>Which candidate satisfies the definition?</h3><p>The graph \(G\) stays fixed. Only the candidate vertex sequence changes.</p></div>
 <div class="lab-body">
-<div class="control-row"><button data-demo="path" data-value="valid">Route A: 1 → 2 → 3 → 4 → 5 → 1</button><button data-demo="path" data-value="invalid">Route B: 1 → 2 → 4 → 3 → 5 → 1</button></div>
-<div id="route-result" class="feedback" aria-live="polite">Choose one route. The verifier will inspect every road rather than trusting the claim.</div>
+<div class="control-row"><button data-demo="path" data-value="valid">Candidate A: 1 → 2 → 3 → 4 → 5 → 1</button><button data-demo="path" data-value="invalid">Candidate B: 1 → 2 → 4 → 3 → 5 → 1</button></div>
+<div id="route-result" class="feedback" aria-live="polite">Select a candidate. The verifier will check every consecutive vertex pair and whether all vertices are visited exactly once.</div>
 </div>
 </section>
-<p>Try both routes. Route A shows that the claim is true: every required road exists and every city is visited once. Route B fails because one of its roads is missing. But that only proves <em>Route B</em> is invalid; it does not prove the graph has no valid route. One successful witness settles a YES claim, while one failed witness cannot settle a NO claim.</p>
-<h2>From a road map to mathematical language</h2>
-<p>Let's name the pieces. The <strong>statement</strong> \(x\) is the graph. The <strong>witness</strong> \(w\) is the proposed route. The checking algorithm \(M\) takes both and returns 1 if the route is valid, or 0 if it is not. Notice that the verifier never has to know <em>how</em> the route was found.</p>
-<div class="math">\[M(x,w)=1\]<p class="math-caption">The value 1 means that the checker accepts the witness. The value 0 means that this particular witness fails. The equation does not claim that every possible witness succeeds.</p></div>
-<p>We've learned something useful: a proof can be evidence that the verifier checks, rather than a description of how the prover solved the problem. We will soon want to convince the verifier without handing over the witness.</p>
-<div class="transition"><p>Checking the supplied route is quick. But how much work would it take to <em>find</em> a route when nobody gives us one? That's the distinction behind NP.</p></div>
-<p class="source">PETS · ZK lecture notes, p. 1. The road-map example is an explanatory construction; the graph-Hamiltonicity problem is used formally later.</p>
+<p>Candidate A is a valid Hamiltonian cycle: the five vertices occur exactly once before returning to 1, and every required edge belongs to \(E\). Candidate B is invalid because \(\{3,5\}\notin E\). Rejecting Candidate B tells us only that <em>this candidate</em> fails; it doesn't imply that no Hamiltonian cycle exists. A single valid witness establishes a YES instance, while one invalid witness does not establish a NO instance.</p>
+<h2>Now identify the statement, witness, and verifier</h2>
+<p>The <strong>statement</strong> \(x\) is the public graph \(G\) together with the claim that it has a Hamiltonian cycle. The <strong>witness</strong> \(w\) is a proposed sequence of vertices. A deterministic checking algorithm \(M\) examines \(x\) and \(w\), checks the distinct-vertex and edge conditions above, and returns 1 only if all conditions hold.</p>
+<div class="math">\[M(x,w)=1\]<p class="math-caption">The value 1 means that this witness is accepted; 0 means that this witness is rejected. One rejected witness does not prove that the statement is false.</p></div>
+<p>The verifier doesn't need to know how the prover found the cycle. It checks the witness against a public mathematical definition. This distinction between <em>finding</em> a witness and <em>verifying</em> a supplied witness is the starting point for the complexity class NP.</p>
+<div class="transition"><p>For this five-vertex graph, both tasks are manageable. For a large graph, however, finding a Hamiltonian cycle can require much more work than checking one that has already been supplied. The next lesson makes that distinction precise.</p></div>
+<p class="source">PETS · ZK lecture notes, p. 1, with standard graph-theoretic terminology used throughout the example.</p>
 </article>
