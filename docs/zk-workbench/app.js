@@ -40,8 +40,8 @@
   const coreIds=new Set([
     "witness","np","interaction","guarantees","lecture-power","lecture-applications",
     "zk","commitments","permutation","ham-protocol","ham-proof","simulation","zk-proof",
-    "repetition","cost","knowledge","sigma","schnorr","schnorr-zk","schnorr-ext",
-    "circuits","fiat-shamir"
+    "repetition","cost","homework2","knowledge","sigma","schnorr","schnorr-zk","schnorr-ext",
+    "circuits","fiat-shamir","hw3-fs-schnorr","hw3-amplify"
   ]);
   const exerciseOrigins={
     "hw1-security":"commitments",
