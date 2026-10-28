@@ -4,7 +4,7 @@
 <p class="chapter-tag">Lecture §5 · The PLONK IOP</p>
 <h1>Fibonacci was one calculation. What about every calculation?</h1>
 <p class="aim">The Fibonacci method verifies one repeated addition rule. A general computation may add, multiply, and reuse earlier results. To apply the same method, we need to express those computations as simple equations. An arithmetic circuit provides that representation.</p>
-<p>That's what an <strong>arithmetic circuit</strong> provides. Its computational steps are <strong>gates</strong>, each implementing addition or multiplication of two field elements. Directed <strong>wires</strong> carry the output of one gate to the inputs of later gates. The circuit specifies the operations and their connections, so the result is determined by its input values.</p>
+<p>An <strong>arithmetic circuit</strong> consists of <strong>gates</strong>, each implementing addition or multiplication of two field elements. Directed <strong>wires</strong> carry the output of one gate to the inputs of later gates. The circuit specifies the operations and their connections, so the result is determined by its input values.</p>
 <p>The lecture defines an arithmetic circuit \(C\) over a field \(\mathbb F\), with two kinds of inputs: public values \(\mathbf x\), known to the verifier, and private values \(\mathbf w\), known to the prover. The bold notation means an ordered list of numbers, called a vector.</p>
 <p>Rather than proving the output equals an arbitrary target directly, the lecture uses the equivalent <strong>zero-output form</strong>: the prover must show that some private witness makes</p>
 <div class="math">\[\boxed{C(\mathbf x,\mathbf w)=0.}\]</div>
@@ -96,7 +96,7 @@ f_{\rm trace}(\omega^{3l+2})&=\text{output of gate }l.
 <p class="chapter-tag">Lecture §5.2 · Verifying the circuit trace, conditions 1–2</p>
 <h1>How do we know the trace is for our statement?</h1>
 <p class="aim">The trace polynomial records the prover's proposed values, whether correct or not. To verify the actual circuit, we must check its output, public inputs, gate operations, and wire connections. We start with the output and public inputs because these connect the trace to the statement the verifier wants proved.</p>
-<p>The lecture lists four requirements: the final output, the public inputs, correctness of every gate, and consistency of the wires. We'll handle them one at a time. The first two anchor the trace to the particular statement we're proving.</p>
+
 <h2>1. The circuit must reach the required output</h2>
 <p>For gate \(l\), the output is stored at \(f_{\rm trace}(\omega^{3l+2})\). The last gate has number \(|C|-1\), so its output is at exponent \(3(|C|-1)+2=3|C|-1\).</p>
 <p>For the lecture's <strong>zero-output</strong> circuit statement, this means checking one value:</p>
