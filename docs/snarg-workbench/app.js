@@ -136,6 +136,39 @@ function initLab(lab){
  const type=lab.dataset.lab;
  const update=()=>{
   syncRangeValues(lab);
+  if(type==="story-divisibility"){
+    const i=val(lab,"i",3),claim=lab.querySelector('[data-key="claim"]')?.value??"8";
+    const bad=claim==="8"&&i===3,D=bad?3:0;
+    txt(lab,'<div class="zero-sides"><div><small>Recurrence at step '+i+'</small>'+
+      '<strong>D('+i+') = '+D+'</strong><span>'+(bad?'8 − 3 − 2 = 3':'The addition is correct')+'</span></div>'+
+      '<div><small>Vanishing polynomial</small><strong>Z('+i+') = 0</strong><span>A factor X − '+i+' is zero</span></div></div>'+
+      '<div class="exam-result '+(bad?'failure':'success')+'"><strong>'+
+      (bad?'No quotient can repair this step':'This step allows the identity')+'</strong><p>'+
+      (bad?'At this required position, the identity would demand 3 = 0 × q('+i+'). The right side is zero for every possible q. Impossible.':
+      'Both sides can equal zero here. This is necessary, but we must check all four positions for the full recurrence.')+
+      '</p></div>');
+  }
+  if(type==="story-protocol"){
+    const stage=val(lab,"stage",1);
+    const fs=lab.querySelector('[data-key="protocol"]')?.value==="fiat-shamir";
+    const names=fs?["Fix and commit","Derive hash challenge","Publish and verify"]:
+      ["Fix and commit","Verifier chooses r","Open the values"];
+    const bodies=fs?[
+      "The prover fixes polynomials f and q, sends commitments c_f and c_q. A hash must not determine r until those commitments are fixed.",
+      "Both parties derive r = H(public statement, c_f, c_q, parameters). There is no verifier-to-prover challenge message.",
+      "The prover publishes claimed evaluations and opening proofs. Anyone recomputes r, authenticates the values, and performs ZeroTest."
+    ]:[
+      "The prover fixes f and q and sends commitments c_f and c_q. The verifier still has not picked r.",
+      "After receiving the commitments, the verifier draws a fresh uniform field element r and sends it to the prover.",
+      "The prover returns f(r), f(r+1), f(r+2), q(r), and their authentication proofs. The verifier checks the commitment openings and the polynomial identity."
+    ];
+    txt(lab,'<div class="protocol-stages">'+names.map((name,j)=>
+      '<div class="'+(j===stage-1?'selected':'')+'"><span>Stage '+(j+1)+'</span>'+
+      '<strong>'+name+'</strong><p>'+(j===stage-1?bodies[j]:'')+'</p></div>').join('')+'</div>'+
+      '<p class="viz-insight">'+(fs?
+      'Fiat–Shamir removes the interactive challenge message, but soundness needs a suitable random-oracle argument.':
+      'The order is what makes the root-count proof meaningful: the polynomial is fixed before r is random.')+'</p>');
+  }
   if(type==="story-step"){
     const i=val(lab,"i",0),v=[0,1,1,2,3,8];
     const expected=v[i]+v[i+1],claimed=v[i+2],ok=expected===claimed;
