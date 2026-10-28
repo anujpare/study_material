@@ -65,7 +65,7 @@
 <p>Here \(|\mathbb F|\) is the number of field elements. For example, if the field has 17 elements and the difference has degree 2, at most two choices of \(r\) can make the false equality pass.</p>
 <div class="lab" data-lab="eq"><div class="lab-top"><strong>Find the bad random choices yourself</strong><p>Over \(\mathbb F_{17}\), compare \(f(X)=X^2+1\) with \(g(X)=f(X)+(X-1)(X-4)\). They're different, but at two points they agree.</p></div><div class="lab-content"><label>Verifier's random point \(r\)<input data-key="r" type="range" min="0" max="16" value="1"></label><div class="lab-output" aria-live="polite"></div></div></div>
 <p class="qed">This completes the EqualityTest proof: a false claim gives a nonzero polynomial; the verifier is fooled only at its roots; and there are few roots. That is why one random test works. \(\square\)</p>
-<div class="warning"><p>One condition is essential: both polynomials must be fixed <em>before</em the random point is chosen. If the prover learned \(r\) first, it could arrange for two different polynomials to agree at that point. The commitment scheme will later enforce this order.</p></div>
+<div class="warning"><p>One condition is essential: both polynomials must be fixed <em>before</em> the random point is chosen. If the prover learned \(r\) first, it could arrange for two different polynomials to agree at that point. The commitment scheme will later enforce this order.</p></div>
 <p class="source">Official notes, Theorem 1 and Lemma 1, p. 5.</p>
 </article>
 
