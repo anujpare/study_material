@@ -56,6 +56,37 @@ f_{\rm fib}(i+2)&=f_{\rm fib}(i+1)+f_{\rm fib}(i)
 </article>
 
 <article class="lesson" data-id="equality-proof" data-title="Why checking a random point can work">
+<p class="chapter-tag">Lecture §3 · EqualityTest and the polynomial root theorem</p>
+<h1>Can one random point test an entire polynomial identity?</h1>
+<p class="aim">We have a polynomial that represents the prover's Fibonacci sequence, but a false sequence can be interpolated just as easily as a correct one. We need a way to check equations about that polynomial without reading all its coefficients. Start with a simpler problem: how can we check whether two fixed polynomials are identical?</p>
+<p>Let \(f(X)\) and \(g(X)\) be polynomials over a field \(\mathbb F\), both of degree at most \(d\). If we compared their values at \(d+1\) different points, the root theorem below would make equality certain. But \(d+1\) evaluations would be expensive for a large computation. We will try just one random point.</p>
+<h2>EqualityTest: what the verifier does</h2>
+<p>The prover fixes \(f\) and \(g\) in the ideal polynomial oracle. The verifier then chooses \(r\) uniformly from \(\mathbb F\), requests \(f(r)\) and \(g(r)\), and accepts when \(f(r)=g(r)\). The polynomials must be fixed <em>before</em \(r\) is chosen; otherwise the prover could construct an equation that happens to hold at the known challenge.</p>
+<p>If \(f=g\), every possible evaluation agrees, so an honest proof always passes. If \(f\ne g\), define the <strong>difference polynomial</strong> \(h(X)=f(X)-g(X)\). The verifier accepts a false equality precisely when \(h(r)=0\). Such a point is called a <strong>root</strong> of \(h\). We therefore need to know how many roots a nonzero polynomial can have.</p>
+<div class="proof"><h3>Theorem 1: a nonzero degree-\(d\) polynomial has at most \(d\) roots</h3>
+<p>Suppose \(h(a)=0\). For every integer \(k\ge1\), the expression \(X^k-a^k\) has a factor \(X-a\). Applying this to the terms of \(h(X)-h(a)\), and using \(h(a)=0\), shows that \(h(X)=(X-a)q(X)\) for some polynomial \(q\) of degree \(d-1\).</p>
+<p>If \(b\ne a\) is another root, then \(0=h(b)=(b-a)q(b)\). Because \(b-a\ne0\) and we are in a field, we can cancel it and obtain \(q(b)=0\). Thus every additional distinct root is a root of the lower-degree polynomial \(q\).</p>
+<p>Repeat this argument: each distinct root contributes another factor of degree one. A nonzero degree-\(d\) polynomial cannot have more than \(d\) such factors. Therefore it has at most \(d\) roots. \(\square\)</p></div>
+<h2>Lemma 1: the precise soundness guarantee</h2>
+<p>For a false equality, \(h=f-g\) is nonzero and has degree at most \(d\). The theorem says at most \(d\) of the \(|\mathbb F|\) equally likely choices of \(r\) can make \(h(r)=0\). Therefore</p>
+<div class="math">\[
+\boxed{\Pr[f(r)=g(r)\mid f\ne g]\le\frac{d}{|\mathbb F|}.}
+\]</div>
+<p>This proves <strong>Lemma 1</strong>: perfect completeness and soundness error at most \(d/|\mathbb F|\). A sufficiently large field makes this error small. The root theorem also proves interpolation uniqueness: if two degree-at-most-\(d\) polynomials agreed at \(d+1\) distinct points, their nonzero difference would have too many roots, which is impossible.</p>
+<div class="lab" data-lab="eq"><div class="lab-top"><strong>Find the exceptional points</strong><p>In \(\mathbb F_{17}\), compare \(f(X)=X^2+1\) with \(g(X)=f(X)+(X-1)(X-4)\). They are different polynomials, but their evaluations agree at exactly two points.</p></div><div class="lab-content"><label class="range-label">Chosen point \(r\) <output class="range-value" data-live-for="r">1</output><input data-key="r" type="range" min="0" max="16" value="1"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<p>The figure exhibits two roots of one difference polynomial. It is an example, not a proof of the general bound; the theorem above supplies that proof.</p>
+<div class="exercise"><span class="exercise-kicker">HW3 · Problem 1(c)</span>
+<h3>Does the polynomial root bound hold modulo 6?</h3>
+<p>Consider \(f(X)=2X^2+4X\) with arithmetic modulo 6. It has degree 2. Could it have more than two roots (inputs where it evaluates to zero)? Test all six possible values of \(X\).</p>
+<div class="lab" data-lab="ring"><div class="lab-top"><strong>Find every root modulo 6</strong><p>Change \(r\) and inspect the remainder of \(2r^2+4r\).</p></div><div class="lab-content"><label class="range-label">Value \(r\) <output class="range-value" data-live-for="r">3</output><input data-key="r" type="range" min="0" max="5" value="3"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<details class="worked"><summary>Work out the counterexample</summary><div class="answer">
+<p>The values 0, 1, 3 and 4 all make the polynomial zero modulo 6. So a degree-two polynomial has four different roots! Why doesn't that contradict the rule we want to use?</p>
+<p>Because arithmetic modulo 6 is <em>not</em> a field. In particular \(2\cdot3\equiv0\pmod6\) although neither 2 nor 3 is zero. We cannot cancel nonzero factors here. The ordinary proof that a degree-\(d\) polynomial has at most \(d\) roots depends on being able to cancel such factors.</p>
+<p class="qed">The root-count claim is false over \(\mathbb Z_6\), and this shows exactly which algebraic assumption fails. The later soundness proofs will work over fields instead. \(\square\)</p>
+</div></details></div>
+<div class="bridge">We now know how to test an identity that should hold at <em>every</em field point. The Fibonacci recurrence, however, is required only at the positions \(0,\ldots,98\). Before returning to that distinction, the lecture extends the root bound to equations involving several variables. Then we will construct an identity that captures exactly the 99 required Fibonacci positions.</div>
+<p class="source">Official lecture §3, EqualityTest, Theorem 1 and Lemma 1; HW3 Problem 1(c) placed immediately after the theorem whose assumption it tests.</p>
+
 
 <p class="chapter-tag">Lecture §3 · EqualityTest, Theorem 1 and Lemma 1</p>
 <h1>If two polynomials agree once, are they equal?</h1>
@@ -94,7 +125,7 @@ f_{\rm fib}(i+2)&=f_{\rm fib}(i+1)+f_{\rm fib}(i)
 <div class="bridge">EqualityTest provides the missing <em>testing method</em>: if two low-degree polynomials are fixed before the challenge, one random evaluation can reveal a false identity with high probability. But Fibonacci's recurrence is required only at the 99 step positions, not at every field element. We still need to turn those 99 local conditions into a genuine polynomial identity. First, the lecture generalizes the same root argument to several variables; then we'll return to that exact Fibonacci obstacle.</div>
 <p class="source">Lecture §3, Theorem 1 (polynomial root bound), EqualityTest and Lemma 1. The interpolation uniqueness proof follows directly from the same theorem.</p>
 
-</article>
+
 
 <article class="lesson" data-id="schwartz-zippel" data-title="Schwartz–Zippel: the same test in several variables">
 
