@@ -9,7 +9,7 @@ let cards=[],current=0,req=0,mathReady=false,readingMode="guided";
 /* Main teaching route. Every other card is still available at its lesson link. */
 const coreIds=new Set([
  "the-question","succinctness","pcp-box","merkle","hw1-vectors","hw3-pcp-argument","iop-types",
- "field-foundation","interpolation","equality-proof","schwartz-zippel","midterm-polynomial","vanishing-polynomial",
+ "field-foundation","interpolation","root-bound","equality-proof","schwartz-zippel","midterm-polynomial","vanishing-polynomial",
  "zerotest-proof","fibonacci-protocol","polynomial-commitments",
  "fiat-shamir","hw3-fs-pcp","circuits-meaning","trace-encoding","roots-unity-cost","plonk-output-input",
  "plonk-gates","plonk-wiring","plonk-final"
