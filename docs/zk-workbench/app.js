@@ -36,7 +36,41 @@
 
   const $=id=>document.getElementById(id);
   const content=$("lesson"),select=$("jump"),previous=$("previous"),next=$("next"),counter=$("counter"),slider=$("deck-slider"),position=$("position"),menu=$("chapter-menu"),headerTitle=$("header-title");
-  let current=0,loading=0,lockedGuess=null,lockedChallenge=null,lockedBit=null;
+  let current=0,loading=0,lockedGuess=null,lockedChallenge=null,lockedBit=null,readingMode="guided";
+  const coreIds=new Set([
+    "witness","np","interaction","guarantees","lecture-power","lecture-applications",
+    "zk","commitments","permutation","ham-protocol","ham-proof","simulation","zk-proof",
+    "repetition","cost","knowledge","sigma","schnorr","schnorr-zk","schnorr-ext",
+    "circuits","fiat-shamir"
+  ]);
+  const exerciseOrigins={
+    "hw1-security":"commitments",
+    "hw1-pedersen":"commitments",
+    "homework2":"cost",
+    "hw3-fs-schnorr":"fiat-shamir",
+    "hw3-fs-attacks":"fiat-shamir",
+    "hw3-amplify":"fiat-shamir",
+    "hw1-vector":"fiat-shamir",
+    "hw3-pcp":"fiat-shamir",
+    "hw3-roots":"fiat-shamir"
+  };
+  function routeCards(){return readingMode==="all"?cards:cards.filter(c=>coreIds.has(c.id));}
+  function neighbor(delta){
+    const list=routeCards();
+    const index=list.findIndex(c=>c.id===cards[current].id);
+    if(index>=0)return list[index+delta]||null;
+    if(delta>0)return list.find(c=>cards.indexOf(c)>current)||null;
+    return [...list].reverse().find(c=>cards.indexOf(c)<current)||null;
+  }
+  function updateFooter(){
+    const card=cards[current],list=routeCards(),index=list.findIndex(c=>c.id===card.id);
+    const label=index>=0?(index+1)+" / "+list.length:"Practice";
+    counter.textContent=label;position.textContent=label;
+    const thumb=index>=0?index+1:Math.max(1,list.filter(c=>cards.indexOf(c)<current).length);
+    slider.min="1";slider.max=String(list.length);slider.value=String(thumb);
+    slider.setAttribute("aria-valuetext",index>=0?"Lesson "+(index+1)+" of "+list.length+": "+card.title:"Optional exercise: "+card.title);
+    previous.disabled=!neighbor(-1);next.disabled=!neighbor(1);
+  }
   let soundnessSetup=null,soundnessChecked=false;
   function idxFromHash(){const i=cards.findIndex(c=>c.id===decodeURIComponent(location.hash.slice(1)));return i<0?0:i;}
   function setMenuOpen(open){
@@ -50,11 +84,7 @@
   function navigation(){
     current=idxFromHash();
     const card=cards[current];
-    counter.textContent=(current+1)+" / "+cards.length;
-    position.textContent=(current+1)+" / "+cards.length;
-    slider.max=String(cards.length);slider.value=String(current+1);
-    slider.setAttribute("aria-valuetext","Lesson "+(current+1)+" of "+cards.length+": "+card.title);
-    previous.disabled=current===0;next.disabled=current===cards.length-1;
+    updateFooter();
     select.value=card.id;headerTitle.textContent=card.title;
     closeMenu();
   }
@@ -73,6 +103,14 @@
       const node=new DOMParser().parseFromString(html,"text/html").querySelector("article.lesson");
       if(!node)throw Error("Lesson article missing");
       content.innerHTML=node.outerHTML;
+      if(!coreIds.has(card.id)){
+        const source=cards.find(c=>c.id===exerciseOrigins[card.id]);
+        if(source)content.insertAdjacentHTML("afterbegin",
+          '<div class="practice-back"><a href="#'+source.id+'">← Back to '+source.title+'</a><span>Optional worked exercise</span></div>');
+        const cont=neighbor(1);
+        if(cont)content.insertAdjacentHTML("beforeend",
+          '<div class="practice-forward"><a href="#'+cont.id+'">Continue the explanation: '+cont.title+' →</a></div>');
+      }
       content.scrollTop=0;
       document.title="PETS · "+card.title;
       initializeLab();
@@ -87,22 +125,23 @@
       if(window.MathJax?.typesetPromise){await window.MathJax.typesetPromise([content]);}
     }catch(err){console.warn("Math rendering failed:",err);}
   }
-  function go(delta){
-    const n=current+delta;
-    if(n<0||n>=cards.length)return;
-    location.hash=cards[n].id;
-  }
+  function go(delta){const target=neighbor(delta);if(target)location.hash=target.id;}
   previous.addEventListener("click",()=>go(-1));
   next.addEventListener("click",()=>go(1));
   $("menu-toggle").addEventListener("click",()=>setMenuOpen($("chapter-menu").dataset.open!=="true"));
   select.addEventListener("change",()=>{location.hash=select.value;closeMenu();});
+  $("reading-mode").addEventListener("change",e=>{
+    readingMode=e.target.value==="all"?"all":"guided";
+    navigation();
+  });
   slider.addEventListener("input",()=>{
     const n=Number(slider.value);
-    if(cards[n-1])position.textContent=n+" / "+cards.length;
+    position.textContent=n+" / "+routeCards().length;
   });
   slider.addEventListener("change",()=>{
-    const n=Number(slider.value);
-    if(cards[n-1])location.hash=cards[n-1].id;
+    const target=routeCards()[Number(slider.value)-1];
+    if(target)location.hash=target.id;
+    else updateFooter();
   });
   document.addEventListener("pointerdown",event=>{
     if(menu?.dataset.open==="true"&&!menu.contains(event.target))closeMenu();
