@@ -177,19 +177,48 @@
 <h2>Why do we need to record the wires as well as the calculations?</h2>
 <p>Look at gate 2. It must receive <em>the actual output</em> of gate 0 on its left wire and of gate 1 on its right wire. It isn't enough for gate 2 to perform some correct multiplication using numbers of its own choosing. This is the difference between verifying isolated arithmetic and verifying the <em>whole circuit</em>.</p>
 <p>The proposed input and output values at every gate are collectively called the <strong>trace</strong>. A false trace can satisfy some constraints while violating others. We will separate the possible mistakes and see why each needs its own check.</p>
-<h2>Use the same polynomial idea again</h2>
-<p>For three gates we have nine gate-entry values—three per gate—and three original input values, making twelve numbers. We want a polynomial \(f_{\rm trace}\) that remembers all twelve values. Interpolation gives one polynomial of degree at most 11, provided we choose twelve distinct field points.</p>
-<p>Here the lecture chooses a particularly useful set of points: powers of an element \(\omega\) with multiplicative order 12. In \(\mathbb F_{97}\), the number \(\omega=6\) has exactly that order. So our twelve distinct points are \(1,\omega,\omega^2,\ldots,\omega^{11}\), with all multiplication taken modulo 97.</p>
-<p>Why move from \(\mathbb F_{101}\) to \(\mathbb F_{97}\)? The two examples have different needs. The earlier field made the Fibonacci arithmetic easy to see; this field contains the exact 12-point multiplicative cycle required by the lecture's trace example. The polynomial principles are unchanged.</p>
-<p>We can check the claim that 6 has order 12. In this field, \(6^6\equiv96=-1\), so \(6^{12}\equiv1\). Also \(6^4\equiv35\ne1\). The possible proper orders dividing 12 are 1, 2, 3, 4 and 6; every one divides 4 or 6. Since neither the fourth nor the sixth power is 1, none of those smaller orders works. Therefore the order is exactly 12, and the first twelve powers are all different.</p>
-<div class="lab" data-lab="unity">
-<div class="lab-top"><strong>See the twelve places in the trace</strong><p>Move \(j\) to evaluate \(6^j\bmod97\). Each of the twelve results names one of the trace's evaluation points.</p></div>
-<div class="lab-content"><label class="range-label">Exponent \(j\) <output class="range-value" data-live-for="j">3</output><input type="range" data-key="j" min="0" max="11" value="3"></label><div class="lab-output" aria-live="polite"></div></div></div>
-<div class="obstacle-progress"><h3>What does the circuit buy us?</h3>
-<p>Any calculation built from additions and multiplications becomes a set of simple, checkable gate equations connected by wires. Interpolation can again place its claimed values inside a polynomial.</p>
-<p class="next-obstacle">But how do we verify that all those values describe the <em>requested computation</em>, rather than a table of unrelated but individually correct arithmetic?</p></div>
-<p class="source">Official Lecture §5, arithmetic circuits and the three-gate example. The public-target interpretation is equivalent to the usual zero-output formulation but keeps the lecture's three-gate indexing intact.</p>
+<div class="obstacle-progress"><h3>What do we need to prove?</h3><p>Our circuit has a public structure and simple gate rules. But the prover's list of gate values may still be dishonest.</p><p class="next-obstacle">We need to encode the entire <em>trace</em> as a polynomial, just as we did for Fibonacci, before we can use random polynomial checks.</p></div>
+<p class="source">Official lecture §5 and Definition 2: arithmetic circuits over a field, with public input and a private witness.</p>
+</article>
 
+<article class="lesson" data-id="story-trace" data-title="From circuit values to a trace polynomial">
+
+<p class="chapter-tag">Lecture §5.1 · From Circuits to Polynomials</p>
+<h1>How can one polynomial hold a whole circuit execution?</h1>
+<p class="lead">The circuit breaks a computation into tiny additions and multiplications. But our efficient polynomial tests don't read a table of gate values. They ask for evaluations of one fixed polynomial. We need to encode the entire proposed circuit trace in that form.</p>
+<p>The lecture's three-gate example has nine gate entries: three values for each gate's left input, right input and output. It also has three original inputs: public \(x_1=2,x_2=4\), and private \(w_1=3\). That's twelve numbers altogether.</p>
+<p>Let \(|C|\) denote the number of gates, and \(|I|\) the number of original inputs. The number of trace positions is</p>
+<div class="math">\[d=3|C|+|I|.\]</div>
+<p>For our example, \(|C|=3\) and \(|I|=3\), so \(d=3\cdot3+3=12\). This is where the number 12 comes from; we didn't choose it arbitrarily.</p>
+<h2>Choose twelve different points to hold the values</h2>
+<p>Interpolation says that twelve prescribed values at twelve distinct field points determine a unique polynomial of degree at most 11. We could choose arbitrary distinct points, but the lecture chooses the powers of a number \(\omega\) of <strong>multiplicative order \(d\)</strong>:</p>
+<div class="math">\[\Omega=\{1,\omega,\omega^2,\ldots,\omega^{d-1}\},\quad\omega^d=1.\]</div>
+<p>“Order \(d\)” means \(\omega^d=1\) and no smaller positive exponent gives 1. That's important because it ensures the first \(d\) powers are different, as interpolation requires. Just having \(\omega^d=1\) without exact order \(d\) would allow repeated points.</p>
+<p>For a concrete twelve-point example, we use \(\mathbb F_{97}\) and \(\omega=6\). Here \(6^{12}\equiv1\pmod{97}\), while \(6^6\equiv-1\ne1\) and \(6^4\equiv35\ne1\). Every proper divisor of 12 divides 6 or 4, so the order cannot be smaller than 12.</p>
+<div class="lab" data-lab="unity"><div class="lab-top"><strong>Walk through all twelve positions</strong><p>The values \(6^j\bmod97\) are the twelve distinct field points used to store the trace.</p></div><div class="lab-content"><label class="range-label">Exponent \(j\) <output class="range-value" data-live-for="j">3</output><input data-key="j" type="range" min="0" max="11" value="3"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<h2>Where does each value go?</h2>
+<p>The prover now interpolates a polynomial called \(f_{\rm trace}(X)\). It must put each original input at a <em>negative-power</em> position and each gate's three values at <em>consecutive positive-power</em> positions. Negative powers are valid here because \(\omega^{-1}=\omega^{11}\), \(\omega^{-2}=\omega^{10}\), and so on, since \(\omega^{12}=1\).</p>
+<div class="table-scroll"><table><thead><tr><th>Original data</th><th>Polynomial positions</th><th>Values</th></tr></thead><tbody>
+<tr><td>Original inputs</td><td>\(\omega^{-1},\omega^{-2},\omega^{-3}\)</td><td>2, 4, 3</td></tr>
+<tr><td>Gate 0 · multiply</td><td>\(\omega^0,\omega^1,\omega^2\)</td><td>2, 4, 8</td></tr>
+<tr><td>Gate 1 · add</td><td>\(\omega^3,\omega^4,\omega^5\)</td><td>4, 3, 7</td></tr>
+<tr><td>Gate 2 · multiply</td><td>\(\omega^6,\omega^7,\omega^8\)</td><td>8, 7, 56</td></tr>
+</tbody></table></div>
+<p>The pattern for any gate numbered \(l=0,1,\ldots,|C|-1\) is</p>
+<div class="math">\[\begin{aligned}
+f_{\rm trace}(\omega^{3l})&=\text{left input of gate }l,\\
+f_{\rm trace}(\omega^{3l+1})&=\text{right input of gate }l,\\
+f_{\rm trace}(\omega^{3l+2})&=\text{output of gate }l.
+\end{aligned}\]</div>
+<p>For each original input number \(j=1,\ldots,|I|\), the corresponding value is stored at \(f_{\rm trace}(\omega^{-j})\).</p>
+<div class="proof"><h3>Does such a polynomial exist? Is it unique?</h3>
+<p>We've specified exactly twelve values at twelve distinct points. Interpolation constructs a polynomial of degree at most 11 matching them. If two different polynomials of degree at most 11 both matched all twelve values, their difference would be nonzero, have degree at most 11, and have twelve distinct roots. That contradicts the root bound we proved earlier.</p>
+<p class="qed">Therefore exactly one degree-at-most-11 trace polynomial represents these twelve proposed values. The lecture sometimes uses the looser degree bound \(d=12\) in its definitions; degree 11 suffices for this interpolation. \(\square\)</p></div>
+<p>But a mathematical representation is not a proof of correctness. A dishonest prover can interpolate a fake table as easily as a real one. What matters next is identifying <em>which relations among these values must hold</em> for the table to be an execution of the requested circuit.</p>
+<div class="obstacle-progress"><h3>What was achieved?</h3>
+<p>The entire computation trace now lives in one polynomial. A verifier can refer to any input, gate input or gate output by a corresponding field evaluation.</p>
+<p class="next-obstacle">What should the verifier check to ensure the trace is the <em>right</em> calculation? The lecture lists four conditions. We'll derive them from this precise encoding.</p></div>
+<p class="source">Official lecture §5.1: trace encoding, \(d=3|C|+|I|\), roots-of-unity domain, and the exact three-gate example.</p>
 </article>
 
 <article class="lesson" data-id="story-plonk-checks" data-title="Four checks that force one real computation">
