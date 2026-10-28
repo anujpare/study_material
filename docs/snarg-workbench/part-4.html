@@ -4,7 +4,7 @@
 <p class="chapter-tag">Lecture §5 · The PLONK IOP</p>
 <h1>Fibonacci was one calculation. What about every calculation?</h1>
 <p class="aim">Our Fibonacci proof worked because every step obeyed the same rule: add the previous two values. But a general program might add at one step, multiply at another, and reuse an earlier result many times. If we want a SNARG for general NP statements, we need a standard way to describe those calculations.</p>
-<p>That's what an <strong>arithmetic circuit</strong> provides. Think of a computation drawn as boxes connected by wires. Each box, called a <strong>gate</strong>, receives two field values and either adds or multiplies them. The wires carry outputs of earlier gates to later ones. The circuit tells us exactly which calculation must take place.</p>
+<p>That's what an <strong>arithmetic circuit</strong> provides. Its computational steps are <strong>gates</strong>, each implementing addition or multiplication of two field elements. Directed <strong>wires</strong> carry the output of one gate to the inputs of later gates. The circuit specifies the operations and their connections, so the result is determined by its input values.</p>
 <p>The lecture defines an arithmetic circuit \(C\) over a field \(\mathbb F\), with two kinds of inputs: public values \(\mathbf x\), known to the verifier, and private values \(\mathbf w\), known to the prover. The bold notation means an ordered list of numbers, called a vector.</p>
 <p>Rather than proving the output equals an arbitrary target directly, the lecture uses the equivalent <strong>zero-output form</strong>: the prover must show that some private witness makes</p>
 <div class="math">\[\boxed{C(\mathbf x,\mathbf w)=0.}\]</div>
