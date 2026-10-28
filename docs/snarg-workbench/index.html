@@ -6,12 +6,12 @@
 <meta name="theme-color" content="#f3f3f2">
 <meta name="description" content="SNARGs to PLONK, an interactive PETS learning deck with proofs, simulations and all relevant homework.">
 <title>PETS · SNARGs to PLONK · Interactive Learning</title>
-<link rel="stylesheet" href="./style.css?v=9">
+<link rel="stylesheet" href="./style.css?v=8">
 <script>
 window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true,packages:{'[+]':['ams']}},svg:{fontCache:'local'},startup:{typeset:false,ready:()=>{MathJax.startup.defaultReady();window.dispatchEvent(new Event('mathjax-ready'));}}};
 </script>
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" onerror="(function(){var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js';s.defer=true;document.head.appendChild(s)})()"></script>
-<script defer src="./app.js?v=9"></script>
+<script defer src="./app.js?v=8"></script>
 </head>
 <body>
 <div class="shell" id="lessons">
@@ -30,10 +30,10 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],proc
       <span class="menu-brand menu-sub">This tutorial</span>
       <label for="reading-mode">Use the bottom arrows to follow</label>
       <select id="reading-mode" aria-label="Reading path">
-        <option value="guided">One coherent worked example · 12 lessons</option>
-        <option value="all">Full reference + homework · 48 cards</option>
+        <option value="guided">The main explanation · 23 lessons</option>
+        <option value="all">Every lesson and exercise · 36 cards</option>
       </select>
-      <p class="menu-help">Follow the twelve connected steps. Original lecture details and homework remain available as linked references.</p>
+      <p class="menu-help">In the main path, homework remains linked beside the lesson that prepares you for it.</p>
       <label for="chapter-select">Chapter</label>
       <select id="chapter-select" aria-label="Jump to chapter"><option>Loading chapters…</option></select>
       <label for="lesson-select">Lesson</label>
@@ -43,7 +43,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],proc
   </div>
   <header class="head">
     <div class="section" id="header-title">SNARGs → PLONK</div>
-    <div class="head-right"><span class="count" id="counter" aria-live="polite">1 / 12</span></div>
+    <div class="head-right"><span class="count" id="counter" aria-live="polite">1 / 36</span></div>
   </header>
   <main id="lesson" class="reading" tabindex="-1" aria-label="Lesson content">
     <h1>Loading the lesson…</h1>
@@ -51,8 +51,8 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],proc
   </main>
   <footer class="reader-footer" aria-label="Lesson navigation">
     <div class="deck-jump" role="group" aria-label="Lesson navigation slider">
-      <output class="deck-position" id="position" for="deck-slider">1 / 12</output>
-      <input class="deck-slider" id="deck-slider" aria-label="Jump to lesson" aria-valuetext="Lesson 1 of 12" type="range" min="1" max="12" step="1" value="1">
+      <output class="deck-position" id="position" for="deck-slider">1 / 36</output>
+      <input class="deck-slider" id="deck-slider" aria-label="Jump to lesson" aria-valuetext="Lesson 1 of 36" type="range" min="1" max="36" step="1" value="1">
     </div>
     <nav class="nav" aria-label="Previous or next lesson">
       <button type="button" class="navbtn" id="previous" aria-label="Previous lesson" disabled>
