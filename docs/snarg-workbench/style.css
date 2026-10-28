@@ -429,3 +429,10 @@ body{background:var(--page);color:var(--ink);font-family:-apple-system,BlinkMacS
 #lessons .chapter-menu[data-open="false"] > .chapter-panel{
   display:none!important;visibility:hidden!important;
 }
+
+/* Reserve space for the menu and counter even on narrow phones. */
+#lessons .head .section{
+  max-width:calc(100% - 110px);min-width:0;padding-right:0;
+  overflow-wrap:break-word;
+}
+#lessons .head .head-right{flex:none}
