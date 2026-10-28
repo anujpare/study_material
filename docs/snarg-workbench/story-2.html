@@ -1,0 +1,236 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>SNARGs · The main story II</title><body>
+<article class="lesson" data-id="story-constraints" data-title="Turn four checks into one equation">
+
+<p class="chapter-tag">The main story · 07 of 12</p>
+<h1>How can one equation represent every Fibonacci step?</h1>
+<p class="lead">We can now represent our calculation by one polynomial, and we know why checking a false polynomial identity at a random point can work. What we still need is an identity that expresses <em>all the additions</em> in the calculation.</p>
+<p>Remember the six values 0, 1, 1, 2, 3, 5. Every new value after the first two must be the sum of the previous two. The four equations we need are:</p>
+<div class="recurrence-check">
+<div><b>At position 0</b><span>1 − 1 − 0 = 0</span><strong class="good">Pass</strong></div>
+<div><b>At position 1</b><span>2 − 1 − 1 = 0</span><strong class="good">Pass</strong></div>
+<div><b>At position 2</b><span>3 − 2 − 1 = 0</span><strong class="good">Pass</strong></div>
+<div><b>At position 3</b><span>5 − 3 − 2 = 0</span><strong class="good">Pass</strong></div>
+</div>
+<p>We already arranged for one polynomial \(f(X)\) to hold the six values: \(f(i)\) gives the value at position \(i\). So the calculation at position \(i\) is correct precisely when \(f(i+2)-f(i+1)-f(i)=0\).</p>
+<p>Instead of writing that expression four times, make it a new polynomial. Call it the <strong>discrepancy polynomial</strong>:</p>
+<div class="math">\[D(X)=f(X+2)-f(X+1)-f(X).\]</div>
+<p>It's called a discrepancy because its value measures the failure of the addition rule. If the addition at position 3 is wrong by 3, then \(D(3)=3\). For the honest trace, \(D(0)=D(1)=D(2)=D(3)=0\).</p>
+<h2>Make the four required zeros into one condition</h2>
+<p>The four positions where we need the rule to hold form the set \(\Omega=\{0,1,2,3\}\). We can construct a polynomial that is zero at exactly these four field elements:</p>
+<div class="math">\[Z(X)=X(X-1)(X-2)(X-3).\]</div>
+<p>At \(X=2\), for example, the factor \(X-2\) is zero, making the whole product zero. We call \(Z\) the <strong>vanishing polynomial</strong> for \(\Omega\).</p>
+<p>Here's the key fact: \(D\) is zero at every point of \(\Omega\) <em>if and only if</em> it is divisible by \(Z\). “Divisible” means that some polynomial \(q\) exists for which</p>
+<div class="math">\[\boxed{D(X)=Z(X)q(X).}\]</div>
+<div class="proof"><h3>Why does divisibility mean that all four additions work?</h3>
+<p><strong>One direction is immediate.</strong> If \(D=Zq\), then at each required position \(i\in\Omega\), we have \(Z(i)=0\), so \(D(i)=0\). Every recurrence equation holds.</p>
+<p><strong>For the other direction,</strong> suppose every recurrence equation holds. Then 0 is a root of \(D\), so \(X\) is a factor. Since 1 is also a root, the remaining quotient must have factor \(X-1\): we can cancel the nonzero factor \(1-0\) when substituting 1. Repeat the same argument at 2 and 3. We obtain all four factors \(X(X-1)(X-2)(X-3)\) dividing \(D\), hence \(D=Zq\). If \(D\) is the zero polynomial, use \(q=0\).</p>
+<p class="qed">We've proved both directions. The four separate additions are correct precisely when there is a quotient \(q\) making the single polynomial identity \(D=Zq\) true. \(\square\)</p></div>
+<p>Recall that the interpolated trace polynomial \(f\) has degree at most 5. Substituting \(X+1\) or \(X+2\) doesn't increase its degree, so \(D\) has degree at most 5. Since \(Z\) has degree 4, an honest nonzero quotient \(q\) needs degree at most 1.</p>
+<p>That's our new representation of the computation. The prover doesn't have to convince us separately about each addition; it can claim one polynomial identity. But it could still lie about the quotient. We need a way to check the identity cheaply.</p>
+<div class="obstacle-progress"><h3>What did we just achieve?</h3>
+<p>Four recurrence equations became one identity about three polynomials: the committed trace \(f\), the derived discrepancy \(D\), and the quotient \(q\).</p>
+<p class="next-obstacle">We already proved that one random evaluation can test a fixed polynomial identity. Let's apply that result to this identity—and see exactly what happens when the server lies about the final value.</p></div>
+<p class="source">Lecture §3, vanishing-polynomial theorem and Fibonacci polynomial IOP. The notation \(D\) is used here to distinguish the recurrence discrepancy from the witness-checking relation introduced earlier.</p>
+
+</article>
+
+<article class="lesson" data-id="story-zerotest" data-title="Catch the dishonest Fibonacci result">
+
+<p class="chapter-tag">The main story · 08 of 12</p>
+<h1>Can one random field element expose the false result?</h1>
+<p class="lead">We've reduced all four additions to the identity \(D(X)=Z(X)q(X)\). So choose a random number \(r\) and check whether the two sides agree at that point. This is the protocol called <strong>ZeroTest</strong>.</p>
+<p>In our example we work in \(\mathbb F_{101}\), so the verifier chooses \(r\) uniformly from the 101 field elements 0 through 100. The prover must fix its polynomials \(f\) and \(q\) <em>before</em learning \(r\). The verifier then asks for their values at the required points and checks</p>
+<div class="math">\[\boxed{f(r+2)-f(r+1)-f(r)\ \stackrel{?}{=}\ Z(r)q(r).}\]</div>
+<p>The left side is \(D(r)\). The verifier can calculate the four factors of \(Z(r)=r(r-1)(r-2)(r-3)\) itself. The question mark means that it tests equality; it doesn't assume equality beforehand.</p>
+<h2>Try the same lie that fooled our random step check</h2>
+<p>The server again claims 0, 1, 1, 2, 3, <strong>8</strong> instead of 0, 1, 1, 2, 3, 5. Interpolation produces a different trace polynomial \(f_{\rm false}\) matching that incorrect list. It has the same allowed degree, at most 5, so degree restrictions alone do not catch the lie.</p>
+<p>Divide its discrepancy polynomial \(D_{\rm false}\) by \(Z\). Ordinary polynomial division gives a quotient \(q_{\rm false}\) and a remainder \(h\) of degree less than 4:</p>
+<div class="math">\[D_{\rm false}(X)=Z(X)q_{\rm false}(X)+h(X).\]</div>
+<p>What values must the remainder take? At the four required positions, \(Z(i)=0\), so \(h(i)=D_{\rm false}(i)\). The first three additions are correct, so \(h(0)=h(1)=h(2)=0\). The last addition is wrong by 3, so \(h(3)=3\).</p>
+<p>There is only one polynomial of degree at most 3 with those four values. It is</p>
+<div class="math">\[\boxed{h(X)=\tfrac12 X(X-1)(X-2)\quad\text{in }\mathbb F_{101}.}\]</div>
+<p>You can check the formula: it is zero at 0, 1 and 2. At 3 it equals \((1/2)\cdot3\cdot2\cdot1=3\). Since two different degree-at-most-three polynomials cannot agree at four points, this is indeed the complete remainder.</p>
+<div class="lab" data-lab="story-zero">
+<div class="lab-top"><strong>One calculation, two claimed endings</strong><p>Choose an honest or false final value, then change the verifier's random field point \(r\). Both sides of the ZeroTest equation are calculated in \(\mathbb F_{101}\).</p></div>
+<div class="lab-content">
+<label>Claimed final number <select data-key="claim"><option value="8">8 · false claim</option><option value="5">5 · true claim</option></select></label>
+<label class="range-label">Random challenge \(r\) <output class="range-value" data-live-for="r">3</output><input data-key="r" type="range" min="0" max="100" value="3"></label>
+<div class="lab-output" aria-live="polite"></div>
+</div></div>
+<p>Notice the contrast. Sampling one of the four <em>original recurrence steps</em> missed the same lie with probability \(3/4\). In this particular polynomial test the dishonest remainder has only three roots in a field of 101 elements, so the false claim passes for just \(3/101\) of the possible random challenges.</p>
+<div class="proof"><h3>Why does the method work for any false trace of the permitted degree?</h3>
+<p>First consider an honest calculation. Every recurrence discrepancy is zero, so the divisibility theorem gives \(D=Zq\). The verifier's equation is a true identity and accepts every random \(r\). This is perfect completeness.</p>
+<p>Now assume the public claim is false, with fixed initial values 0, 1 and a claimed last value that the recurrence does not produce. Those initial values and the recurrence uniquely determine every following value, so at least one required recurrence equation must fail. Hence for any claimed quotient \(q\), the polynomial</p>
+<div class="math">\[h(X)=D(X)-Z(X)q(X)\]</div>
+<p>cannot be the zero polynomial: at a failed step \(i\in\Omega\), \(Z(i)=0\) but \(D(i)\ne0\), so \(h(i)\ne0\).</p>
+<p>The degree of \(D\) is at most 5; if the protocol restricts \(\deg q\le1\), then \(\deg(Zq)\le4+1=5\). Thus \(\deg h\le5\). Our root theorem says that at most five of the 101 random challenges can make this <em>nonzero</em> \(h\) vanish:</p>
+<div class="math">\[\boxed{\Pr[\text{false acceptance}]\le 5/101.}\]</div>
+<p>The specific lie ending in 8 has only three bad challenges and therefore gets the stronger exact value \(3/101\). The general bound covers <em>any</em> false trace with the stated degree restrictions.</p>
+<p class="qed">We've now proved a complete statement about the computation: if its initial values, final claim and polynomial identity pass, then—except for the bounded random-test error—the entire recurrence is correct. The reason is not magic sampling; it's that a false trace forces a fixed nonzero low-degree polynomial. \(\square\)</p></div>
+<details class="worked"><summary>Optional: inspect the exact quotient polynomials</summary><div class="answer">
+<p>For the honest six-value list, interpolating over \(\mathbb F_{101}\) and dividing its recurrence discrepancy by \(Z(X)=X(X-1)(X-2)(X-3)\) gives the quotient \(q(X)=51+21X\), with zero remainder.</p>
+<p>For the list ending in 8, the quotient is \(q_{\rm false}(X)=79+74X\) and the remainder is \(h(X)=51X(X-1)(X-2)\). The number 51 is the inverse of 2 modulo 101, so this is precisely the polynomial derived above. Substitution at any field element verifies the identity \(D_{\rm false}=Zq_{\rm false}+h\).</p>
+<p>These explicit coefficients are not an extra assumption. They are what ordinary interpolation and polynomial division produce from the two listed traces.</p>
+</div></details>
+<div class="obstacle-progress"><h3>What is still imaginary?</h3>
+<p>Our proof assumes the prover has already fixed \(f\) and \(q\), and that the verifier can ask for their values without receiving the entire polynomials. So far we've treated this as a trusted polynomial box.</p>
+<p class="next-obstacle">If the prover could invent its polynomial answers after seeing \(r\), it could make this one equation pass. We must now replace the imaginary box with a cryptographic commitment.</p></div>
+<p class="source">Lecture §3, ZeroTest and Fibonacci polynomial IOP. The precise \(\mathbb F_{101}\) computations and cheating trace are constructed teaching examples.</p>
+
+</article>
+
+<article class="lesson" data-id="story-commit" data-title="Make the polynomial proof real and non-interactive">
+
+<p class="chapter-tag">The main story · 09 of 12</p>
+<h1>How do we stop the prover changing the polynomial?</h1>
+<p class="lead">The mathematics of ZeroTest is sound <em>if</em> the polynomials were fixed before the random challenge. The verifier needs to be certain that the answer at \(r\) came from the same polynomial the prover claimed to have used all along.</p>
+<p>We've met this problem before. In the PCP construction, a Merkle root fixed a long string and the verifier authenticated selected bits. For a <em>polynomial</em> we need a corresponding tool that authenticates selected evaluations. That's a <strong>polynomial commitment</strong>.</p>
+<h2>A commitment is a promise you can later check</h2>
+<p>First the system prepares public parameters \(pp\) that specify the allowed polynomial degree and security level. Then the prover fixes a polynomial \(f\) and sends its short commitment \(c_f\). When the verifier chooses a point \(r\), the prover sends the claimed value \(f(r)\) and a short opening proof \(\sigma_f\).</p>
+<p>The verifier checks that the opening matches the already published commitment. Repeat for the quotient polynomial \(q\), with its commitment \(c_q\) and opening proof \(\sigma_q\).</p>
+<div class="proof"><h3>What must the commitment guarantee?</h3>
+<p><strong>Correctness:</strong> an honest opening of the committed polynomial's true value is accepted.</p>
+<p><strong>Binding:</strong> a dishonest prover cannot feasibly produce conflicting valid openings for the same committed polynomial and evaluation point. In a complete construction, the degree limit and consistency across all the requested evaluations must also be enforced.</p>
+<p class="qed">With these guarantees, the verifier can treat the short authenticated answers as if they came from a polynomial fixed before the question. The root-count proof from ZeroTest becomes applicable to a real cryptographic protocol, up to the probability of breaking its commitment assumptions. \(\square\)</p></div>
+<p>But this is still a conversation. The verifier has to choose \(r\) <em>after</em seeing \(c_f,c_q\), and send that random challenge to the prover. How do we turn the conversation into a proof string anyone can check later?</p>
+<h2>Replace the challenge message, not its security purpose</h2>
+<p>Both prover and verifier can compute the same challenge from a hash of the public statement and the commitments:</p>
+<div class="math">\[r=H(\text{public statement},c_f,c_q,\text{protocol parameters}).\]</div>
+<p>The prover must send its commitments before deriving \(r\). The verifier later recomputes \(r\) from the same public values. The proof string contains the commitments, claimed evaluations, and short opening proofs. The verifier checks every opening, the initial values, the claimed final value, and the ZeroTest identity at its hash-derived point.</p>
+<p>This is the <strong>Fiat–Shamir</strong> idea: make the verifier's challenge reproducible from the prover's fixed first messages. Security arguments model the hash as a random oracle. Merely using an ordinary hash without the appropriate security proof does not automatically guarantee soundness, and using tiny \(\mathbb F_{101}\) would certainly not be secure in practice.</p>
+<div class="panel"><p><strong>What we have and what we haven't proved.</strong> The polynomial identity and root theorem establish the <em>mathematical</em> soundness of ZeroTest. A real succinct non-interactive argument also needs a suitable polynomial commitment, degree enforcement, and an appropriate Fiat–Shamir security theorem. The lecture describes this architecture without constructing every cryptographic component.</p></div>
+<div class="practice-link"><span class="practice-tag">Optional deeper derivations</span>
+<a href="#polynomial-commitments">Polynomial commitment algorithms and security definition</a>
+<a href="#schnorr-recall">Schnorr: a small interactive protocol showing why challenge timing matters</a>
+<a href="#fiat-shamir">Fiat–Shamir derivation and its security conditions</a>
+<a href="#hw3-fs-pcp">HW3 Problem 4(b): remove interaction from the earlier PCP/Merkle argument</a>
+<a href="#midterm-interpolation">Previous midterm: polynomial commitments as vector commitments</a></div>
+<div class="obstacle-progress"><h3>What did cryptography solve?</h3>
+<p>We can authenticate a few polynomial values without sending the complete polynomial. And a hash-derived challenge can remove the verifier's interactive message under the appropriate assumptions.</p>
+<p class="next-obstacle">Our whole calculation has been Fibonacci, where every step obeys one addition recurrence. A general program has different kinds of operations and reused intermediate values. How do we turn <em>any such computation</em> into polynomial equations?</p></div>
+<p class="source">Lecture §§4 and 6, polynomial commitments and Fiat–Shamir. The simplified protocol flow is explanatory; a production proof system needs the full commitment and oracle reductions.</p>
+
+</article>
+
+<article class="lesson" data-id="story-circuit" data-title="From a recurrence to a general circuit">
+
+<p class="chapter-tag">The main story · 10 of 12</p>
+<h1>What if the calculation contains more than one kind of step?</h1>
+<p class="lead">Our Fibonacci example was convenient because every step used the same rule. But an ordinary program might add in one place, multiply in another, and reuse an earlier result later. We need one common description of those different steps.</p>
+<p>An <strong>arithmetic circuit</strong> is a collection of small operations called gates. Each gate takes two values and produces either their sum or their product. Wires connect the output of one gate to the inputs of later gates. This is the same idea as breaking an enormous computation into tiny steps, but now each step can use a different operation.</p>
+<p>To see why this is enough to change the proof, use the example from the lecture. We know the public inputs \(x_1=2\) and \(x_2=4\). The prover has a private input \(w_1=3\). The computation is</p>
+<div class="math">\[t=(x_1x_2)(x_2+w_1).\]</div>
+<p>The first gate multiplies 2 and 4, making 8. The second adds 4 and 3, making 7. The third multiplies 8 and 7, making 56.</p>
+<div class="table-scroll"><table><thead><tr><th>Gate</th><th>Operation</th><th>Left</th><th>Right</th><th>Output</th></tr></thead><tbody>
+<tr><td>0</td><td>Multiply</td><td>2</td><td>4</td><td>8</td></tr>
+<tr><td>1</td><td>Add</td><td>4</td><td>3</td><td>7</td></tr>
+<tr><td>2</td><td>Multiply</td><td>8</td><td>7</td><td>56</td></tr>
+</tbody></table></div>
+<p>For this example the public claim is that the result is <strong>56</strong>. If the formal language requires a zero output, that's equivalent to checking \(t-56=0\); we can append a checking gate in a larger circuit. We'll keep the lecture's original three-gate trace so the positions below remain exactly as stated in the notes.</p>
+<h2>Why do we need to record the wires as well as the calculations?</h2>
+<p>Look at gate 2. It must receive <em>the actual output</em> of gate 0 on its left wire and of gate 1 on its right wire. It isn't enough for gate 2 to perform some correct multiplication using numbers of its own choosing. This is the difference between verifying isolated arithmetic and verifying the <em>whole circuit</em>.</p>
+<p>The proposed input and output values at every gate are collectively called the <strong>trace</strong>. A false trace can satisfy some constraints while violating others. We will separate the possible mistakes and see why each needs its own check.</p>
+<h2>Use the same polynomial idea again</h2>
+<p>For three gates we have nine gate-entry values—three per gate—and three original input values, making twelve numbers. We want a polynomial \(f_{\rm trace}\) that remembers all twelve values. Interpolation gives one polynomial of degree at most 11, provided we choose twelve distinct field points.</p>
+<p>Here the lecture chooses a particularly useful set of points: powers of an element \(\omega\) with multiplicative order 12. In \(\mathbb F_{97}\), the number \(\omega=6\) has exactly that order. So our twelve distinct points are \(1,\omega,\omega^2,\ldots,\omega^{11}\), with all multiplication taken modulo 97.</p>
+<p>Why move from \(\mathbb F_{101}\) to \(\mathbb F_{97}\)? The two examples have different needs. The earlier field made the Fibonacci arithmetic easy to see; this field contains the exact 12-point multiplicative cycle required by the lecture's trace example. The polynomial principles are unchanged.</p>
+<div class="obstacle-progress"><h3>What does the circuit buy us?</h3>
+<p>Any calculation built from additions and multiplications becomes a set of simple, checkable gate equations connected by wires. Interpolation can again place its claimed values inside a polynomial.</p>
+<p class="next-obstacle">But how do we verify that all those values describe the <em>requested computation</em>, rather than a table of unrelated but individually correct arithmetic?</p></div>
+<p class="source">Official Lecture §5, arithmetic circuits and the three-gate example. The public-target interpretation is equivalent to the usual zero-output formulation but keeps the lecture's three-gate indexing intact.</p>
+
+</article>
+
+<article class="lesson" data-id="story-plonk-checks" data-title="Four checks that force one real computation">
+
+<p class="chapter-tag">The main story · 11 of 12</p>
+<h1>What would a cheating circuit trace have to get past?</h1>
+<p class="lead">The prover has given us a polynomial representing twelve claimed values. But interpolation would work for <em>any</em> twelve values. What distinguishes a real circuit execution from a fabricated one? We must check exactly the requirements that make the table an execution of our public circuit.</p>
+<p>For our three-gate example, there are four kinds of requirement. Each catches a different way to cheat.</p>
+<div class="constraint-chain">
+<div><b>1 · Public input</b><span>Did the prover use the numbers 2 and 4 that the verifier supplied?</span></div>
+<div><b>2 · Final result</b><span>Does the circuit output equal the publicly claimed target 56?</span></div>
+<div><b>3 · Gate arithmetic</b><span>Does each addition or multiplication give the result claimed in its own row?</span></div>
+<div><b>4 · Wiring</b><span>When one gate feeds another, is the same value used at both ends of that wire?</span></div>
+</div>
+<div class="lab" data-lab="story-circuit">
+<div class="lab-top"><strong>Try giving the verifier a false trace</strong><p>The simulator checks all four requirements separately in \(\mathbb F_{97}\). In the “wrong wiring” example, every gate is locally correct and the final result is 56—only the wire connections reveal the lie.</p></div>
+<div class="lab-content">
+<label>Prover's proposed trace <select data-key="mode">
+<option value="honest">Honest computation</option>
+<option value="wire">Wrong wiring, every other check passes</option>
+<option value="input">Wrong public input, every other check passes</option>
+<option value="gate">Wrong arithmetic inside gates</option>
+<option value="target">Wrong public target</option>
+</select></label>
+<div class="lab-output" aria-live="polite"></div></div></div>
+<h2>How do those four requirements become polynomial tests?</h2>
+<p>The lecture arranges the original input values at the positions \(\omega^{-1},\omega^{-2},\omega^{-3}\). For gate \(l\), it puts its left input, right input and output at the three positions \(\omega^{3l},\omega^{3l+1},\omega^{3l+2}\). Here \(l=0,1,2\); negative powers wrap around because \(\omega^{12}=1\).</p>
+<p><strong>Public input:</strong> the verifier knows that \(f_{\rm trace}(\omega^{-1})=2\) and \(f_{\rm trace}(\omega^{-2})=4\). The third input is private and does not need to match a public value. A polynomial difference vanishing at the designated public-input positions expresses those requirements.</p>
+<p><strong>Final result:</strong> the last gate's output is at \(\omega^{3\cdot2+2}=\omega^8\). For this public target, the verifier requires \(f_{\rm trace}(\omega^8)=56\). In the strict zero-output language, the analogous condition requires the last gate's output to equal 0 after including a target-checking gate.</p>
+<p><strong>Gate arithmetic:</strong> let \(L,R,O\) denote one gate's left, right and output values. Let \(s=1\) when the gate adds, and \(s=0\) when it multiplies. The same equation handles either gate:</p>
+<div class="math">\[\boxed{s(L+R)+(1-s)LR-O=0.}\]</div>
+<p>Substitute \(s=1\): we obtain \(L+R-O=0\), the addition rule. Substitute \(s=0\): we obtain \(LR-O=0\), the multiplication rule. So the equation really is equivalent to the chosen gate's arithmetic, not merely related to it.</p>
+<p>The selector \(s\) is part of the public circuit. The lecture interpolates these selector values into a polynomial \(f_{\rm sel}\). Using the fact that \(f_{\rm trace}(X)\), \(f_{\rm trace}(\omega X)\) and \(f_{\rm trace}(\omega^2X)\) are the three gate values at a gate-start point, we can form one <em>gate polynomial</em> that must vanish at each of the three gate-start positions \(1,\omega^3,\omega^6\). The same vanishing-polynomial and random-evaluation reasoning from Fibonacci can check that identity.</p>
+<p><strong>Wiring:</strong> gate 0's output must equal gate 2's left input, and gate 1's output must equal gate 2's right input:</p>
+<div class="math">\[
+f_{\rm trace}(\omega^2)=f_{\rm trace}(\omega^6),\qquad
+f_{\rm trace}(\omega^5)=f_{\rm trace}(\omega^7).
+\]</div>
+<p>In the “wrong wiring” example above, the prover puts 9 and 17 into gate 2. The multiplication is correct <em>modulo 97</em>, because \(9\cdot17=153\equiv56\). It even produces the expected public result. But gate 0 produced 8, not 9, and gate 1 produced 7, not 17. The wiring equalities fail. That is why the gate equations alone cannot prove a circuit executed correctly.</p>
+<h2>Why was the roots-of-unity domain useful?</h2>
+<p>The polynomial that vanishes at all twelve powers of \(\omega\) is especially simple:</p>
+<div class="math">\[\prod_{j=0}^{11}(X-\omega^j)=X^{12}-1.\]</div>
+<p>To see why, both sides are monic degree-12 polynomials with the same twelve distinct roots. Their difference has degree at most 11 but twelve roots, which our root theorem says is impossible unless the difference is identically zero. So they are the same polynomial. Computing \(r^{12}-1\) by repeated squaring uses only a few field multiplications, unlike multiplying twelve separate factors.</p>
+<p>For arbitrary subsets of the domain, such as the public-input positions or gate-start positions, that simple identity does <em>not</em> automatically apply. The full PLONK construction uses further polynomial structure and preprocessing.</p>
+<div class="practice-link"><span class="practice-tag">Use the counterexample</span><a href="#exam-fake-trace">Applied exercise: why all-correct gates can still form a false circuit</a><a href="#plonk-gates">Reference: the full gate-selector polynomial equation</a><a href="#plonk-wiring">Reference: rotation polynomial for wire copies</a></div>
+<div class="obstacle-progress"><h3>Where does this leave us?</h3>
+<p>We now have four precise sets of constraints. If they <em>all</em> hold, the trace uses the public inputs, performs each required gate operation, connects its wires consistently and reaches the claimed output.</p>
+<p class="next-obstacle">We still need the final logical step: do those four conditions really force the existence of a satisfying computation? Let's prove that before claiming the protocol works.</p></div>
+<p class="source">Lecture §5.1–§5.2. The lecture specifies the gate constraint reduction and sketches the wiring check; it omits the complete wiring IOP security construction.</p>
+
+</article>
+
+<article class="lesson" data-id="story-conclusion" data-title="Why the final proof really answers the question">
+
+<p class="chapter-tag">The main story · 12 of 12</p>
+<h1>Have we actually proved the computation was correct?</h1>
+<p class="lead">We began with a server announcing a result and a client who didn't want to repeat a long calculation. We've developed several mathematical tools along the way. Now there is just one thing left to establish: that they genuinely answer the original question.</p>
+<h2>Suppose every circuit constraint really holds</h2>
+<p>Start at the original input wires. The public-input checks guarantee the values supplied by the verifier have not been changed. The remaining input wires specify a candidate private witness.</p>
+<p>Next follow the circuit in the order the gates are evaluated. At each gate, the input wires have definite values because the wiring constraints force every occurrence of a logical wire to agree. The gate equation guarantees that the output is exactly the sum or product prescribed by the public circuit. That output becomes the value seen by all later gates connected to it.</p>
+<p>Continue gate by gate. Because each operation and each connection is correct, we aren't just looking at a collection of plausible numbers. We have reconstructed a <strong>genuine evaluation of the specified circuit</strong> on the fixed public inputs and some witness.</p>
+<p>Finally, the output check says this genuine circuit evaluation reaches the claimed result. Equivalently, after adding a final comparison with the public target, the circuit outputs zero. So a witness satisfying the public claim really exists.</p>
+<div class="proof"><h3>The conclusion of the circuit argument</h3>
+<p>Correct public inputs and consistent wire values, together with correct arithmetic at every gate, force the trace to equal an honest circuit execution. The output constraint then forces that execution to satisfy the public claim.</p>
+<p class="qed">Therefore a trace satisfying all four kinds of constraints is a valid witness for the circuit statement. This is the conclusion the reduction needed; without it, checking a few related equations would not amount to proving the computation. \(\square\)</p></div>
+<h2>But the verifier didn't check every constraint one by one</h2>
+<p>That's where the earlier polynomial reasoning is used. Interpolation puts the trace into polynomials. Vanishing-polynomial identities express constraints at many prescribed points. A random equality test can check a fixed low-degree identity with a provable error bound, because a nonzero polynomial has few roots.</p>
+<p>Polynomial commitments authenticate the queried evaluations without sending the whole trace. Fiat–Shamir can replace the interactive random challenges with hash-derived ones, given a suitable random-oracle security argument.</p>
+<div class="pipeline">
+<div><b>Long calculation</b><small>Many individual steps</small></div>
+<span>↓</span><div><b>Circuit trace</b><small>Values on gate wires</small></div>
+<span>↓</span><div><b>Polynomial constraints</b><small>Few identities covering all steps</small></div>
+<span>↓</span><div><b>Authenticated random checks</b><small>Short proof, bounded cheating probability</small></div>
+</div>
+<p>The intended result is a <strong>succinct non-interactive argument</strong>: a proof whose size and verification cost grow slowly with the large computation, rather than requiring the verifier to rerun it. The prover still does the expensive computation; it is the verifier whose work we are trying to save.</p>
+<h2>Exactly what has and hasn't been established</h2>
+<p>The lecture gives the polynomial-IOP blueprint, the root and ZeroTest soundness arguments, and the circuit constraints. It does not fully construct and prove every cryptographic ingredient: the precise commitment scheme, degree enforcement, Fiat–Shamir reduction and detailed wiring IOP require additional arguments. We should not claim a complete end-to-end security theorem from the abbreviated lecture alone.</p>
+<p>We also haven't automatically obtained <strong>zero knowledge</strong>. A SNARG can convince the verifier without necessarily hiding the witness. Making the proof zero-knowledge requires further hiding and randomization steps.</p>
+<div class="obstacle-progress"><h3>Return to the first question</h3>
+<p><b>Why couldn't we just sample the ordinary calculation?</b> A false answer could hide in one step among many.</p>
+<p><b>What changed?</b> We encoded the evidence so a few random checks have a mathematical soundness guarantee, and used commitments so a cheater cannot change the evidence after seeing the random question.</p>
+<p><b>What makes this a proof rather than a collection of observations?</b> We showed that the polynomial constraints are equivalent to valid computation steps; that passing every circuit constraint implies an actual satisfying execution; and that a false low-degree identity has only a bounded chance of passing a random test.</p></div>
+<p>There are now two routes visible in the lecture: PCPs with Merkle-authenticated bit queries, and polynomial IOPs with polynomial-commitment evaluations. They solve the <em>same verification problem</em> using different encodings. PLONK develops the polynomial route for arithmetic circuits.</p>
+<div class="practice-link"><span class="practice-tag">Exercises after the explanation</span>
+<a href="#hw3-pcp-argument">HW3 4(a): PCP and Merkle construction</a>
+<a href="#hw3-fs-pcp">HW3 4(b): Fiat–Shamir compilation</a>
+<a href="#midterm-polynomial">Midterm 3(c.1): Schwartz–Zippel soundness proof</a>
+<a href="#midterm-interpolation">Midterm 1(c): polynomial commitments and vectors</a>
+<a href="#exam-security-proof">A fresh ZeroTest soundness problem</a>
+<a href="#coverage">Complete mapping of all lecture and homework material</a>
+</div>
+<p class="source">Lecture §§1–6. The guided story integrates the formal claims made in the notes; additional numerical examples are labeled as teaching constructions. Full lecture-level variants and all exercises remain in the reference cards.</p>
+
+</article>
+</body></html>
