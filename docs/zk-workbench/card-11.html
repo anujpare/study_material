@@ -15,6 +15,6 @@
 <div class="data-box"><span class="label">Probability of needing still more attempts</span><strong id="trials-prob">12.5%</strong></div><div id="trials-words" class="feedback" aria-live="polite"></div></div></section>
 <p>Against an efficient malicious verifier, hiding keeps its ability to detect the simulator's preparation negligible. Its chance of matching \(\hat c\) therefore stays \(1/2\) up to negligible error, and the simulator still has polynomial expected running time.</p>
 <div class="proof"><h3>What these arguments establish</h3><p>Now we can close the argument. The soundness proof used binding. The honest prover passes either challenge, giving completeness. And we just built an efficient witness-free simulator whose view is computationally indistinguishable from the real one. That is the promised computational zero-knowledge property.</p></div>
-<div class="transition"><p>One run has soundness error (1/2). To reduce it, we will repeat the protocol. But the timing of the repeated challenges will matter to the simulator.</p></div>
+<div class="transition"><p>One run has soundness error \(1/2\). To reduce it, we will repeat the protocol. But the timing of the repeated challenges will matter to the simulator.</p></div>
 <p class="source">PETS · ZK lecture notes, Theorem 1 and simulation analysis, pp. 6–7. This is a detailed proof sketch for computational hiding, not a full cryptographic reduction.</p>
 </article>
