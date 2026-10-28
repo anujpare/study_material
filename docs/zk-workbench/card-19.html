@@ -1,7 +1,7 @@
 <article class="lesson">
 <p class="chapter">Part VII · Schnorr identification</p>
 <h1>Two accepted answers reveal Schnorr's secret</h1>
-<p class="lead">If one Schnorr first message \(u\) can be answered correctly for two different challenges, the two verification equations contain enough information to recover secret \(x\). Let's solve them, step by step.</p>
+<p class="lead">The simulator established Schnorr's honest-verifier zero knowledge, but privacy is only one required property. We still need to show that accepting answers demonstrate knowledge of a witness. Special soundness gives a concrete test: can two accepted transcripts with the same first message and different challenges be combined to recover the secret? If one Schnorr first message \(u\) can be answered correctly for two different challenges, the two verification equations contain enough information to recover secret \(x\). Let's solve them, step by step.</p>
 <div class="exercise"><div class="tag">Homework 2 · Problem 3(c)</div><h3>The task</h3><p>Homework assumption: the prover \(P^\ast\) can answer every challenge successfully. Build an extractor that recovers \(x\). If it chooses two challenges independently, show that extraction succeeds with probability \(1-1/q\).</p></div>
 <h2>Collect two accepting transcripts with the same \(u\)</h2>
 <p>The extractor runs the prover until it sends \(u\), then saves the prover's internal state. It sends challenge \(c\) and receives \(z\). It rewinds to the saved state, so \(u\) stays the same, sends a fresh challenge \(c'\), and receives \(z'\). Both responses pass the verifier.</p>
