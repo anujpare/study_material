@@ -35,16 +35,20 @@
   ].map(a => ({id:a[0],title:a[1],file:a[2]}));
 
   const $=id=>document.getElementById(id);
-  const content=$("lesson"),select=$("jump"),previous=$("previous"),next=$("next"),counter=$("counter"),progress=$("progress"),label=$("current-label");
+  const content=$("lesson"),select=$("jump"),previous=$("previous"),next=$("next"),counter=$("counter"),slider=$("deck-slider"),position=$("position"),menu=$("chapter-menu"),headerTitle=$("header-title");
   let current=0,loading=0,lockedGuess=null,lockedChallenge=null,lockedBit=null;
   let soundnessSetup=null,soundnessChecked=false;
   function idxFromHash(){const i=cards.findIndex(c=>c.id===decodeURIComponent(location.hash.slice(1)));return i<0?0:i;}
   function navigation(){
     current=idxFromHash();
-    counter.textContent=String(current+1).padStart(2,"0")+" / "+String(cards.length).padStart(2,"0");
-    progress.style.width=String(100*(current+1)/cards.length)+"%";
+    const card=cards[current];
+    counter.textContent=(current+1)+" / "+cards.length;
+    position.textContent=(current+1)+" / "+cards.length;
+    slider.max=String(cards.length);slider.value=String(current+1);
+    slider.setAttribute("aria-valuetext","Lesson "+(current+1)+" of "+cards.length+": "+card.title);
     previous.disabled=current===0;next.disabled=current===cards.length-1;
-    select.value=cards[current].id;label.textContent=cards[current].title;
+    select.value=card.id;headerTitle.textContent=card.title;
+    if(menu)menu.open=false;
   }
   async function render(){
     navigation();
@@ -61,7 +65,7 @@
       const node=new DOMParser().parseFromString(html,"text/html").querySelector("article.lesson");
       if(!node)throw Error("Lesson article missing");
       content.innerHTML=node.outerHTML;
-      window.scrollTo(0,0);
+      content.scrollTop=0;
       document.title="PETS · "+card.title;
       initializeLab();
       typeset();
@@ -82,7 +86,21 @@
   }
   previous.addEventListener("click",()=>go(-1));
   next.addEventListener("click",()=>go(1));
-  select.addEventListener("change",()=>{location.hash=select.value;});
+  select.addEventListener("change",()=>{location.hash=select.value;if(menu)menu.open=false;});
+  slider.addEventListener("input",()=>{
+    const n=Number(slider.value);
+    if(cards[n-1])position.textContent=n+" / "+cards.length;
+  });
+  slider.addEventListener("change",()=>{
+    const n=Number(slider.value);
+    if(cards[n-1])location.hash=cards[n-1].id;
+  });
+  document.addEventListener("pointerdown",event=>{
+    if(menu?.open&&!menu.contains(event.target))menu.open=false;
+  });
+  document.addEventListener("keydown",event=>{
+    if(event.key==="Escape"&&menu?.open)menu.open=false;
+  });
   window.addEventListener("hashchange",render);
   window.addEventListener("mathjax-ready",typeset);
   window.addEventListener("keydown",e=>{
