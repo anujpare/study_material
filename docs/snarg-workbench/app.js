@@ -210,10 +210,10 @@ function initLab(lab){
       '<div><span class="small-label">Digits to address one bit</span><strong>'+
          k+' <small>bits</small></strong></div></div>'+
       '<div class="address-rule">\\(M=2^{'+k+'}='+count.toLocaleString("en-US").replace(/,/g,"\\,")+
-         '\\quad\\Longrightarrow\\quad\\log_2|w|='+k+'\\)</div>'+
+         '\\quad\\Longrightarrow\\quad\\log_2 M='+k+'\\)</div>'+
       addresses+
       '<p class="viz-insight">These '+k+' address digits can select <em>one</em> position among '+
-      count.toLocaleString("en-US")+' bits. They do not contain those bits or prove that the computation was correct. That is why we need the PCP theorem next.</p>');
+      count.toLocaleString("en-US")+' bits. They do not contain those bits or prove that the computation was correct. The PCP theorem explains why those positions matter; this figure measures only the cost of specifying them.</p>');
   }
   if(type==="bitbox"){
     const i=val(lab,"i",4),bits=[1,0,1,1,0,0,1,0];
