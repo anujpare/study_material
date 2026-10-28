@@ -13,7 +13,7 @@
 window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'local'},startup:{typeset:false,ready:()=>{MathJax.startup.defaultReady();window.dispatchEvent(new Event('mathjax-ready'));}}};
 </script>
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" onerror="(function(){var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js';s.defer=true;document.head.appendChild(s)})()"></script>
-<script defer src="./app.js?v=13"></script>
+<script defer src="./app.js?v=14"></script>
 </head>
 <body>
 <div class="shell" id="lessons">
@@ -33,10 +33,10 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],proc
       <span class="menu-brand menu-sub">This tutorial</span>
       <label for="reading-mode">Use the bottom arrows to follow</label>
       <select id="reading-mode" aria-label="Reading path">
-        <option value="guided">The main explanation · 22 lessons</option>
+        <option value="guided">Complete lecture and homework · 25 lessons</option>
         <option value="all">Every lesson and exercise · 31 cards</option>
       </select>
-      <p class="menu-help">Homework stays linked beside the lesson that prepares you for it.</p>
+      <p class="menu-help">Three exam-relevant homework sets are in the guided route; all remaining exercises stay linked.</p>
       <label for="jump">Jump to lesson</label>
       <select id="jump" aria-label="Jump to a tutorial lesson"><option>Loading lessons…</option></select>
       <a href="../hw2/">Original HW2 deck</a>
@@ -44,15 +44,15 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],proc
   </div>
   <header class="head">
     <div class="section" id="header-title">Zero Knowledge · Learning Lab</div>
-    <div class="head-right"><span class="count" id="counter" aria-live="polite">1 / 31</span></div>
+    <div class="head-right"><span class="count" id="counter" aria-live="polite">1 / 25</span></div>
   </header>
   <main id="lesson" class="reading" tabindex="-1" aria-label="Lesson content">
     <p class="loader">Loading the lesson…</p>
   </main>
   <footer class="reader-footer" aria-label="Lesson navigation">
     <div class="deck-jump" role="group" aria-label="Lesson slider">
-      <output class="deck-position" id="position" for="deck-slider">1 / 31</output>
-      <input class="deck-slider" id="deck-slider" aria-label="Jump to lesson" aria-valuetext="Lesson 1 of 31" type="range" min="1" max="31" step="1" value="1">
+      <output class="deck-position" id="position" for="deck-slider">1 / 25</output>
+      <input class="deck-slider" id="deck-slider" aria-label="Jump to lesson" aria-valuetext="Lesson 1 of 25" type="range" min="1" max="25" step="1" value="1">
     </div>
     <nav class="nav" aria-label="Previous or next lesson">
       <button type="button" id="previous" class="navbtn" aria-label="Previous lesson" disabled>
