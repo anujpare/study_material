@@ -68,11 +68,13 @@ function grid(vals,pred,current){return '<div class="lab-grid">'+vals.map(v=>'<s
 function wireDiagram(rows,input){
  const copies=[
   ["Input x₁",input[0],"Gate 0 left",rows[0][0]],
+  ["Input x₂",input[1],"Gate 0 right",rows[0][1]],
+  ["Input x₂",input[1],"Gate 1 left",rows[1][0]],
+  ["Input w₁",input[2],"Gate 1 right",rows[1][1]],
   ["Gate 0 out",rows[0][2],"Gate 2 left",rows[2][0]],
-  ["Gate 1 out",rows[1][2],"Gate 2 right",rows[2][1]],
-  ["Gate 2 out",rows[2][2],"Final gate left",rows[3][0]]
+  ["Gate 1 out",rows[1][2],"Gate 2 right",rows[2][1]]
  ];
- let out='<div class="plot"><svg class="math-visual" viewBox="0 0 330 226" role="img" aria-label="Exact wire-copy equalities. Green connections reuse identical field values; red connections disagree.">';
+ let out='<div class="plot"><svg class="math-visual" viewBox="0 0 330 340" role="img" aria-label="Exact wire-copy equalities. Green connections reuse identical field values; red connections disagree.">';
  copies.forEach((c,i)=>{
   const y=8+i*55,ok=c[1]===c[3],color=ok?"#4b9070":"#b24b4f";
   out+='<rect x="3" y="'+y+'" width="127" height="42" rx="7" fill="#f5f7f5" stroke="#cbd8cd"/>';
