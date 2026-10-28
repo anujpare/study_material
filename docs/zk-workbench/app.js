@@ -179,7 +179,7 @@
     const active=new Set((route||[]).slice(1).map((v,i)=>edgeKey(route[i],v)));
     const real=new Set(edges.map(([a,b])=>edgeKey(map(a),map(b))));
     const pos=v=>point[v];
-    let markup='<svg class="graph-svg" viewBox="0 0 360 325" role="img" aria-label="Five-vertex graph; green edges show an indicated Hamiltonian cycle, gray edges are additional roads, and dashed red lines are missing roads">';
+    let markup='<svg class="graph-svg" viewBox="0 0 360 325" role="img" aria-label="Five-vertex graph; green segments identify edges in the proposed Hamiltonian cycle, gray segments identify other edges, and dashed red segments identify nonedges in the candidate sequence">';
     for(const [a,b] of edges){
       const u=map(a),v=map(b),xy=pos(u),zw=pos(v);
       markup+='<line class="ordinary" x1="'+xy[0]+'" y1="'+xy[1]+'" x2="'+zw[0]+'" y2="'+zw[1]+'"/>';
@@ -197,11 +197,11 @@
     const route=which==="valid"?fixedRoute:[1,2,4,3,5,1];
     drawGraph("witness-graph",{route});
     const real=new Set(edges.map(([a,b])=>edgeKey(a,b)));
-    const list=[];for(let i=0;i<route.length-1;i++)list.push(route[i]+"→"+route[i+1]+": "+(real.has(edgeKey(route[i],route[i+1]))?"road exists":"NO ROAD"));
+    const list=[];for(let i=0;i<route.length-1;i++)list.push(route[i]+"→"+route[i+1]+": "+(real.has(edgeKey(route[i],route[i+1]))?"edge exists in E":"not an edge of E"));
     const correct=route.length===6&&new Set(route.slice(0,-1)).size===5&&route[0]===route[route.length-1]&&route.slice(0,-1).every(v=>v>=1&&v<=5)&&route.slice(1).every((v,i)=>real.has(edgeKey(route[i],v)));
-    feedback("route-result",(correct?"ACCEPT. ":"REJECT. ")+list.join("; ")+". "+(correct?"Every city occurs once before returning to city 1.":"A proposed list of cities is not a valid witness if even one required road is missing."),correct?"good":"bad");
+    feedback("route-result",(correct?"ACCEPT. ":"REJECT. ")+list.join("; ")+". "+(correct?"Each vertex occurs exactly once before returning to vertex 1.":"This candidate vertex sequence is not a Hamiltonian cycle because a required consecutive pair is not an edge."),correct?"good":"bad");
   }
-  function npUpdate(){const node=$("np-n");if(!node)return;const n=Number(node.value);$("np-n-label").textContent=n;const f=factorial(n-1);$("np-candidates").textContent=f.toLocaleString("en-US");$("np-checks").textContent=n.toLocaleString("en-US");$("np-bound").textContent="For "+n+" vertices, an elementary exhaustive search may inspect up to "+f.toLocaleString("en-US")+" different orderings after fixing the start. Given one proposed ordering, checking its "+n+" edges requires only "+n+" road tests. This comparison concerns the simple exhaustive algorithm; it does not prove that every algorithm needs factorial time.";}
+  function npUpdate(){const node=$("np-n");if(!node)return;const n=Number(node.value);$("np-n-label").textContent=n;const f=factorial(n-1);$("np-candidates").textContent=f.toLocaleString("en-US");$("np-checks").textContent=n.toLocaleString("en-US");$("np-bound").textContent="For "+n+" vertices, an elementary exhaustive search may inspect up to "+f.toLocaleString("en-US")+" different orderings after fixing the start. Given one proposed cyclic ordering, checking its "+n+" consecutive vertex pairs requires "+n+" edge-membership tests, plus the distinctness and coverage checks. This comparison concerns the simple exhaustive algorithm; it does not prove that every algorithm needs factorial time.";}
   function toyTrial(){const chosen=document.querySelector("[data-demo='toy-prepare'][aria-pressed='true']");if(!chosen){feedback("toy-result","Choose the challenge your hypothetical cheater prepared an answer for before drawing the verifier’s challenge.","bad");return;}
     const prepared=Number(chosen.dataset.value),c=Math.random()<.5?0:1;
     feedback("toy-result","The prover prepared for c="+prepared+". The verifier now independently drew c="+c+". "+(c===prepared?"The prepared answer matched, so the cheater got lucky.":"The challenge differed, so this cheater cannot answer.")+" This toy illustrates why the order of messages matters; it is not itself a proof system.",c===prepared?"good":"bad");}
@@ -230,7 +230,7 @@
     drawGraph("graph-original",{route:fixedRoute});
     drawGraph("graph-permuted",{permuted:true,route:fixedPermRoute});
     const info=$("perm-result");
-    if(info)info.textContent=reveal?"The fixed relabeling is π(1)=2, π(2)=4, π(3)=1, π(4)=5, π(5)=3. Applying π to the original cycle 1→2→3→4→5→1 yields 2→4→1→5→3→2. Every mapped pair remains an edge, so the two graphs are isomorphic.":"The two green cycles show the same road structure after renaming. Choose “Explain each relabeling” to trace exactly which old vertex becomes which new vertex.";
+    if(info)info.textContent=reveal?"The fixed relabeling is π(1)=2, π(2)=4, π(3)=1, π(4)=5, π(5)=3. Applying π to the original cycle 1→2→3→4→5→1 yields 2→4→1→5→3→2. Every mapped pair remains an edge, so the two graphs are isomorphic.":"The green edges represent the same Hamiltonian cycle under a permutation of the vertex labels. Choose “Show the vertex permutation” to inspect the mapping.";
   }
   function matrixForChallenge(c){
     const permEdges=new Set(edges.map(([a,b])=>edgeKey(permutation[a],permutation[b])));
@@ -266,8 +266,8 @@
     drawFalseGraph("ham-false-public",false);
     drawFalseGraph("ham-false-hidden",which==="different");
     feedback("ham-false-result",which==="isomorphic"?
-      "The prover fixed B as the same five-vertex PATH as G₀. A graph-identity check (c=0) can pass, but a cycle check (c=1) must fail because vertices 1 and 5 each have only one incident road. Choose one challenge.":
-      "The prover fixed B as a five-vertex CYCLE. Its extra closing road (5,1) provides a Hamiltonian cycle, but means B is not isomorphic to the public path G₀. Choose one challenge.");
+      "The prover fixed B as the same five-vertex PATH as G₀. A graph-identity check (c=0) can pass, but a cycle check (c=1) must fail because vertices 1 and 5 each have degree 1, so each has fewer than the two incident edges required by a Hamiltonian cycle. Choose one challenge.":
+      "The prover fixed B as a five-vertex CYCLE. The additional edge {1,5} completes a Hamiltonian cycle, but means B is not isomorphic to the public path G₀. Choose one challenge.");
   }
   function hamFalseChallenge(c){
     if(soundnessSetup===null){feedback("ham-false-result","The prover must first choose and fix its committed graph B. A challenge cannot precede the commitments.","bad");return;}
@@ -278,7 +278,7 @@
       "B is exactly a relabeling of G₀, so opening the graph and permutation passes the isomorphism check.":
       "B is a path. Its degree-one endpoints cannot belong to any Hamiltonian cycle, so the requested cycle opening is impossible.")
       :(c===0?
-      "B contains the extra road (5,1), so no permutation can make it equal to the public path G₀. The isomorphism check fails.":
+      "B contains the edge {1,5}, which is absent from the path graph G₀. Therefore B is not isomorphic to G₀. The isomorphism check fails.":
       "B contains the cycle 1→2→3→4→5→1, so the verifier can check opened cycle edges and accept that challenge.");
     feedback("ham-false-result",(pass?"ACCEPT on this ONE challenge. ":"REJECT on this challenge. ")+reason+
       " Because the first commitment was fixed before the random bit, the cheating prover can answer at most one of the two equally likely questions.",
