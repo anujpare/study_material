@@ -39,6 +39,14 @@
   let current=0,loading=0,lockedGuess=null,lockedChallenge=null,lockedBit=null;
   let soundnessSetup=null,soundnessChecked=false;
   function idxFromHash(){const i=cards.findIndex(c=>c.id===decodeURIComponent(location.hash.slice(1)));return i<0?0:i;}
+  function setMenuOpen(open){
+    const drawer=$("chapter-menu"),button=$("menu-toggle"),panel=$("chapter-panel");
+    if(!drawer||!button||!panel)return;
+    drawer.dataset.open=open?"true":"false";
+    button.setAttribute("aria-expanded",open?"true":"false");
+    panel.hidden=!open;
+  }
+  function closeMenu(){setMenuOpen(false)}
   function navigation(){
     current=idxFromHash();
     const card=cards[current];
@@ -48,7 +56,7 @@
     slider.setAttribute("aria-valuetext","Lesson "+(current+1)+" of "+cards.length+": "+card.title);
     previous.disabled=current===0;next.disabled=current===cards.length-1;
     select.value=card.id;headerTitle.textContent=card.title;
-    if(menu)menu.open=false;
+    closeMenu();
   }
   async function render(){
     navigation();
@@ -86,7 +94,8 @@
   }
   previous.addEventListener("click",()=>go(-1));
   next.addEventListener("click",()=>go(1));
-  select.addEventListener("change",()=>{location.hash=select.value;if(menu)menu.open=false;});
+  $("menu-toggle").addEventListener("click",()=>setMenuOpen($("chapter-menu").dataset.open!=="true"));
+  select.addEventListener("change",()=>{location.hash=select.value;closeMenu();});
   slider.addEventListener("input",()=>{
     const n=Number(slider.value);
     if(cards[n-1])position.textContent=n+" / "+cards.length;
@@ -96,10 +105,10 @@
     if(cards[n-1])location.hash=cards[n-1].id;
   });
   document.addEventListener("pointerdown",event=>{
-    if(menu?.open&&!menu.contains(event.target))menu.open=false;
+    if(menu?.dataset.open==="true"&&!menu.contains(event.target))closeMenu();
   });
   document.addEventListener("keydown",event=>{
-    if(event.key==="Escape"&&menu?.open)menu.open=false;
+    if(event.key==="Escape"&&menu?.dataset.open==="true")closeMenu();
   });
   window.addEventListener("hashchange",render);
   window.addEventListener("mathjax-ready",typeset);
