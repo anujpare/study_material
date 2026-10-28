@@ -152,7 +152,10 @@ function initLab(lab){
     const y0=val(lab,"a",0),y1=val(lab,"b",1),y2=val(lab,"c",1);
     const q=mod((y2-2*y1+y0)*9,17),a=mod(y1-y0,17);
     const ys=Array.from({length:17},(_,i)=>mod(y0+a*i+q*i*(i-1),17));
-    txt(lab,'The unique degree-at-most-two interpolant is \\(f(X)='+y0+'+'+a+'X+'+q+'X(X-1)\\pmod{17}\\).'+
+    const termA=a===0?'':a===1?'+X':'+'+a+'X';
+    const termQ=q===0?'':q===1?'+X(X-1)':'+'+q+'X(X-1)';
+    const formula=y0+termA+termQ;
+    txt(lab,'The degree-at-most-two interpolant is \\(f(X)\\equiv '+formula+'\\pmod{17}\\).'+
       svgTrend(ys,16,16,[0,1,2])+
       '<p class="visual-note">Highlighted bars are the three imposed values f(0), f(1), f(2); the other field evaluations follow from the same polynomial. Values are discrete residues, not a smooth real-number curve.</p>'+
       '<p class="viz-insight">The polynomial matches \\(f(0)='+y0+'\\), \\(f(1)='+y1+'\\), \\(f(2)='+y2+'\\). Two degree-at-most-two polynomials agreeing at these three distinct points must be identical.</p>');
