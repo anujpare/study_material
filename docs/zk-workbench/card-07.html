@@ -1,21 +1,26 @@
 <article class="lesson">
 <p class="chapter">Part III · Graph Hamiltonicity</p>
-<h1>What happens if we randomly rename every vertex?</h1>
-<p class="lead">Our prover knows a Hamiltonian cycle in a public graph \(G\), but it should not reveal which original vertices form that cycle in their original labels. We can change the vertex names without changing the roads. That simple observation is the next tool.</p>
-<h2>Fix one graph and one permutation</h2>
-<p>Write \(G=(V,E)\), where \(V=\{1,2,3,4,5\}\) lists the vertices and \(E\) lists the roads. Suppose the prover knows the cycle \(1\to2\to3\to4\to5\to1\). A <strong>permutation</strong> \(\pi\) gives every vertex a different new name. Because the renaming is one-to-one, it can also be undone.</p>
-<div class="math">\[\pi(1)=2,\quad\pi(2)=4,\quad\pi(3)=1,\quad\pi(4)=5,\quad\pi(5)=3\]<p class="math-caption">The screen uses one fixed renaming so that you can follow each road. The real prover chooses a fresh random permutation in each execution.</p></div>
+<h1>Why does the prover randomly permute the vertices?</h1>
+<p class="lead">In the Hamiltonicity proof, the prover knows a Hamiltonian cycle of the public graph \(G\). Revealing that cycle with its original vertex labels would reveal the witness. We therefore need to preserve the mathematical claim while concealing the correspondence between the proof's vertex labels and those of \(G\).</p>
+<h2>Relabeling a graph without changing its edges</h2>
+<p>Write \(G=(V,E)\), where \(V=\{1,2,3,4,5\}\) is the vertex set and \(E\) is the set of undirected edges. A <strong>permutation</strong> \(\pi:V\to V\) is a bijection: every vertex receives a distinct new label, and every old label can be recovered using the inverse permutation \(\pi^{-1}\).</p>
+<p>Suppose the prover knows the Hamiltonian cycle \(1\to2\to3\to4\to5\to1\). Here is one possible permutation:</p>
+<div class="math">\[\pi(1)=2,\quad\pi(2)=4,\quad\pi(3)=1,\quad\pi(4)=5,\quad\pi(5)=3\]<p class="math-caption">The demonstration fixes this permutation so you can inspect its effect. The honest prover chooses a fresh random permutation in each protocol execution.</p></div>
+<p>Construct a new graph \(B=\pi(G)\) with the same adjacency relation under the new labels: for every edge \(\{u,v\}\in E\), the relabeled graph contains \(\{\pi(u),\pi(v)\}\), and no additional edges are introduced. This is a graph <strong>isomorphism</strong>. An edge remains an edge; only its endpoints' labels change.</p>
 <div class="two-diagrams">
 <div class="diagram"><div class="graph-title">Original public graph \(G\)</div><div id="graph-original"></div></div>
 <div class="diagram"><div class="graph-title">Relabeled graph \(B=\pi(G)\)</div><div id="graph-permuted"></div></div>
 </div>
-<div class="graph-legend"><span>Known Hamiltonian cycle</span><span class="gray">Additional edges</span></div>
-<p>Follow the green roads. If the old road is \((1,2)\) and \(\pi(1)=2,\pi(2)=4\), its new name is \((2,4)\). Changing every label this way turns the original cycle into \(2\to4\to1\to5\to3\to2\). We haven't found a different cycle; we're looking at the same connections under new names.</p>
-<section class="lab"><div class="lab-head"><div class="tag">Trace the mathematical invariant</div><h3>Why does the cycle remain valid?</h3><p>Reveal the exact relabeling. Follow one old edge, then the next, to see why all mapped edges still exist.</p></div><div class="lab-body"><div class="control-row"><button data-demo="perm-view" data-value="reveal">Explain each relabeling</button></div><div class="feedback" id="perm-result" aria-live="polite">Each green edge in the second graph corresponds to exactly one green edge in the first. The gray chords are also relabeled, not erased.</div></div></section>
-<h2>Make the relationship exact</h2>
-<p>Call the relabeled graph \(B\). Its matrix entry \(B_{ij}\) is 1 when vertices with new names \(i,j\) are joined by a road. To determine whether that road existed originally, undo the renaming using \(\pi^{-1}\): the old vertices are \(\pi^{-1}(i)\) and \(\pi^{-1}(j)\).</p>
-<div class="math">\[B_{ij}=1\quad\Longleftrightarrow\quad (\pi^{-1}(i),\pi^{-1}(j))\in E\]<p class="math-caption">The notation \((a,b)\in E\) means there is a road between \(a\) and \(b\). The inverse permutation \(\pi^{-1}\) returns each new name to its original vertex; it is not a second random renaming.</p></div>
-<div class="proof"><h3>Why Hamiltonicity is preserved</h3><p>Here's why the cycle survives. Take any Hamiltonian cycle \(v_1,\ldots,v_5,v_1\) in \(G\). Since \(\pi\) is one-to-one, the five renamed vertices remain distinct. Each old road \((v_i,v_{i+1})\) becomes an actual road in \(B\). So the renamed sequence is a Hamiltonian cycle in \(B\). Conversely, applying \(\pi^{-1}\) to a cycle in \(B\) gives one in \(G\). Therefore one graph has a Hamiltonian cycle if and only if the other does.</p></div>
-<div class="transition"><p>Now the prover can commit to the relabeled graph before the verifier chooses a challenge. The verifier will test either whether the renaming is honest or whether the relabeled graph has a cycle.</p></div>
-<p class="source">PETS · ZK lecture notes, Definition 3 and Graph Hamiltonicity protocol, pp. 5–6.</p>
+<div class="graph-legend"><span>Edges of the known Hamiltonian cycle</span><span class="gray">Other edges in the same graph</span></div>
+<p>Follow one edge through the permutation. The original edge \(\{1,2\}\) becomes \(\{\pi(1),\pi(2)\}=\{2,4\}\). Applying \(\pi\) to every vertex of the known cycle gives \(2\to4\to1\to5\to3\to2\). The sequence uses the same graph structure, expressed in new vertex labels.</p>
+<section class="lab"><div class="lab-head"><div class="tag">Follow the graph isomorphism</div><h3>Why is the relabeled cycle still Hamiltonian?</h3><p>Reveal the permutation. Every green edge in the relabeled graph must correspond to an edge in the original graph.</p></div><div class="lab-body"><div class="control-row"><button data-demo="perm-view" data-value="reveal">Show the vertex permutation</button></div><div class="feedback" id="perm-result" aria-live="polite">The permutation acts on both endpoints of every edge. No edge is added or deleted by relabeling.</div></div></section>
+<h2>Express the relabeling using an adjacency matrix</h2>
+<p>Let \(B_{ij}\) denote the adjacency-matrix entry for the relabeled graph. It equals 1 precisely when vertices \(i\) and \(j\) are adjacent in \(B\). To determine whether that edge exists, use \(\pi^{-1}\) to recover the two original vertices and check membership in \(E\):</p>
+<div class="math">\[B_{ij}=1\quad\Longleftrightarrow\quad
+\{\pi^{-1}(i),\pi^{-1}(j)\}\in E\]<p class="math-caption">For this undirected graph, the unordered pair \(\{a,b\}\in E\) means that \(a\) and \(b\) are adjacent. The inverse permutation restores the original vertex labels.</p></div>
+<div class="proof"><h3>Why Hamiltonicity is preserved in both directions</h3><p>Suppose \(v_1,\ldots,v_5,v_1\) is a Hamiltonian cycle in \(G\). Because \(\pi\) is a bijection, its five relabeled vertices are still distinct and cover all vertices. Because edges are preserved, every consecutive pair in \(\pi(v_1),\ldots,\pi(v_5),\pi(v_1)\) is an edge of \(B\). So \(B\) has a Hamiltonian cycle.</p>
+<p>Conversely, if \(B\) has a Hamiltonian cycle, applying \(\pi^{-1}\) to every vertex preserves distinctness, coverage and edges, giving a Hamiltonian cycle in \(G\).</p>
+<p class="qed">Thus \(G\) has a Hamiltonian cycle if and only if \(B=\pi(G)\) has one. Relabeling preserves the claim's truth while obscuring the original witness labels. \(\square\)</p></div>
+<div class="transition"><p>Why commit to \(B\) before the verifier chooses a challenge? The verifier will ask either whether \(B\) is an isomorphic copy of \(G\), or whether \(B\) contains a Hamiltonian cycle. The prover must be unable to change the committed graph between those alternatives.</p></div>
+<p class="source">PETS · Zero Knowledge lecture notes, Definition 3 and the Graph Hamiltonicity protocol, pp. 5–6.</p>
 </article>
