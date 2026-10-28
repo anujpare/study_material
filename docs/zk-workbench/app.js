@@ -266,7 +266,7 @@
     drawFalseGraph("ham-false-public",false);
     drawFalseGraph("ham-false-hidden",which==="different");
     feedback("ham-false-result",which==="isomorphic"?
-      "The prover fixed B as the same five-vertex PATH as G₀. A graph-identity check (c=0) can pass, but a cycle check (c=1) must fail because vertices 1 and 5 each have degree 1, so each has fewer than the two incident edges required by a Hamiltonian cycle. Choose one challenge.":
+      "The prover fixed B as the same five-vertex PATH as G₀. The isomorphism check (c=0) can pass, but a cycle check (c=1) must fail because vertices 1 and 5 each have degree 1, so each has fewer than the two incident edges required by a Hamiltonian cycle. Choose one challenge.":
       "The prover fixed B as a five-vertex CYCLE. The additional edge {1,5} completes a Hamiltonian cycle, but means B is not isomorphic to the public path G₀. Choose one challenge.");
   }
   function hamFalseChallenge(c){
