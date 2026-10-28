@@ -5,7 +5,54 @@ const chapters=["I · Why SNARGs exist","II · Polynomial reasoning","III · Com
 const byId=id=>document.getElementById(id);
 const main=byId("lesson"), select=byId("lesson-select"), chapter=byId("chapter-select");
 const prev=byId("previous"), next=byId("next");
-let cards=[],current=0,req=0,mathReady=false;
+let cards=[],current=0,req=0,mathReady=false,readingMode="guided";
+/* Main teaching route. Every other card is still available at its lesson link. */
+const coreIds=new Set([
+ "the-question","succinctness","pcp-box","merkle","hw3-pcp-argument","iop-types",
+ "field-foundation","interpolation","equality-proof","schwartz-zippel","vanishing-polynomial",
+ "zerotest-proof","fibonacci-protocol","polynomial-commitments","schnorr-recall",
+ "fiat-shamir","circuits-meaning","trace-encoding","roots-unity-cost","plonk-output-input",
+ "plonk-gates","plonk-wiring","plonk-final"
+]);
+const exerciseSources={
+ "hw1-vectors":"merkle",
+ "midterm-polynomial":"schwartz-zippel",
+ "repetition-hw2":"schnorr-recall",
+ "hw3-schnorr-fs":"fiat-shamir",
+ "hw3-schnorr-attacks":"fiat-shamir",
+ "hw3-conceptual":"fiat-shamir",
+ "hw3-amplification":"fiat-shamir",
+ "hw3-fs-pcp":"fiat-shamir",
+ "hw2-circuit-sat":"circuits-meaning",
+ "midterm-interpolation":"polynomial-commitments",
+ "exam-fake-trace":"plonk-wiring",
+ "exam-security-proof":"zerotest-proof",
+ "coverage":"plonk-final"
+};
+function routeCards(){return readingMode==="all"?cards:cards.filter(c=>coreIds.has(c.id));}
+function neighbor(delta){
+ const list=routeCards(),currentId=cards[current]?.id;
+ const index=list.findIndex(c=>c.id===currentId);
+ if(index>=0)return list[index+delta]||null;
+ if(delta>0)return list.find(c=>cards.findIndex(x=>x.id===c.id)>current)||null;
+ return [...list].reverse().find(c=>cards.findIndex(x=>x.id===c.id)<current)||null;
+}
+function jumpRelative(delta){const target=neighbor(delta);if(target)location.hash=target.id;}
+function syncRouteFooter(){
+ const c=cards[current];if(!c)return;
+ const list=routeCards(),ix=list.findIndex(x=>x.id===c.id);
+ const previousCard=neighbor(-1),nextCard=neighbor(1);
+ prev.disabled=!previousCard;next.disabled=!nextCard;
+ const slider=byId("deck-slider");
+ let thumb=ix>=0?ix+1:Math.max(1,list.filter(x=>cards.indexOf(x)<current).length);
+ slider.min="1";slider.max=String(list.length);slider.value=String(thumb);
+ slider.setAttribute("aria-valuetext",ix>=0
+   ?"Lesson "+(ix+1)+" of "+list.length+": "+c.title
+   :"Practice card: "+c.title+". Select a numbered lesson to return to the guided path.");
+ const label=ix>=0?(ix+1)+" / "+list.length:"Practice";
+ byId("counter").textContent=label;
+ byId("position").textContent=label;
+}
 const mod=(x,p)=>((x%p)+p)%p;
 const escape=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const gcdPow=(a,b,p)=>{let x=1;a=mod(a,p);while(b>0){if(b%2)x=x*a%p;a=a*a%p;b=Math.floor(b/2);}return x;};
@@ -353,15 +400,21 @@ function navigate(){
  main.dataset.lessonId=c.id;
  main.scrollTop=0;
  byId("header-title").textContent=c.title;
- byId("counter").textContent=(current+1)+" / "+cards.length;
- byId("position").textContent=(current+1)+" / "+cards.length;
- const slider=byId("deck-slider");
- slider.max=String(cards.length);slider.value=String(current+1);
- slider.setAttribute("aria-valuetext","Lesson "+(current+1)+" of "+cards.length+": "+c.title);
  chapter.value=String(c.chapter);
  select.innerHTML=cards.filter(x=>x.chapter===c.chapter).map(x=>'<option value="'+escape(x.id)+'">'+escape(x.title)+'</option>').join("");
  select.value=c.id;
- prev.disabled=current===0;next.disabled=current===cards.length-1;
+ syncRouteFooter();
+ if(!coreIds.has(c.id)){
+   const originId=exerciseSources[c.id];
+   if(originId){
+     const origin=cards.find(x=>x.id===originId);
+     const nextMain=neighbor(1);
+     if(origin)main.insertAdjacentHTML("afterbegin",
+       '<div class="practice-back"><a href="#'+origin.id+'">← Back to '+escape(origin.title)+'</a><span>Optional worked exercise</span></div>');
+     if(nextMain)main.insertAdjacentHTML("beforeend",
+       '<div class="practice-forward"><a href="#'+nextMain.id+'">Continue the explanation: '+escape(nextMain.title)+' →</a></div>');
+   }
+ }
  initLessonExtras(c.id);
  main.querySelectorAll(".lab").forEach(initLab);
  typeset(main);
@@ -378,6 +431,7 @@ async function start(){
   }));
   cards=sources.flat();
   if(cards.length<20)throw Error("Course chapters incomplete: "+cards.length);
+  if(coreIds.size!==23||[...coreIds].some(id=>!cards.some(c=>c.id===id)))throw Error("Main learning path is incomplete");
   chapter.innerHTML=chapters.map((c,i)=>'<option value="'+i+'">'+escape(c)+'</option>').join("");
   byId("menu-toggle").addEventListener("click",()=>setMenuOpen(byId("chapter-menu").dataset.open!=="true"));
   chapter.addEventListener("change",()=>{
@@ -385,22 +439,29 @@ async function start(){
    if(x)location.hash=x.id;
   });
   select.addEventListener("change",()=>{location.hash=select.value;});
-  prev.addEventListener("click",()=>{if(current>0)location.hash=cards[current-1].id;});
-  next.addEventListener("click",()=>{if(current<cards.length-1)location.hash=cards[current+1].id;});
+  const modeSelect=byId("reading-mode");
+  modeSelect.addEventListener("change",()=>{
+    readingMode=modeSelect.value==="all"?"all":"guided";
+    syncRouteFooter();
+    closeMenu();
+  });
+  prev.addEventListener("click",()=>jumpRelative(-1));
+  next.addEventListener("click",()=>jumpRelative(1));
   byId("deck-slider").addEventListener("input",e=>{
-   const v=Math.max(1,Math.min(cards.length,Number(e.target.value)));
-   byId("position").textContent=v+" / "+cards.length;
+    const v=Number(e.target.value),length=routeCards().length;
+    byId("position").textContent=Math.max(1,Math.min(length,v))+" / "+length;
   });
   byId("deck-slider").addEventListener("change",e=>{
-   const v=Math.max(1,Math.min(cards.length,Number(e.target.value)));
-   if(cards[v-1]?.id!==getHash())location.hash=cards[v-1].id;
+    const target=routeCards()[Math.max(0,Number(e.target.value)-1)];
+    if(target&&target.id!==getHash())location.hash=target.id;
+    else syncRouteFooter();
   });
   document.addEventListener("keydown",e=>{
    if(e.key==="Escape"){closeMenu();return}
    if(e.altKey||e.ctrlKey||e.metaKey||e.shiftKey)return;
    if(["INPUT","TEXTAREA","SELECT","BUTTON","SUMMARY"].includes(document.activeElement?.tagName)||document.activeElement?.isContentEditable)return;
-   if(e.key==="ArrowRight"&&current<cards.length-1){e.preventDefault();location.hash=cards[current+1].id;}
-   if(e.key==="ArrowLeft"&&current>0){e.preventDefault();location.hash=cards[current-1].id;}
+   if(e.key==="ArrowRight"&&neighbor(1)){e.preventDefault();jumpRelative(1);}
+   if(e.key==="ArrowLeft"&&neighbor(-1)){e.preventDefault();jumpRelative(-1);}
   });
   document.addEventListener("pointerdown",e=>{
    const drawer=byId("chapter-menu");
