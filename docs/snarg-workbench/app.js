@@ -136,7 +136,7 @@ function initLab(lab){
      '<p class="viz-insight">'+(fake?'The dishonest difference polynomial is \\(h(X)=X-3\\), so only challenge r = 3 gives false acceptance.':'The honest identity holds at every challenge, establishing perfect completeness.')+'</p>');
   }
   if(type==="interp"){
-    const y0=val(lab,"a",1),y1=val(lab,"b",3),y2=val(lab,"c",2);
+    const y0=val(lab,"a",0),y1=val(lab,"b",1),y2=val(lab,"c",1);
     const q=mod((y2-2*y1+y0)*9,17),a=mod(y1-y0,17);
     const ys=Array.from({length:17},(_,i)=>mod(y0+a*i+q*i*(i-1),17));
     txt(lab,'The unique degree-at-most-two interpolant is \\(f(X)='+y0+'+'+a+'X+'+q+'X(X-1)\\pmod{17}\\).'+
@@ -205,11 +205,11 @@ function initLab(lab){
       '<span>Last position <b>'+last.toLocaleString("en-US")+'</b><code>'+allOnes+'</code></span></div>';
     }
     txt(lab,
-      '<div class="address-summary"><div><span class="small-label">Witness length |w|</span><strong>'+
+      '<div class="address-summary"><div><span class="small-label">Encoded proof length M</span><strong>'+
          count.toLocaleString("en-US")+' <small>bits</small></strong></div>'+
       '<div><span class="small-label">Digits to address one bit</span><strong>'+
          k+' <small>bits</small></strong></div></div>'+
-      '<div class="address-rule">\\(|w|=2^{'+k+'}='+count.toLocaleString("en-US").replace(/,/g,"\\,")+
+      '<div class="address-rule">\\(M=2^{'+k+'}='+count.toLocaleString("en-US").replace(/,/g,"\\,")+
          '\\quad\\Longrightarrow\\quad\\log_2|w|='+k+'\\)</div>'+
       addresses+
       '<p class="viz-insight">These '+k+' address digits can select <em>one</em> position among '+
