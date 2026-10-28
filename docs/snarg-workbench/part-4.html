@@ -2,72 +2,71 @@
 <article class="lesson" data-id="circuits-meaning" data-title="Why PLONK begins with circuits">
 
 <p class="chapter-tag">Lecture §5 · The PLONK IOP</p>
-<h1>Fibonacci was one calculation. What about every calculation?</h1>
-<p class="aim">The Fibonacci method verifies one repeated addition rule. A general computation may add, multiply, and reuse earlier results. To apply the same method, we need to express those computations as simple equations. An arithmetic circuit provides that representation.</p>
-<p>An <strong>arithmetic circuit</strong> consists of <strong>gates</strong>, each implementing addition or multiplication of two field elements. Directed <strong>wires</strong> carry the output of one gate to the inputs of later gates. The circuit specifies the operations and their connections, so the result is determined by its input values.</p>
-<p>The lecture defines an arithmetic circuit \(C\) over a field \(\mathbb F\), with two kinds of inputs: public values \(\mathbf x\), known to the verifier, and private values \(\mathbf w\), known to the prover. The bold notation means an ordered list of numbers, called a vector.</p>
-<p>Rather than proving the output equals an arbitrary target directly, the lecture uses the equivalent <strong>zero-output form</strong>: the prover must show that some private witness makes</p>
-<div class="math">\[\boxed{C(\mathbf x,\mathbf w)=0.}\]</div>
-<p>We can write the set of true statements as</p>
-<div class="math">\[L=\{\mathbf x\in\mathbb F^m:\exists\mathbf w\in\mathbb F^n,\ C(\mathbf x,\mathbf w)=0\}.\]</div>
-<p>Why does this help with the NP statements from the very first lesson? Remember the ordinary checker \(R(x,w)\), which returned 1 for a valid witness. If we know how to check the witness by a finite sequence of steps, we can draw those steps as a circuit: inputs are the public statement \(x\) and witness \(w\), and each elementary operation becomes a gate. Instead of asking whether the checker returns 1, we can subtract 1 at the end and ask whether the resulting circuit outputs zero. So the circuit statement is a new <em>representation of the original witness-checking problem</em>, not a different problem.</p>
-<p>For Boolean checks this translation is especially concrete. In the field \(\mathbb F_2\), where 0 and 1 are the only elements, multiplication acts as AND and addition acts as XOR. NOT of a bit \(a\) can be written \(1+a\), and OR of bits \(a,b\) can be written \(a+b+ab\), all modulo 2. Thus ordinary Boolean verification logic can be assembled from additions and multiplications. We use the same arithmetic-circuit idea over larger fields for the polynomial proofs.</p>
-<h2>Work through the lecture's three-gate example</h2>
-<p>Take public inputs \(x_1=2\) and \(x_2=4\), and private input \(w_1=3\). The circuit performs</p>
-<div class="math">\[t=(x_1x_2)(x_2+w_1).\]</div>
-<p>Gate 0 multiplies \(2\cdot4=8\). Gate 1 adds \(4+3=7\). Gate 2 multiplies the two intermediate outputs, giving \(8\cdot7=56\). Here's the complete proposed gate table:</p>
-<div class="table-scroll"><table><thead><tr><th>Gate</th><th>Operation</th><th>Left</th><th>Right</th><th>Output</th></tr></thead><tbody>
+<h1>How do we move from Fibonacci to an arbitrary computation?</h1>
+<p class="aim">The Fibonacci protocol worked because every step obeyed one recurrence. A general program may add, multiply, and reuse earlier results in different places. To use the same polynomial method, we first need to express any such computation as a collection of simple equations. The lecture uses an <strong>arithmetic circuit</strong> for this.</p>
+<p>An arithmetic circuit \(C\) is a collection of <strong>gates</strong> connected by <strong>wires</strong>. Each gate takes two field elements and either adds or multiplies them. A wire carries a value from an input or earlier gate to a later gate. The circuit specifies which operations to perform and which values they use.</p>
+<h2>What statement will the prover prove?</h2>
+<p>Some inputs are public and known to the verifier; collect them in a vector \(\mathbf x\in\mathbb F^m\). Other inputs form the private witness \(\mathbf w\in\mathbb F^n\). A vector here is just an ordered list of field elements. The lecture defines the language</p>
+<div class="math">\[
+L=\{\mathbf x\in\mathbb F^m:\exists\,\mathbf w\in\mathbb F^n,\ C(\mathbf x,\mathbf w)=0\}.
+\]</div>
+<p>In words, the public statement \(\mathbf x\) is true if <em>some</em> private input \(\mathbf w\) makes the circuit output zero. The zero-output convention is convenient: to prove that a computation produces a public target \(y\), we can construct a circuit whose final result is the computed value minus \(y\), and ask whether that difference is zero.</p>
+<p>Why does this cover the NP statements we started with? An ordinary NP verifier checks a public statement and a witness by performing elementary computational steps. Those steps can be represented by a circuit, and its acceptance condition can be expressed as a zero-output check. The circuit is therefore a structured representation of the original witness-checking problem.</p>
+<p>In the field \(\mathbb F_2\), multiplication of bits is AND and addition is XOR, so Boolean circuits are a special case. This connects arithmetic circuits to familiar Boolean computation without changing the underlying proof goal.</p>
+<h2>Follow the exact circuit from the lecture</h2>
+<p>The public inputs are \(x_1=2\) and \(x_2=4\), and the private input is \(w_1=3\). The three gates calculate</p>
+<div class="math">\[
+t=(x_1x_2)(x_2+w_1)=(2\cdot4)(4+3)=8\cdot7=56.
+\]</div>
+<div class="table-scroll"><table><thead><tr><th>Gate</th><th>Operation</th><th>Left input</th><th>Right input</th><th>Output</th></tr></thead><tbody>
 <tr><td>0</td><td>Multiply</td><td>2</td><td>4</td><td>8</td></tr>
 <tr><td>1</td><td>Add</td><td>4</td><td>3</td><td>7</td></tr>
 <tr><td>2</td><td>Multiply</td><td>8</td><td>7</td><td>56</td></tr>
 </tbody></table></div>
-<p>Notice an apparent mismatch: the example outputs 56, but the formal language above requires output 0. This pictured circuit is an <em>illustration of an execution</em>, not yet a satisfying zero-output instance. If our public claim is “the result is 56,” we can add a final comparison \(t-56=0\). That makes a <em>new circuit</em> whose final output is zero. We'll keep the original three-gate circuit for the lecture's trace-encoding example, and distinguish its illustrative target check from the general zero-output requirement.</p>
-<h2>Why is a list of correct gates not enough?</h2>
-<p>Suppose gate 0 outputs 8, but gate 2 secretly uses 9 as its left input. Gate 2 might still multiply its two inputs correctly, yet the entire circuit would be wrong: the wire connecting gate 0 to gate 2 was not respected.</p>
-<p>To verify a circuit, then, we must check both the <em>arithmetic inside each gate</em> and the <em>values copied along the wires</em>, along with the public inputs and final output. The proposed values of all inputs and wires form the <strong>circuit trace</strong>.</p>
-<div class="practice-link"><span class="practice-tag">Related homework</span><a href="#hw2-circuit-sat">HW2 Problem 4(a–c): use commitments and gate proofs to certify Boolean circuit satisfiability</a></div>
-<div class="bridge">We can now reduce general computation to a long list of simple gate equations. But if the verifier checks each gate and wire directly, it has to follow the entire computation again. We need the polynomial trick from Fibonacci: encode all the claimed trace values in one polynomial, then express the circuit rules as polynomial identities.</div>
-<p class="source">Lecture §5, Definition 2 (arithmetic circuits), the language \(C(\mathbf x,\mathbf w)=0\), and the pictured three-gate example.</p>
+<p>This three-gate circuit outputs 56, not zero. It is the lecture's illustration of a computation trace, not yet a satisfying instance of the formal zero-output language. To prove the public target 56 in zero-output form, add a target-comparison operation to a modified circuit and encode a new trace for that circuit. We will keep the original three-gate example unchanged while learning the trace encoding.</p>
+<h2>What could a dishonest trace do?</h2>
+<p>Even if each gate performs its own operation correctly, a later gate might use a value different from the output of the gate wired to it. For example, gate 0 might output 8 while gate 2 uses 9 as its left input. So we will eventually need both <strong>gate arithmetic checks</strong> and <strong>wire consistency checks</strong>.</p>
+<div class="practice-link"><span class="practice-tag">Related HW2 exercise</span><a href="#hw2-circuit-sat">Boolean circuit satisfiability: local gates and consistent wires</a></div>
+<div class="bridge">We now have a complete description of the computation as a table of input and gate values. But checking that entire table would require work proportional to the circuit size. The next step repeats the successful part of the Fibonacci construction: interpolate the table into one polynomial whose evaluations recover its entries.</div>
+<p class="source">Official lecture §5, Definition 2 and the three-gate arithmetic-circuit example.</p>
 
 </article>
 
 <article class="lesson" data-id="trace-encoding" data-title="Put the entire circuit trace into one polynomial">
 
-<p class="chapter-tag">Lecture §5.1 · From Circuits to Polynomials</p>
-<h1>How can one polynomial remember every gate value?</h1>
-<p class="aim">A circuit tells us what each gate must compute. But checking every gate would repeat the full calculation. We will use interpolation, as we did for Fibonacci, to represent all the proposed input and gate values in one polynomial.</p>
-<p>First count the numbers we have to store. Every gate gives us three values: its left input, right input and output. There are \(|C|\) gates, where \(|C|\) means the number of gates. There are also \(|I|\) original inputs, including public and private ones. So the total number of trace entries is</p>
+<p class="chapter-tag">Lecture §5.1 · From circuits to polynomials</p>
+<h1>How can a polynomial represent the entire circuit trace?</h1>
+<p class="aim">The circuit gives us the operations to verify, but reading every gate value would defeat succinctness. We will store the proposed execution as evaluations of one polynomial, just as we stored Fibonacci values. First we must count the values and assign a distinct evaluation point to each.</p>
+<h2>Count the trace positions</h2>
+<p>Every gate contributes three entries: left input, right input, and output. If \(|C|\) is the number of gates, that gives \(3|C|\) entries. We must also store the original public and private inputs, whose total count is \(|I|\). The lecture defines</p>
 <div class="math">\[\boxed{d=3|C|+|I|.}\]</div>
-<p>In the three-gate example, \(|C|=3\), and the original inputs are 2, 4, 3, so \(|I|=3\). Thus \(d=3\cdot3+3=12\) values. Those twelve values are what our polynomial must remember.</p>
-<h2>Which twelve points should hold the numbers?</h2>
-<p>We could choose any twelve different field elements. But the lecture makes a special choice that will simplify verification later. Pick a number \(\omega\) with <strong>multiplicative order 12</strong>. That means \(\omega^{12}=1\) but no smaller positive exponent gives 1. Then the twelve points</p>
-<div class="math">\[\Omega=\{1,\omega,\omega^2,\ldots,\omega^{11}\}\]</div>
-<p>are all distinct: if two powers repeated before exponent 12, a smaller positive power would equal 1. The lecture calls such an \(\omega\) a root of unity.</p>
-<p>For a small numerical example, work in \(\mathbb F_{97}\), the integers modulo 97. Here \(\omega=6\) has order 12. In fact \(6^6\equiv96=-1\), so \(6^{12}\equiv1\); and \(6^4\equiv35\ne1\). These rule out all proper divisors of 12 as possible orders.</p>
-<div class="lab" data-lab="unity"><div class="lab-top"><strong>See the twelve different evaluation points</strong><p>Move the exponent \(j\) and watch \(6^j\bmod97\) visit each point. After \(j=11\), the next power returns to 1.</p></div><div class="lab-content"><label class="range-label">Exponent \(j\) <output class="range-value" data-live-for="j">3</output><input data-key="j" type="range" min="0" max="11" value="3"></label><div class="lab-output" aria-live="polite"></div></div></div>
-<h2>Assign every trace entry to a point</h2>
-<p>Now the prover interpolates a polynomial called \(f_{\rm trace}(X)\) through these twelve values. We assign the original inputs to the last few powers, using \(\omega^{-j}=\omega^{12-j}\), and assign the three values of gate \(l\) to three successive powers beginning at \(\omega^{3l}\):</p>
+<p>For the three-gate circuit, \(|C|=3\) and \(|I|=3\), so \(d=12\). We need twelve distinct evaluation points. The lecture uses the bound \(\deg f_{\rm trace}\le d\); interpolation through twelve points actually gives a polynomial of degree at most \(d-1=11\).</p>
+<h2>Why choose powers of a root of unity?</h2>
+<p>We could interpolate at any twelve distinct points. But later the verifier must evaluate a vanishing polynomial for the entire set. Choosing special points makes that calculation cheaper. Pick an element \(\omega\) of <strong>multiplicative order \(d\)</strong>, meaning \(\omega^d=1\) and no smaller positive power equals 1. Its first \(d\) powers are therefore distinct:</p>
+<div class="math">\[\Omega=\{1,\omega,\omega^2,\ldots,\omega^{d-1}\}.\]</div>
+<p>For a concrete twelve-point example, use \(\mathbb F_{97}\) and \(\omega=6\). It has order 12. The interactive figure shows the twelve distinct values \(6^j\bmod97\). The choice of field and root is illustrative; a real scheme chooses parameters appropriate to the circuit and security requirements.</p>
+<div class="lab" data-lab="unity"><div class="lab-top"><strong>Verify the twelve distinct evaluation points</strong><p>Change exponent \(j\). Each point is \(6^j\bmod97\). After exponent 11, the next power returns to 1.</p></div><div class="lab-content"><label class="range-label">Exponent \(j\) <output class="range-value" data-live-for="j">3</output><input data-key="j" type="range" min="0" max="11" value="3"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<h2>Where does each trace entry go?</h2>
+<p>Call the interpolating polynomial \(f_{\rm trace}(X)\). The lecture assigns the original input numbered \(j\) to \(\omega^{-j}\). Negative powers are valid because \(\omega^{-j}=\omega^{d-j}\) when \(\omega^d=1\). For each gate numbered \(l=0,\ldots,|C|-1\), three consecutive powers store its left input, right input and output:</p>
 <div class="math">\[
 \begin{aligned}
-f_{\rm trace}(\omega^{-j})&=\text{original input number }j,\\
+f_{\rm trace}(\omega^{-j})&=\text{original input }j,\\
 f_{\rm trace}(\omega^{3l})&=\text{left input of gate }l,\\
 f_{\rm trace}(\omega^{3l+1})&=\text{right input of gate }l,\\
 f_{\rm trace}(\omega^{3l+2})&=\text{output of gate }l.
 \end{aligned}
 \]</div>
-<p>Here \(j=1,\ldots,|I|\) and \(l=0,\ldots,|C|-1\). These are not mysterious shifts: they are a filing system. Three consecutive evaluation points store the three numbers for one gate.</p>
-<div class="table-scroll"><table><thead><tr><th>Trace item</th><th>Evaluation positions</th><th>Stored values</th></tr></thead><tbody>
+<div class="table-scroll"><table><thead><tr><th>Trace entry</th><th>Polynomial positions</th><th>Values</th></tr></thead><tbody>
 <tr><td>Original inputs</td><td>\(\omega^{-1},\omega^{-2},\omega^{-3}\)</td><td>2, 4, 3</td></tr>
-<tr><td>Gate 0: multiplication</td><td>\(\omega^0,\omega^1,\omega^2\)</td><td>2, 4, 8</td></tr>
-<tr><td>Gate 1: addition</td><td>\(\omega^3,\omega^4,\omega^5\)</td><td>4, 3, 7</td></tr>
-<tr><td>Gate 2: multiplication</td><td>\(\omega^6,\omega^7,\omega^8\)</td><td>8, 7, 56</td></tr>
+<tr><td>Gate 0</td><td>\(\omega^0,\omega^1,\omega^2\)</td><td>2, 4, 8</td></tr>
+<tr><td>Gate 1</td><td>\(\omega^3,\omega^4,\omega^5\)</td><td>4, 3, 7</td></tr>
+<tr><td>Gate 2</td><td>\(\omega^6,\omega^7,\omega^8\)</td><td>8, 7, 56</td></tr>
 </tbody></table></div>
-<div class="proof"><h3>Does the trace polynomial actually exist?</h3>
-<p>Yes. We prescribed exactly twelve values at twelve distinct field points. The interpolation construction gives a polynomial of degree at most 11 matching them. And if two such polynomials matched at all twelve points, their difference would have twelve roots but degree at most 11, so it would have to be zero. Thus the interpolating polynomial is unique.</p>
-<p class="qed">The prover can represent the complete proposed trace with one degree-at-most-11 polynomial. The lecture sometimes uses the looser degree bound \(d=12\), but degree 11 suffices for this interpolation. \(\square\)</p></div>
-<p>There is an important limitation: any twelve numbers can be interpolated, including a dishonest trace. Our polynomial is a representation, <em>not yet evidence of correctness</em>.</p>
-<div class="bridge">Why did we choose the awkward powers of \(\omega\) instead of the natural indices 0 through 11? Because the polynomial that vanishes at all these powers has a special simple formula. That will help us avoid the slow product that troubled the Fibonacci verifier.</div>
-<p class="source">Lecture §5.1: \(d=3|C|+|I|\), roots-of-unity evaluation domain, and the exact mapping of inputs and gate values into \(f_{\rm trace}\).</p>
+<div class="proof"><h3>Why does such a polynomial exist and why is it unique?</h3>
+<p>We have prescribed twelve values at twelve distinct field points. Interpolation constructs a polynomial of degree at most 11 through those values. If two degree-at-most-11 polynomials agreed at all twelve points, their difference would have twelve roots but degree at most 11, contradicting the root theorem. Therefore the trace polynomial is unique for the proposed table. \(\square\)</p></div>
+<p>Uniqueness does not imply correctness. Any dishonest table also has a unique interpolating polynomial. The verifier must still check whether the stored numbers describe a genuine execution.</p>
+<div class="bridge">We chose the powers of \(\omega\) partly to make a vanishing polynomial cheap to evaluate. Before deriving the four circuit checks, let's prove that advantage: for the complete set of these powers, the vanishing polynomial is simply \(X^d-1\).</div>
+<p class="source">Official lecture §5.1, trace size, roots-of-unity domain, and the exact encoding of all original inputs and gate entries.</p>
 
 </article>
 
