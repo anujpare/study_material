@@ -1,205 +1,262 @@
 <!doctype html><html lang="en"><meta charset="utf-8"><title>SNARGs · Part III</title><body>
 <article class="lesson" data-id="polynomial-commitments" data-title="Polynomial commitments: four algorithms, two guarantees">
-<p class="chapter-tag">III · Commitments &amp; Fiat–Shamir · Lecture §4</p>
-<h1>Polynomial commitments</h1>
-<p class="aim"><strong>Question.</strong> ZeroTest assumes a locked oracle holding fixed polynomials. How can we make the verifier's later evaluation queries trustworthy in an ordinary cryptographic protocol?</p>
-<p>A <strong>polynomial commitment scheme</strong> commits to a polynomial \(f\in\mathbb F[X]\) of degree at most \(d\) and allows short proofs of evaluations \(f(z)=y\). It supplies the same read-only behavior as the abstract polynomial oracle, but under computational assumptions.</p>
-<div class="table-scroll"><table><thead><tr><th>Algorithm</th><th>Input and output</th><th>Purpose</th></tr></thead><tbody>
-<tr><td><strong>Setup</strong></td><td>\(\mathrm{Setup}(d,\lambda)\to pp\)</td><td>Prepare public parameters \(pp\) for the degree bound \(d\) and security parameter \(\lambda\).</td></tr>
-<tr><td><strong>Commit</strong></td><td>\(\mathrm{Commit}(pp,f)\to c\)</td><td>Bind a short commitment \(c\) to the polynomial.</td></tr>
-<tr><td><strong>Open</strong></td><td>\(\mathrm{Open}(pp,f,z)\to\pi\)</td><td>Produce an opening proof \(\pi\) for the point \(z\) and true value \(f(z)\).</td></tr>
-<tr><td><strong>Verify</strong></td><td>\(\mathrm{Verify}(pp,c,z,y,\pi)\to\{0,1\}\)</td><td>Check the claimed value \(y\) against the commitment.</td></tr>
+<p class="chapter-tag">III · Commitments and Fiat–Shamir · Lecture §4</p>
+<h1>Now we have to get rid of the imaginary box</h1>
+<p class="aim">Our polynomial tests assume the prover locks a polynomial in a box and cannot change it after hearing the verifier's random question. How do we enforce that rule with real cryptography?</p>
+<p>Remember the Merkle tree: a short root fixes a whole list, and an opening proves the value at one position. A <strong>polynomial commitment</strong> does something similar for a polynomial. The prover makes a short commitment \(c\) to \(f(X)\). Later it can prove that the polynomial equals \(y\) at a requested point \(z\), without sending all its coefficients.</p>
+<p>The lecture describes four algorithms. We'll go through what each is <em>for</em>, rather than treating the list as something to memorize.</p>
+<div class="table-scroll"><table><thead><tr><th>Algorithm</th><th>Meaning</th></tr></thead><tbody>
+<tr><td><strong>Setup</strong></td><td>\(\operatorname{Setup}(d,\lambda)\to pp\). Choose public parameters \(pp\) that support polynomials of degree at most \(d\), at security level \(\lambda\).</td></tr>
+<tr><td><strong>Commit</strong></td><td>\(\operatorname{Commit}(pp,f)\to c\). Fix the polynomial and produce its short commitment \(c\).</td></tr>
+<tr><td><strong>Open</strong></td><td>\(\operatorname{Open}(pp,f,z)\to\pi\). Produce a proof \(\pi\) for the evaluation \(y=f(z)\).</td></tr>
+<tr><td><strong>Verify</strong></td><td>\(\operatorname{Verify}(pp,c,z,y,\pi)\to\{0,1\}\). Check the claimed evaluation against the commitment.</td></tr>
 </tbody></table></div>
-<p>There are two formal properties in the course:</p>
-<div class="proof"><h3>Correctness and evaluation binding</h3>
-<p><strong>Correctness</strong> requires the verifier always to accept an honest opening of the polynomial that was committed: \(\mathrm{Verify}(pp,c,z,f(z),\pi)=1\) for the correctly generated \(c,\pi\).</p>
-<p><strong>Evaluation binding</strong> forbids a polynomial-time adversary from finding the same \(c\) and \(z\), two different values \(y\ne y'\), and successful openings for both values. More precisely, the probability of producing</p>
-<div class="math">\[\mathrm{Verify}(pp,c,z,y,\pi)=\mathrm{Verify}(pp,c,z,y',\pi')=1,\qquad y\ne y'\]</div>
-<p>must be negligible in \(\lambda\). “Negligible” means smaller than \(1/p(\lambda)\) for every positive polynomial \(p\), for all sufficiently large \(\lambda\).</p>
-<p class="qed">Correctness makes true oracle answers usable, and evaluation binding prevents inconsistent responses at the same queried point. These are precisely the two operations the verifier relied upon in the ideal locked box. \(\square\)</p></div>
-<p>A sound polynomial IOP also relies on its polynomials obeying declared degree bounds and on access to a consistent committed polynomial—not merely on two openings to a single point being inconsistent. A concrete commitment instantiation must provide the required degree enforcement and evaluation soundness. The lecture defines the interface but does not prove a concrete construction such as KZG.</p>
-<p><strong>Not guaranteed:</strong> neither hiding the polynomial nor zero-knowledge follows from the two listed properties. This is why the lecture first constructs a SNARG, leaving zero-knowledge randomization outside the covered details.</p>
-<div class="bridge"><strong>Why this is useful.</strong> The verifier can now request \(f(r)\) and \(q(r)\) for ZeroTest without receiving the coefficients of \(f,q\). We still have an interactive exchange because the verifier must supply the unpredictable point \(r\).</div>
-<p class="source">Source: official notes, Definition 1 (§4, p. 7); handwritten notes pp. 16–17.</p>
+<p>The first two algorithms prepare and fix the polynomial. The last two answer and verify a later question about its value. That's how we replace the polynomial oracle.</p>
+<h2>What stops the prover from lying?</h2>
+<p>There are two required properties.</p>
+<div class="proof"><h3>Correctness</h3>
+<p>If the prover commits to \(f\), then honestly opens the true value \(f(z)\), verification must accept. This is what makes the scheme usable at all.</p>
+<h3>Evaluation binding</h3>
+<p>Suppose a cheater makes one commitment \(c\) and then claims two different values \(y\ne y'\) at the <em>same</em> point \(z\), with proofs that both verify:</p>
+<div class="math">\[
+\operatorname{Verify}(pp,c,z,y,\pi)
+=\operatorname{Verify}(pp,c,z,y',\pi')=1.
+\]</div>
+<p>The scheme must make this computationally infeasible. Formally, every polynomial-time adversary has at most negligible probability of doing it. A probability is <em>negligible in \(\lambda\)</em> if it eventually becomes smaller than \(1/p(\lambda)\) for every fixed positive polynomial \(p\).</p>
+<p class="qed">These properties give us honest openings that work and prohibit conflicting openings at a chosen point. That's the behavior the ideal verifier expected from its polynomial oracle. \(\square\)</p>
+</div>
+<p>For the complete SNARG construction, the commitment implementation must also enforce the permitted polynomial degree and consistent evaluations across different queried points. The interface in the notes does not spell out a concrete construction or its full security proof.</p>
+<p>One warning: a polynomial commitment need not <em>hide</em> the polynomial. Binding is not the same as zero knowledge, which is a separate privacy property.</p>
+<div class="bridge">With commitments, the verifier can check the random polynomial equations. But it still has to send a random point to the prover. How do we get rid of that message? The answer builds on the Sigma protocols you saw earlier.</div>
+<p class="source">Official notes, §4 and Definition 1, p. 7; handwritten notes pp. 16–17.</p>
 </article>
 
 <article class="lesson" data-id="schnorr-recall" data-title="Schnorr: the three-message proof we will transform">
-<p class="chapter-tag">III · Commitments &amp; Fiat–Shamir · HW2, Problem 3</p>
-<h1>Schnorr's protocol, derived from its goal</h1>
-<p class="aim"><strong>Question.</strong> Before replacing an interactive challenge with a hash, what does the challenge actually protect against, and why does the verifier's equation work?</p>
-<p>Let \(G\) be a cyclic group with prime order \(q\), and let \(g\) generate it. “Order \(q\)” means \(g^q=1_G\), and exponents are computed modulo \(q\). The public statement is \(h=g^x\); the prover knows the secret exponent \(x\in\mathbb Z_q\). The verifier wants evidence of this knowledge without learning \(x\).</p>
-<p>The prover samples a fresh random exponent \(r\in\mathbb Z_q\) and sends \(u=g^r\). The verifier independently samples a challenge \(c\in\mathbb Z_q\). The prover replies with \(z=r+cx\bmod q\). The verifier checks \(g^z=u\,h^c\).</p>
-<div class="protocol"><div class="who">Prover \(P\)</div><div class="send">⟶</div><div class="who">Verifier \(V\)</div>
-<div class="msg">Choose \(r\), send \(u=g^r\)</div><div class="send">⟶</div><div class="local">Receive \(u\)</div>
-<div class="local">Wait for unknown challenge</div><div class="send">⟵</div><div class="msg">Random \(c\leftarrow\mathbb Z_q\)</div>
-<div class="msg">Send \(z=r+cx\)</div><div class="send">⟶</div><div class="local">Check \(g^z=u h^c\)</div></div>
-<div class="lab" data-lab="schnorr"><div class="lab-top"><strong>Verify the algebra in an actual finite group</strong><p>For transparent arithmetic, take the subgroup of order 11 generated by 2 modulo 23, with witness \(x=3\) and public \(h=8\).</p></div><div class="lab-content"><label>Prover randomness \(r\)<input data-key="r" type="range" min="0" max="10" value="4"></label><label>Verifier challenge \(c\)<input data-key="c" type="range" min="0" max="10" value="2"></label><div class="lab-output" aria-live="polite"></div></div></div>
-<div class="exercise"><span class="exercise-kicker">HW2 · Problem 3(a), 3(b), 3(c)</span><h3>Completeness, zero knowledge, and extraction</h3>
-<p>Part (a) proves every honest response passes. Part (b) constructs an honest-verifier zero-knowledge (HVZK) simulator without \(x\). Part (c) extracts \(x\) from two accepting responses to different challenges for the same \(u\).</p>
-<details class="worked"><summary>See the three complete solutions</summary><div class="answer">
-<h3>(a) Perfect completeness</h3>
-<div class="math">\[g^z=g^{r+cx}=g^r(g^x)^c=u h^c.\]</div>
-<p>The first equality substitutes the honest response. The second uses the exponent rule \(g^{a+b}=g^ag^b\); the last uses definitions of \(u\) and \(h\).</p>
-<p class="qed">Thus every honest prover response satisfies the verifier's exact acceptance equation. This proves perfect completeness. \(\square\)</p>
+<p class="chapter-tag">III · Commitments and Fiat–Shamir · HW2, Problem 3</p>
+<h1>Before removing a challenge, see what it does</h1>
+<p class="aim">A prover claims to know a secret number \(x\) such that \(h=g^x\). How can the verifier test this without asking the prover to reveal \(x\)?</p>
+<p>We use a cyclic group \(G\) of prime order \(q\), generated by an element \(g\). Think of the group operation as multiplication. Every group element is some power of \(g\), and \(g^q=1_G\), the group identity. Exponents are calculated modulo \(q\).</p>
+<p>The public value is \(h=g^x\). The prover knows \(x\); the verifier knows only \(h,g,q\). In <strong>Schnorr's protocol</strong>, they exchange three messages:</p>
+<div class="protocol">
+<div class="who">Prover \(P\)</div><div class="send">⟶</div><div class="who">Verifier \(V\)</div>
+<div class="msg">Pick random \(r\); send \(u=g^r\)</div><div class="send">⟶</div><div class="local">Receives \(u\)</div>
+<div class="local">Must answer an unknown question</div><div class="send">⟵</div><div class="msg">Pick random \(c\in\mathbb Z_q\)</div>
+<div class="msg">Send \(z=r+cx\pmod q\)</div><div class="send">⟶</div><div class="local">Check \(g^z=u h^c\)</div>
+</div>
+<p>Why all these new letters? The prover picks \(r\) to hide the secret in a fresh random value \(u\). The verifier then picks \(c\), <em>after</em> receiving \(u\), so the prover cannot choose \(u\) knowing which challenge it must answer. The response \(z\) combines \(r\) with the secret \(x\) in a way the verifier can check using only public \(h\).</p>
+<div class="lab" data-lab="schnorr"><div class="lab-top"><strong>Check a real Schnorr equation</strong><p>Use the order-11 subgroup generated by 2 modulo 23. The secret is \(x=3\), so \(h=8\). Move \(r\) or \(c\) and see the same equation hold.</p></div><div class="lab-content"><label>Prover's random \(r\)<input data-key="r" type="range" min="0" max="10" value="4"></label><label>Verifier's challenge \(c\)<input data-key="c" type="range" min="0" max="10" value="2"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<div class="exercise"><span class="exercise-kicker">HW2 · Problem 3(a–c)</span>
+<h3>Prove completeness, privacy, and knowledge extraction</h3>
+<p>The homework asks three different questions. First, why does an honest prover always pass? Second, could an honest-verifier transcript be generated without knowing the secret? Third, why does answering <em>two different challenges to the same first message</em> reveal the secret?</p>
+<details class="worked"><summary>Show the three worked proofs</summary><div class="answer">
+<h3>(a) Completeness</h3>
+<p>An honest prover sends \(z=r+cx\). Substitute it into the verifier's equation:</p>
+<div class="math">\[
+g^z=g^{r+cx}=g^r(g^x)^c=u h^c.
+\]</div>
+<p>The second equality uses \(g^{a+b}=g^ag^b\). The last equality substitutes \(u=g^r\) and \(h=g^x\).</p>
+<p class="qed">Both sides are equal for every choice of \(r,c\). That proves perfect completeness. \(\square\)</p>
 <h3>(b) Honest-verifier zero knowledge</h3>
-<p>The simulator must produce a transcript \((u,c,z)\) with the same distribution as an honest interaction, using only public \(h\). It samples \(c,z\leftarrow\mathbb Z_q\) uniformly and sets \(u=g^z h^{-c}\). By construction \(g^z=u h^c\), so verification passes.</p>
-<p>In a real conversation, \(r,c\) are independent uniform scalars and \(z=r+cx\). For any fixed \(c\), adding the fixed value \(cx\) to uniform \(r\) preserves uniformity of \(z\), so the real pair \((c,z)\) is uniform. Once \(c,z,h\) are fixed, the verifier equation uniquely determines \(u=g^z h^{-c}\). That is precisely the simulator's construction.</p>
-<p class="qed">The real and simulated triples therefore have the <em>same distribution</em>, even though the simulator never knew \(x\). This proves HVZK for the stated honest verifier. \(\square\)</p>
-<h3>(c) Extract the witness</h3>
-<p>Suppose the prover produces two accepting transcripts with the <em>same</em> first message \(u\), but distinct challenges \(c\ne c'\) and responses \(z,z'\). From verification we know \(g^z=u h^c\) and \(g^{z'}=u h^{c'}\). Divide these group equalities to eliminate the shared \(u\):</p>
-<div class="math">\[g^{z-z'}=h^{c-c'}=(g^x)^{c-c'}=g^{x(c-c')}.\]</div>
-<p>Since \(g\) has order \(q\), equality of its powers means the exponents agree modulo \(q\). Because \(q\) is prime and \(c-c'\ne0\), the difference has an inverse. Therefore</p>
+<p>We want to produce a transcript \((u,c,z)\) that looks exactly like an honest exchange, but without knowing \(x\). Work backwards from the verifier's equation. Pick \(c\) and \(z\) uniformly at random, and define</p>
+<div class="math">\[u=g^z h^{-c}.\]</div>
+<p>Then \(g^z=u h^c\), so the transcript passes the check. But does it have the right <em>distribution</em>? In the real protocol \(r\) and \(c\) are independent and uniform, and \(z=r+cx\). For each fixed \(c\), adding the fixed number \(cx\) to uniform \(r\) merely rearranges the field elements, so \(z\) is uniform. Once \(c,z\) are chosen, the equation determines exactly the value \(u=g^z h^{-c}\).</p>
+<p class="qed">Thus the simulated \((u,c,z)\) is distributed exactly like a real honest-verifier transcript. The simulator never used \(x\). That establishes honest-verifier zero knowledge. \(\square\)</p>
+<h3>(c) Extracting the witness</h3>
+<p>Imagine a prover sends the same \(u\), then successfully answers two different verifier challenges \(c\ne c'\) with responses \(z,z'\). We have</p>
+<div class="math">\[g^z=u h^c,\qquad g^{z'}=u h^{c'}.\]</div>
+<p>Divide the two equations. The same \(u\) appears on both sides and cancels:</p>
+<div class="math">\[
+g^{z-z'}=h^{c-c'}=g^{x(c-c')}.
+\]</div>
+<p>Because \(g\) has order \(q\), the exponents are equal modulo \(q\). And because \(q\) is prime and \(c\ne c'\), the difference \(c-c'\) has an inverse. We can solve for the secret:</p>
 <div class="math">\[\boxed{x=(z-z')(c-c')^{-1}\pmod q.}\]</div>
-<p>An extractor obtains the two transcripts by rewinding the prover to the state after sending \(u\) and issuing a fresh challenge. If two independent challenges accidentally coincide, which occurs with probability \(1/q\), it cannot apply this formula to that pair.</p>
-<p class="qed">Two valid answers to different challenges force one recoverable witness \(x\). This is the special-soundness fact that later bounds how many challenges a false statement can answer. \(\square\)</p>
+<p>An <em>extractor</em> can try this by running the prover twice from the same state after it sends \(u\), giving it a different challenge the second time. This is called rewinding. Two independent challenges coincide with probability \(1/q\); in that case the division is impossible for that pair.</p>
+<p class="qed">Two valid answers to different challenges force a recoverable witness. This is the special-soundness property we'll need when counting cheating challenges. \(\square\)</p>
 </div></details></div>
-<p class="source">Source: Homework 2, Problem 3(a–c), earlier zero-knowledge lectures.</p>
+<p class="source">Homework 2, Problem 3(a–c), and the earlier Sigma-protocol lectures.</p>
 </article>
 
 <article class="lesson" data-id="repetition-hw2" data-title="HW2 · Sequential versus parallel repetition">
-<p class="chapter-tag">III · Commitments &amp; Fiat–Shamir · HW2, Problem 2</p>
-<h1>Sequential and parallel repetition</h1>
-<p class="aim"><strong>Question.</strong> Repeating a one-bit challenge makes cheating unlikely. Why can the same number of tests behave differently for zero-knowledge simulation?</p>
-<p>A three-message Sigma protocol has the order <strong>first message \(u\) → verifier challenge \(c\) → response \(z\)</strong>. When repeated \(t\) times sequentially, the messages have order \(u_1,c_1,z_1,u_2,c_2,z_2,\ldots,u_t,c_t,z_t\). In a parallel repetition, the prover sends all \(u_1,\ldots,u_t\) <em>before</em> receiving the challenge vector \((c_1,\ldots,c_t)\), then sends all responses together.</p>
-<div class="two"><div class="panel"><strong>Sequential</strong><p>\(u_1\to c_1\to z_1\)<br>\(u_2\to c_2\to z_2\)<br>\(\cdots\)<br>\(u_t\to c_t\to z_t\)</p><p class="note">Each challenge arrives before the next commitment is constructed.</p></div>
-<div class="panel"><strong>Parallel</strong><p>\((u_1,\ldots,u_t)\)<br>↓<br>\((c_1,\ldots,c_t)\)<br>↓<br>\((z_1,\ldots,z_t)\)</p><p class="note">All commitments are fixed before any challenge is revealed.</p></div></div>
-<div class="exercise"><span class="exercise-kicker">HW2 · Problem 2(a–c) · Hamiltonian-cycle ZK</span>
-<p>The original Hamiltonian-cycle protocol has perfect completeness and soundness error \(1/2\). Repeating it \(t\) times, the verifier accepts iff every instance accepts. (a) Explain why sequential repetition remains ZK. (b) Explain why the standard simulator does not prove ZK for arbitrary malicious verifiers under parallel repetition. (c) Prove honest-verifier ZK under parallel repetition.</p>
-<details class="worked"><summary>See the protocol-by-protocol explanation</summary><div class="answer">
-<p><strong>(a) Sequential ZK.</strong> Run the original simulator for each session while treating the adversarial verifier, including its current state and previous transcript, as the verifier for that session. The first simulated session finishes before the next session begins. Thus the simulator can generate each session's transcript before interacting with the verifier's next-stage behavior. A sequence of at most polynomially many indistinguishable replacements is still indistinguishable by a hybrid argument. The continuation state must be respected; it is not enough to assert that a malicious verifier's sessions are probabilistically independent.</p>
-<p><strong>(b) Parallel difficulty.</strong> The standard Hamiltonian simulator prepares commitments suitable for one of two potential challenge types and guesses which one the verifier will request. With \(t\) parallel instances, it must prepare <em>all \(t\) first messages</em> before seeing the vector of challenges. Guessing a particular vector has probability \(2^{-t}\) when the challenges are uniformly independent; the expected number of full guesses is \(2^t\). A malicious verifier can also correlate its challenge choices with all the first messages. Therefore the standard sequential rewinding argument does not establish general parallel ZK. This is a limitation of that proof technique, not a theorem that all parallel protocols are non-ZK.</p>
-<p><strong>(c) Parallel HVZK.</strong> Against an honest verifier, the \(t\) challenges are independent uniform bits, independent of the first messages. Run the original honest-verifier simulator independently \(t\) times. Each simulated triple has the honest distribution, and their product distribution is exactly the distribution of \(t\) independent honest executions. Package the triples into the three batched protocol messages.</p>
-<p class="qed">Sequential composition can simulate a completed session before the next begins. Parallel HVZK works because honest challenges are independent. The ordinary parallel simulation proof for a malicious verifier fails because it must prepare every first message before seeing the joint challenge vector. These conclusions follow from the message order, not from the word “parallel” alone. \(\square\)</p>
+<p class="chapter-tag">III · Commitments and Fiat–Shamir · HW2, Problem 2</p>
+<h1>Why does message order matter?</h1>
+<p class="aim">Suppose one proof has a cheating probability of \(1/2\). Repeating it several times should reduce that probability. But doing the repetitions one after another is not the same protocol as doing them all at once.</p>
+<p>A three-message Sigma protocol has the order \(u\to c\to z\): the prover commits to its first message, the verifier chooses a challenge, and the prover answers.</p>
+<div class="two">
+<div class="panel"><strong>Sequential repetition</strong><p>\(u_1\to c_1\to z_1\)<br>\(u_2\to c_2\to z_2\)<br>\(\cdots\)</p><p>The first conversation finishes before the next first message is sent.</p></div>
+<div class="panel"><strong>Parallel repetition</strong><p>\((u_1,\ldots,u_t)\)<br>\(\downarrow\)<br>\((c_1,\ldots,c_t)\)<br>\(\downarrow\)<br>\((z_1,\ldots,z_t)\)</p><p>All first messages must be sent before any challenge is revealed.</p></div>
+</div>
+<p>Both forms can reduce soundness error. The subtle difference appears when we try to <em>simulate</em> the conversation without a secret witness.</p>
+<div class="exercise"><span class="exercise-kicker">HW2 · Problem 2(a–c)</span>
+<h3>Zero-knowledge under sequential and parallel composition</h3>
+<p>The Hamiltonian-cycle proof from the lecture has perfect completeness and soundness error \(1/2\). The verifier accepts the repeated protocol only if all \(t\) copies pass. (a) Show sequential repetition remains zero-knowledge. (b) Explain why the standard simulation argument does not establish zero-knowledge for parallel repetition against a malicious verifier. (c) Show that parallel repetition remains <em>honest-verifier</em> zero-knowledge.</p>
+<details class="worked"><summary>Work through the difference in the simulators</summary><div class="answer">
+<h3>(a) Sequential repetition</h3>
+<p>The simulator deals with the first session before the second starts. It simulates that session against the verifier in its current state, then continues to the next session and uses the same simulation method again. A malicious verifier might remember the earlier messages, so we must respect its state; we cannot simply say that its sessions are independent.</p>
+<p>Each replacement of a real session by a simulated one is indistinguishable under the original zero-knowledge guarantee. Replacing a polynomial number of sessions one at a time preserves indistinguishability by a <em>hybrid argument</em>: if the first and last transcript distributions were distinguishable, some neighboring replacement would also have to be distinguishable.</p>
+<p class="qed">The simulator can finish and justify each session before the next begins. That is why the ordinary sequential composition proof works. \(\square\)</p>
+<h3>(b) Parallel repetition</h3>
+<p>In the Hamiltonian-cycle simulator, the simulator prepares a first message tailored to one of two possible challenges. It ordinarily hopes to guess the verifier's challenge, then rewinds if it guessed wrong.</p>
+<p>With \(t\) parallel repetitions, the simulator must send <em>all \(t\) first messages</em> before seeing the challenge vector. To prepare them using the same trick it must guess all \(t\) challenge bits. If the verifier chooses independent bits, one particular guess succeeds with probability \(2^{-t}\), requiring an expected \(2^t\) guesses. With malicious verifiers, challenges can also depend on the complete vector of first messages.</p>
+<p class="qed">So the usual efficient sequential simulator no longer works. This does <em>not</em> prove that every parallel protocol fails zero-knowledge; it shows precisely why this simulation proof cannot establish it. \(\square\)</p>
+<h3>(c) Parallel honest-verifier zero knowledge</h3>
+<p>An honest verifier chooses the \(t\) challenges independently and uniformly, without depending on the first messages. We can simply run the original honest-verifier simulator \(t\) independent times and place all the simulated first messages, challenges, and responses in the three batches.</p>
+<p>Each simulated copy has the correct honest-verifier distribution, and the copies are independent in both the real and simulated experiments. Thus the complete batched transcript has the same distribution as a real honest execution.</p>
+<p class="qed">The parallel protocol remains honest-verifier zero-knowledge. The distinction is about which verifier we are trying to simulate and when its challenges become known. \(\square\)</p>
 </div></details></div>
-<p>The distinction also matters in SNARG construction: batching many first messages retains a three-message structure, allowing one Fiat–Shamir hash to replace an entire challenge vector.</p>
-<p class="source">Source: HW2 Problem 2(a–c), with message-order prerequisites explicit.</p>
+<div class="bridge">For Fiat–Shamir, we will want the parallel three-message form: one batch of first messages, one batch of challenges, one batch of answers. The challenge batch can then be derived from a hash.</div>
+<p class="source">Homework 2, Problem 2(a–c). The role of state in the sequential simulation is stated explicitly.</p>
 </article>
 
 <article class="lesson" data-id="fiat-shamir" data-title="Fiat–Shamir: remove the challenge safely">
-<p class="chapter-tag">III · Commitments &amp; Fiat–Shamir · Lecture §§2, 4, 6</p>
-<h1>Fiat–Shamir: removing interaction</h1>
-<p class="aim"><strong>Question.</strong> How can everyone reconstruct the verifier's unpredictable challenge without contacting the verifier?</p>
-<p>In a Sigma-style protocol, the prover first commits to a first message \(u\), the verifier sends a uniformly random challenge \(c\), and the prover computes the response \(z\). Fiat–Shamir replaces the transmitted challenge with the value of a hash on the public statement and the already-fixed first message:</p>
-<div class="math">\[c=H(\operatorname{encode}(x,u))\in\mathcal C.\]</div>
-<p>Here, \(x\) is the public statement, \(\mathcal C\) is the challenge space, and \(H\) is modeled as a random oracle that returns values in that space. The encoding must be unambiguous and should bind protocol and public parameters in a real implementation.</p>
-<p>The prover calculates \(u\), then \(c\), then \(z\), and sends \(\pi=(u,z)\). The verifier recomputes \(c\) from \(x,u\) and runs the original verification equation. An observer needs only the public statement and proof string.</p>
-<div class="proof"><h3>Why this reproduces honest verification</h3>
-<p>An honest prover produces \(u\) in the same way as before, derives \(c\) using the agreed hash input, and computes the original response \(z\). The verifier recomputes exactly that \(c\), then applies exactly the same original acceptance predicate. Hence any original algebraic completeness identity still holds.</p>
-<p class="qed">Non-interactivity succeeds because both sides compute the same challenge after the prover's first message is fixed; completeness survives because the verifier's final check is unchanged. This reasoning alone does <em>not</em> establish the required soundness or zero-knowledge theorem. \(\square\)</p></div>
-<div class="warning"><p><strong>Security precondition.</strong> The hash must be modeled appropriately, and the original challenge space must already make cheating unlikely. Simply hashing a one-bit challenge does not turn constant soundness error into negligible error.</p></div>
-<p class="source">Source: lecture's final Fibonacci SNARG (p. 8) and §6; original HW3 Problems 2–3.</p>
+<p class="chapter-tag">III · Commitments and Fiat–Shamir · Lecture §§2, 4, 6</p>
+<h1>How can we remove the verifier's message?</h1>
+<p class="aim">In Schnorr and in the polynomial IOP, the verifier sends a random challenge. But a SNARG must be checked later by anyone, without asking the prover another question. How can the challenge still be unpredictable to the prover at the right moment?</p>
+<p>Look at the order of messages. First the prover fixes a first message \(u\). Then the verifier chooses a random challenge \(c\). The prover uses \(c\) to calculate a response \(z\).</p>
+<p>Suppose both sides have access to a hash function \(H\) modeled as a <strong>random oracle</strong>. It returns a random-looking, consistently stored answer for each new input. Instead of waiting for a verifier, the prover can set</p>
+<div class="math">\[c=H(\operatorname{Encode}(x,u)),\]</div>
+<p>where \(x\) is the public statement and \(\operatorname{Encode}\) unambiguously combines \(x\) and \(u\) (and, in practice, the protocol's public parameters). The output must be mapped into the original challenge space.</p>
+<p>After calculating \(c\), the prover calculates \(z\) exactly as in the interactive protocol. It publishes \(\pi=(u,z)\). The verifier, who knows \(x\) and receives \(u,z\), computes the same \(c\) and performs the old verification test.</p>
+<h2>What has changed, and what has not?</h2>
+<p>The verifier no longer needs to send anything. That's the <strong>Fiat–Shamir transformation</strong>. The original check still works for an honest prover, since both sides calculate the same challenge.</p>
+<p>But the hash has not made an insecure protocol magically secure. If the original challenge has just one bit, a cheater who can answer one of the two choices still has a good chance of succeeding. We need a large enough challenge space, or repeated tests, <em>before</em> applying the transformation.</p>
+<div class="proof"><h3>Why honest verification still succeeds</h3>
+<p>The honest prover fixes \(u\), derives \(c\), and calculates the same response \(z\) it would have calculated after receiving \(c\) from a verifier. The new verifier reconstructs that exact \(c\) from \(x,u\). It therefore checks the same equation as the old verifier.</p>
+<p class="qed">Thus the algebraic completeness argument carries over. Soundness against cheating, however, needs its own random-oracle argument; it does not follow merely from changing who calculates \(c\). \(\square\)</p>
+</div>
+<p class="source">Official lecture §§2, 4 and 6; original HW3 Problems 2–3.</p>
 </article>
 
 <article class="lesson" data-id="hw3-schnorr-fs" data-title="HW3 2(a–b) · Non-interactive Schnorr">
-<p class="chapter-tag">III · Commitments &amp; Fiat–Shamir · Original HW3, Problem 2(a–b)</p>
-<h1>Homework 3: non-interactive Schnorr</h1>
-<div class="exercise"><span class="exercise-kicker">HW3 · Problem 2(a) · Original task</span>
-<p>Let \(G\) be a cyclic group of prime order \(q\) with generator \(g\), public \(h=g^x\), and secret witness \(x\). Apply Fiat–Shamir to Schnorr's identification protocol. Specify the one-message proof \(\pi\).</p>
-<details class="worked"><summary>Show the complete construction</summary><div class="answer">
-<p>Choose fresh \(r\leftarrow\mathbb Z_q\) and compute \(u=g^r\). Then derive \(c=H(h,u)\in\mathbb Z_q\) from the public value and first message. Set \(z=r+cx\bmod q\).</p>
-<div class="math">\[\boxed{\pi=(u,z),\quad u=g^r,\quad c=H(h,u),\quad z=r+cx\pmod q.}\]</div>
-<p>There is no need to include \(c\) in \(\pi\): the verifier can calculate it using \(h\) and \(u\). The witness \(x\) is never sent.</p>
-<p class="qed">The first message is fixed before the hash-derived challenge, and the response uses that same challenge. The transmitted proof contains exactly the data the verifier cannot calculate locally. \(\square\)</p>
+<p class="chapter-tag">III · Commitments and Fiat–Shamir · HW3, Problem 2(a–b)</p>
+<h1>Homework: make Schnorr non-interactive</h1>
+<p>Now we can do the actual homework. We already know the Schnorr equation and why Fiat–Shamir removes the challenge message. The exercise asks us to write down the new proof and verifier precisely.</p>
+<div class="exercise"><span class="exercise-kicker">HW3 · Problem 2(a)</span>
+<h3>What does the prover send?</h3>
+<p>Let \(G\) be a cyclic group of prime order \(q\), generated by \(g\). The public value is \(h=g^x\), and the prover knows \(x\). Apply Fiat–Shamir to Schnorr and give the non-interactive proof \(\pi\).</p>
+<details class="worked"><summary>Show the construction</summary><div class="answer">
+<p>Choose fresh \(r\leftarrow\mathbb Z_q\). Calculate the first message \(u=g^r\), then the hash challenge \(c=H(h,u)\in\mathbb Z_q\). Finally calculate \(z=r+cx\pmod q\).</p>
+<div class="math">\[\boxed{\pi=(u,z).}\]</div>
+<p>Why not send \(c\)? Because the verifier can compute it from \(h,u\). Why not send \(x\)? Because the whole point is to prove knowledge of \(x\) without revealing it.</p>
+<p class="qed">The proof contains exactly the two values the verifier needs and cannot reconstruct by itself. \(\square\)</p>
 </div></details></div>
-<div class="exercise"><span class="exercise-kicker">HW3 · Problem 2(b) · Original task</span>
-<p>Write the verification algorithm for \(\pi=(u,z)\), and explain the equation that honest proofs satisfy.</p>
-<details class="worked"><summary>Show verifier and correctness proof</summary><div class="answer">
-<p>Validate the public group parameters and the inputs \(h,u,z\). Recompute \(c=H(h,u)\in\mathbb Z_q\). Accept precisely when \(g^z=u h^c\) holds in \(G\).</p>
-<p>For an honest proof, \(g^z=g^{r+cx}=g^r(g^x)^c=u h^c\), so verification always accepts.</p>
-<p class="qed">The equation succeeds because the prover's response encodes the relation \(h=g^x\) using the same challenge that the verifier independently reconstructs. This establishes completeness, not soundness or zero knowledge by itself. \(\square\)</p>
+<div class="exercise"><span class="exercise-kicker">HW3 · Problem 2(b)</span>
+<h3>How does the verifier check it?</h3>
+<p>Write the verifier for \(\pi=(u,z)\) and prove honest proofs pass.</p>
+<details class="worked"><summary>Show the verifier and its equation</summary><div class="answer">
+<p>First ensure the public values and proof elements are valid in the intended group. Recompute \(c=H(h,u)\) with the same encoding as the prover. Accept when</p>
+<div class="math">\[\boxed{g^z=u h^c.}\]</div>
+<p>For an honest proof, \(z=r+cx\), so \(g^z=g^{r+cx}=g^r(g^x)^c=u h^c\).</p>
+<p class="qed">The honest prover always passes, because the verifier reconstructs the same challenge and checks the original Schnorr identity. This proves completeness, not by itself knowledge or zero-knowledge security. \(\square\)</p>
 </div></details></div>
-<p class="source">Source: original HW3 Problem 2(a–b).</p>
+<p class="source">Original HW3, Problem 2(a–b).</p>
 </article>
 
 <article class="lesson" data-id="hw3-schnorr-attacks" data-title="HW3 2(c–d) · Guessing and transferability">
-<p class="chapter-tag">III · Commitments &amp; Fiat–Shamir · Original HW3, Problem 2(c–d)</p>
-<h1>Homework 3: guessing and transferability</h1>
-<div class="exercise"><span class="exercise-kicker">HW3 · Problem 2(c) · Original task</span>
-<p>A cheating prover fixes response \(z\) and first message \(u\) before asking the random oracle for \(H(h,u)\). Assume \(h\ne1_G\). Show why \(Q\) tested candidates have success probability at most \(Q/q\).</p>
-<details class="worked"><summary>Derive the bound rather than quoting it</summary><div class="answer">
-<p>The verifier accepts only if \(g^z=u h^c\). Once \(z,u\) are fixed, rearrange this as \(h^c=g^zu^{-1}\), which is one fixed group value. In a prime-order cyclic group, every nonidentity element \(h\) generates the entire group. Therefore the map \(c\mapsto h^c\) is injective over \(\mathbb Z_q\): at most one challenge \(c\) satisfies the equation.</p>
-<p>For a fresh random-oracle input, the challenge is uniformly distributed over \(q\) values. Thus a fixed trial succeeds with probability at most \(1/q\). By the union bound, the probability that at least one of \(Q\) trials succeeds is at most \(\sum_{i=1}^Q1/q=Q/q\). Repeating the same hash query does not create a new trial because a random oracle returns its stored answer.</p>
-<p class="qed">The bound follows from a unique successful challenge for each fixed pair \((u,z)\), not from claiming that a hash function is vaguely unpredictable. This argument covers the specified guessing strategy, not arbitrary adversarial soundness or knowledge extraction. \(\square\)</p>
+<p class="chapter-tag">III · Commitments and Fiat–Shamir · HW3, Problem 2(c–d)</p>
+<h1>Homework: how might a cheater guess the challenge?</h1>
+<div class="exercise"><span class="exercise-kicker">HW3 · Problem 2(c)</span>
+<h3>A bound for a particular cheating strategy</h3>
+<p>Suppose a cheater fixes \(z,u\) before asking for \(H(h,u)\). Assume \(h\ne1_G\). Explain why at most one of the \(q\) challenges can make that fixed pair pass, and why \(Q\) tested pairs succeed with probability at most \(Q/q\).</p>
+<details class="worked"><summary>Count the successful challenges</summary><div class="answer">
+<p>The verifier's equation is \(g^z=u h^c\). Rearrange it:</p>
+<div class="math">\[h^c=g^zu^{-1}.\]</div>
+<p>Once the cheater has fixed \(u,z\), the right side is one fixed group element. Because the group has prime order and \(h\ne1_G\), \(h\) generates the group: the powers \(h^0,h^1,\ldots,h^{q-1}\) are all different. Thus <em>at most one</em> value of \(c\) can satisfy the equation.</p>
+<p>For a fresh random-oracle input, \(c\) is uniform among \(q\) choices. So one fixed attempt succeeds with probability at most \(1/q\). For \(Q\) attempts, the probability of success in any attempt is at most the sum of the individual probabilities, by the union bound:</p>
+<div class="math">\[\boxed{\Pr[\text{a tested candidate passes}]\le Q/q.}\]</div>
+<p>Querying the same input repeatedly does not give new random challenges, and an additional unqueried final attempt would have to be counted separately.</p>
+<p class="qed">The bound comes from <em>one acceptable challenge per fixed pair</em>, not from a vague claim that the hash is hard to guess. This proves the bound for the specified attack, not full security against every possible prover. \(\square\)</p>
 </div></details></div>
-<div class="exercise"><span class="exercise-kicker">HW3 · Problem 2(d) · Original task</span>
-<p>Can a publicly verifiable non-interactive zero-knowledge proof convince a second verifier? Why does the recording of an interactive zero-knowledge conversation not provide the same evidence?</p>
+<div class="exercise"><span class="exercise-kicker">HW3 · Problem 2(d)</span>
+<h3>Can the proof convince someone else?</h3>
+<p>Can one verifier pass a non-interactive zero-knowledge proof on to another? Why is a recording of an interactive zero-knowledge conversation different?</p>
 <details class="worked"><summary>Show the distinction</summary><div class="answer">
-<p>A publicly verifiable NIZK proof string \(\pi\) can be copied. A second verifier who knows the same statement and public setup can run the prescribed verification algorithm on it. Its acceptance does not require direct interaction with the original prover.</p>
-<p>An interactive zero-knowledge transcript is different: a simulator can generate an indistinguishable accepting-looking conversation without the witness (and without a real prover). Therefore the first verifier's recorded view alone is not convincing evidence to a third party that the real prover participated.</p>
-<p class="qed">The non-interactive proof is transferable because anyone can verify its prescribed public relation; an interactive transcript is deniable because its distribution can be simulated. Neither statement rules out all live-relay attacks. \(\square\)</p>
+<p>Anyone who has a publicly verifiable non-interactive proof \(\pi\), its statement and the public setup can run the verification algorithm. The proof can therefore be passed on.</p>
+<p>But a recording of an interactive zero-knowledge conversation doesn't by itself prove that the real prover took part. The zero-knowledge property gives a simulator that can create a convincing-looking verifier view without knowing the witness. A third party seeing such a recording cannot tell whether it came from the actual prover or a simulator.</p>
+<p class="qed">A publicly verifiable proof is transferable; a simulatable interactive transcript is not the same sort of evidence. This doesn't rule out a real-time relay attack. \(\square\)</p>
 </div></details></div>
-<p class="source">Source: original HW3 Problem 2(c–d).</p>
+<p class="source">Original HW3, Problem 2(c–d).</p>
 </article>
 
 <article class="lesson" data-id="hw3-conceptual" data-title="HW3 1(a,b,d) · Exact conceptual boundaries">
-<p class="chapter-tag">III · Commitments &amp; Fiat–Shamir · Original HW3, Problem 1</p>
-<h1>Homework 3: the boundary of each guarantee</h1>
-<p class="aim"><strong>Question.</strong> Which security property is actually implied by the result we proved, and which stronger claims would be unjustified?</p>
+<p class="chapter-tag">III · Commitments and Fiat–Shamir · HW3, Problem 1</p>
+<h1>Homework: don't claim more than you've proved</h1>
+<p>In cryptography, words like “sound,” “knowledge,” and “zero knowledge” describe different guarantees. These questions test whether we can tell them apart.</p>
 <div class="exercise"><span class="exercise-kicker">HW3 · Problem 1(a)</span>
-<p>An interactive proof has soundness error greater than \(1/3\): some prover convinces the verifier of a false statement with probability greater than \(1/3\). Can it have knowledge error less than \(1/3\)?</p>
-<details class="worked"><summary>Reveal proof</summary><div class="answer">
-<p><strong>No.</strong> Knowledge error \(\kappa\) is the threshold above which a proof-of-knowledge guarantee demands an efficient extractor recovering a valid witness from a successful prover. If \(\kappa<1/3\), then the false-statement prover with acceptance greater than \(1/3\) must have an extractable witness. But the statement is false, so no witness exists. This contradicts the extraction guarantee.</p>
-<p class="qed">Therefore a protocol with the specified false-statement acceptance probability cannot have knowledge error below \(1/3\). The contradiction uses the meaning of a false statement, rather than merely recalling that knowledge implies soundness. \(\square\)</p>
+<h3>Can knowledge error be smaller than soundness error?</h3>
+<p>Suppose some prover makes a false statement pass with probability greater than \(1/3\). Could the protocol have knowledge error less than \(1/3\)?</p>
+<details class="worked"><summary>Show the contradiction</summary><div class="answer">
+<p><strong>No.</strong> A proof-of-knowledge property with knowledge error \(\kappa\) demands that a prover succeeding with probability greater than \(\kappa\) allow an efficient extractor to recover a valid witness. If \(\kappa<1/3\), the false-statement prover from the question would exceed that threshold. The extractor would have to recover a witness for a false statement.</p>
+<p>But false means <em>no valid witness exists</em>. That is impossible.</p>
+<p class="qed">Therefore knowledge error below \(1/3\) contradicts the stipulated soundness failure. \(\square\)</p>
 </div></details></div>
 <div class="exercise"><span class="exercise-kicker">HW3 · Problem 1(b)</span>
-<p>Can we construct non-interactive zero-knowledge proofs for NP in the standard model without a random oracle? Explain why the <em>setup model</em> changes the answer.</p>
-<details class="worked"><summary>Reveal careful conditional answer</summary><div class="answer">
-<p>Distinguish the <strong>plain model</strong>, with no shared trusted reference information, from the <strong>common reference string (CRS) model</strong>. The standard model means we do not assume a random oracle; it need not exclude a CRS.</p>
-<p>In the plain model, suppose a NIZK existed for every NP language. Given a statement \(x\), run its efficient zero-knowledge simulator without a witness to produce a purported proof, then run the verifier. On true \(x\), completeness and simulation ensure acceptance with high probability. On false \(x\), soundness limits acceptance of any efficient algorithm's proof, including the simulator's. After standard amplification, this yields a randomized polynomial-time (BPP) decision algorithm for the language.</p>
-<p>Thus plain-model NIZKs for all NP would imply \(\mathrm{NP}\subseteq\mathrm{BPP}\), which is not expected but is unproved to be false. In the CRS model, suitable standard-model NIZK constructions for NP are possible under cryptographic assumptions.</p>
-<p class="qed">“Without a random oracle” by itself is insufficient to declare NIZK impossible; the exact absence or presence of a setup string is the decisive distinction. \(\square\)</p>
+<h3>Can NIZK for every NP language exist without a random oracle?</h3>
+<p>The original question concerns non-interactive zero-knowledge proofs for NP in the standard model. Explain why the presence or absence of a setup string matters.</p>
+<details class="worked"><summary>Work through the setup distinction</summary><div class="answer">
+<p>First distinguish two settings. The <strong>plain model</strong> has no trusted setup string and no random oracle. The <strong>common reference string (CRS) model</strong> supplies public information prepared during setup. Both can be called standard-model settings when no random oracle is assumed.</p>
+<p>Why is the plain model difficult? Suppose every NP language had a plain-model NIZK. The zero-knowledge simulator could generate a plausible proof for a true statement without its witness. We could run this simulator on an input \(x\) and then run the verifier. On true inputs, the simulation and completeness guarantees would make it accept with high probability. On false inputs, soundness would prevent an efficient simulator from producing an accepted proof except with small probability.</p>
+<p>That would give a randomized polynomial-time decision algorithm for every NP language—formally \(\mathrm{NP}\subseteq\mathrm{BPP}\), where BPP means bounded-error probabilistic polynomial time. Such a collapse is not expected, although it has not been proved impossible.</p>
+<p>With a suitable CRS, standard-model NIZK for NP is possible under cryptographic assumptions.</p>
+<p class="qed">So “no random oracle” by itself is not an impossibility argument. We must say whether trusted common setup is allowed. \(\square\)</p>
 </div></details></div>
 <div class="exercise"><span class="exercise-kicker">HW3 · Problem 1(d)</span>
-<p>True or false: applying Fiat–Shamir to a Sigma protocol always gives statistical zero-knowledge.</p>
-<details class="worked"><summary>Reveal counterargument</summary><div class="answer">
-<p><strong>False.</strong> Honest-verifier zero knowledge for a Sigma protocol may only be <em>computational</em>: no efficient distinguisher detects the witness, but an unbounded distinguisher might. Statistical zero-knowledge is a strictly stronger requirement that also limits unbounded distinguishers.</p>
-<p>Fiat–Shamir merely replaces the challenge with a hash-derived one. It supplies no argument that the existing transcript distribution becomes statistically close to a witness-free distribution. Nor does HVZK alone settle malicious-verifier or non-interactive simulation security.</p>
-<p class="qed">A change in challenge generation cannot, by itself, justify strengthening a computational privacy guarantee into a statistical one. \(\square\)</p>
+<h3>Does Fiat–Shamir always give statistical zero knowledge?</h3>
+<p>True or false: applying Fiat–Shamir to a Sigma protocol always makes it statistically zero-knowledge.</p>
+<details class="worked"><summary>Show why this is false</summary><div class="answer">
+<p><strong>False.</strong> A Sigma protocol may provide only <em>computational</em> honest-verifier zero knowledge: an efficient observer cannot distinguish its real transcript from a simulated one. Statistical zero knowledge is stronger, requiring even an unlimited observer to see almost the same distributions.</p>
+<p>Fiat–Shamir changes how the challenge is chosen. It doesn't erase information in the transcript, and it doesn't by itself strengthen computational privacy into statistical privacy.</p>
+<p class="qed">The conclusion is false because the transformation supplies no proof of the stronger statistical guarantee. \(\square\)</p>
 </div></details></div>
-<p>HW3 1(c), the \(\mathbb Z_6\) root-count counterexample, was solved in the finite-field lesson at exactly the point where its missing assumption becomes relevant.</p>
-<p class="source">Source: original HW3 Problem 1(a,b,d); Problem 1(c) appears in Part II.</p>
+<p>HW3 1(c), about the root bound in \(\mathbb Z_6\), appears in the field-arithmetic lesson exactly where we needed that counterexample.</p>
+<p class="source">Original HW3, Problem 1(a,b,d).</p>
 </article>
 
 <article class="lesson" data-id="hw3-amplification" data-title="HW3 3(a–b) · Amplify before hashing">
-<p class="chapter-tag">III · Commitments &amp; Fiat–Shamir · Original HW3, Problem 3</p>
-<h1>Homework 3: amplify before hashing</h1>
-<p class="aim"><strong>Question.</strong> Why does changing the source of a one-bit challenge not fix constant soundness error, and how does parallel repetition fix the exact problem?</p>
+<p class="chapter-tag">III · Commitments and Fiat–Shamir · HW3, Problem 3</p>
+<h1>Homework: one bit isn't enough</h1>
+<p class="aim">If a verifier asks one yes-or-no challenge, a cheater who can answer only one of the two questions may still succeed half the time. Hashing the question doesn't change that. We need to make the whole challenge harder to answer by guessing.</p>
 <div class="exercise"><span class="exercise-kicker">HW3 · Problem 3(a)</span>
-<p>A Sigma protocol has a cheating strategy on a false statement that succeeds with probability \(1/2\) against a uniform one-bit challenge. Show why Fiat–Shamir applied directly does not obtain negligible soundness error.</p>
-<details class="worked"><summary>Complete argument</summary><div class="answer">
-<p>Let the cheating prover construct its first message \(u\) using the given strategy and fix it. It now queries the random oracle at the public statement and \(u\) to obtain \(c=H(x,u)\). This challenge is uniformly random, exactly as in the original interactive soundness experiment, because the first message was fixed before the query.</p>
-<p>The cheating prover calculates the strategy's response to that \(c\) and publishes a one-message proof. By the problem's assumption, the original cheating strategy succeeds with probability \(1/2\); the hash-derived experiment has the same challenge distribution, so it still succeeds with probability \(1/2\).</p>
-<p class="qed">The false statement is accepted with constant probability, which is not negligible. The problem assumes an actual successful cheating strategy; an upper bound of \(1/2\) alone would not prove such an attack exists. \(\square\)</p>
+<h3>Why doesn't direct Fiat–Shamir fix soundness?</h3>
+<p>A Sigma protocol has a cheating strategy for a false statement that succeeds with probability \(1/2\) against a random one-bit challenge. Show that directly applying Fiat–Shamir does not give negligible soundness error.</p>
+<details class="worked"><summary>Follow the cheating attempt</summary><div class="answer">
+<p>The cheater prepares its first message \(u\) using the given strategy. Only after \(u\) is fixed does it query \(c=H(x,u)\). In the random-oracle model, that answer is a uniform challenge bit, just as in the original verifier's challenge step.</p>
+<p>The cheater replies using the given strategy. The challenge distribution hasn't changed, so the strategy still succeeds with probability \(1/2\).</p>
+<p class="qed">A constant \(1/2\) chance is not negligible, so this is not a sound non-interactive argument. We used the problem's actual cheating strategy; the mere upper bound “at most \(1/2\)” would not prove such a strategy exists. \(\square\)</p>
 </div></details></div>
 <div class="exercise"><span class="exercise-kicker">HW3 · Problem 3(b)</span>
-<p>Build a three-message protocol with negligible soundness error from the one-bit-challenge Sigma protocol, and then make it non-interactive.</p>
-<details class="worked"><summary>Complete protocol and counting proof</summary><div class="answer">
-<p><strong>Protocol.</strong> For security parameter \(\lambda\), the prover sends \(\lambda\) first messages together. The verifier sends \(\lambda\) independent uniform challenge bits together. The prover sends the \(\lambda\) responses together. Accept only if every coordinate verifies. This is still a three-message protocol: the messages are batches.</p>
-<p><strong>Why the soundness error is \(2^{-\lambda}\).</strong> Fix any batch of first messages on a false statement. For a particular coordinate \(i\), if the prover could provide valid answers for both challenges 0 and 1 to the same \(u_i\), special soundness would extract a witness for that false statement—a contradiction. Thus each coordinate has <em>at most one answerable challenge</em>. The whole batch therefore has at most one answerable vector among the \(2^\lambda\) equally likely challenge vectors. With a uniformly independent challenge vector, the acceptance probability is at most \(2^{-\lambda}\), whether or not the dishonest prover correlated its initial messages.</p>
-<p><strong>Non-interactive version.</strong> Hash the public statement and the complete vector of first messages to derive the entire \(\lambda\)-bit challenge vector; then publish the first messages and responses. The verifier recomputes the vector and verifies every coordinate. In the random-oracle model, polynomially many commitment attempts cannot overcome an exponentially small per-attempt challenge-matching probability.</p>
-<p class="qed">The bound succeeds because the fixed first-message vector can answer at most one of \(2^\lambda\) challenge vectors. Fiat–Shamir then removes the interaction without making that challenge vector smaller. \(\square\)</p>
+<h3>Make the error negligible, then remove interaction</h3>
+<p>Starting from a one-bit-challenge Sigma protocol with special soundness, construct a three-message protocol with negligible soundness error. Then make it non-interactive.</p>
+<details class="worked"><summary>Build it and count the answerable challenges</summary><div class="answer">
+<p>Run \(\lambda\) copies <em>in parallel</em>. Send all \(\lambda\) first messages at once. The verifier returns a vector of \(\lambda\) independently random challenge bits. The prover sends all responses. Accept only if every copy passes. These are still three messages, each containing a batch.</p>
+<p>Why does this work on a false statement? Fix the entire batch of first messages. In any one copy, if a dishonest prover could answer both challenges 0 and 1 for the same first message, special soundness would extract a witness for that false statement. There can be no witness. So each copy can answer at most one of its two challenges.</p>
+<p>That means the complete batch can answer at most one challenge vector out of \(2^\lambda\) equally likely vectors. Therefore</p>
+<div class="math">\[\boxed{\Pr[\text{false acceptance}]\le2^{-\lambda}.}\]</div>
+<p>This argument does not assume the cheating prover made its initial messages independently. We fixed the whole batch before counting the possible challenges.</p>
+<p>Now apply Fiat–Shamir to the <em>whole batch</em>: hash the public statement and all first messages to get the \(\lambda\)-bit challenge vector. Publish those first messages and all responses. The verifier recomputes the vector and checks every copy.</p>
+<p>In the random-oracle model, a polynomial number of tries at different first-message batches still gives only a negligible probability of finding a batch whose hashed challenge can be answered.</p>
+<p class="qed">This closes both parts of the question. Parallel repetition makes the answerable portion of the challenge space exponentially small; Fiat–Shamir then removes the message that carried that challenge, without enlarging the cheating chance to a constant. \(\square\)</p>
 </div></details></div>
-<div class="lab" data-lab="challenges"><div class="lab-top"><strong>Count challenge vectors</strong><p>Each cell is a possible challenge vector. The highlighted cell represents a single answerable vector for a fixed false first-message batch.</p></div><div class="lab-content"><label>Number of challenge bits \(t\)<input data-key="t" type="range" min="1" max="6" value="3"></label><div class="lab-output" aria-live="polite"></div></div></div>
-<p class="source">Source: original HW3 Problem 3(a–b); HW2 Problem 2 supplies the earlier repetition background.</p>
+<div class="lab" data-lab="challenges"><div class="lab-top"><strong>How many challenge vectors could pass?</strong><p>Choose the number of challenge bits. For a false statement with special soundness, a fixed first-message batch can answer at most one entire vector.</p></div><div class="lab-content"><label>Number of challenge bits \(t\)<input data-key="t" type="range" min="1" max="6" value="3"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<p class="source">Original HW3, Problem 3(a–b); earlier HW2 repetition exercise.</p>
 </article>
 
 <article class="lesson" data-id="hw3-fs-pcp" data-title="HW3 4(b) · Turn the PCP argument non-interactive">
-<p class="chapter-tag">III · Commitments &amp; Fiat–Shamir · Original HW3, Problem 4(b)</p>
-<h1>Homework 3: the non-interactive PCP argument</h1>
-<p class="aim"><strong>Question.</strong> The PCP/Merkle construction from Part I has three messages. Which message can be removed, and why does this preserve the reasoning of the original argument?</p>
+<p class="chapter-tag">III · Commitments and Fiat–Shamir · HW3, Problem 4(b)</p>
+<h1>Homework: remove the challenge from our PCP argument</h1>
+<p class="aim">Earlier we made a three-message PCP argument using a Merkle tree. The verifier still had to send the random test positions. Now we know how to make those positions reproducible from a hash.</p>
 <div class="exercise"><span class="exercise-kicker">HW3 · Problem 4(b) · Original task</span>
-<p>Convert the succinct interactive argument in Problem 4(a) into a non-interactive argument in the random-oracle model.</p>
-<details class="worked"><summary>Complete construction and justification</summary><div class="answer">
-<p>The prover constructs the complete PCP proof string \(\pi_{\rm PCP}\) and its Merkle root \(c\). It derives the verifier randomness for all \(\lambda\) independent PCP tests as</p>
-<div class="math">\[\rho=H_{\rm challenge}(\operatorname{encode}(x,c,\mathrm{params})).\]</div>
-<p>Here \(x\) is the public statement and \(\mathrm{params}\) contains the protocol settings; a domain-separated challenge oracle avoids confusing the Merkle hashing role with Fiat–Shamir. The deterministic PCP verifier's query algorithm applied to \(\rho\) produces the positions that would have been sent in the second message.</p>
-<p>The prover now supplies a single proof string containing \(c\), all requested bit values and their Merkle authentication paths. A verifier recomputes \(\rho\) and the positions from \(x,c\), checks every authentication path against \(c\), and runs all \(\lambda\) PCP predicates. It accepts only if every check passes.</p>
-<p><strong>Completeness.</strong> Honest PCP bits satisfy all tests; honest Merkle paths authenticate. Both sides use the same deterministic hash-derived challenge, so an honest proof is accepted.</p>
-<p><strong>Soundness.</strong> The prover must choose \(c\) before discovering the random-oracle response attached to that commitment. Its authenticated openings are tied to one committed proof except with negligible probability of breaking binding. The amplified PCP test then has per-attempt error at most \(2^{-\lambda}\). A polynomial number \(Q\) of attempted commitments gives at most \(Q\,2^{-\lambda}+\operatorname{negl}(\lambda)\), using the random-oracle challenge distribution and a union bound.</p>
-<p><strong>Size.</strong> The proof contains one \(\lambda\)-bit root and \(O(\lambda)\) Merkle paths of size \(O(\lambda\log M)\), giving \(O(\lambda^2\log M)=O(\lambda^2\log n)\) communication, as in 4(a). There is no verifier-to-prover challenge message anymore.</p>
-<p class="qed">The compiled system is a succinct, non-interactive <em>argument</em>: the commitment fixes the proof before the random test is determined, and Fiat–Shamir makes that test reproducible by every verifier. This construction has not established zero-knowledge or knowledge extraction. \(\square\)</p>
+<p>Convert the succinct argument from Problem 4(a) into a non-interactive argument in the random-oracle model.</p>
+<details class="worked"><summary>Build the one-message argument</summary><div class="answer">
+<p>The prover first computes the full PCP string \(\pi_{\mathrm{PCP}}\) and commits to it with Merkle root \(c\). It then derives the random coins for all \(\lambda\) PCP tests by hashing the public statement, the root, and protocol parameters:</p>
+<div class="math">\[\rho=H_{\mathrm{challenge}}(\operatorname{Encode}(x,c,\mathrm{params})).\]</div>
+<p>The deterministic PCP query algorithm turns these coins \(\rho\) into the requested proof positions. The prover sends a single proof string containing the root \(c\), the requested bits, and their Merkle authentication paths.</p>
+<p>The verifier takes \(x\) and \(c\), computes the same \(\rho\), derives the same positions, verifies all authentication paths, and runs every PCP test.</p>
+<p><strong>Completeness:</strong> honest PCP bits pass every test, honest paths reconstruct the committed root, and both parties compute the same challenges.</p>
+<p><strong>Soundness:</strong> the prover must fix \(c\) before the hash determines the test positions. Except with negligible probability of breaking Merkle binding, its openings refer to one fixed encoded proof. For a false statement, the amplified PCP test passes that proof with probability at most \(2^{-\lambda}\). Trying at most polynomially many commitments increases this bound only by a polynomial factor (plus negligible cryptographic failure), which remains negligible.</p>
+<p><strong>Proof size:</strong> the root uses \(\lambda\) bits; the \(O(\lambda)\) openings use \(O(\lambda\log M)\) bits each. As before, total communication is \(O(\lambda^2\log M)=O(\lambda^2\log n)\), since \(M=\operatorname{poly}(n)\).</p>
+<p class="qed">We have removed the verifier's message without sending the complete PCP proof. The root fixes the proof before the test is chosen, and the hash lets anyone reconstruct that test. This gives a succinct non-interactive argument; zero knowledge and knowledge extraction have not been established. \(\square\)</p>
 </div></details></div>
-<div class="bridge"><strong>The transition to PLONK.</strong> A PCP stores individual bits and authenticates their positions using Merkle paths. The lecture's modern construction uses <em>polynomial</em> IOPs instead: many circuit constraints become polynomial identities, authenticated by polynomial commitments. The same two-stage principle—information-theoretic verification first, cryptographic oracle replacement second—still applies.</div>
-<p class="source">Source: original HW3 Problem 4(b); official lecture §2.</p>
+<div class="bridge">For PCPs, the verifier asks for individual bits. PLONK instead makes the verifier ask for polynomial values. The idea remains the same: first construct a test that works with an ideal oracle, then use cryptography to make the oracle's answers trustworthy.</div>
+<p class="source">Original HW3, Problem 4(b); official lecture §2.</p>
 </article>
 </body></html>
