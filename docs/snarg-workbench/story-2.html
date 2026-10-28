@@ -293,6 +293,39 @@ f_{\rm trace}(\omega^5)=f_{\rm trace}(\omega^7).
 
 </article>
 
+<article class="lesson" data-id="story-plonk-assembly" data-title="The actual PLONK SNARG: setup, proof and verification">
+<p class="chapter-tag">Lecture §6 · A PLONK SNARG</p>
+<h1>How do we turn these checks into the final SNARG?</h1>
+<p class="lead">We now know what a valid circuit trace must satisfy. The final construction has one more practical question: who computes the large public circuit polynomials, who computes the witness-dependent trace, and what does the verifier actually receive? The lecture separates these jobs so the prover can do expensive work without making every verifier repeat it.</p>
+<h2>1. Universal setup</h2>
+<p>First run the polynomial commitment scheme's \(\operatorname{Setup}(d,\lambda)\to pp\). The parameter \(d\) bounds the polynomial degrees, and \(\lambda\) specifies the security level. The resulting public parameters \(pp\) are <strong>universal</strong>: within the permitted size bound, they do not depend on one particular circuit.</p>
+<h2>2. Circuit-specific preprocessing</h2>
+<p>Next take the public circuit \(C\). Its gate types and wiring are known before anyone chooses a private witness. From that fixed structure compute the selector polynomial \(f_{\rm sel}\) and rotation polynomial \(f_{\rm rot}\), then commit to both.</p>
+<p>This may take \(O(|C|)\) work, where \(|C|\) is the number of gates. But it is done <em>once for the circuit</em>, not each time a new input is proved. The commitments become part of the circuit's public verification information. This is why the verifier does not have to construct the large selector and rotation polynomials from scratch.</p>
+<h2>3. The prover performs the calculation</h2>
+<p>For public input \(\mathbf x\) and its private witness \(\mathbf w\), the prover runs the circuit and records every wire value. It then interpolates the trace polynomial \(f_{\rm trace}\) and commits to it. This part depends on the actual computation and cannot be reused from an earlier proof with different inputs.</p>
+<p>The verifier must check four things. Here they are in the same order as §6 of the original lecture:</p>
+<div class="constraint-chain">
+<div><b>Output</b><span>Query \(f_{\rm trace}(\omega^{3|C|-1})\) and require zero for the formal zero-output circuit. In our original three-gate illustration the value was 56, so proving target 56 requires the added target-check gate.</span></div>
+<div><b>Public inputs</b><span>Build the publicly known polynomial \(f_{\rm in}\). The prover commits to \(f_{\rm trace}-f_{\rm in}\) and to its quotient for a ZeroTest over the designated public-input positions.</span></div>
+<div><b>Gate equations</b><span>Prove that the gate polynomial \(G(X)\), built from \(f_{\rm sel}\) and \(f_{\rm trace}\), vanishes at every gate-start point. The prover supplies its quotient, and the verifier checks authenticated evaluations at random points.</span></div>
+<div><b>Wire copies</b><span>Use the committed \(f_{\rm rot}\) in another polynomial IOP to enforce consistent values at all occurrences of each logical wire.</span></div>
+</div>
+<h2>Why are the input polynomials consistent?</h2>
+<p>There is a subtle point in the public-input test. A cheater might commit to a convenient polynomial \(g(X)\) that vanishes at the right positions but is not actually the difference \(f_{\rm trace}-f_{\rm in}\). That would prove nothing about the real trace.</p>
+<p>So the verifier also checks that the committed auxiliary polynomial really corresponds to that difference. It queries both at a random point \(r\), calculates \(f_{\rm in}(r)\) locally from public inputs, and tests</p>
+<div class="math">\[f_{\rm trace}(r)-g(r)=f_{\rm in}(r).\]</div>
+<p>Because these polynomials were fixed before \(r\) was chosen, EqualityTest bounds the chance that a false consistency identity passes. Only after that check does ZeroTest on \(g\) establish the real public-input equality. This is why the lecture explicitly mentions consistency between the oracles rather than simply testing \(g\) in isolation.</p>
+<h2>4. Make the verifier's questions non-interactive</h2>
+<p>All of the polynomial IOP's random queries can be derived from the public statement and the commitments by Fiat–Shamir, under the appropriate random-oracle security conditions. The prover publishes one proof string containing commitments, claimed evaluations and their opening proofs. Anyone with the public verification information can recompute the challenges and check it.</p>
+<div class="proof"><h3>Why does the construction prove the right language?</h3>
+<p>If all four constraint families are satisfied, the public inputs agree with the statement, every gate performs its prescribed operation, shared wire values agree, and the final output is zero. We can therefore read the trace as a real execution of \(C(\mathbf x,\mathbf w)\) with a satisfying witness. The random polynomial tests are meant to detect a false constraint identity with their degree-based soundness bounds.</p>
+<p class="qed">That connects the proof data back to the actual statement \(C(\mathbf x,\mathbf w)=0\). The commitments and Fiat–Shamir are what let us enforce those algebraic conditions succinctly and non-interactively, subject to their cryptographic guarantees. \(\square\)</p></div>
+<p>The lecture's goal is a proof of length \(O(\lambda,\operatorname{polylog}|C|)\), with verifier time \(O(\lambda,|\mathbf x|,\operatorname{polylog}|C|)\), where the shorthand describes growth with the security level, public input and circuit size. The proof is short even though the prover's computation may be large. The verifier can spend time reading the public input; it should not have to evaluate every gate.</p>
+<div class="warning"><p><strong>Boundary of the lecture.</strong> The full wiring IOP, concrete polynomial commitments, and formal Fiat–Shamir reduction are not supplied in these notes. The notes describe how their guarantees fit together. A fully rigorous end-to-end security proof requires those missing components; they must not be silently treated as proved.</p></div>
+<p class="source">Official lecture §6, “A PLONK SNARG,” including universal setup, circuit-specific preprocessing, and all four proof stages.</p>
+</article>
+
 <article class="lesson" data-id="story-conclusion" data-title="Why the final proof really answers the question">
 
 <p class="chapter-tag">The main story · 12 of 12</p>
