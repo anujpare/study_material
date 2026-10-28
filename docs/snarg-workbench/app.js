@@ -265,20 +265,34 @@ function svgMatrix(size,test,selected){
 }
 function initLessonExtras(id){
  const extras={
-  "succinctness":extraBox("Witness length versus logarithmic growth","Choose a witness length M = 2ᵏ. The displayed k is log₂ M, not a claim that a real SNARG proof has exactly k bits.",range("k","Exponent k",3,20,10),"growth"),
-  "pcp-box":extraBox("Read-only oracle: what does a position query reveal?","The eight bits are fixed before you choose the index. This demonstrates the oracle interface, not the PCP theorem or its soundness.",range("i","Query position i",1,8,4),"bitbox"),
-  "equality-proof":extraBox("Why the prover must commit before the challenge","Give the cheating prover r first. It can then choose the nonzero degree-one polynomial gᵣ(X) = X − r, which always agrees with f(X) = 0 at the known challenge.",range("r","Challenge r",0,16,4),"adaptive"),
-  "schwartz-zippel":extraBox("Two-variable root count: h(X,Y) = XY","All 49 pairs in 𝔽₇² are equally likely. Highlighted cells satisfy h = 0. This enumerates an example; the preceding induction proves the general lemma.",range("r1","First coordinate r₁",0,6,2)+range("r2","Second coordinate r₂",0,6,3),"szplot"),
-  "midterm-polynomial":extraBox("Test the exact midterm acceptance polynomial","Choose a valid basis vector or an invalid vector. Green squares are precisely the random challenges that satisfy the verifier's equality, for N = 2 and p = 7.",choice("case",[["valid","Valid x = (1,0)"],["two","Invalid x = (1,1)"],["single","Invalid x = (2,0)"]])+range("r1","First challenge r₁",0,6,2)+range("r2","Second challenge r₂",0,6,3),"onehot"),
-  "vanishing-polynomial":extraBox("Vanishing means every designated point is a root","For Ω = {1,2}, inspect ZΩ(r)=(r−1)(r−2). The product vanishes precisely at the two required points.",range("r","Evaluation point r",0,16,1),"vanish"),
-  "polynomial-commitments":extraBox("Why a commitment and an opening have different jobs","Select a stage. This is a protocol-flow visualization; it does not simulate a cryptographic commitment algorithm.",range("stage","Protocol stage",1,3,1)+range("r","Evaluation point r",0,16,3),"opening"),
-  "roots-unity-cost":extraBox("Twelve factors versus four multiplications","For ω = 6 in 𝔽₉₇, the entire 12-point vanishing product must equal r¹²−1. Both sides update as you change r.",range("r","Field element r",0,96,8),"unitycost"),
-  "circuits-meaning":extraBox("What the witness must make zero","In 𝔽₉₇, the statement requires C(x,w) = (2·4)(4+w) − 56 = 0. Change the private witness and inspect the exact residual.",range("w","Candidate witness w",0,8,3),"circuit"),
-  "plonk-output-input":extraBox("Public-input mismatch is a nonzero polynomial value","The public input is x₁ = 2. Change what the committed trace claims at its designated input location and inspect g(ω⁻¹) = ftrace(ω⁻¹) − fin(ω⁻¹).",range("x","Claimed trace input",0,8,2),"public"),
-  "plonk-gates":extraBox("The selector determines which gate equation is checked","The gate triple (L,R,O) = (4,3,7) is an addition gate. Change only the selector to see why the gate equation passes or fails.",choice("s",[["1","Addition selector s = 1"],["0","Multiplication selector s = 0"]]),"selector"),
-  "plonk-final":extraBox("Which component certifies each PLONK requirement?","Inspect the exact implication at each verification stage. The claimed global circuit proof succeeds only after all four conditions hold.",range("stage","Verification check",1,4,1),"plonkstages")
+  "succinctness":extraBox("Watch the logarithm grow","Choose M = 2ᵏ witness values. See how slowly k grows as M gets larger.",range("k","Exponent k",3,20,10),"growth"),
+  "pcp-box":extraBox("Ask the box for one bit","All eight bits are fixed first. Choose which one to reveal.",range("i","Query position i",1,8,4),"bitbox"),
+  "equality-proof":extraBox("What if the cheater learns the question first?","Choose r first. The cheater can then invent gᵣ(X) = X − r, which agrees with f(X) = 0 exactly at r.",range("r","Challenge r",0,16,4),"adaptive"),
+  "schwartz-zippel":extraBox("Which pairs make XY = 0?","There are 49 possible pairs in 𝔽₇². Green cells are the ones where XY = 0.",range("r1","First coordinate r₁",0,6,2)+range("r2","Second coordinate r₂",0,6,3),"szplot"),
+  "midterm-polynomial":extraBox("Which random checks accept the vote?","Choose a two-entry vote. Green squares show which random challenges make the verifier accept.",choice("case",[["valid","Valid x = (1,0)"],["two","Invalid x = (1,1)"],["single","Invalid x = (2,0)"]])+range("r1","First challenge r₁",0,6,2)+range("r2","Second challenge r₂",0,6,3),"onehot"),
+  "vanishing-polynomial":extraBox("Where does the product become zero?","For Ω = {1,2}, try different r in ZΩ(r) = (r−1)(r−2).",range("r","Evaluation point r",0,16,1),"vanish"),
+  "polynomial-commitments":extraBox("Follow a polynomial opening","Follow what the prover sends and what the verifier checks. The diagram shows the steps, not a real cryptographic implementation.",range("stage","Protocol stage",1,3,1)+range("r","Evaluation point r",0,16,3),"opening"),
+  "roots-unity-cost":extraBox("A big product becomes one power","Try different r in 𝔽₉₇. Both formulas must give the same value.",range("r","Field element r",0,96,8),"unitycost"),
+  "circuits-meaning":extraBox("Change the secret input","The public target is 56. Change w and see whether the circuit's final check equals zero.",range("w","Candidate witness w",0,8,3),"circuit"),
+  "plonk-output-input":extraBox("What if the prover changes our public input?","The real input is x₁ = 2. Change the value written into the trace and watch the difference.",range("x","Claimed trace input",0,8,2),"public"),
+  "plonk-gates":extraBox("Switch the gate from addition to multiplication","The inputs are 4 and 3; the claimed output is 7. Change only the selector.",choice("s",[["1","Addition selector s = 1"],["0","Multiplication selector s = 0"]]),"selector"),
+  "plonk-final":extraBox("What does each PLONK check rule out?","Choose each check to see what kind of cheating it prevents.",range("stage","Verification check",1,4,1),"plonkstages")
  };
  const html=extras[id];if(!html)return;
+ // Put the experiment beside the equation or question it tests, never
+ // before the student knows the variables being manipulated.
+ const placement={
+  "succinctness":["h2","beforebegin"],
+  "equality-proof":['.lab[data-lab="eq"]',"afterend"],
+  "midterm-polynomial":[".exercise details.worked","beforebegin"],
+  "roots-unity-cost":[".warning","beforebegin"],
+  "circuits-meaning":[".bridge","beforebegin"],
+  "plonk-gates":["h2","beforebegin"]
+ }[id];
+ if(placement){
+  const target=main.querySelector(placement[0]);
+  if(target){target.insertAdjacentHTML(placement[1],html);return;}
+ }
  const anchor=main.querySelector(".proof")||main.querySelector(".diagram")||main.querySelector(".panel")||main.querySelector(".three")||main.querySelector("h2")||main.querySelector(".aim");
  if(anchor)anchor.insertAdjacentHTML("afterend",html);
  else main.insertAdjacentHTML("beforeend",html);
