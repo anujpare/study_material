@@ -5,7 +5,7 @@
 <div class="proof"><h3>Proof 1 · Perfect completeness</h3>
 <p>For completeness, assume \(G\) has a Hamiltonian cycle \(w\). The honest prover chooses a random permutation \(\pi\) and commits to \(B=\pi(G)\).</p>
 <p>If \(c=0\), it opens the full graph and the permutation. By construction every edge agrees with \(B=\pi(G)\), so the verifier accepts.</p>
-<p>If \(c=1\), it takes its known cycle \(w\), renames every vertex using \(\pi\), and reveals the corresponding edges of \(B\). Renaming preserves the roads and the fact that every vertex appears once, so the verifier accepts.</p>
+<p>If \(c=1\), it takes its known cycle \(w\), renames every vertex using \(\pi\), and reveals the corresponding edges of \(B\). A permutation preserves edge membership and visits each vertex exactly once, so the verifier accepts.</p>
 <p>Those are the only possible challenges. An honest prover therefore passes with probability \(1\). That proves <strong>perfect completeness</strong>.</p></div>
 <h2>Soundness starts with the assumption that the claim is false</h2>
 <p>Now assume the claim is false: \(G\) has no Hamiltonian cycle. The cheating prover must commit to a graph \(B\) before the verifier picks \(c\). Perfect binding is needed here: without it, the prover could change \(B\) after seeing the question.</p>
@@ -16,17 +16,17 @@
 </div>
 <section class="lab">
 <div class="lab-head"><div class="tag">A falsifiable claim · See which challenge MUST fail</div><h3>Fix the cheating prover’s graph before choosing the challenge</h3>
-<p>The example graph \(G_0\) has no Hamiltonian cycle: vertices 1 and 5 each have only one road, but a cycle would need two different roads incident to each visited vertex. Try cheating with a faithful copy or with a different graph that contains a cycle.</p></div>
+<p>The example \(G_0\) is a path graph with edges \(\{1,2\},\{2,3\},\{3,4\},\{4,5\}\). Vertices 1 and 5 have degree 1 (only one incident edge). Every vertex in a Hamiltonian cycle must have two incident cycle edges, so \(G_0\) cannot have a Hamiltonian cycle. Compare a committed isomorphic copy with a graph containing an extra edge.</p></div>
 <div class="lab-body">
 <div class="two-diagrams">
 <div class="diagram"><div class="graph-title">Public graph \(G_0\): no cycle</div><div id="ham-false-public"></div></div>
 <div class="diagram"><div class="graph-title">Committed graph \(B\)</div><div id="ham-false-hidden"><p>Choose a cheating preparation below.</p></div></div>
 </div>
-<p class="diagram-note">Gray means a road, red dashed means a missing road, and green marks a road added by the cheater. The diagram reveals the cheating preparation only so you can see why the test fails; the real verifier would see commitments.</p>
+<p class="diagram-note">Gray segments represent edges of \(G_0\); the dashed red segment represents the absent edge \(\{1,5\}\). In the modified graph, that added edge is shown in green. The visualization reveals the committed graph for teaching purposes, whereas the verifier initially receives commitments.</p>
 <p>First, the dishonest prover fixes one graph \(B\):</p>
 <div class="control-row">
 <button data-demo="ham-false" data-value="isomorphic">Commit to \(B=G_0\)</button>
-<button data-demo="ham-false" data-value="different">Commit to \(B\) WITH a cycle</button>
+<button data-demo="ham-false" data-value="different">Commit to \(B\) containing a cycle</button>
 </div>
 <p>Then the verifier chooses \(c=0\) or \(c=1\). The prover cannot change \(B\) now.</p>
 <div class="control-row">
