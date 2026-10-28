@@ -1,10 +1,10 @@
 <article class="lesson">
 <p class="chapter">Part V · Worked exercise</p>
-<h1>Homework 2: prove the composition claims</h1>
-<p class="lead">The exam-relevant task is not to repeat “parallel is harder.” It is to identify which security property we are proving, the exact message schedule, and the simulator that justifies the property. These three distinctions decide the answers.</p>
+<h1>Homework: prove exactly which repetition works</h1>
+<p class="lead">We have the timing difference in front of us. Now the homework asks for three different conclusions. Each answer needs to name the simulator and show why it works or why the usual construction fails.</p>
 <div class="exercise">
 <div class="tag">Homework 2 · Problem 2: Composing ZK Protocols</div>
-<p>Consider the Hamiltonian-cycle zero-knowledge protocol from the lecture. It has perfect completeness and soundness error \(1/2\). We repeat the protocol \(\lambda\) times, and the verifier accepts only when <strong>every</strong> instance accepts, so the combined soundness error is at most \(2^{-\lambda}\).</p>
+<p>The Hamiltonian-cycle protocol has perfect completeness and soundness error \(1/2\). Run it \(\lambda\) times and accept only if every instance accepts. This reduces the soundness bound to \(2^{-\lambda}\) under the repeated challenge rules.</p>
 <p><strong>(a)</strong> First run the protocol \(\lambda\) times in sequence. Show that the resulting protocol is still zero knowledge.</p>
 <p><strong>(b)</strong> Next run the protocol \(\lambda\) times in parallel. Can you still show that the resulting protocol is zero knowledge? Why or why not?</p>
 <p><strong>(c)</strong> Show that <em>honest-verifier</em> zero knowledge is preserved under parallel composition for this protocol (and, more generally, for Sigma protocols).</p>
@@ -12,24 +12,24 @@
 <h2>Work through the solutions in their logical order</h2>
 <details><summary>(a) Sequential composition · construct the simulator</summary>
 <div class="inside">
-<p><strong>What we must prove:</strong> For any efficient possibly malicious verifier \(V^\ast\) controlling all \(\lambda\) rounds, produce an efficient simulated complete view indistinguishable from its real view.</p>
-<p><strong>Construction:</strong> First save \(V^\ast\)'s state at the start of the first round. Run the one-round simulator, which may rewind \(V^\ast\) within that round until it produces a successful transcript. Keep that transcript and the resulting verifier state. Then proceed to the next round and do the same. At round \(i\), use the verifier's state and history produced by the preceding completed rounds.</p>
-<p><strong>Why efficient:</strong> Each round requires an expected constant number of one-round attempts (up to negligible differences), so \(\lambda\) polynomially many rounds require expected polynomial total work. No earlier completed round must be guessed again.</p>
-<p><strong>Why indistinguishable:</strong> Replace the real rounds by simulated ones <em>one at a time</em>. The one-round zero-knowledge guarantee applies to the malicious verifier with its current state and previously produced history. Each replacement changes the view by only a computationally negligible amount. A polynomial number of such changes remains negligible. Thus the full sequential transcript is computationally indistinguishable from a real execution.</p>
+<p>For sequential general zero knowledge, take <em>any</em> efficient malicious verifier \(V^\ast\) that runs the \(\lambda\) sessions. We need to generate its complete view without the witness.</p>
+<p>Start at session 1 with the verifier in its current state. Run the one-session simulator, rewinding as needed until it produces that session's transcript. Keep the completed transcript and the resulting verifier state. Then run the simulator for session 2 from that state, and continue. A session may depend on previous conversations, but we simulate them in exactly the same order.</p>
+<p>Each one-session simulation takes constant expected work, up to negligible differences, so \(\lambda\) sessions take expected polynomial work. A failure in a later session doesn't force us to guess earlier completed sessions again.</p>
+<p>Why does the entire view look real? Imagine replacing the real sessions by simulated ones, one at a time. Each replacement is indistinguishable even given the verifier's current state and past messages. If the full real and simulated conversations differed noticeably, one of those neighboring replacements would also differ noticeably. The one-session ZK guarantee rules that out.</p>
 </div></details>
 <details><summary>(b) Parallel composition · identify what the old argument cannot do</summary>
 <div class="inside">
-<p><strong>Message rule:</strong> The prover sends all \(\lambda\) first commitments, then the verifier sends one vector of \(\lambda\) challenges, then the prover sends all responses. The simulator cannot finish or rewind instance 1 before preparing the first message for instance 2.</p>
-<p>Using the straightforward Hamiltonicity simulator, it guesses the entire challenge vector before sending its commitments. Even against an honest verifier, the probability of a full match is \(2^{-\lambda}\), so the expected number of whole-protocol attempts is \(2^\lambda\), exponential when \(\lambda\) grows.</p>
-<p>With a <strong>malicious verifier</strong>, the challenges can also depend on all first messages and on one another. We cannot claim that each single-round simulator still works independently as a black box. Therefore the standard construction does <strong>not</strong> establish general malicious-verifier zero knowledge of the parallel protocol. This is a failure of the proposed proof, <em>not</em> an impossibility theorem for every alternative construction.</p>
+<p>Parallel repetition sends all \(\lambda\) first commitments before receiving the challenge vector, so we cannot finish one session before preparing the next.</p>
+<p>The straightforward simulator must guess all \(\lambda\) challenge bits at once. For an honest verifier, one guess succeeds with probability \(2^{-\lambda}\), requiring \(2^\lambda\) full attempts on average.</p>
+<p>A malicious verifier may make the challenges depend on all the commitments. The usual independent one-session simulators therefore do not directly give a simulation of the parallel protocol. That does not prove parallel zero knowledge impossible; it tells us this argument is insufficient.</p>
 </div></details>
 <details><summary>(c) Parallel honest-verifier ZK · show why the restriction changes everything</summary>
 <div class="inside">
-<p>Under an honest verifier, the challenge vector is sampled uniformly and independently of the commitments. Honest-verifier zero knowledge for each Sigma protocol gives a simulator that, when supplied a desired challenge \(c_i\), directly outputs an accepting-looking transcript \((u_i,c_i,z_i)\) without the witness.</p>
-<p><strong>Construction:</strong> Sample all \(\lambda\) challenges independently; invoke the honest-verifier simulator for each challenge; concatenate the \(\lambda\) commitments, challenges and responses in the parallel message order. There is no need to guess what a malicious verifier will do, because we control the simulation of an honest uniformly random challenge vector.</p>
-<p>Each single-instance simulated transcript is indistinguishable from its honest counterpart. Combining polynomially many independent simulated transcripts preserves computational indistinguishability, by a hybrid argument. Thus <strong>parallel honest-verifier zero knowledge holds</strong>.</p>
+<p>For honest-verifier zero knowledge, the situation is easier. The verifier's challenge bits are independent and uniform, so a simulator can choose the entire challenge vector itself.</p>
+<p>Sample \((c_1,\ldots,c_\lambda)\) independently. For each challenge \(c_i\), run the original honest-verifier simulator to produce \((u_i,c_i,z_i)\) without a witness. Then arrange all first messages, challenges, and responses into the parallel three-message transcript.</p>
+<p>Each simulated copy has the correct honest-verifier distribution. Replacing one copy at a time shows that the whole vector of transcripts is indistinguishable from a real parallel honest-verifier execution. So parallel HVZK is preserved.</p>
 </div></details>
-<div class="role risk"><div class="tag">A distinction to retain for the exam</div><p>The phrase “zero knowledge survives parallel repetition” requires specifying <strong>which notion of ZK</strong> is meant. General ZK protects against a malicious verifier; honest-verifier ZK protects only when the verifier follows the challenge rule. Their simulation requirements are different, even when the protocol diagram contains the same number of commitments and challenges.</p></div>
-<div class="transition"><p>Zero knowledge establishes that the verifier learns no witness. The next question reverses the direction: how can a security proof establish that a successful prover <em>must know</em> a witness? The simulator cannot reveal it; a different algorithm, an <strong>extractor</strong>, gets to rewind the prover.</p></div>
+<div class="role risk"><div class="tag">A distinction to retain for the exam</div><p>The answer depends on which verifier is being simulated. General ZK must handle arbitrary efficient malicious verifiers. HVZK only needs the verifier that chooses its challenges honestly.</p></div>
+<div class="transition"><p>Now turn the tables. In zero knowledge we rewind the verifier to make a transcript without the secret. Could rewinding a dishonest prover instead reveal the secret? That's the next idea.</p></div>
 <p class="source">PETS · Homework 2, Problem 2(a–c), with the missing message-schedule and hybrid reasoning made explicit.</p>
 </article>
