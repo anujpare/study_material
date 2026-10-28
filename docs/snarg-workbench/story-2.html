@@ -165,7 +165,10 @@
 <h1>What if the calculation contains more than one kind of step?</h1>
 <p class="lead">Our Fibonacci example was convenient because every step used the same rule. But an ordinary program might add in one place, multiply in another, and reuse an earlier result later. We need one common description of those different steps.</p>
 <p>An <strong>arithmetic circuit</strong> is a collection of small operations called gates. Each gate takes two values and produces either their sum or their product. Wires connect the output of one gate to the inputs of later gates. This is the same idea as breaking an enormous computation into tiny steps, but now each step can use a different operation.</p>
-<p>To see why this is enough to change the proof, use the example from the lecture. We know the public inputs \(x_1=2\) and \(x_2=4\). The prover has a private input \(w_1=3\). The computation is</p>
+<p>The lecture gives this a precise form. An arithmetic circuit \(C\) takes field elements as inputs and applies only binary addition or multiplication gates. We separate its inputs into a <strong>public statement</strong> \(\mathbf x\in\mathbb F^m\), known to the verifier, and a <strong>private witness</strong> \(\mathbf w\in\mathbb F^n\), known to the prover. The general statement to prove is that some witness makes the circuit output zero:</p>
+<div class="math">\[L=\{\mathbf x\in\mathbb F^m:\exists\,\mathbf w\in\mathbb F^n,\ C(\mathbf x,\mathbf w)=0\}.\]</div>
+<p>Remember that \(\exists\) means “there exists.” This is the same statement-and-witness idea from the beginning of the lecture, now expressed for a circuit: the public claim is true if at least one private input makes the output zero.</p>
+<p>To make the idea visible, use the lecture's small example. The public inputs are \(x_1=2,x_2=4\), and the prover has private input \(w_1=3\). The computation is</p>
 <div class="math">\[t=(x_1x_2)(x_2+w_1).\]</div>
 <p>The first gate multiplies 2 and 4, making 8. The second adds 4 and 3, making 7. The third multiplies 8 and 7, making 56.</p>
 <div class="table-scroll"><table><thead><tr><th>Gate</th><th>Operation</th><th>Left</th><th>Right</th><th>Output</th></tr></thead><tbody>
@@ -268,6 +271,15 @@ f_{\rm trace}(\omega^2)=f_{\rm trace}(\omega^6),\qquad
 f_{\rm trace}(\omega^5)=f_{\rm trace}(\omega^7).
 \]</div>
 <p>In the “wrong wiring” example above, the prover puts 9 and 17 into gate 2. The multiplication is correct <em>modulo 97</em>, because \(9\cdot17=153\equiv56\). It even produces the expected public result. But gate 0 produced 8, not 9, and gate 1 produced 7, not 17. The wiring equalities fail. That is why the gate equations alone cannot prove a circuit executed correctly.</p>
+<h2>Represent all wire copies with the rotation polynomial</h2>
+<p>Those two wiring equations are only part of the story. The original inputs also reappear inside gates: for example, the public value \(x_2=4\) is stored at \(\omega^{-2}\), gate 0's right input at \(\omega^1\), and gate 1's left input at \(\omega^3\). All three positions must contain the same number.</p>
+<p>For any logical wire, list the places where it appears and arrange those places into a cycle. For the copies of \(x_2\), that might be \(\omega^{-2}\to\omega^1\to\omega^3\to\omega^{-2}\). Define a map that sends each position to the next place in its cycle. The lecture calls its polynomial representation \(f_{\rm rot}\), the <strong>rotation polynomial</strong>.</p>
+<div class="math">\[f_{\rm trace}(a)=f_{\rm trace}(f_{\rm rot}(a))\qquad\text{for every }a\in\Omega.\]</div>
+<div class="proof"><h3>Why do these equalities force consistent wiring?</h3>
+<p>Take one wire whose occurrences form a cycle \(a_1\to a_2\to\cdots\to a_k\to a_1\). The displayed relation says the values at \(a_1\) and \(a_2\) are equal, then those at \(a_2\) and \(a_3\) are equal, and so on. By transitivity, every occurrence has exactly the same value.</p>
+<p>Conversely, if every occurrence of a wire already has one common value, every equality in its cycle holds. Thus this family of equalities is <em>equivalent</em> to correct wire copying throughout the trace.</p>
+<p class="qed">The rotation constraints close the loophole that gate equations leave open: the prover cannot feed a gate a new value in place of the value supplied by its actual wire. \(\square\)</p></div>
+<p>The map depends only on the circuit wiring, not on the private witness. Since its values are prescribed at the twelve distinct domain points, it too can be represented by a polynomial using interpolation. The circuit designer can compute and commit to it once, in preprocessing. The lecturer sketches a polynomial IOP for this check but does not provide the full protocol or its security proof; we must not invent one.</p>
 <h2>Why was the roots-of-unity domain useful?</h2>
 <p>The polynomial that vanishes at all twelve powers of \(\omega\) is especially simple:</p>
 <div class="math">\[\prod_{j=0}^{11}(X-\omega^j)=X^{12}-1.\]</div>
