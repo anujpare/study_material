@@ -425,3 +425,12 @@ body{background:var(--page);color:var(--ink);font-family:-apple-system,BlinkMacS
   #lessons .chapter-menu{top:12px;right:79px;}
   #lessons .chapter-menu .chapter-panel{right:-66px;}
 }
+
+/* Explicitly override the legacy native-details visibility rule. The new menu
+   uses a button and data-open state instead of an <open> attribute. */
+#lessons .chapter-menu[data-open="true"] > .chapter-panel:not([hidden]){
+  display:flex!important;visibility:visible!important;pointer-events:auto!important;
+}
+#lessons .chapter-menu[data-open="false"] > .chapter-panel{
+  display:none!important;visibility:hidden!important;
+}
