@@ -22,6 +22,8 @@
 <h2>From one bit to a graph</h2>
 <p>A graph can be represented by a matrix \(\boldsymbol B\): the entry \(B_{ij}\) is 1 when there is an edge from vertex \(i\) to \(j\), and 0 otherwise. The prover can commit to every matrix bit separately.</p>
 <p>The verifier then knows the graph entries have been fixed, although it cannot yet read them. Later it can ask to open the whole graph or only the edges of a claimed cycle.</p>
-<div class="transition"><p>But opening the whole original graph might reveal how the secret cycle is arranged. We will first randomly rename its vertices, so revealing the chosen names gives the verifier no privileged map back to the witness.</p></div>
+<div class="transition"><p>We now have both tools the graph protocol needs: binding fixes the first message, and hiding conceals its contents. But revealing the secret cycle with the graph would defeat our purpose. Before committing, the prover will therefore randomly rename the vertices. That preserves the cycle while hiding its original labels.</p>
+<div class="practice-link"><span class="practice-tag">Optional commitment homework</span><a href="#hw1-security">HW1: prove hiding and binding for several constructions</a><a href="#hw1-pedersen">HW1: what happens when the Pedersen generator relation is known?</a></div>
+<p></p></div>
 <p class="source">PETS · Commitment prerequisites and ZK lecture notes, Theorem 1, pp. 5–6.</p>
 </article>
