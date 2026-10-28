@@ -163,7 +163,7 @@ f_{\rm trace}(\omega^2)=f_{\rm trace}(\omega^6),
 f_{\rm trace}(\omega^5)=f_{\rm trace}(\omega^7).
 \]</div>
 <p>And we must also ensure the original input entries agree with the copies inside the gates. For example, public \(x_2=4\) appears at \(\omega^{-2}\), gate 0's right input at \(\omega^1\), and gate 1's left input at \(\omega^3\). All three places refer to one logical wire and must contain the same number.</p>
-<div class="lab" data-lab="trace"><div class="lab-top"><strong>Make a trace lie in different ways</strong><p>Choose a proposed trace. See which checks fail. This uses the original three-gate circuit. Its output is compared with the public target 56; the formal zero-output statement would require an additional target-check gate and a new trace.</p></div><div class="lab-content"><label>Trace the prover claims <select data-key="mode">
+<div class="lab" data-lab="trace"><div class="lab-top"><strong>Why each of the four checks is necessary</strong><p>Choose a proposed trace. Each dishonest case satisfies three checks and violates exactly one; the failing condition is therefore necessary. This uses the original three-gate circuit. Its output is compared with the public target 56; the formal zero-output statement would require an additional target-check gate and a new trace.</p></div><div class="lab-content"><label>Trace the prover claims <select data-key="mode">
 <option value="honest">Honest trace</option>
 <option value="wire">Wrong wiring, locally correct gates</option>
 <option value="gate">Wrong multiplication</option>
@@ -191,6 +191,7 @@ f_{\rm trace}(\omega^5)=f_{\rm trace}(\omega^7).
 <p class="chapter-tag">Lecture §6 · A PLONK SNARG</p>
 <h1>Why do these checks prove the circuit statement?</h1>
 <p class="aim">We have four requirements: correct public inputs, correct output, correct gate arithmetic, and consistent wires. We must now prove that satisfying all four means the prover has supplied a genuine execution of the public circuit. Then we can assemble the polynomial checks into the final SNARG construction.</p>
+<p>In the previous experiment, we constructed four dishonest traces. Each passed three constraint families but failed the fourth. This shows that none of the four checks can simply be omitted. We must now establish the other direction: that <em>passing all four</em> really is sufficient.</p>
 <div class="proof"><h3>From a valid trace to a satisfying witness</h3>
 <p>Take a trace that passes all four checks. The public-input check fixes the known inputs to the values the verifier supplied. The other original input positions determine a candidate private witness \(\mathbf w\).</p>
 <p>Now process the circuit in gate order. For the first gate, its input wires have definite values. The gate equation forces its output to be the correct sum or product. The wiring check forces every later occurrence of that output wire to carry exactly that same value. So the next gate receives the outputs specified by the circuit, rather than values invented independently by the prover.</p>
