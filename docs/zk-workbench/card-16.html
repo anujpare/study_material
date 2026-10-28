@@ -1,7 +1,7 @@
 <article class="lesson">
 <p class="chapter">Part VI · Sigma protocols</p>
 <h1>One simple rule explains Sigma-protocol soundness</h1>
-<p class="lead">The Hamiltonicity extractor succeeded because two valid responses to different challenges, sharing one first message, determine a witness. We would like to recognize and prove this property without rebuilding the argument separately for every protocol. A Sigma protocol isolates the three-message structure and its precise extraction requirement. Hamiltonian-cycle proofs use graphs, and Schnorr will use exponents. Yet the same thing makes both work: after fixing a first message, the prover must answer a surprise challenge. A Sigma protocol captures that shared structure.</p>
+<p class="lead">In the Hamiltonicity proof, two accepted responses to different challenges for one fixed first message let an extractor recover the cycle. That observation suggests a general theorem: whenever a protocol has this extraction property, a false claim can be answered for at most one challenge. Sigma protocols formalize the three-message structure and the properties needed to prove that theorem.</p>
 <div class="timeline">
 <div class="message prover"><span class="who">P → V</span><span>Commitment \(u\), fixed before the verifier asks its question.</span></div>
 <div class="message"><span class="who">V → P</span><span>Challenge \(c\), chosen uniformly from a finite set \(\mathcal C\).</span></div>
