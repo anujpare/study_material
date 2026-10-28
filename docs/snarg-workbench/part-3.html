@@ -1,84 +1,80 @@
 <!doctype html><html lang="en"><meta charset="utf-8"><title>SNARGs · Part III</title><body>
-<article class="lesson" data-id="polynomial-commitments" data-title="Polynomial commitments: four algorithms, two guarantees">
-<p class="chapter-tag">III · Commitments and Fiat–Shamir · Lecture §4</p>
-<h1>Now we have to get rid of the imaginary box</h1>
-<p class="aim">The Fibonacci verifier worked only because we pretended there was a trustworthy box holding the polynomials. Without that box, a cheater could wait to hear the random point, then invent answers that agree there. So the first missing step is to <em>fix</em> the polynomials before the question arrives.</p>
-<p>We've solved this kind of problem once before. A Merkle root fixed an encoded PCP string and authenticated a few bit positions. Now we need the same idea for our polynomial oracle: fix the polynomial, then authenticate its value at a randomly chosen field point.</p>
-<p>A <strong>polynomial commitment</strong> lets the prover make a short commitment \(c\) to a polynomial \(f(X)\). Later the verifier chooses a point \(z\), and the prover supplies a value \(y=f(z)\) together with a short opening proof. The verifier checks the opening against the original commitment, without receiving all the coefficients of \(f\).</p>
-<p>The lecture describes four algorithms. We'll go through what each is <em>for</em>, rather than treating the list as something to memorize.</p>
-<div class="table-scroll"><table><thead><tr><th>Algorithm</th><th>Meaning</th></tr></thead><tbody>
-<tr><td><strong>Setup</strong></td><td>\(\operatorname{Setup}(d,\lambda)\to pp\). Choose public parameters \(pp\) that support polynomials of degree at most \(d\), at security level \(\lambda\).</td></tr>
-<tr><td><strong>Commit</strong></td><td>\(\operatorname{Commit}(pp,f)\to c\). Fix the polynomial and produce its short commitment \(c\).</td></tr>
-<tr><td><strong>Open</strong></td><td>\(\operatorname{Open}(pp,f,z)\to\pi\). Produce a proof \(\pi\) for the evaluation \(y=f(z)\).</td></tr>
-<tr><td><strong>Verify</strong></td><td>\(\operatorname{Verify}(pp,c,z,y,\pi)\to\{0,1\}\). Check the claimed evaluation against the commitment.</td></tr>
+<article class="lesson" data-id="polynomial-commitments" data-title="How polynomial commitments replace the box">
+
+<p class="chapter-tag">Lecture §4 · Polynomial Commitments</p>
+<h1>How can the verifier trust the polynomial's answers?</h1>
+<p class="aim">Our Fibonacci proof is mathematically sound <em>if</em> the prover puts its polynomials in an ideal box before learning the verifier's random evaluation point. A real dishonest prover has no reason to obey that rule. We need to make the box's behavior enforceable.</p>
+<p>The problem is nearly identical to the one we solved for PCPs. There, a Merkle commitment fixed a long <em>bit string</em>, and an opening proved which bit belonged at one position. Now the object is a <em>polynomial</em>, and the verifier asks for its value at a chosen field point. We therefore need a <strong>polynomial commitment scheme</strong>.</p>
+<p>Think of the prover committing to our Fibonacci trace \(f_{\rm fib}\) before the verifier chooses \(r\). Later it should be able to prove “the polynomial I committed to has value \(y\) at point \(r\)” without sending all its coefficients.</p>
+<h2>What operations would such a scheme need?</h2>
+<p>The lecture gives four algorithms. We'll give each one a job in the Fibonacci protocol so the notation isn't just a list to memorize.</p>
+<div class="table-scroll"><table><thead><tr><th>Algorithm</th><th>What it does</th></tr></thead><tbody>
+<tr><td>\(\operatorname{Setup}(d,\lambda)\to pp\)</td><td>Prepare public parameters \(pp\) for polynomials of degree at most \(d\) and security level \(\lambda\).</td></tr>
+<tr><td>\(\operatorname{Commit}(pp,f)\to c\)</td><td>Prover fixes polynomial \(f\) and publishes a short commitment \(c\) to it, <em>before the random query</em>.</td></tr>
+<tr><td>\(\operatorname{Open}(pp,f,z)\to\pi\)</td><td>Once the verifier has chosen point \(z\), prover generates an opening proof \(\pi\) for the claimed value \(y=f(z)\).</td></tr>
+<tr><td>\(\operatorname{Verify}(pp,c,z,y,\pi)\to\{0,1\}\)</td><td>Verifier checks that the value \(y\) at \(z\) is authenticated against the earlier commitment \(c\).</td></tr>
 </tbody></table></div>
-<p>The first two algorithms prepare and fix the polynomial. The last two answer and verify a later question about its value. That's how we replace the polynomial oracle.</p>
-<h2>What stops the prover from lying?</h2>
-<p>There are two required properties.</p>
-<div class="proof"><h3>Correctness</h3>
-<p>If the prover commits to \(f\), then honestly opens the true value \(f(z)\), verification must accept. This is what makes the scheme usable at all.</p>
-<h3>Evaluation binding</h3>
-<p>Suppose a cheater makes one commitment \(c\) and then claims two different values \(y\ne y'\) at the <em>same</em> point \(z\), with proofs that both verify:</p>
+<p>The symbols have different roles: \(d\) is the degree limit, \(\lambda\) the security parameter, \(pp\) the public setup, \(c\) the commitment, \(z\) the queried point, \(y\) the answer, and \(\pi\) the opening proof. The polynomial itself can be enormous; the goal is for \(c\) and \(\pi\) to be short.</p>
+<div class="lab" data-lab="opening"><div class="lab-top"><strong>Follow one polynomial through the protocol</strong><p>The simple example \(f(X)=X^2+1\) shows the order of messages, not a real cryptographic implementation.</p></div><div class="lab-content">
+<label class="range-label">Protocol stage <output class="range-value" data-live-for="stage">1</output><input data-key="stage" type="range" min="1" max="3" value="1"></label>
+<label class="range-label">Evaluation point \(z\) <output class="range-value" data-live-for="r">3</output><input data-key="r" type="range" min="0" max="16" value="3"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<h2>Two security promises, for two different reasons</h2>
+<p><strong>Correctness</strong> says that if the polynomial really was committed honestly, a valid opening to its true value always verifies. Without that, an honest Fibonacci proof could be rejected.</p>
+<p><strong>Evaluation binding</strong> says that once a commitment \(c\) exists, a polynomial-time cheater cannot feasibly produce <em>two different accepted values at the same evaluation point</em>. Formally it cannot produce \(z,y,y',\pi,\pi'\) with \(y\ne y'\) such that both</p>
 <div class="math">\[
-\operatorname{Verify}(pp,c,z,y,\pi)
-=\operatorname{Verify}(pp,c,z,y',\pi')=1.
+\operatorname{Verify}(pp,c,z,y,\pi)=1
+\quad\text{and}\quad
+\operatorname{Verify}(pp,c,z,y',\pi')=1.
 \]</div>
-<p>The scheme must make this computationally infeasible. Formally, every polynomial-time adversary has at most negligible probability of doing it. A probability is <em>negligible in \(\lambda\)</em> if it eventually becomes smaller than \(1/p(\lambda)\) for every fixed positive polynomial \(p\).</p>
-<p class="qed">These properties give us honest openings that work and prohibit conflicting openings at a chosen point. That's the behavior the ideal verifier expected from its polynomial oracle. \(\square\)</p>
-</div>
-<p>For the complete SNARG construction, the commitment implementation must also enforce the permitted polynomial degree and consistent evaluations across different queried points. The interface in the notes does not spell out a concrete construction or its full security proof.</p>
-<p>One warning: a polynomial commitment need not <em>hide</em> the polynomial. Binding is not the same as zero knowledge, which is a separate privacy property.</p>
-<div class="practice-link"><span class="practice-tag">Use this idea</span><a href="#midterm-interpolation">Previous midterm 1(c): turn a polynomial commitment into a vector commitment</a></div>
-<div class="bridge">The imaginary polynomial box now has a cryptographic replacement. What remains? The verifier still has to send the unpredictable point at which it will check the equation. To make one proof string that anyone can verify, we need to remove that message. A simpler three-message protocol—Schnorr—will let us see exactly what a hash must replace.</div>
-<p class="source">Official notes, §4 and Definition 1, p. 7; handwritten notes pp. 16–17.</p>
+<p>The chance that an efficient adversary succeeds must be <strong>negligible</strong> in \(\lambda\): smaller than \(1/p(\lambda)\) for any fixed positive polynomial \(p\), once \(\lambda\) is sufficiently large.</p>
+<div class="proof"><h3>What have these properties accomplished?</h3>
+<p>Correctness makes honest oracle answers checkable. Evaluation binding prohibits contradictory values at one committed point. A full implementation of a polynomial IOP also needs to ensure that all authenticated evaluations correspond consistently to a permitted low-degree polynomial; the definition shown in the lecture does not itself give us a concrete construction or prove every such global consistency requirement.</p>
+<p class="qed">We have a cryptographic interface capable of replacing the ideal evaluation box. With an appropriate secure construction, our random polynomial tests can now work on authenticated answers instead of trusting the prover's word. \(\square\)</p></div>
+<p>Apply this to Fibonacci: the prover commits to \(f_{\rm fib}\) and the quotient \(q\). The verifier then chooses \(r\) and checks opening proofs for \(f_{\rm fib}(0)\), \(f_{\rm fib}(1)\), \(f_{\rm fib}(100)\), \(f_{\rm fib}(r)\), \(f_{\rm fib}(r+1)\), \(f_{\rm fib}(r+2)\), and \(q(r)\). The polynomial identities are the same as before. What changed is that the answers are now authenticated.</p>
+<div class="practice-link"><span class="practice-tag">Related midterm problem</span><a href="#midterm-interpolation">Show how polynomial commitments can also commit to a vector</a></div>
+<div class="bridge">The ideal box has a cryptographic replacement. But notice that the verifier still chooses a random point \(r\) and sends it <em>after</em the commitments. This is an interactive protocol. To make it non-interactive, we'll use the same three-message timing pattern as a Sigma protocol and replace the verifier's challenge with a reproducible hash-derived one.</div>
+<p class="source">Lecture §4, Definition 1, including all four algorithms, correctness, evaluation binding, and the transition back to the Fibonacci IOP.</p>
+
 </article>
 
-<article class="lesson" data-id="schnorr-recall" data-title="Schnorr: the three-message proof we will transform">
-<p class="chapter-tag">III · Commitments and Fiat–Shamir · HW2, Problem 3</p>
-<h1>Before removing a challenge, see what it does</h1>
-<p class="aim">Our goal is still a non-interactive proof of a computation. But before replacing the verifier's random question in a complicated polynomial protocol, let's do it in a simpler one with the same message order. Schnorr's protocol gives us a first message, an unpredictable challenge, and a response we can check by one equation.</p>
-<p>The question in Schnorr is whether someone knows a secret exponent \(x\) for a public value \(h=g^x\). This is a different <em>application</em>, but the way the verifier challenges the prover is exactly what we need to understand before applying Fiat–Shamir to our polynomial proof.</p>
-<p>We use a cyclic group \(G\) of prime order \(q\), generated by an element \(g\). Think of the group operation as multiplication. Every group element is some power of \(g\), and \(g^q=1_G\), the group identity. Exponents are calculated modulo \(q\).</p>
-<p>The public value is \(h=g^x\). The prover knows \(x\); the verifier knows only \(h,g,q\). In <strong>Schnorr's protocol</strong>, they exchange three messages:</p>
+<article class="lesson" data-id="schnorr-recall" data-title="Why the lecture calls this a Sigma protocol">
+
+<p class="chapter-tag">Prerequisite · Earlier Sigma-protocol coursework for Lecture §4</p>
+<h1>Why does the Fibonacci proof resemble a Sigma protocol?</h1>
+<p class="aim">Look at the Fibonacci exchange. First the prover sends commitments. Next the verifier chooses a random challenge. Finally the prover responds with authenticated evaluations. The lecture says this “looks like a Sigma protocol.” Before applying Fiat–Shamir, let's see what that three-message pattern buys us in a simpler example.</p>
+<p>A <strong>Sigma protocol</strong> has three stages: a first message fixed by the prover, a random verifier challenge, and a response. Our earlier course used <strong>Schnorr's protocol</strong> as an example. Its purpose is different from proving Fibonacci: the prover wants to show it knows a secret exponent \(x\) satisfying a public relation \(h=g^x\).</p>
+<p>For this example, \(G\) is a cyclic group of prime order \(q\), and \(g\) is a generator. Every group element is a power of \(g\). Exponents are calculated modulo \(q\). The verifier knows \(g,h,q\); the prover also knows the exponent \(x\).</p>
 <div class="protocol">
 <div class="who">Prover \(P\)</div><div class="send">⟶</div><div class="who">Verifier \(V\)</div>
-<div class="msg">Pick random \(r\); send \(u=g^r\)</div><div class="send">⟶</div><div class="local">Receives \(u\)</div>
-<div class="local">Must answer an unknown question</div><div class="send">⟵</div><div class="msg">Pick random \(c\in\mathbb Z_q\)</div>
-<div class="msg">Send \(z=r+cx\pmod q\)</div><div class="send">⟶</div><div class="local">Check \(g^z=u h^c\)</div>
+<div class="msg">Choose random \(r\); send \(u=g^r\)</div><div class="send">⟶</div><div class="local">Receive and fix \(u\)</div>
+<div class="local">Cannot choose \(u\) again</div><div class="send">⟵</div><div class="msg">Choose random challenge \(c\)</div>
+<div class="msg">Answer \(z=r+cx\bmod q\)</div><div class="send">⟶</div><div class="local">Check \(g^z=u h^c\)</div>
 </div>
-<p>Why all these new letters? The prover picks \(r\) to hide the secret in a fresh random value \(u\). The verifier then picks \(c\), <em>after</em> receiving \(u\), so the prover cannot choose \(u\) knowing which challenge it must answer. The response \(z\) combines \(r\) with the secret \(x\) in a way the verifier can check using only public \(h\).</p>
-<div class="lab" data-lab="schnorr"><div class="lab-top"><strong>Check a real Schnorr equation</strong><p>Use the order-11 subgroup generated by 2 modulo 23. The secret is \(x=3\), so \(h=8\). Move \(r\) or \(c\) and see the same equation hold.</p></div><div class="lab-content"><label>Prover's random \(r\)<input data-key="r" type="range" min="0" max="10" value="4"></label><label>Verifier's challenge \(c\)<input data-key="c" type="range" min="0" max="10" value="2"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<p>Why are these messages arranged in this order? The prover's first message \(u\) must be fixed before it learns \(c\). Otherwise it could choose a first message that fits a challenge it already knows. The response \(z\) combines the secret and the challenge, but the verifier can check it with public values.</p>
+<div class="proof"><h3>Why does an honest response always pass?</h3>
+<p>Start with what the prover sent: \(z=r+cx\). Then use the laws of exponents and the public relation \(h=g^x\):</p>
+<div class="math">\[g^z=g^{r+cx}=g^r(g^x)^c=u h^c.\]</div>
+<p class="qed">That's perfect completeness: the verifier's equation holds for every honest choice of \(r,c,x\). \(\square\)</p></div>
+<div class="lab" data-lab="schnorr"><div class="lab-top"><strong>Try Schnorr's check with small numbers</strong><p>Here \(g=2\), \(q=11\), arithmetic in the group is modulo 23, and the secret is \(x=3\). This is a teaching example, not cryptographic security.</p></div><div class="lab-content">
+<label class="range-label">Prover's randomness \(r\) <output class="range-value" data-live-for="r">4</output><input data-key="r" type="range" min="0" max="10" value="4"></label>
+<label class="range-label">Verifier challenge \(c\) <output class="range-value" data-live-for="c">2</output><input data-key="c" type="range" min="0" max="10" value="2"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<p><strong>A note about symbols:</strong> in Schnorr, \(r\) is the prover's private randomness and \(c\) is the verifier's random challenge. In the earlier Fibonacci proof, \(r\) was the <em>verifier's evaluation challenge</em>. The letters happen to be reused in two protocols; their roles are defined by the protocol messages, not by the letter itself.</p>
 <div class="exercise"><span class="exercise-kicker">HW2 · Problem 3(a–c)</span>
-<h3>Prove completeness, privacy, and knowledge extraction</h3>
-<p>The homework asks three different questions. First, why does an honest prover always pass? Second, could an honest-verifier transcript be generated without knowing the secret? Third, why does answering <em>two different challenges to the same first message</em> reveal the secret?</p>
-<details class="worked"><summary>Show the three worked proofs</summary><div class="answer">
-<h3>(a) Completeness</h3>
-<p>An honest prover sends \(z=r+cx\). Substitute it into the verifier's equation:</p>
-<div class="math">\[
-g^z=g^{r+cx}=g^r(g^x)^c=u h^c.
-\]</div>
-<p>The second equality uses \(g^{a+b}=g^ag^b\). The last equality substitutes \(u=g^r\) and \(h=g^x\).</p>
-<p class="qed">Both sides are equal for every choice of \(r,c\). That proves perfect completeness. \(\square\)</p>
-<h3>(b) Honest-verifier zero knowledge</h3>
-<p>We want to produce a transcript \((u,c,z)\) that looks exactly like an honest exchange, but without knowing \(x\). Work backwards from the verifier's equation. Pick \(c\) and \(z\) uniformly at random, and define</p>
-<div class="math">\[u=g^z h^{-c}.\]</div>
-<p>Then \(g^z=u h^c\), so the transcript passes the check. But does it have the right <em>distribution</em>? In the real protocol \(r\) and \(c\) are independent and uniform, and \(z=r+cx\). For each fixed \(c\), adding the fixed number \(cx\) to uniform \(r\) merely rearranges the field elements, so \(z\) is uniform. Once \(c,z\) are chosen, the equation determines exactly the value \(u=g^z h^{-c}\).</p>
-<p class="qed">Thus the simulated \((u,c,z)\) is distributed exactly like a real honest-verifier transcript. The simulator never used \(x\). That establishes honest-verifier zero knowledge. \(\square\)</p>
-<h3>(c) Extracting the witness</h3>
-<p>Imagine a prover sends the same \(u\), then successfully answers two different verifier challenges \(c\ne c'\) with responses \(z,z'\). We have</p>
-<div class="math">\[g^z=u h^c,\qquad g^{z'}=u h^{c'}.\]</div>
-<p>Divide the two equations. The same \(u\) appears on both sides and cancels:</p>
-<div class="math">\[
-g^{z-z'}=h^{c-c'}=g^{x(c-c')}.
-\]</div>
-<p>Because \(g\) has order \(q\), the exponents are equal modulo \(q\). And because \(q\) is prime and \(c\ne c'\), the difference \(c-c'\) has an inverse. We can solve for the secret:</p>
+<h3>Complete the three Schnorr proofs</h3>
+<p>Show (a) perfect completeness, (b) honest-verifier zero knowledge, and (c) extraction of a secret exponent from two accepted answers for the same first message \(u\) and different challenges.</p>
+<details class="worked"><summary>Open the full proofs</summary><div class="answer">
+<p><strong>(a) Completeness.</strong> The equation above already proves it: \(g^z=g^{r+cx}=u h^c\).</p>
+<p><strong>(b) Honest-verifier zero knowledge.</strong> A simulator that does not know \(x\) chooses \(c,z\) independently and uniformly and sets \(u=g^z h^{-c}\). The verifier's equation then holds automatically. In a real honest execution \(c\) is uniform, and for each fixed \(c\), \(z=r+cx\) is uniform because adding a fixed number to uniform \(r\) merely permutes the possible residues. Once \(c,z\) are fixed, both experiments produce the same \(u=g^z h^{-c}\). Thus the transcript distributions are identical.</p>
+<p><strong>(c) Special soundness.</strong> Suppose the same \(u\) passes challenges \(c\ne c'\), with responses \(z,z'\). Divide the two verification equations:</p>
+<div class="math">\[g^{z-z'}=h^{c-c'}=g^{x(c-c')}.\]</div>
+<p>Since \(g\) has order \(q\), the exponents agree modulo \(q\). Because \(q\) is prime and \(c-c'\ne0\), we may divide by \(c-c'\) and extract</p>
 <div class="math">\[\boxed{x=(z-z')(c-c')^{-1}\pmod q.}\]</div>
-<p>An <em>extractor</em> can try this by running the prover twice from the same state after it sends \(u\), giving it a different challenge the second time. This is called rewinding. Two independent challenges coincide with probability \(1/q\); in that case the division is impossible for that pair.</p>
-<p class="qed">Two valid answers to different challenges force a recoverable witness. This is the special-soundness property we'll need when counting cheating challenges. \(\square\)</p>
+<p class="qed">Two accepted answers to different challenges for one fixed first message determine a witness. This is the special-soundness property. \(\square\)</p>
 </div></details></div>
-<div class="practice-link"><span class="practice-tag">Background exercise</span><a href="#repetition-hw2">HW2 2(a–c): why sequential and parallel challenges behave differently</a></div>
-<div class="bridge">The reason for this Schnorr detour is now visible. The prover must fix \(u\) <em>before</em> learning \(c\); the verifier's acceptance equation uses both. If we can derive \(c\) from a hash of that fixed first message, everybody could reproduce the challenge without another round of communication. That's Fiat–Shamir.</div>
-<p class="source">Homework 2, Problem 3(a–c), and the earlier Sigma-protocol lectures.</p>
+<div class="practice-link"><span class="practice-tag">Additional repetition homework</span><a href="#repetition-hw2">HW2 Problem 2: why sequential and parallel repetitions differ for simulation</a></div>
+<div class="bridge">This was a detour into a simpler protocol, not a different goal for our chapter. What carries over to Fibonacci is the <em>message order</em>: fix the first message, obtain an unpredictable challenge, then answer it. We can now ask whether both parties could calculate that challenge for themselves, removing the verifier's message while keeping the order meaningful.</div>
+<p class="source">Earlier Sigma-protocol material and HW2 Problem 3; Lecture §4 explicitly connects polynomial commitment openings to the Sigma-protocol message pattern.</p>
+
 </article>
 
 <article class="lesson" data-id="repetition-hw2" data-title="HW2 · Sequential versus parallel repetition">
@@ -112,31 +108,34 @@ g^{z-z'}=h^{c-c'}=g^{x(c-c')}.
 <p class="source">Homework 2, Problem 2(a–c). The role of state in the sequential simulation is stated explicitly.</p>
 </article>
 
-<article class="lesson" data-id="fiat-shamir" data-title="Fiat–Shamir: remove the challenge safely">
-<p class="chapter-tag">III · Commitments and Fiat–Shamir · Lecture §§2, 4, 6</p>
-<h1>How can we remove the verifier's message?</h1>
-<p class="aim">We have now seen the same three-message pattern twice. In Schnorr, the verifier asks for a random group challenge; in our polynomial proof, it asks for a random evaluation point. Both questions must arrive only <em>after</em> the prover has fixed its first message. Can we make that order work without an actual conversation?</p>
-<p>Look at the order of messages. First the prover fixes a first message \(u\). Then the verifier chooses a random challenge \(c\). The prover uses \(c\) to calculate a response \(z\).</p>
-<p>We've used a hash function before in a Merkle tree, where its job was to bind values together. Here the hash has a different job: it will replace a randomly chosen verifier question. For this security argument, we model \(H\) as a <strong>random oracle</strong>, which returns a fresh uniform answer at each new input and the same answer whenever that input is repeated. Instead of waiting for a verifier, the prover can set</p>
-<div class="math">\[c=H(\operatorname{Encode}(x,u)),\]</div>
-<p>where \(x\) is the public statement and \(\operatorname{Encode}\) unambiguously combines \(x\) and \(u\) (and, in practice, the protocol's public parameters). The output must be mapped into the original challenge space.</p>
-<p>After calculating \(c\), the prover calculates \(z\) exactly as in the interactive protocol. It publishes \(\pi=(u,z)\). The verifier, who knows \(x\) and receives \(u,z\), computes the same \(c\) and performs the old verification test.</p>
-<h2>What has changed, and what has not?</h2>
-<p>The verifier no longer needs to send anything. That's the <strong>Fiat–Shamir transformation</strong>. The original check still works for an honest prover, since both sides calculate the same challenge.</p>
-<p>But the hash has not made an insecure protocol magically secure. If the original challenge has just one bit, a cheater who can answer one of the two choices still has a good chance of succeeding. We need a large enough challenge space, or repeated tests, <em>before</em> applying the transformation.</p>
-<div class="proof"><h3>Why honest verification still succeeds</h3>
-<p>The honest prover fixes \(u\), derives \(c\), and calculates the same response \(z\) it would have calculated after receiving \(c\) from a verifier. The new verifier reconstructs that exact \(c\) from \(x,u\). It therefore checks the same equation as the old verifier.</p>
-<p class="qed">Thus the algebraic completeness argument carries over. Soundness against cheating, however, needs its own random-oracle argument; it does not follow merely from changing who calculates \(c\). \(\square\)</p>
-</div>
-<p>This is the missing non-interactive step in both constructions. For our earlier PCP/Merkle argument, the hash can determine the random bit positions. For a polynomial IOP, it can determine the random evaluation challenges after the polynomial commitments are fixed. The exact security proof depends on the protocol and the random-oracle model; simply hashing a challenge is not by itself enough.</p>
-<div class="practice-link"><span class="practice-tag">Homework checks on Fiat–Shamir</span>
-<a href="#hw3-schnorr-fs">HW3 2(a–b): make Schnorr non-interactive</a>
-<a href="#hw3-schnorr-attacks">HW3 2(c–d): guessing and proof transfer</a>
-<a href="#hw3-amplification">HW3 3(a–b): reduce the error before hashing</a>
-<a href="#hw3-fs-pcp">HW3 4(b): finish the PCP/Merkle SNARG</a>
-<a href="#hw3-conceptual">HW3 1(a,b,d): distinguish the security guarantees</a></div>
-<div class="bridge">Let's return to the computation we wanted to verify. We can now encode a long Fibonacci trace as a polynomial, authenticate the polynomial's values, and derive the verifier's random challenges without interaction. But Fibonacci was chosen because we already knew its recurrence. What about <em>any</em> computation? We need a uniform way to turn an arbitrary program into equations that a polynomial proof can test. That is why PLONK begins with arithmetic circuits.</div>
-<p class="source">Official lecture §§2, 4 and 6; original HW3 Problems 2–3.</p>
+<article class="lesson" data-id="fiat-shamir" data-title="Fiat–Shamir: remove the verifier's message">
+
+<p class="chapter-tag">Lecture §4 and §6 · From Poly-IOP to SNARG</p>
+<h1>Can we make the random challenge without a conversation?</h1>
+<p class="aim">We now have a succinct way to check polynomial identities using authenticated evaluations. But it's still interactive: after receiving the prover's commitments, the verifier must choose a random challenge and send it. For a proof that anybody can verify later, we'd like the challenge to be reproducible without contacting the prover.</p>
+<p>Look again at the three stages. In the general Sigma-protocol notation, the prover first sends \(u\), the verifier chooses challenge \(c\), and the prover answers \(z\). What is essential is not who physically transmits the bits of \(c\), but that the challenge is unpredictable before \(u\) has been fixed.</p>
+<p>Suppose prover and verifier use a hash function \(H\) modeled as a <strong>random oracle</strong>. In this model each new input receives a random output that is remembered so the same input always gets the same output. The prover can fix \(u\) first and then calculate</p>
+<div class="math">\[\boxed{c=H(\operatorname{Encode}(x,u,\text{parameters})).}\]</div>
+<p>Here \(x\) is the public statement, and \(\operatorname{Encode}\) means a fixed unambiguous way of combining the inputs into the string to hash. The hash output must be mapped appropriately into the original challenge space.</p>
+<p>Now the prover computes \(z\) just as in the interactive protocol and publishes only \((u,z)\). The verifier reconstructs \(c\) from \(x,u\) and runs the old verification check. No interactive challenge message is needed. This is the <strong>Fiat–Shamir transformation</strong>.</p>
+<h2>Apply it to our Fibonacci proof</h2>
+<p>The prover's first message consists of commitments to the trace polynomial \(f_{\rm fib}\) and quotient polynomial \(q\); call them \(c_f,c_q\). The verifier formerly chose a random field point \(r\) after receiving these commitments. In the Fiat–Shamir version, both sides instead compute</p>
+<div class="math">\[r=H(\operatorname{Encode}(\text{Fibonacci claim},c_f,c_q,\text{parameters})).\]</div>
+<p>The published proof contains the commitments, the claimed evaluations at \(0,1,100,r,r+1,r+2\), the value \(q(r)\), and the corresponding opening proofs. Anyone can derive the same \(r\), authenticate those values, and check the same initial conditions, final result, and ZeroTest equation as the interactive verifier.</p>
+<div class="proof"><h3>What have we actually proved by doing this?</h3>
+<p><strong>Completeness</strong> carries over: the honest prover and verifier compute the same challenge and verify the same algebraic identities. The verifier no longer needs to send a message.</p>
+<p><strong>Soundness needs an additional argument.</strong> A dishonest prover could try different first messages and hash them until it finds a favorable challenge. A real security proof must analyze those attempts in the random-oracle model. We cannot simply say “the hash is random-looking” and assume the original soundness theorem remains unchanged.</p>
+<p class="qed">Fiat–Shamir removes interaction while preserving honest verification, provided both parties reconstruct the same challenge. Its resistance to cheating comes from the appropriate cryptographic analysis, not from the notation alone. \(\square\)</p></div>
+<p>There's a related trap in the homework. If a challenge has only one bit, a cheater who can answer one of its two values may still get lucky with probability \(1/2\). Applying a hash does not make that constant probability negligible. The homework first amplifies the challenge, then applies Fiat–Shamir. This is why the details of the original protocol matter.</p>
+<div class="practice-link"><span class="practice-tag">Fiat–Shamir exam exercises</span>
+<a href="#hw3-schnorr-fs">HW3 Problem 2(a–b): non-interactive Schnorr</a>
+<a href="#hw3-schnorr-attacks">HW3 Problem 2(c–d): guessing and transferability</a>
+<a href="#hw3-amplification">HW3 Problem 3(a–b): amplify before hashing</a>
+<a href="#hw3-fs-pcp">HW3 Problem 4(b): apply Fiat–Shamir to the PCP/Merkle construction</a>
+<a href="#hw3-conceptual">HW3 Problem 1(a,b,d): distinguish the security guarantees</a></div>
+<div class="bridge">We can now see the whole blueprint: prove an information-theoretic test in a restricted oracle model; replace the oracle with commitments; then remove the challenge with Fiat–Shamir. But so far our polynomial test handled a <em>particular recurrence</em>. The main goal was to verify general computations. The next part of the lecture introduces arithmetic circuits so we can describe any addition-and-multiplication computation with equations of the same kind.</div>
+<p class="source">Lecture §2 blueprint, §4, “From a Poly-IOP to a SNARG,” and §6; HW3 Fiat–Shamir exercises.</p>
+
 </article>
 
 <article class="lesson" data-id="hw3-schnorr-fs" data-title="HW3 2(a–b) · Non-interactive Schnorr">
