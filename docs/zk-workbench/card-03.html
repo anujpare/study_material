@@ -1,26 +1,26 @@
 <article class="lesson">
 <p class="chapter">Part I · Interactive proofs</p>
-<h1>What changes when the verifier can challenge the prover?</h1>
-<p class="lead">An ordinary proof is one message: the prover submits a witness and the verifier checks it. In an <strong>interactive proof</strong>, the prover and verifier exchange messages. Crucially, the verifier can make a random choice <em>after</em> the prover has committed to an initial answer.</p>
+<h1>Why the verifier asks a surprise question</h1>
+<p class="lead">Imagine a cheater who knows how to answer only one of two possible questions. If we let them choose which question we ask, the test is worthless. But if they must prepare first, and we choose the question afterwards, they may be caught.</p>
 <h2>The order of the messages creates the security</h2>
 <div class="timeline">
 <div class="message prover"><span class="who">Prover P</span><span>Prepares and sends a first message \(u\), before knowing the verifier's question.</span></div>
 <div class="message"><span class="who">Verifier V</span><span>Samples a challenge \(c\) and sends it to the prover. In our simple example, \(c\) is either 0 or 1.</span></div>
 <div class="message prover"><span class="who">Prover P</span><span>Returns a response \(z\). The verifier checks whether \((u,c,z)\) is consistent with a true statement.</span></div>
 </div>
-<p>The prover cannot choose the verifier's challenge. Nor may it revise the already-sent first message after learning the challenge. This is precisely the constraint that makes a random question useful.</p>
+<p>That's the useful feature of interaction. The prover sends a first message that it cannot change. The verifier then chooses a challenge using fresh randomness. Only then may the prover answer. The order matters because the challenge was unknown when the first message was fixed.</p>
 <section class="lab">
-<div class="lab-head"><div class="tag">Toy challenge game</div><h3>Make one preparation before the verifier draws its challenge</h3><p>Assume a cheating prover can prepare a valid answer for only one of two checks. This illustrates the timing rule; it is not itself a zero-knowledge protocol.</p></div>
+<div class="lab-head"><div class="tag">Toy challenge game</div><h3>Make one preparation before the verifier draws its challenge</h3><p>For this toy experiment, assume the cheater can answer either question 0 or question 1, but not both. This is a model of the timing rule, not yet a real cryptographic proof.</p></div>
 <div class="lab-body">
 <p>Which challenge will the cheater prepare to answer?</p>
 <div class="control-row"><button data-demo="toy-prepare" data-value="0">Prepare for \(c=0\)</button><button data-demo="toy-prepare" data-value="1">Prepare for \(c=1\)</button></div>
 <div class="control-row"><button data-demo="toy-trial">Verifier draws a fresh challenge</button></div>
 <div id="toy-result" class="feedback" aria-live="polite">First choose a preparation. The challenge comes only afterward.</div>
 </div></section>
-<p>If the verifier independently chooses 0 or 1 with equal probability, the cheater succeeds with probability \(1/2\), because exactly one of the two equally likely challenges is answerable. Repeating a suitable protocol can reduce this chance, provided each round is properly constructed.</p>
+<p>If we choose 0 or 1 fairly, the cheater has probability \(1/2\) of getting the one question they prepared for. No clever wording changes that arithmetic: one answerable choice out of two equally likely choices gives \(1/2\).</p>
 <h2>How to understand the formal definition</h2>
-<p>The notation \(\langle P,V\rangle(x)\) describes the complete interaction between a prover \(P\) and a verifier \(V\) on public statement \(x\). The final result is 1 if \(V\) accepts and 0 otherwise. The verifier is an efficient algorithm, meaning it must complete its work in polynomial time; the prover in the standard interactive-proof definition may have unlimited computational power.</p>
-<p>We still need to specify <em>what the verifier guarantees</em> for true versus false statements. That gives the two fundamental properties on the next card.</p>
-<div class="transition"><p><strong>What did the interaction accomplish?</strong> It made the prover respond to a question it could not anticipate when preparing its first message. Next we turn that observation into two precise probability guarantees.</p></div>
+<p>We write \(\langle P,V\rangle(x)\) for a complete interaction between prover \(P\) and verifier \(V\) about public input \(x\). The verifier returns 1 for accept and 0 for reject. The standard definition requires the verifier to run in polynomial time; the prover can be computationally unlimited.</p>
+<p>Of course, an honest prover should be able to pass the test, while a dishonest one should rarely pass a false claim. We need to state both requirements precisely.</p>
+<div class="transition"><p>The surprise challenge is useful because the first message is already fixed. Next we'll turn that idea into completeness and soundness.</p></div>
 <p class="source">PETS · ZK lecture notes, pp. 1–2. The three-message pattern will reappear in Hamiltonicity and Sigma protocols.</p>
 </article>
