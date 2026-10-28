@@ -184,7 +184,7 @@ function initLab(lab){
       svg+='<circle cx="'+xAt(i)+'" cy="'+yAt(i)+'" r="18" fill="'+fill+'" stroke="'+(active?"#0f4c66":"#91a6b1")+'" stroke-width="'+(active?3:1)+'"/><text x="'+xAt(i)+'" y="'+(yAt(i)+5)+'" fill="'+(active||proof?"#fff":"#314d5b")+'" font-size="14" font-weight="700" text-anchor="middle">'+label+'</text>';
     }
     svg+='</svg>';lab.querySelector("#merkle-svg").innerHTML=svg;
-    txt(lab,'To open proof entry <b>\\(m_{'+selected+'}\\)</b>, send its value and '+sib.length+' sibling hashes (amber). The verifier hashes upward along the blue branch and compares the resulting root with commitment \\(c\\). Only '+sib.length+' hashes are needed because each sibling authenticates an entire subtree.');
+    txt(lab,'To open proof entry <b>\\(\\pi_{'+selected+'}\\)</b>, send its value and '+sib.length+' sibling hashes (amber). The verifier hashes upward along the blue branch and compares the resulting root with commitment \\(c\\). Only '+sib.length+' hashes are needed because each sibling authenticates an entire subtree.');
   }
   if(type==="trace"){
     const mode=lab.querySelector('[data-key="mode"]')?.value??"honest";
