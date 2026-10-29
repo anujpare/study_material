@@ -10,14 +10,14 @@ let cards=[],current=0,req=0,mathReady=false,readingMode="guided";
 const coreIds=new Set([
  "the-question","succinctness","pcp-box","pcp-theorem","pcp-oracle","merkle",
  "merkle-binding","hw1-vectors","hw3-pcp-argument","hw3-pcp-proof","iop-types","fib-goal",
- "field-foundation","interpolation","interpolation-general","root-bound","equality-proof","schwartz-zippel",
- "schwartz-proof","midterm-polynomial","vanishing-polynomial","zerotest-protocol","zerotest-proof","fibonacci-protocol",
- "fibonacci-correctness","polynomial-commitments","polycommit-security","midterm-interpolation","schnorr-recall","schnorr-homework",
- "repetition-hw2","repetition-parallel","fiat-shamir","fiat-shamir-security","hw3-schnorr-fs","hw3-schnorr-attacks",
- "hw3-conceptual","hw3-amplification","hw3-fs-pcp","circuits-meaning","hw2-circuit-sat","hw2-circuit-soundness",
- "hw2-circuit-simulation","trace-encoding","trace-mapping","roots-unity-cost","plonk-output-input","plonk-input-check",
- "plonk-gates","plonk-gate-test","plonk-wiring","plonk-rotation","plonk-correctness","plonk-final",
- "plonk-proof"
+ "field-foundation","interpolation","interpolation-general","root-bound","root-ring-homework","equality-proof",
+ "schwartz-zippel","schwartz-proof","midterm-polynomial","vanishing-polynomial","zerotest-protocol","zerotest-proof",
+ "fibonacci-protocol","fibonacci-correctness","polynomial-commitments","polycommit-security","midterm-interpolation","schnorr-recall",
+ "schnorr-homework","repetition-hw2","repetition-parallel","fiat-shamir","fiat-shamir-security","hw3-schnorr-fs",
+ "hw3-schnorr-attacks","hw3-conceptual","hw3-amplification","hw3-fs-pcp","circuits-meaning","circuit-example",
+ "hw2-circuit-sat","hw2-circuit-soundness","hw2-circuit-simulation","trace-encoding","trace-mapping","roots-unity-cost",
+ "plonk-output-input","plonk-input-check","plonk-gates","plonk-gate-test","plonk-wiring","plonk-rotation",
+ "plonk-correctness","plonk-final","plonk-proof"
 ]);
 const exerciseSources={
  "hw1-vectors":"merkle",
