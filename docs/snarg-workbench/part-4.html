@@ -1,36 +1,40 @@
 <!doctype html><html lang="en"><meta charset="utf-8"><title>SNARGs · Part IV</title><body>
-<article class="lesson" data-id="circuits-meaning" data-title="Why PLONK begins with circuits">
-
-<p class="chapter-tag">Lecture §5 · The PLONK IOP</p>
-<h1>How do we move from Fibonacci to an arbitrary computation?</h1>
-<p class="aim">The Fibonacci protocol worked because every step obeyed one recurrence. A general program may add, multiply, and reuse earlier results in different places. To use the same polynomial method, we first need to express any such computation as a collection of simple equations. The lecture uses an <strong>arithmetic circuit</strong> for this.</p>
-<p>An arithmetic circuit \(C\) is a collection of <strong>gates</strong> connected by <strong>wires</strong>. Each gate takes two field elements and either adds or multiplies them. A wire carries a value from an input or earlier gate to a later gate. The circuit specifies which operations to perform and which values they use.</p>
-<h2>What statement will the prover prove?</h2>
-<p>Some inputs are public and known to the verifier; collect them in a vector \(\mathbf x\in\mathbb F^m\). Other inputs form the private witness \(\mathbf w\in\mathbb F^n\). A vector here is just an ordered list of field elements. The lecture defines the language</p>
+<article class="lesson" data-id="circuits-meaning" data-title="Arithmetic circuits: express any NP verification as gates">
+<p class="chapter-tag">Lecture §5 · Definition 2</p>
+<h1>From one recurrence to arbitrary computations</h1>
+<p>Fibonacci was convenient because every step followed one formula. A general program can perform different operations and reuse earlier results. To apply the polynomial method to general NP statements, we need a description of computation whose correctness can be expressed as simple algebraic equations. The lecture uses an <strong>arithmetic circuit</strong>.</p>
+<p>An arithmetic circuit is a directed, acyclic network of <strong>gates</strong> connected by <strong>wires</strong>. Each gate receives two field elements and outputs either their sum or their product. An input wire starts with a given value, and a gate's output wire can feed later gates. Acyclic means that no value depends on itself through a directed cycle, so we can evaluate the gates in order.</p>
+<p>Separate the inputs into public values \(\mathbf x=(x_1,\ldots,x_m)\), known to the verifier, and private witness values \(\mathbf w=(w_1,\ldots,w_n)\), known to the prover. The verifier wants evidence that <em>some</em> private witness makes the circuit output zero. The corresponding language is</p>
 <div class="math">\[
 L=\{\mathbf x\in\mathbb F^m:\exists\,\mathbf w\in\mathbb F^n,\ C(\mathbf x,\mathbf w)=0\}.
 \]</div>
-<p>In words, the public statement \(\mathbf x\) is true if <em>some</em> private input \(\mathbf w\) makes the circuit output zero. The zero-output convention is convenient: to prove that a computation produces a public target \(y\), we can construct a circuit whose final result is the computed value minus \(y\), and ask whether that difference is zero.</p>
-<p>Why does this cover the NP statements we started with? An ordinary NP verifier checks a public statement and a witness by performing elementary computational steps. Those steps can be represented by a circuit, and its acceptance condition can be expressed as a zero-output check. The circuit is therefore a structured representation of the original witness-checking problem.</p>
-<p>In the field \(\mathbb F_2\), multiplication of bits is AND and addition is XOR, so Boolean circuits are a special case. This connects arithmetic circuits to familiar Boolean computation without changing the underlying proof goal.</p>
-<h2>Follow the exact circuit from the lecture</h2>
-<p>The public inputs are \(x_1=2\) and \(x_2=4\), and the private input is \(w_1=3\). The three gates calculate</p>
+<p>Here \(C\) is the public circuit, and the zero condition defines acceptance. To prove that a computation equals a public target \(y\), we can construct a circuit whose output is the computed value minus \(y\), and test whether that difference equals zero. Subtraction can be implemented using the permitted field operations, including multiplication by the constant \(-1\).</p>
+<p>Why does this represent general NP statements? An NP verifier checks a public statement and witness by a bounded sequence of elementary computations. Those computations can be represented by a Boolean circuit, which can in turn be expressed by arithmetic gates: over \(\mathbb F_2\), multiplication is AND and addition is XOR. The circuit can be arranged to output zero exactly when the original verifier would accept.</p>
+<div class="bridge">To turn this abstract definition into a polynomial, we will follow the lecture's specific three-gate example and list the value on every input and gate wire. That table is called the circuit trace.</div>
+<p class="source">Lecture §5, Definition 2, arithmetic circuits, public inputs, private witnesses, zero-output language and NP representation.</p>
+</article>
+
+<article class="lesson" data-id="circuit-example" data-title="The lecture's exact three-gate computation">
+<p class="chapter-tag">Lecture §5 · Running three-gate example</p>
+<h1>The trace we will use throughout PLONK</h1>
+<p>The lecture's example computes \((x_1x_2)(x_2+w_1)\) using three gates: first multiply \(x_1\) and \(x_2\), then add \(x_2\) and \(w_1\), and finally multiply the two intermediate results.</p>
+<p>Take the public inputs \(x_1=2,x_2=4\) and private input \(w_1=3\). The computation is</p>
 <div class="math">\[
-t=(x_1x_2)(x_2+w_1)=(2\cdot4)(4+3)=8\cdot7=56.
+a=2\cdot4=8,\quad b=4+3=7,\quad
+t=ab=8\cdot7=56.
 \]</div>
-<div class="table-scroll"><table><thead><tr><th>Gate</th><th>Operation</th><th>Left input</th><th>Right input</th><th>Output</th></tr></thead><tbody>
+<p>Every gate has a left input, right input and output. Recording these three numbers for every gate gives the trace table:</p>
+<div class="table-scroll"><table><thead><tr><th>Gate</th><th>Operation</th><th>Left</th><th>Right</th><th>Output</th></tr></thead><tbody>
 <tr><td>0</td><td>Multiply</td><td>2</td><td>4</td><td>8</td></tr>
 <tr><td>1</td><td>Add</td><td>4</td><td>3</td><td>7</td></tr>
 <tr><td>2</td><td>Multiply</td><td>8</td><td>7</td><td>56</td></tr>
 </tbody></table></div>
-<p>This three-gate circuit outputs 56, not zero. It is the lecture's illustration of a computation trace, not yet a satisfying instance of the formal zero-output language. To prove the public target 56 in zero-output form, add a target-comparison operation to a modified circuit and encode a new trace for that circuit. We will keep the original three-gate example unchanged while learning the trace encoding.</p>
-<h2>What could a dishonest trace do?</h2>
-<p>Even if each gate performs its own operation correctly, a later gate might use a value different from the output of the gate wired to it. For example, gate 0 might output 8 while gate 2 uses 9 as its left input. So we will eventually need both <strong>gate arithmetic checks</strong> and <strong>wire consistency checks</strong>.</p>
-<div class="practice-link"><span class="practice-tag">Related HW2 exercise</span><a href="#hw2-circuit-sat">Boolean circuit satisfiability: local gates and consistent wires</a></div>
-<div class="bridge">We now have a complete description of the computation as a table of input and gate values. But checking that entire table would require work proportional to the circuit size. The next step repeats the successful part of the Fibonacci construction: interpolate the table into one polynomial whose evaluations recover its entries.</div>
-<p class="source">Official lecture §5, Definition 2 and the three-gate arithmetic-circuit example.</p>
-
+<p>This is the <em>same three-gate example as in the original notes</em>. It outputs 56, not zero, so it illustrates trace encoding rather than directly satisfying the zero-output language. If the public target is 56, a separate target-comparison circuit can enforce zero output. We will not silently add another gate to this illustration.</p>
+<p>Two checks will later prove to be different. Gate 2 must compute \(8\cdot7=56\), but it must also <em>receive</em> the values 8 and 7 produced by gates 0 and 1. Otherwise a dishonest prover might invent a different pair of inputs whose product still equals 56. Correct arithmetic at each gate and correct copying across wires are separate constraints.</p>
+<div class="bridge">Homework 2 already builds a circuit proof by committing separately to each logical wire and proving each gate. That construction is conceptually useful before PLONK: it shows the relationship between local gate checks and globally consistent wiring, but its proof is not succinct.</div>
+<p class="source">Lecture §5, exact three-gate example \((2\cdot4)(4+3)=56\); HW2 Problem 4.</p>
 </article>
+
 
 <article class="lesson" data-id="hw2-circuit-sat" data-title="HW2 4(a–c) · Circuit satisfiability">
 <p class="chapter-tag">V · Examination workshop · HW2, Problem 4</p>
