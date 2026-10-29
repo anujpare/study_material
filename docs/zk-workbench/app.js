@@ -26,7 +26,9 @@
     ["schnorr-zk","Schnorr’s zero-knowledge simulator","card-18.html"],
     ["schnorr-ext","Extracting Schnorr’s secret","card-19.html"],
     ["circuits","Circuit satisfiability","card-20.html"],
-    ["fiat-shamir","Making the proof non-interactive","card-21.html"],
+    ["nizk-limits","Why plain-model NIZK faces an obstacle","nizk-limits.html"],
+    ["fiat-shamir","Construct a proof without interaction","card-21.html"],
+    ["fiat-shamir-security","Prove privacy and extract knowledge in ROM","fiat-shamir-security.html"],
     ["hw3-fs-schnorr","HW3 · Noninteractive Schnorr","hw3-fs-schnorr.html"],
     ["hw3-fs-attacks","HW3 · Guessing and transfer","hw3-fs-attacks.html"],
     ["hw3-amplify","HW3 · Amplify before Fiat–Shamir","hw3-amplify.html"],
@@ -40,9 +42,9 @@
   let current=0,loading=0,lockedGuess=null,lockedChallenge=null,lockedBit=null,readingMode="guided";
   const coreIds=new Set([
     "witness","np","interaction","guarantees","lecture-power","lecture-applications",
-    "zk","commitments","permutation","ham-protocol","ham-proof","simulation","zk-proof",
+    "zk","commitments","hw1-security","hw1-pedersen","permutation","ham-protocol","ham-proof","simulation","zk-proof",
     "repetition","cost","homework2","knowledge","knowledge-extraction","sigma","schnorr","schnorr-zk","schnorr-ext",
-    "circuits","fiat-shamir","hw3-fs-schnorr","hw3-amplify"
+    "circuits","nizk-limits","fiat-shamir","fiat-shamir-security","hw3-fs-schnorr","hw3-fs-attacks","hw3-amplify"
   ]);
   const exerciseOrigins={
     "hw1-security":"commitments",
