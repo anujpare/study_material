@@ -134,31 +134,36 @@
 <p class="source">Original HW2 Problem 2(b–c), including the honest-verifier distinction.</p>
 </article>
 
-<article class="lesson" data-id="fiat-shamir" data-title="Fiat–Shamir: remove the verifier's message">
-
-<p class="chapter-tag">Lecture §4 · Fiat–Shamir transformation</p>
-<h1>How can the verifier check a proof without sending a challenge?</h1>
-<p class="aim">The polynomial commitment has solved the answer-consistency problem, but the Fibonacci protocol still needs an interactive message: after receiving the commitments, the verifier chooses a random point \(r\). We want one proof string that anyone can verify without contacting the prover. Fiat–Shamir replaces the verifier's challenge message with a value both parties can reconstruct.</p>
-<h2>Which part of the interaction can be removed?</h2>
-<p>Recall the three-message order: the prover first sends commitments \(c_f,c_q\); the verifier then sends random \(r\); the prover finally sends the authenticated evaluations. This resembles a <strong>Sigma protocol</strong>, whose three messages are a commitment, a random challenge, and a response. The important rule is that the prover's first message must be fixed before the challenge is determined.</p>
-<p>Let \(H\) be a hash function modeled as a <strong>random oracle</strong>. In that ideal model, a new query produces a random output that remains consistent if queried again. The prover and verifier can both compute a field challenge from the public statement and the already-fixed commitments:</p>
+<article class="lesson" data-id="fiat-shamir" data-title="Fiat–Shamir: derive the challenge from the first message">
+<p class="chapter-tag">Lecture §4 · Fiat–Shamir construction</p>
+<h1>Remove the verifier's challenge message</h1>
+<p>The polynomial commitment has replaced the imaginary proof oracle, but the Fibonacci argument still has a conversation: the prover sends commitments, the verifier chooses a random evaluation point, and the prover opens evaluations at that point. A SNARG should instead be a proof string that a third party can verify later, without contacting the original prover.</p>
+<p>We have already seen the same <strong>first message → random challenge → response</strong> structure in Schnorr's Sigma protocol. In the Fibonacci protocol, the first message is the pair of commitments \(c_f,c_q\) to its fixed polynomials, and the challenge is the point \(r\) at which the verifier tests the recurrence identity.</p>
+<p><strong>Fiat–Shamir</strong> replaces that verifier-chosen random challenge with the output of a public hash function. Model the function \(H\) as a <strong>random oracle</strong>: for any previously unseen input, it returns a random result; repeated requests for the same input return exactly the same result. Both parties compute</p>
 <div class="math">\[
-r=H(\operatorname{Encode}(\text{statement},c_f,c_q,\text{parameters})).
+r=H(\operatorname{Encode}(x,c_f,c_q,pp)).
 \]</div>
-<p>The encoding must be unambiguous and the hash output interpreted appropriately as a field element. Including the statement and commitments binds the challenge to the exact claim and first message being checked.</p>
-<h2>What does the prover publish?</h2>
-<p>The prover commits to the two polynomials, calculates the hash-derived \(r\), and prepares the same evaluation openings as before. The published proof contains \(c_f,c_q\), the claimed values, and their opening proofs. The verifier recomputes \(r\), authenticates every opening, and checks the same endpoint and ZeroTest equations. No message needs to be sent from verifier to prover.</p>
+<p>Here \(x\) is the public claim, \(c_f,c_q\) are commitments, and \(pp\) contains the public protocol parameters. The encoding must preserve which values belong to which field, and the hash output must be converted into a field element without introducing an unintended bias. Including \(x\) prevents copying a challenge to a different public statement.</p>
+<p>The prover first creates \(c_f,c_q\), then computes \(r\), and finally publishes these commitments along with authenticated values of \(f_{\rm fib}\) at \(0,1,100,r,r+1,r+2\) and of \(q\) at \(r\). A verifier recomputes \(r\) from the first message, verifies each opening and checks the original Fibonacci equations. No verifier message is needed.</p>
 <div class="lab" data-lab="story-protocol"><div class="lab-top"><strong>Compare the message order</strong><p>Switch between an interactive challenge and a Fiat–Shamir challenge. The polynomial commitments must be fixed before either challenge is determined.</p></div><div class="lab-content"><label>Protocol <select data-key="protocol"><option value="interactive">Interactive</option><option value="fiat-shamir">Fiat–Shamir</option></select></label><label class="range-label">Stage <output class="range-value" data-live-for="stage">1</output><input data-key="stage" type="range" min="1" max="3" value="1"></label><div class="lab-output" aria-live="polite"></div></div></div>
-<h2>Why isn't hashing alone a soundness proof?</h2>
-<div class="proof"><h3>What we can establish directly</h3>
-<p><strong>Completeness:</strong> an honest prover and verifier compute the same challenge from the same public data, so the honest openings satisfy exactly the original verification equations.</p>
-<p><strong>Soundness:</strong> a dishonest prover might try several first messages and hash each until it obtains a favorable challenge. The interactive bound cannot simply be copied over. A suitable random-oracle security argument must bound this behavior. The lecture sketches the transformation rather than proving the full compiler theorem. \(\square\)</p></div>
-<p>The homework exposes an important limitation: if the original challenge has only two possible values, a prover that can answer one of them may succeed with probability \(1/2\). Replacing the challenge by a hash does not automatically make that constant error negligible. Soundness must first be amplified, or the protocol must otherwise have sufficiently small error.</p>
-<div class="practice-link"><span class="practice-tag">Course exercises</span><a href="#schnorr-recall">Optional prerequisite: Schnorr's three-message protocol</a><a href="#hw3-schnorr-fs">HW3 2(a–b): apply Fiat–Shamir to Schnorr</a><a href="#hw3-amplification">HW3 3(a–b): amplify soundness before hashing</a><a href="#hw3-fs-pcp">HW3 4(b): make the PCP/Merkle argument non-interactive</a></div>
-<div class="bridge">We have completed the lecture's general blueprint: first a sound mathematical oracle test, then commitments that enforce fixed answers, then Fiat–Shamir to remove interaction. So far, however, the arithmetic test handled one special recurrence. The next chapter develops PLONK, which expresses arbitrary addition-and-multiplication computations as polynomial constraints.</div>
-<p class="source">Official lecture §4, “From a Poly-IOP to a SNARG,” and its reference to Sigma protocols and Fiat–Shamir. The security limitations are distinguished from the direct completeness argument.</p>
-
+<div class="bridge">Non-interactivity follows from reproducible challenges. Security does not follow merely from hashing: a dishonest prover can try many different first messages and inspect their challenges. We must analyze that opportunity separately.</div>
+<p class="source">Lecture §4, compilation of the Fibonacci polynomial IOP into a non-interactive argument via Fiat–Shamir.</p>
 </article>
+
+<article class="lesson" data-id="fiat-shamir-security" data-title="Why Fiat–Shamir needs a security argument">
+<p class="chapter-tag">Lecture §4 · Random-oracle security and limitations</p>
+<h1>Why does replacing randomness with a hash require care?</h1>
+<p>In the interactive protocol, the verifier chooses the challenge <em>after</em> the prover commits. With Fiat–Shamir, the challenge is still determined by the commitment, but a dishonest prover can compute hashes for many candidate commitments and publish whichever one happens to yield an easy challenge.</p>
+<p>Suppose a fixed first message can pass the random challenge with probability at most \(\varepsilon\). If the prover is allowed at most \(Q\) distinct hash attempts and each fresh oracle response is random, a union bound gives at most \(Q\varepsilon\) for finding at least one favorable challenge, before accounting for cryptographic failures and any extra dependencies. A <strong>union bound</strong> simply says that the probability of one or more bad events is at most the sum of their individual probabilities. It is an intuition for the security loss, not a full Fiat–Shamir compiler proof for every interactive protocol.</p>
+<p>This explains why a constant interactive error such as \(1/2\) is inadequate: trying multiple first messages may quickly find a favorable hash. If the original protocol first repeats independent tests so that \(\varepsilon=2^{-t}\), and \(t\) grows with the security parameter \(\lambda\), the product \(Q2^{-t}\) can remain negligible for polynomially bounded \(Q\).</p>
+<p>The homework applies this idea to the three-query PCP argument: with \(t=\lambda\) independent tests against one fixed proof, its interactive error is at most \(2^{-\lambda}\). Under the random-oracle model, a suitable reduction then accounts for the dishonest prover's hash attempts and the commitment's binding failure. The lecture does <em>not</em> present a general proof that Fiat–Shamir preserves soundness for every protocol.</p>
+<div class="proof"><h3>What can be concluded without that missing theorem?</h3>
+<p><strong>Completeness</strong> follows directly: an honest prover and verifier hash the same public data and therefore check the same valid responses. <strong>Soundness</strong> is conditional on the relevant random-oracle security argument and on binding, degree limits, and query consistency of the polynomial commitment. Fiat–Shamir does not by itself make the resulting proof zero-knowledge or a proof of knowledge.</p></div>
+<div class="practice-link"><span class="practice-tag">Exercises at this point</span><a href="#hw3-amplification">HW3 3: amplify a small challenge first</a><a href="#hw3-fs-pcp">HW3 4(b): non-interactive PCP/Merkle argument</a><a href="#hw3-schnorr-fs">HW3 2: non-interactive Schnorr</a></div>
+<div class="bridge">The blueprint is now complete: prove a mathematical test in an ideal oracle model, enforce fixed responses with commitments, and make its random challenges reproducible. We still only know how to check the Fibonacci recurrence; PLONK will apply the same idea to arbitrary arithmetic circuits.</div>
+<p class="source">Lecture §4, Fiat–Shamir and connection to Sigma protocols; security nuance from relevant HW3 exercises.</p>
+</article>
+
 
 <article class="lesson" data-id="hw3-schnorr-fs" data-title="HW3 2(a–b) · Non-interactive Schnorr">
 <p class="chapter-tag">III · Commitments and Fiat–Shamir · HW3, Problem 2(a–b)</p>
