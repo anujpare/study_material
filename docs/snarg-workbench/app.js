@@ -8,7 +8,7 @@ const prev=byId("previous"), next=byId("next");
 let cards=[],current=0,req=0,mathReady=false,readingMode="guided";
 /* Main teaching route. Every other card is still available at its lesson link. */
 const coreIds=new Set([
- "the-question","succinctness","pcp-box","merkle","hw1-vectors","hw3-pcp-argument","iop-types",
+ "the-question","succinctness","pcp-box","pcp-oracle","merkle","merkle-binding","hw1-vectors","hw3-pcp-argument","hw3-pcp-proof","iop-types",
  "field-foundation","interpolation","root-bound","equality-proof","schwartz-zippel","midterm-polynomial","vanishing-polynomial",
  "zerotest-proof","fibonacci-protocol","polynomial-commitments",
  "fiat-shamir","hw3-fs-pcp","circuits-meaning","trace-encoding","roots-unity-cost","plonk-output-input",
@@ -114,6 +114,18 @@ function initLab(lab){
   if(type==="ring"){
     const r=val(lab,"r",3),y=mod(2*r*r+4*r,6);
     txt(lab,'\\(f('+r+')='+y+'\\pmod 6\\). '+(y===0?'This is a root.':'This is not a root.')+' The four roots are 0, 1, 3, and 4.'+grid([0,1,2,3,4,5],x=>mod(2*x*x+4*x,6)===0,r));
+  }
+  if(type==="naive"){
+    const n=val(lab,"n",100);
+    const detect=3/n,miss=1-detect;
+    const detectPct=(100*detect).toFixed(2),missPct=(100*miss).toFixed(2);
+    const chart='<div class="two"><div class="stage"><strong>Detect the error</strong><p>'+detectPct+'%</p></div>'+
+      '<div class="stage"><strong>Miss the error</strong><p>'+missPct+'%</p></div></div>'+
+      '<div style="height:14px;display:flex;border-radius:7px;overflow:hidden;background:#e7e9e7" aria-label="Probability of detection '+detectPct+' percent; miss '+missPct+' percent">'+
+      '<div style="width:'+(100*detect)+'%;background:#448f74"></div>'+
+      '<div style="flex:1;background:#c87d67"></div></div>';
+    txt(lab,chart+'<p>\\(\\Pr[\\text{miss}]=1-\\frac{3}{'+n+'}='+miss.toFixed(5)+'\\).</p>'+
+      '<p class="viz-insight">The trace has one bad transition and the verifier samples three distinct positions. This does not describe the PCP verifier.</p>');
   }
   if(type==="pcp"){
     const t=val(lab,"t",4),err=1/Math.pow(2,t);
@@ -375,7 +387,7 @@ function svgMatrix(size,test,selected){
 }
 function initLessonExtras(id){
  const extras={
-  "pcp-box":extraBox("Ask the box for one bit","All eight bits are fixed first. Choose which one to reveal.",range("i","Query position i",1,8,4),"bitbox"),
+  "pcp-oracle":extraBox("Ask the box for one bit","All eight bits are fixed first. Choose which one to reveal.",range("i","Query position i",1,8,4),"bitbox"),
   "equality-proof":extraBox("What if the cheater learns the question first?","Choose r first. The cheater can then invent gᵣ(X) = X − r, which agrees with f(X) = 0 exactly at r.",range("r","Challenge r",0,16,4),"adaptive"),
   "schwartz-zippel":extraBox("Which pairs make XY = 0?","There are 49 possible pairs in 𝔽₇². Green cells are the ones where XY = 0.",range("r1","First coordinate r₁",0,6,2)+range("r2","Second coordinate r₂",0,6,3),"szplot"),
   "midterm-polynomial":extraBox("Which random checks accept the vote?","Choose a two-entry vote. Green squares show which random challenges make the verifier accept.",choice("case",[["valid","Valid x = (1,0)"],["two","Invalid x = (1,1)"],["single","Invalid x = (2,0)"]])+range("r1","First challenge r₁",0,6,2)+range("r2","Second challenge r₂",0,6,3),"onehot"),
