@@ -1,34 +1,18 @@
 <article class="lesson">
-<p class="chapter">Part IX · Non-interactive zero knowledge</p>
-<h1>How can a hash replace the verifier's question?</h1>
-<p class="lead">A Sigma protocol needs the verifier to choose an unpredictable challenge after the prover sends its first message. But we want a proof that anybody can verify later without interacting with the prover. Fiat–Shamir addresses exactly this problem: derive the challenge from the public statement and the already-fixed first message, then let the verifier recompute it.</p>
-<h2>Compare the two verification rules</h2>
-<p>Let \(u\) be the first message, \(c\) the challenge, \(z\) the response, and \(x\) the public statement. In the interactive version, the verifier draws and sends \(c\). In <strong>Fiat–Shamir</strong>, the prover fixes \(u\), then calculates \(c=H(x,u)\), where \(H\) is modeled as a random oracle.</p>
+<p class="chapter">Lecture §5 · The Fiat–Shamir transformation</p>
+<h1>Replace the verifier's random message with a hash</h1>
+<p class="lead">A Sigma protocol has three messages: the prover fixes a first message \(u\), the verifier sends a uniformly random challenge \(c\), and the prover returns a response \(z\). The verifier uses a deterministic rule \(\mathrm{verif}(x,u,c,z)\) to accept or reject. In such a <strong>public-coin</strong> protocol, the verifier's message contains only its randomness, so we can try to generate that randomness from the public transcript.</p>
+<p>Let \(H\) be a public hash function modeled as a random oracle. The prover first constructs \(u\) <em>without knowing the challenge</em>, then computes \(c=H(\operatorname{Encode}(x,u))\). The function \(\operatorname{Encode}\) unambiguously represents the public statement \(x\) and first message \(u\) as a bit string. The prover computes the usual response \(z\) to this challenge and publishes the pair \(\pi=(u,z)\).</p>
+<div class="math">\[
+\boxed{\pi=(u,z),\qquad
+V_{\rm NI}(x,\pi)=\mathrm{verif}\bigl(x,u,H(\operatorname{Encode}(x,u)),z\bigr).}
+\]</div>
+<p>This equation defines the new non-interactive verifier \(V_{\rm NI}\): it recomputes the challenge from \(x,u\) and runs exactly the original Sigma verifier on the reconstructed transcript. The challenge need not be transmitted. The hash must be interpreted in the protocol's intended challenge space, preserving its required distribution.</p>
 <section class="lab"><div class="lab-head"><div class="tag">Change the source of the challenge</div><h3>Who chooses \(c\), and what is sent?</h3><p>Switch between the two message flows. The verifier checks the same final equation in both; only the way it gets the challenge changes.</p></div>
 <div class="lab-body"><div class="control-row"><button data-demo="fs" data-value="interactive">Interactive Sigma proof</button><button data-demo="fs" data-value="noninteractive">Fiat–Shamir proof</button></div><div id="fs-result" class="feedback" aria-live="polite">Choose one protocol to see which information is exchanged and how the challenge is generated.</div></div></section>
-<div class="math">\[\begin{aligned}c&=H(x,u),\\ \pi&=(u,z),\\ V_{\mathrm{NI}}(x,\pi)&=\mathrm{verif}(x,u,H(x,u),z).\end{aligned}\]<p class="math-caption">The prover publishes \(\pi=(u,z)\). No challenge needs to be sent, because the verifier can recompute \(c=H(x,u)\).</p></div>
-<h2>Prove completeness</h2>
-<div class="proof"><h3>Why an honest proof is accepted</h3><p>Why does an honest proof still pass? The prover constructs \(u\), derives \(c=H(x,u)\), and computes the response \(z\) for that challenge. The verifier derives the <em>same</em> \(c\) and runs the original acceptance test. Perfect completeness therefore survives.</p></div>
-<h2>Where does zero knowledge come from if the simulator cannot know \(c\) in advance?</h2>
-<p>Soundness and zero knowledge need more work. In the random-oracle model, \(H\) behaves as a consistent random function: new inputs get fresh random answers, and the same input always gets the same answer. A simulator in a security proof can sometimes <em>program</em> an oracle answer at a chosen input.</p>
-<div class="role sim"><div class="tag">Informal zero-knowledge simulator</div><p>To simulate a Fiat–Shamir proof, choose a random challenge \(c\), run the Sigma protocol's honest-verifier simulator to obtain an accepting triple \((u,c,z)\), and program \(H(x,u)=c\). Then output \((u,z)\). The verifier recomputes the programmed challenge and accepts, even though the simulator never knew the witness. A full random-oracle proof must justify the programming conditions.</p></div>
-<h2>Why programming also helps extraction</h2>
-<p>For knowledge extraction, the extractor can watch a cheating prover query \(H(x,u)\), answer with \(c\), then rewind to that same query and give a different \(c'\). Two accepting responses for the same \(u\) let special soundness recover a witness. This explains how rewinding can provide two accepted transcripts; the lecture gives the idea, not a complete security reduction.</p>
-<div class="role risk"><div class="tag">Why the model assumption matters</div><p>A real hash such as SHA-3 is a fixed deterministic algorithm. Nobody can secretly reprogram it for a verifier. Oracle programming is a mathematical technique in the idealized security proof, not a feature of real hashes.</p></div>
-<h2>Why not use an empty non-interactive proof for every language?</h2>
-<p>For a language in P, the verifier can decide membership itself, so an empty non-interactive proof works. For hard NP languages, a witness-free simulator for a plain-model NIZK would be far more powerful. The homework asks what complexity consequence that would have.</p>
-<div class="exercise"><div class="tag">Homework 3 · Problem 1(b)</div>
-<h3>Are NIZK proofs for all NP languages possible in the standard model?</h3>
-<details><summary>Answer · first specify what “standard model” allows</summary><div class="inside">
-<p>In the <strong>plain model</strong>, there is no random oracle and no trusted common reference string. If an efficient NIZK simulator could create accepted-looking proofs for every true NP statement without a witness, we could run it and verify its output to decide the statement probabilistically. Completeness and simulation give high acceptance for true inputs; soundness keeps acceptance low for false inputs. This would put NP inside BPP.</p>
-<p>But no random oracle does not necessarily mean no setup. A <strong>common reference string</strong> (CRS) is public information generated before the proof. Standard-model constructions with a CRS can have NIZK for NP under suitable assumptions. We must say which setup model is being discussed.</p>
-</div></details></div>
-<div class="exercise"><div class="tag">Homework 3 · Problem 1(d)</div>
-<h3>Does applying Fiat–Shamir always give <em>statistical</em> zero knowledge?</h3>
-<details><summary>Answer · distinguish changing the challenge from strengthening privacy</summary><div class="inside">
-<p>False. Fiat–Shamir does not automatically turn computational zero knowledge into <em>statistical</em> zero knowledge. Replacing the challenge with a hash doesn't prove that an unlimited observer learns nothing.</p>
-</div></details></div>
-<div class="transition"><p>We can now connect the guarantees without mixing them. Binding fixes the first message, special soundness limits which challenges a false prover can answer, and simulation establishes the privacy property. Fiat–Shamir removes the interactive challenge, but its security still requires the random-oracle argument. The next lecture keeps the commitment-and-challenge method while pursuing a different goal: proofs that are succinct even for very large computations. <a href="../snarg-workbench/#the-question">Continue to SNARGs and PLONK</a>.</p></div>
-<div class="practice-link"><span class="practice-tag">Use the constructions in homework</span><a href="#hw3-fs-schnorr">HW3 2(a–b): Schnorr and Fiat–Shamir</a><a href="#hw3-fs-attacks">HW3 2(c–d): challenge guessing</a><a href="#hw3-amplify">HW3 3(a–b): amplify before hashing</a><a href="#hw1-vector">HW1 4(a–c): vector commitments</a><a href="#hw3-pcp">HW3 4(a–b): PCP compilation</a></div>
-<p class="source">PETS · ZK lecture notes, Non-interactive Zero-Knowledge and Fiat–Shamir, pp. 10–11. Security sketches are explicitly distinguished from formal reductions.</p>
+<div class="proof"><h3>Why completeness still holds</h3>
+<p>The honest prover uses the same challenge that the verifier recomputes, then calculates a correct response for it. By perfect completeness of the original Sigma protocol, the reconstructed transcript passes. The transformation therefore preserves honest acceptance. \(\square\)</p></div>
+<p>Hashing removes the verifier's message, but we have not yet proved zero knowledge or knowledge extraction. Those properties require the random-oracle <em>security model</em>, especially the simulator's ability to program a hash answer and the extractor's ability to rewind an oracle query.</p>
+<div class="transition"><p>Next we derive those two security sketches and explain why the original soundness error must be small before making a proof non-interactive.</p></div>
+<p class="source">PETS Lecture 5–8, §5: public-coin Sigma protocols and the Fiat–Shamir prover and verifier.</p>
 </article>
