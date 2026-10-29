@@ -54,28 +54,36 @@ T_V=O\bigl(\lambda,|x|,\operatorname{polylog}(|w|)\bigr).
 
 </article>
 
-<article class="lesson" data-id="pcp-box" data-title="Why ordinary sampling fails">
-<p class="chapter-tag">Lecture §2 · The box game, first question</p>
-<h1>Can three checks detect a false computation?</h1>
-<p class="aim">We want to avoid checking every step of a long computation. Could the verifier inspect only three randomly selected steps and still trust the final result? We should test that idea before looking for a more elaborate proof.</p>
-<p>Suppose the prover supplies a list of \(N\) intermediate transitions, with exactly one incorrect transition. If the verifier chooses three <em>different</em> positions uniformly, the probability of selecting the bad one is \(3/N\). Therefore the probability of missing it is</p>
-<div class="math">\[\Pr[\text{miss the error}]=1-\frac{3}{N}.\]</div>
-<p>For a million transitions, that is \(0.999997\). The verifier would almost always accept this particular false trace. The difficulty is not choosing random positions; it is that the ordinary trace allows a false result to be concentrated in one location.</p>
-<div class="lab" data-lab="naive"><div class="lab-top"><strong>Check the failed sampling method</strong><p>There is exactly one invalid transition. Move \(N\) to see how often three uniform, distinct checks miss it. This is <em>not</em> a PCP test.</p></div><div class="lab-content"><label class="range-label">Number of transitions \(N\) <output class="range-value" data-live-for="n">100</output><input data-key="n" type="range" min="10" max="1000" step="10" value="100"></label><div class="lab-output" aria-live="polite"></div></div></div>
-<h2>What would have to change?</h2>
-<p>Instead of checking the original trace, imagine constructing a <strong>new bit string</strong> from the evidence, with extra relations chosen for a special verification test. We call that construction an <strong>encoding</strong>. Encoding does not mean encryption or compression: the new string may be longer. Its purpose is to make local checks informative.</p>
-<p>The <strong>PCP theorem</strong> (Probabilistically Checkable Proofs) says such an encoding exists for every NP statement. In the version stated by the lecture, the verifier reads <strong>three bits</strong> per test. Three is a <em>constant</em>: it does not increase with the computation's size. The verifier uses randomness to choose a test, and that test determines the three queried positions and how their values are checked. These are not three arbitrary samples from the original trace.</p>
-<p>The theorem gives two guarantees. For every true statement, there is an encoded proof that the verifier always accepts. For every false statement, <em>every fixed encoded proof</em> is accepted with probability at most \(1/2\). An arbitrary string for a true statement need not pass; completeness promises an honest one exists.</p>
+<article class="lesson" data-id="pcp-box" data-title="Why checking three trace positions fails">
+<p class="chapter-tag">Lecture §2 · Why an ordinary trace cannot be sampled</p>
+<h1>Why does checking a few computation steps fail?</h1>
+<p>Every step of our million-round SHA-256 trace ought to be correct. Could we save work by asking the prover for the complete trace and checking just three randomly chosen transitions?</p>
+<p>Consider a dishonest trace with exactly one incorrect transition among \(N\) transitions. When the verifier chooses three <em>distinct</em> positions uniformly, the chance of finding that error is \(3/N\): out of the \(N\) possible locations of the bad step, three will be checked. Thus</p>
+<div class="math">\[\Pr[\text{miss error}]=1-\frac{3}{N}.\]</div>
+<p>At \(N=1{,}000{,}000\), the miss probability is \(0.999997\). Checking ordinary transitions at random gives essentially no protection against this particular false trace.</p>
+<div class="lab" data-lab="naive"><div class="lab-top"><strong>Try the failed sampling strategy</strong><p>One transition is incorrect. Each test checks three distinct random positions. The plot shows the exact detection probability, not a PCP protocol.</p></div><div class="lab-content"><label class="range-label">Number of transitions \(N\) <output class="range-value" data-live-for="n">100</output><input data-key="n" type="range" min="10" max="1000" step="10" value="100"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<p>The problem is the <em>representation</em> of the evidence: the error can be confined to one transition. To detect false statements with very few queries, we need a proof encoding and a verifier test designed together, rather than arbitrary sampling of the original trace.</p>
+<div class="bridge">The PCP theorem states that such an encoding and test exist for all NP statements. The next lesson gives its exact promise and explains what its three queries actually mean.</div>
+<p class="source">Lecture §2, the three-bit box game. The ordinary-trace calculation is a motivating counterexample, not the PCP theorem.</p>
+</article>
+<article class="lesson" data-id="pcp-theorem" data-title="PCP theorem: three carefully chosen queries">
+<p class="chapter-tag">Lecture §2 · The PCP theorem</p>
+<h1>How can three bits suffice when three trace checks cannot?</h1>
+<p>We have shown that a raw computation trace can hide one bad transition. The PCP theorem gives a different kind of proof: the prover <strong>encodes</strong> its evidence as a bit string \(\pi\), and a randomized verifier chooses a <em>test</em> that determines which three positions to read and which combinations of answers are acceptable. This encoded proof may be <em>longer</em> than the ordinary witness. Its purpose is reliable local verification, not compression.</p>
+<p>For a public statement \(x\) in an NP language \(L\), the version given in the lecture has these guarantees:</p>
 <div class="math">\[
 \begin{aligned}
-x\in L&\ \Longrightarrow\ \exists\pi:\Pr[V^\pi(x)=1]=1,\\
-x\notin L&\ \Longrightarrow\ \forall\pi:\Pr[V^\pi(x)=1]\le\tfrac12.
+x\in L&\implies \exists\pi:\ \Pr[V^\pi(x)=1]=1,\\
+x\notin L&\implies \forall\pi:\ \Pr[V^\pi(x)=1]\le \tfrac12 .
 \end{aligned}
 \]</div>
-<p>Here \(x\) is the public statement, \(L\) is the set of true statements, \(\pi\) is the encoded bit string, and \(V^\pi\) denotes the verifier's access to its bits. The probability comes from the verifier's random test.</p>
-<div class="bridge">The theorem solves the <em>testing</em> problem, but its guarantee refers to one fixed encoded proof. A real prover could answer each query differently after learning the test. The next card explains why the lecture introduces a proof oracle to prevent that behavior.</div>
-<p class="source">Official lecture §2, box game and three-query PCP theorem. The theorem's proof is not part of these notes.</p>
+<p>Here \(\pi\) is a <strong>fixed</strong> encoded proof, \(V^\pi\) means the verifier can query its bits, and the probability concerns the verifier's random test. The first line is perfect <strong>completeness</strong>: a true statement has some proof accepted on every test. The second is <strong>soundness</strong>: for a false statement, no fixed proof can make more than half of the random tests pass.</p>
+<p>The theorem permits an encoded proof of length \(M\) polynomial in the input size \(n=|x|\). Choosing an address among \(M\) positions takes \(\lceil\log_2 M\rceil\) bits, since that many binary digits can name \(M\) distinct positions. The verifier uses \(O(\log M)\) random bits to choose its test and reads only three proof bits. Because \(M\) is polynomial in \(n\), \(\log M=O(\log n)\).</p>
+<p>There is no contradiction with our failed sampling experiment. The theorem's verifier chooses <em>structured queries over a specially encoded proof</em>, not three uniformly sampled transitions of the original computation. The lecture states this theorem without proving it; we use its guarantee as a building block.</p>
+<div class="bridge">The soundness statement says “for every fixed \(\pi\).” If a real prover could decide what each bit was after seeing the test, that guarantee would not apply. We first enforce fixed answers with an ideal proof oracle, then replace that oracle using cryptography.</div>
+<p class="source">Lecture §2, PCP theorem, three queried bits, polynomial encoding length, perfect completeness and soundness error \(1/2\).</p>
 </article>
+
 
 <article class="lesson" data-id="pcp-oracle" data-title="Why the PCP proof must stay fixed">
 <p class="chapter-tag">Lecture §2 · The box game, fixed-proof model</p>
