@@ -153,66 +153,80 @@ f_{\rm trace}(\omega^{3l+2})&=\text{gate }l\text{ output}.
 
 </article>
 
-<article class="lesson" data-id="plonk-output-input" data-title="PLONK checks 1 and 2: output and public inputs">
-
-<p class="chapter-tag">Lecture §5.2 · Conditions 1 and 2</p>
-<h1>Does the trace describe the public statement we are proving?</h1>
-<p class="aim">The prover can interpolate any table of numbers. We need four constraints that make the table a valid circuit execution. The first two connect it to the particular public statement: the final output must be correct, and the public input entries must equal the values the verifier supplied.</p>
-<h2>1. Check the output</h2>
-<p>For gate \(l\), the trace stores its output at \(f_{\rm trace}(\omega^{3l+2})\). The last gate has index \(|C|-1\), so its output position is \(3(|C|-1)+2=3|C|-1\). The formal zero-output statement therefore requires</p>
+<article class="lesson" data-id="plonk-output-input" data-title="PLONK check 1: the final output">
+<p class="chapter-tag">Lecture §5.2 · Constraint 1: output</p>
+<h1>Does the final gate certify the claimed result?</h1>
+<p>The prover has interpolated a trace polynomial, but any table has an interpolating polynomial. The verifier must now rule out four ways the trace might be false: a wrong final output, wrong public inputs, incorrect gate arithmetic, or inconsistent values across wires.</p>
+<p>Start with the last output. Gate \(l\) stores its result at \(\omega^{3l+2}\). As gates are numbered \(0,\ldots,|C|-1\), the last output position has exponent \(3(|C|-1)+2=3|C|-1\). Our formal statement asks for a witness such that \(C(\mathbf x,\mathbf w)=0\), so the first constraint is</p>
 <div class="math">\[\boxed{f_{\rm trace}(\omega^{3|C|-1})=0.}\]</div>
-<p>In the lecture's pictured three-gate example, the output is 56, so the corresponding illustrative target check is \(f_{\rm trace}(\omega^8)=56\). That is not the formal zero-output condition. A circuit with an added target-comparison operation would have a different trace and final output position.</p>
-<h2>2. Check the public inputs</h2>
-<p>The verifier knows the public input values \(x_1,\ldots,x_m\). The trace is supposed to store them at \(\omega^{-1},\ldots,\omega^{-m}\). We cannot simply trust the prover's claim that those entries are correct.</p>
-<p>From the public values, construct an interpolation polynomial \(f_{\rm in}(X)\) satisfying \(f_{\rm in}(\omega^{-j})=x_j\) for \(j=1,\ldots,m\). This polynomial depends only on the public statement, so the verifier can calculate it without knowing the witness.</p>
-<p>Let \(\Omega_I=\{\omega^{-1},\ldots,\omega^{-m}\}\). Define the difference polynomial</p>
-<div class="math">\[g(X)=f_{\rm trace}(X)-f_{\rm in}(X).\]</div>
-<p>At position \(\omega^{-j}\), the equality \(g(\omega^{-j})=0\) is exactly the requirement \(f_{\rm trace}(\omega^{-j})=x_j\). Therefore all public inputs are correct <em>if and only if</em> \(g\) vanishes on \(\Omega_I\).</p>
-<h2>Why does this become two checks, not one?</h2>
-<p>We want to use ZeroTest on \(g\), but the prover could put an unrelated polynomial in the oracle and claim it is \(g\). So the verifier must first check the <strong>consistency identity</strong> \(g=f_{\rm trace}-f_{\rm in}\), using authenticated evaluations at a random point. Only then does ZeroTest on \(g\) establish that the trace contains the public inputs.</p>
-<div class="proof"><h3>Why the two checks together are sufficient</h3>
-<p>If the consistency identity holds, then \(g(a)=f_{\rm trace}(a)-f_{\rm in}(a)\) for every field point \(a\). If ZeroTest establishes that \(g(a)=0\) for every \(a\in\Omega_I\), then at each public-input position \(f_{\rm trace}(a)=f_{\rm in}(a)=x_j\). Conversely, if the trace has the correct public inputs, its genuine difference polynomial vanishes on \(\Omega_I\). These are precisely the two directions we need. \(\square\)</p></div>
-<p>Why not simply open every public-input position? Because that would require a separate proof for each entry, making the proof size grow linearly with the public input. The verifier's <em>running time</em> may depend linearly on the public statement, but the SNARG <em>proof length</em> must remain succinct. The input polynomial and ZeroTest let the verifier avoid a linear number of authenticated openings.</p>
-<div class="bridge">We now know that the trace starts with the right public inputs and claims the required output. But it could still contain incorrect intermediate calculations. The next constraint checks the arithmetic of every gate without opening every gate entry separately.</div>
-<p class="source">Official lecture §5.2, conditions (1) and (2), the public-input polynomial, its consistency check and the footnote on succinct proof length.</p>
-
+<p>The verifier can authenticate this one polynomial evaluation directly. We are checking the output of the <em>final gate of the chosen circuit</em>, not a generic row of the trace.</p>
+<p>The lecture's pictured three-gate circuit instead produces 56, stored at \(\omega^8\). For that illustrative computation, the corresponding target check is \(f_{\rm trace}(\omega^8)=56\). It is not an instance of the zero-output requirement. To prove that its result equals the public target 56 under the formal convention, we must modify the circuit to test that result minus 56 equals zero; the modified circuit has an additional output constraint and a different trace.</p>
+<p>Even a correct final result can come from an invented computation. We must also make sure that the trace used the <em>public inputs supplied by the verifier</em>, rather than convenient values chosen by the prover.</p>
+<div class="bridge">The next constraint compares the trace's public-input positions with the public statement, without opening every input position individually.</div>
+<p class="source">Lecture §5.2, condition (1), output position \(3|C|-1\) and the lecture's 56-valued example.</p>
 </article>
 
-<article class="lesson" data-id="plonk-gates" data-title="PLONK check 3: one equation for all gates">
+<article class="lesson" data-id="plonk-input-check" data-title="PLONK check 2: bind every public input">
+<p class="chapter-tag">Lecture §5.2 · Constraint 2: public inputs</p>
+<h1>How do we know the trace used the stated inputs?</h1>
+<p>The verifier knows the public inputs \(x_1,\ldots,x_m\), but the trace polynomial might store different values at their assigned positions \(\omega^{-1},\ldots,\omega^{-m}\). Opening all \(m\) positions separately would make the proof size grow with \(m\), contrary to the succinctness requirement.</p>
+<p>We can instead make a polynomial \(f_{\rm in}(X)\) from the public inputs alone, satisfying \(f_{\rm in}(\omega^{-j})=x_j\) for \(j=1,\ldots,m\). The verifier can construct this polynomial because none of its values depend on the private witness. Define</p>
+<div class="math">\[
+g(X)=f_{\rm trace}(X)-f_{\rm in}(X),\qquad
+\Omega_I=\{\omega^{-1},\ldots,\omega^{-m}\}.
+\]</div>
+<p>At a public-input point \(a=\omega^{-j}\), the condition \(g(a)=0\) is exactly \(f_{\rm trace}(a)=x_j\). Thus the trace matches <em>all</em> public inputs if and only if \(g\) vanishes on \(\Omega_I\). Theorem 2 changes this into the existence of a quotient \(q_I\) satisfying \(g(X)=q_I(X)Z_{\Omega_I}(X)\).</p>
+<p>The verifier needs <strong>two logically different checks</strong>. First it compares authenticated evaluations of \(g(r)\) and \(f_{\rm trace}(r)-f_{\rm in}(r)\) at a random point \(r\), establishing that the prover's \(g\) really is the required difference polynomial. Then it uses ZeroTest to establish that \(g\) vanishes on \(\Omega_I\). Otherwise the prover could pass ZeroTest using an unrelated zero polynomial as its supposed difference.</p>
+<div class="proof"><h3>Why both checks establish the correct inputs</h3>
+<p>If the first polynomial identity holds, then \(g=f_{\rm trace}-f_{\rm in}\) at all points, except for the soundness error of the equality test. If ZeroTest also succeeds as a polynomial identity, \(g(a)=0\) for every \(a\in\Omega_I\). Therefore \(f_{\rm trace}(a)=f_{\rm in}(a)=x_j\) at each required position. In the other direction, honest public inputs make the genuine difference polynomial vanish there, giving the honest quotient. \(\square\)</p></div>
+<p>The input difference and quotient are committed before the random challenge. Their degree bounds and the cost of evaluating the subset vanishing polynomial still matter; the full-domain identity \(X^d-1\) must <em>not</em> be used as though it were the vanishing polynomial of \(\Omega_I\). The lecture proposes preprocessing or exploiting structure for the required efficient evaluations.</p>
+<div class="bridge">The trace now refers to the correct public inputs and claims the required output. The next check enforces every intermediate addition or multiplication, without examining each gate separately.</div>
+<p class="source">Lecture §5.2, condition (2), construction of \(f_{\rm in}\), consistency check, ZeroTest and proof-size footnote.</p>
+</article>
 
-<p class="chapter-tag">Lecture §5.2 · Condition 3: gate arithmetic</p>
-<h1>How can one polynomial check every addition and multiplication gate?</h1>
-<p class="aim">Correct public inputs and output do not prove that the intermediate calculation is correct. A dishonest prover could put the right values at the beginning and end while inventing values inside the circuit. We must enforce each gate's arithmetic equation, but checking gates individually would make verification grow with the circuit.</p>
-<h2>First combine the two possible gate equations</h2>
-<p>Call a gate's left input \(L\), right input \(R\), and output \(O\). An addition gate requires \(L+R=O\); a multiplication gate requires \(LR=O\). The circuit already tells us which operation each gate uses. Represent that public choice by a <strong>selector</strong> \(s\): set \(s=1\) for addition and \(s=0\) for multiplication.</p>
-<p>Then both operations can be expressed by one equation:</p>
+
+<article class="lesson" data-id="plonk-gates" data-title="PLONK check 3: derive the gate polynomial">
+<p class="chapter-tag">Lecture §5.2 · Constraint 3: gate arithmetic</p>
+<h1>One equation for addition and multiplication gates</h1>
+<p>A trace could contain the right public inputs and final output but invent intermediate results. Each gate must apply the operation specified by the circuit. For a gate with left input \(L\), right input \(R\), and output \(O\), the correct relation is \(L+R=O\) for addition and \(LR=O\) for multiplication.</p>
+<p>Since the gate type is public, encode it using a <strong>selector bit</strong> \(s\), equal to 1 for addition and 0 for multiplication. The two cases combine into the single equation</p>
 <div class="math">\[\boxed{s(L+R)+(1-s)LR-O=0.}\]</div>
-<p>Substitute \(s=1\): the multiplication term disappears and we get \(L+R-O=0\). Substitute \(s=0\): the addition term disappears and we get \(LR-O=0\). Thus the equation is <em>equivalent</em> to the correct rule for either type of gate.</p>
-<p>In the lecture's circuit, gate 0 has \(s=0\) and requires \(2\cdot4=8\); gate 1 has \(s=1\) and requires \(4+3=7\); gate 2 has \(s=0\) and requires \(8\cdot7=56\). The selector values are determined by the public circuit, not by the prover's witness.</p>
-<h2>Turn the selector into a polynomial</h2>
-<p>For gate \(l\), its left input, right input and output are stored at \(f_{\rm trace}(\omega^{3l})\), \(f_{\rm trace}(\omega^{3l+1})\), and \(f_{\rm trace}(\omega^{3l+2})\). We can interpolate a <strong>selector polynomial</strong> \(f_{\rm sel}(X)\) whose value at each gate-start point \(\omega^{3l}\) is that gate's selector bit.</p>
-<p>Now let \(X\) stand for a gate-start point. Then \(f_{\rm trace}(X)\) is its left input, \(f_{\rm trace}(\omega X)\) is its right input, and \(f_{\rm trace}(\omega^2X)\) is its output. Substituting those expressions into the one-gate equation gives</p>
+<p>At \(s=1\), the multiplication term disappears, giving \(L+R-O=0\). At \(s=0\), the addition term disappears, giving \(LR-O=0\). Thus the same equation enforces the correct operation for either gate type.</p>
+<p>For each gate \(l\), build a <strong>selector polynomial</strong> \(f_{\rm sel}(X)\) such that \(f_{\rm sel}(\omega^{3l})\) equals that gate's public selector. The three-gate example uses multiplication, addition, multiplication, so its selector values at \(\omega^0,\omega^3,\omega^6\) are \(0,1,0\).</p>
+<p>At the beginning of a gate, represented by \(X=\omega^{3l}\), the trace polynomial stores \(L=f_{\rm trace}(X)\), \(R=f_{\rm trace}(\omega X)\), and \(O=f_{\rm trace}(\omega^2X)\). Substituting these into the equation defines</p>
 <div class="math">\[
 \begin{aligned}
-f_{\rm gates}(X)={}&f_{\rm sel}(X)
-  \bigl(f_{\rm trace}(X)+f_{\rm trace}(\omega X)\bigr)\\
-&+\bigl(1-f_{\rm sel}(X)\bigr)
-  f_{\rm trace}(X)f_{\rm trace}(\omega X)\\
+f_{\rm gates}(X)={}&
+f_{\rm sel}(X)\left[f_{\rm trace}(X)+f_{\rm trace}(\omega X)\right]\\
+&+\left[1-f_{\rm sel}(X)\right]f_{\rm trace}(X)f_{\rm trace}(\omega X)\\
 &-f_{\rm trace}(\omega^2X).
 \end{aligned}
 \]</div>
-<p>At the start of gate \(l\), the condition \(f_{\rm gates}(\omega^{3l})=0\) is exactly the correct addition or multiplication equation for that gate. Therefore every gate is evaluated correctly <em>if and only if</em> \(f_{\rm gates}\) vanishes on</p>
-<div class="math">\[
-\Omega_{\rm gates}=
-\{\omega^0,\omega^3,\omega^6,\ldots,\omega^{3(|C|-1)}\}.
-\]</div>
-<div class="proof"><h3>Why is this a valid reduction?</h3>
-<p>For each gate, the selector polynomial has the correct public bit at its start position. Substituting that bit into \(f_{\rm gates}\) recovers exactly the gate's required arithmetic equation. Thus a zero value at every gate-start point implies every gate equation holds. Conversely, if every gate equation holds, each substituted value of \(f_{\rm gates}\) is zero. The two conditions are equivalent. \(\square\)</p></div>
-<p>We can now apply ZeroTest over \(\Omega_{\rm gates}\), using authenticated evaluations of the constituent polynomials and the claimed quotient. But the verifier must not construct the full selector polynomial for each proof: its degree grows with the circuit. Since the selector depends only on the <em>circuit structure</em>, the lecture computes and commits to it once in circuit-specific preprocessing.</p>
-<div class="bridge">The gate equations are now enforced, but one loophole remains. A later gate could use a value different from the output of the gate wired to it. Its own arithmetic equation might still be correct. The next condition checks those repeated wire values.</div>
-<p class="source">Official lecture §5.2, selector polynomial, gate polynomial, ZeroTest and preprocessing of \(f_{\rm sel}\).</p>
-
+<p>This expression is not arbitrary: each of its three terms comes directly from the addition/multiplication selector equation. At \(X=\omega^{3l}\), it evaluates to zero precisely when gate \(l\) performs its prescribed operation.</p>
+<div class="bridge">We have built a polynomial whose zeros correspond to correctly evaluated gates. The next card turns that observation into a ZeroTest over <em>all</em> gate-start positions, and explains why the selector is preprocessed.</div>
+<p class="source">Lecture §5.2, selector and gate-polynomial equation.</p>
 </article>
+
+<article class="lesson" data-id="plonk-gate-test" data-title="Prove every gate is correct using ZeroTest">
+<p class="chapter-tag">Lecture §5.2 · Gate ZeroTest and preprocessing</p>
+<h1>How can one random identity check every gate?</h1>
+<p>The gate polynomial \(f_{\rm gates}\) was constructed so that its value at the start of gate \(l\) is that gate's arithmetic error. Our required positions are therefore</p>
+<div class="math">\[
+\Omega_{\rm gates}=\{\omega^0,\omega^3,\omega^6,\ldots,
+\omega^{3(|C|-1)}\}.
+\]</div>
+<p>Every gate obeys its addition or multiplication rule <em>if and only if</em> \(f_{\rm gates}\) is zero at each position in this set. By the vanishing-polynomial theorem, that is equivalent to the existence of a polynomial \(q_{\rm gates}\) such that</p>
+<div class="math">\[
+f_{\rm gates}(X)=q_{\rm gates}(X)Z_{\Omega_{\rm gates}}(X).
+\]</div>
+<p>That is exactly the kind of global identity ZeroTest can verify at a random field point. The verifier authenticates the relevant evaluations of \(f_{\rm trace}\), \(f_{\rm sel}\), and \(q_{\rm gates}\), then constructs the left-hand side using the selector formula. For an honest trace, each gate equation holds and the quotient exists. For an incorrect trace, the proposed identity is false, so a low-degree random evaluation rejects it except with the polynomial-root error.</p>
+<p>The degree restriction is important. If \(\deg f_{\rm trace}\le d-1\) and \(\deg f_{\rm sel}\le d-1\), the product of three such terms shows \(\deg f_{\rm gates}\le3(d-1)\). The exact ZeroTest bound must use this gate-polynomial degree, not automatically the degree of the trace itself.</p>
+<p>But the verifier must not construct \(f_{\rm sel}\) from every gate during each proof; that would require work proportional to \(|C|\). Since the selector depends only on the public circuit and not on the witness, the lecture computes and commits to it once in circuit-specific preprocessing. Its committed evaluations can then be reused across proofs for that circuit.</p>
+<p>Finally, the gate-start set is only a <em>subset</em> of the roots-of-unity domain. Its vanishing polynomial is not automatically \(X^d-1\); efficient evaluation may require additional structure or preprocessing.</p>
+<div class="bridge">Correct gate arithmetic is still insufficient. One gate can output 8 while another gate, supposedly connected to it, uses 9. The missing requirement is equality between every occurrence of the same logical wire.</div>
+<p class="source">Lecture §5.2, condition (3), gate ZeroTest, selector preprocessing and degree requirements.</p>
+</article>
+
 
 <article class="lesson" data-id="plonk-wiring" data-title="PLONK check 4: the gates must be connected correctly">
 
