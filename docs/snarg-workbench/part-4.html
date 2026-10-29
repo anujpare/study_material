@@ -32,6 +32,63 @@ t=(x_1x_2)(x_2+w_1)=(2\cdot4)(4+3)=8\cdot7=56.
 
 </article>
 
+<article class="lesson" data-id="hw2-circuit-sat" data-title="HW2 4(a–c) · Circuit satisfiability">
+<p class="chapter-tag">V · Examination workshop · HW2, Problem 4</p>
+<h1>Homework: prove that a Boolean circuit can output 1</h1>
+<p class="aim">Before PLONK, we already knew how to commit to values and prove simple relations about them. Could we use those tools to prove that a whole Boolean circuit has a satisfying input?</p>
+<p>A <strong>Boolean circuit</strong> carries bits—0 or 1—rather than general field numbers. The homework uses XOR and AND gates. XOR, written \(\oplus\), returns 1 when the input bits differ. AND, written \(\wedge\), returns 1 only when both inputs are 1.</p>
+<p>Call the set of satisfiable circuits \(C_{\mathrm{SAT}}\). A circuit belongs to this set if there is some input assignment making its final output 1. We assume a commitment scheme that is perfectly binding and computationally hiding, plus Sigma protocols that prove three committed bits satisfy the relation for a single XOR or AND gate.</p>
+<p>We're about to build the full circuit proof out of those small gate proofs. Notice how close the idea is to PLONK: we need correct gates, consistent wires, and the right final output. Here, though, the proof will grow with the number of gates.</p>
+<div class="exercise"><span class="exercise-kicker">HW2 · Problem 4(a)</span>
+<h3>Build the three-message circuit proof</h3>
+<p>Let \(N\) be the number of gates. Construct a Sigma protocol by running \(N\) gate protocols in parallel. State the prover's first message, the verifier's challenge, the response, and the acceptance test.</p>
+<details class="worked"><summary>Build the protocol step by step</summary><div class="answer">
+<p>Take a satisfying input assignment and calculate every wire value. For each <em>logical wire</em> \(w\), make one commitment \(c_w=\operatorname{Commit}(m_w;r_w)\), where \(m_w\) is the wire's bit and \(r_w\) is fresh randomness. Whenever two gates use the same wire, use the same commitment; otherwise we would lose the connection between them.</p>
+<p>For each gate \(j\), take the commitments to its left input, right input, and output. Use the Sigma protocol for XOR or AND, whichever that gate represents, and calculate its first message \(a_j\). Send all wire commitments and all \(a_j\) values together.</p>
+<p>The verifier sends independent random challenges \(e_1,\ldots,e_N\), one for each gate proof. The prover replies with all corresponding responses \(z_1,\ldots,z_N\), and opens the commitment to the circuit's final output as the bit 1.</p>
+<p>The verifier accepts only if the final output opens to 1 <em>and</em> every gate Sigma proof verifies.</p>
+<p class="qed">An honest satisfying assignment makes every committed gate relation true and the final output 1. Correct openings and perfect completeness of the gate protocols therefore make the circuit proof complete. \(\square\)</p>
+</div></details></div>
+<div class="practice-link"><span class="practice-tag">Continue HW2 Problem 4</span><a href="#hw2-circuit-soundness">Part (b): prove soundness</a> · <a href="#hw2-circuit-simulation">Part (c): simulate the proof</a></div>
+<div class="bridge">This constructs the three-message protocol and proves honest acceptance. The next question is soundness: why must an unsatisfiable circuit make at least one gate relation false?</div>
+<p class="source">HW2 Problem 4(a), original task and worked solution.</p>
+</article>
+
+<article class="lesson" data-id="hw2-circuit-soundness" data-title="HW2 4(b): prove circuit soundness">
+<p class="chapter-tag">HW2 · Problem 4(b)</p>
+<h1>Why must an unsatisfiable circuit fail a gate check?</h1>
+<p class="aim">The preceding construction commits to each logical wire once and proves every gate relation. To establish soundness, we must show that a false circuit statement forces at least one of those gate relations to be false, then use the gate protocols' soundness guarantees.</p>
+<div class="exercise"><span class="exercise-kicker">HW2 · Problem 4(b)</span>
+<h3>Why can't this prove a false circuit?</h3>
+<p>Prove that if a dishonest prover convinces the verifier that an unsatisfiable circuit is satisfiable with non-negligible probability, one of the underlying gate Sigma protocols must violate its soundness guarantee.</p>
+<details class="worked"><summary>Find the gate that must be lying</summary><div class="answer">
+<p>Perfect binding fixes the bit committed to on each logical wire. Since every gate refers to the <em>same commitment</em> whenever it uses the same wire, all gate triples describe one fixed assignment of values to the circuit's wires.</p>
+<p>Suppose the output commitment opens to 1, but the circuit is unsatisfiable. If every gate relation were correct, these fixed wire values would describe an execution yielding 1—a satisfying assignment. That contradicts unsatisfiability. So at least one committed gate triple must violate its prescribed XOR or AND relation.</p>
+<p>The full verifier accepts only if every gate proof accepts, including that false one. If the full false-acceptance probability were \(\varepsilon\), then among \(N\) gates at least one underlying gate proof would have to account for a failure probability of at least \(\varepsilon/N\). This follows by bounding the probability of the union of \(N\) possible gate-soundness failures by the sum of their probabilities.</p>
+<p>Since \(N\) is polynomial in the input size, a non-negligible \(\varepsilon\) would give a non-negligible soundness failure for one gate proof.</p>
+<p class="qed">Thus an accepted proof for an unsatisfiable circuit would break an underlying gate protocol. The reason we can reach this conclusion is that binding and shared wire commitments force a <em>single</em> wire assignment. \(\square\)</p>
+</div></details></div>
+<div class="practice-link"><span class="practice-tag">Continue HW2 Problem 4</span><a href="#hw2-circuit-simulation">Part (c): zero-knowledge simulation</a></div>
+<div class="bridge">Binding and shared commitments connect all local gate checks to one global assignment. The remaining homework question is different: can we simulate the verifier's view without knowing a satisfying assignment?</div>
+<p class="source">HW2 Problem 4(b), original task and worked solution.</p>
+</article>
+
+<article class="lesson" data-id="hw2-circuit-simulation" data-title="HW2 4(c): simulate the circuit proof">
+<p class="chapter-tag">HW2 · Problem 4(c)</p>
+<h1>Can the gate proofs be simulated without a witness?</h1>
+<p class="aim">Completeness and soundness establish that the verifier accepts exactly the right kind of circuit statement. Zero knowledge asks a different question: can the verifier's view be reproduced without knowing the satisfying assignment? We must examine whether the proposed gate simulators actually apply to the commitments used.</p>
+<div class="exercise"><span class="exercise-kicker">HW2 · Problem 4(c)</span>
+<h3>Could we simulate the proof without the satisfying assignment?</h3>
+<p>The homework asks for an informal honest-verifier zero-knowledge simulator. Explain the intended construction and where an additional justification is needed.</p>
+<details class="worked"><summary>Show the simulation idea and its limitation</summary><div class="answer">
+<p>The official solution proposes making hiding commitments to convenient dummy wire values—for example, 1 on every wire, so the final output commitment can be opened to 1. It then proposes running the honest-verifier simulators for each gate Sigma proof and combining their transcripts.</p>
+<p>The idea is that the commitments hide the dummy values and the simulated gate transcripts hide the witnesses. But we must check a crucial point. For an XOR gate with input bits 1 and 1, the correct output is 0, not 1. So the dummy commitment triple \((1,1,1)\) is actually a <em>false statement</em> for the XOR gate protocol.</p>
+<p>The ordinary definition of honest-verifier zero knowledge only guarantees a simulator for true statements. It doesn't automatically say that the gate simulator produces accepting transcripts for false dummy triples. A rigorous proof would need an additional property of the particular gate protocol, or a justified simulation technique that handles those false dummy statements.</p>
+<p class="qed">The homework's intended high-level strategy is to hide the wires and simulate the gate transcripts. The provided assumptions alone do not complete the simulation proof when the dummy gate statements are false. That missing condition must be stated rather than skipped. \(\square\)</p>
+</div></details></div>
+<p class="source">HW2 Problem 4(c), original task and worked solution. The stated limitation is preserved explicitly.</p>
+</article>
+
 <article class="lesson" data-id="trace-encoding" data-title="Put the entire circuit trace into one polynomial">
 
 <p class="chapter-tag">Lecture §5.1 · From circuits to polynomials</p>
@@ -168,6 +225,32 @@ f_{\rm trace}(\omega^5)=f_{\rm trace}(\omega^7).
 <div class="lab" data-lab="trace"><div class="lab-top"><strong>Which constraint detects each dishonest trace?</strong><p>Use the original three-gate circuit over \(\mathbb F_{97}\). Change the proposed trace and inspect the gate residuals and wire-copy equalities. The public output target is 56 in this illustration.</p></div><div class="lab-content"><label>Proposed trace <select data-key="mode"><option value="honest">Honest trace</option><option value="wire">Incorrect wire copies</option><option value="gate">Incorrect multiplication</option><option value="public">Incorrect public input</option><option value="output">Output differs from public target</option></select></label><div class="lab-output" aria-live="polite"></div></div></div>
 <div class="bridge">The example shows that locally correct gates can still describe a false circuit execution. We now need one mathematical condition that enforces every wire-copy equality, rather than checking each repeated value separately.</div>
 <p class="source">Official lecture §5.2: wiring failure in the three-gate trace.</p>
+</article>
+
+<article class="lesson" data-id="exam-fake-trace" data-title="Applied exercise · Locally correct, globally false">
+<p class="chapter-tag">V · Examination workshop · Constructed PLONK problem</p>
+<h1>Exam exercise: the gates all pass. Is the circuit correct?</h1>
+<p class="aim">A common mistake is to check all the gate arithmetic and stop. This problem makes you find the missing wire equality yourself.</p>
+<p>Consider the lecture's circuit \((x_1x_2)(x_2+w_1)\), with public \(x_1=2,x_2=4\) and private \(w_1=3\). A dishonest prover claims this trace:</p>
+<div class="table-scroll"><table><thead><tr><th>Gate</th><th>Left</th><th>Right</th><th>Output</th><th>Operation</th></tr></thead><tbody>
+<tr><td>0</td><td>2</td><td>4</td><td>8</td><td>\(\times\)</td></tr>
+<tr><td>1</td><td>4</td><td>3</td><td>7</td><td>\(+\)</td></tr>
+<tr><td>2</td><td>9</td><td>7</td><td>63</td><td>\(\times\)</td></tr>
+</tbody></table></div>
+<div class="exercise"><span class="exercise-kicker">Constructed exam-style exercise</span>
+<p>(a) Check every gate's arithmetic. (b) Decide whether this is a valid execution of the given circuit. (c) Write the exact violated equality using \(f_{\mathrm{trace}}\) and \(\omega\). (d) Explain why the gate ZeroTest alone would miss the problem.</p>
+<details class="worked"><summary>Work through the trap</summary><div class="answer">
+<p><strong>(a)</strong> All three gates are locally correct: \(2\cdot4=8\), \(4+3=7\), and \(9\cdot7=63\).</p>
+<p><strong>(b)</strong> But gate 2 is supposed to use the output of gate 0 as its left input. Gate 0 output 8, yet gate 2 uses 9. So this cannot be the trace of the specified circuit.</p>
+<p><strong>(c)</strong> Gate 0's output is stored at \(\omega^2\). Gate 2's left input is stored at \(\omega^6\). For the original circuit, wiring requires</p>
+<div class="math">\[
+f_{\mathrm{trace}}(\omega^2)=f_{\mathrm{trace}}(\omega^6).
+\]</div>
+<p>But the supplied trace sets the left side to 8 and the right side to 9, so the equality fails.</p>
+<p><strong>(d)</strong> The gate polynomial checks operations <em>inside</em> each gate row. It vanishes for all three rows. The wiring IOP checks whether values copied <em>between</em> gate rows agree. Those are different requirements.</p>
+<p class="qed">This trace demonstrates exactly why local gate correctness does not imply circuit correctness. A correct proof needs the wiring equalities too. \(\square\)</p>
+</div></details></div>
+<p class="source">Constructed from the circuit and constraints in lecture §5.2, pp. 9–11. It is not an original homework problem.</p>
 </article>
 
 <article class="lesson" data-id="plonk-rotation" data-title="Rotation polynomial: enforce every wire equality">
