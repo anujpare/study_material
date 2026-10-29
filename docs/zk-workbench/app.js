@@ -16,6 +16,7 @@
     ["ham-proof","Proving the protocol works","card-09.html"],
     ["simulation","A simulator without the secret","card-10.html"],
     ["zk-proof","Why the simulator succeeds","card-11.html"],
+    ["hw2-conceptual","HW2 · Conceptual security questions","hw2-conceptual.html"],
     ["repetition","Sequential versus parallel messages","card-12.html"],
     ["cost","Why parallel simulation is hard","card-13.html"],
     ["homework2","Homework: composition proof","card-14.html"],
@@ -42,7 +43,7 @@
   let current=0,loading=0,lockedGuess=null,lockedChallenge=null,lockedBit=null,readingMode="guided";
   const coreIds=new Set([
     "witness","np","interaction","guarantees","lecture-power","lecture-applications",
-    "zk","commitments","hw1-security","hw1-pedersen","permutation","ham-protocol","ham-proof","simulation","zk-proof",
+    "zk","commitments","hw1-security","hw1-pedersen","permutation","ham-protocol","ham-proof","simulation","zk-proof","hw2-conceptual",
     "repetition","cost","homework2","knowledge","knowledge-extraction","sigma","schnorr","schnorr-zk","schnorr-ext",
     "circuits","nizk-limits","fiat-shamir","fiat-shamir-security","hw3-fs-schnorr","hw3-fs-attacks","hw3-amplify"
   ]);
