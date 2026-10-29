@@ -109,6 +109,17 @@
 <p>The simulator deals with the first session before the second starts. It simulates that session against the verifier in its current state, then continues to the next session and uses the same simulation method again. A malicious verifier might remember the earlier messages, so we must respect its state; we cannot simply say that its sessions are independent.</p>
 <p>Each replacement of a real session by a simulated one is indistinguishable under the original zero-knowledge guarantee. Replacing a polynomial number of sessions one at a time preserves indistinguishability by a <em>hybrid argument</em>: if the first and last transcript distributions were distinguishable, some neighboring replacement would also have to be distinguishable.</p>
 <p class="qed">The simulator can finish and justify each session before the next begins. That is why the ordinary sequential composition proof works. \(\square\)</p>
+</div></details><div class="practice-link"><span class="practice-tag">HW2 Problem 2(b–c)</span><a href="#repetition-parallel">Why parallel simulation is different</a></div>
+<div class="bridge">Sequential composition lets the simulator finish one interaction before the next begins. Parallel composition fixes all first messages before any challenge is known. The next card shows why that timing changes the simulator's work.</div>
+<p class="source">Original HW2 Problem 2(a–c), sequential composition argument.</p>
+</article>
+
+<article class="lesson" data-id="repetition-parallel" data-title="HW2: parallel simulation and honest verifiers">
+<p class="chapter-tag">HW2 Problem 2(b–c) · Worked proofs</p>
+<h1>Why is parallel simulation harder?</h1>
+<p class="aim">A sequential simulator can finish one execution before preparing the next. A parallel simulator must prepare all first messages before seeing any challenge. We must determine what this does to its probability of guessing the verifier's challenge vector, and then distinguish malicious from honest verifiers.</p>
+<div class="exercise"><span class="exercise-kicker">HW2 · Problem 2(b–c)</span><p>Explain why the standard simulation argument does not establish zero knowledge for parallel repetition against a malicious verifier, and prove that parallel repetition remains honest-verifier zero knowledge.</p>
+<details class="worked"><summary>Work through both simulation arguments</summary><div class="answer">
 <h3>(b) Parallel repetition</h3>
 <p>In the Hamiltonian-cycle simulator, the simulator prepares a first message tailored to one of two possible challenges. It ordinarily hopes to guess the verifier's challenge, then rewinds if it guessed wrong.</p>
 <p>With \(t\) parallel repetitions, the simulator must send <em>all \(t\) first messages</em> before seeing the challenge vector. To prepare them using the same trick it must guess all \(t\) challenge bits. If the verifier chooses independent bits, one particular guess succeeds with probability \(2^{-t}\), requiring an expected \(2^t\) guesses. With malicious verifiers, challenges can also depend on the complete vector of first messages.</p>
@@ -118,8 +129,8 @@
 <p>Each simulated copy has the correct honest-verifier distribution, and the copies are independent in both the real and simulated experiments. Thus the complete batched transcript has the same distribution as a real honest execution.</p>
 <p class="qed">The parallel protocol remains honest-verifier zero-knowledge. The distinction is about which verifier we are trying to simulate and when its challenges become known. \(\square\)</p>
 </div></details></div>
-<div class="bridge">For Fiat–Shamir, we will want the parallel three-message form: one batch of first messages, one batch of challenges, one batch of answers. The challenge batch can then be derived from a hash.</div>
-<p class="source">Homework 2, Problem 2(a–c). The role of state in the sequential simulation is stated explicitly.</p>
+<div class="bridge">The distinction concerns <em>simulation</em>, not just soundness amplification. We can now return to Fiat–Shamir, which replaces the challenge message in a three-message protocol after the first message has been fixed.</div>
+<p class="source">Original HW2 Problem 2(b–c), including the honest-verifier distinction.</p>
 </article>
 
 <article class="lesson" data-id="fiat-shamir" data-title="Fiat–Shamir: remove the verifier's message">
