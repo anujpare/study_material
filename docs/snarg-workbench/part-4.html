@@ -89,43 +89,48 @@ t=(x_1x_2)(x_2+w_1)=(2\cdot4)(4+3)=8\cdot7=56.
 <p class="source">HW2 Problem 4(c), original task and worked solution. The stated limitation is preserved explicitly.</p>
 </article>
 
-<article class="lesson" data-id="trace-encoding" data-title="Put the entire circuit trace into one polynomial">
-
-<p class="chapter-tag">Lecture §5.1 · From circuits to polynomials</p>
-<h1>How can a polynomial represent the entire circuit trace?</h1>
-<p class="aim">The circuit gives us the operations to verify, but reading every gate value would defeat succinctness. We will store the proposed execution as evaluations of one polynomial, just as we stored Fibonacci values. First we must count the values and assign a distinct evaluation point to each.</p>
-<h2>Count the trace positions</h2>
-<p>Every gate contributes three entries: left input, right input, and output. If \(|C|\) is the number of gates, that gives \(3|C|\) entries. We must also store the original public and private inputs, whose total count is \(|I|\). The lecture defines</p>
+<article class="lesson" data-id="trace-encoding" data-title="Assign each circuit value a polynomial position">
+<p class="chapter-tag">Lecture §5.1 · Encoding a circuit trace</p>
+<h1>How many points must the trace polynomial store?</h1>
+<p>In the Fibonacci example, one value was stored at each integer position. A general circuit needs a value for every original input and for each gate's left input, right input, and output. We must give these occurrences distinct locations, even when two occurrences represent the same logical wire: their equality will be proved later.</p>
+<p>Let \(|C|\) count the gates, and let \(|I|\) count all original inputs, public and private. Each gate contributes three trace entries, so the total number of required positions is</p>
 <div class="math">\[\boxed{d=3|C|+|I|.}\]</div>
-<p>For the three-gate circuit, \(|C|=3\) and \(|I|=3\), so \(d=12\). We need twelve distinct evaluation points. The lecture uses the bound \(\deg f_{\rm trace}\le d\); interpolation through twelve points actually gives a polynomial of degree at most \(d-1=11\).</p>
-<h2>Why choose powers of a root of unity?</h2>
-<p>We could interpolate at any twelve distinct points. But later the verifier must evaluate a vanishing polynomial for the entire set. Choosing special points makes that calculation cheaper. Pick an element \(\omega\) of <strong>multiplicative order \(d\)</strong>, meaning \(\omega^d=1\) and no smaller positive power equals 1. Its first \(d\) powers are therefore distinct:</p>
+<p>In our three-gate example, \(|C|=3\) and \(|I|=3\), hence \(d=12\). Interpolation can fit a polynomial through any twelve <em>distinct</em> field points, but the Fibonacci verifier already showed why arbitrary points are inconvenient: evaluating a large vanishing polynomial would be expensive.</p>
+<p>We therefore choose \(\omega\) of <strong>multiplicative order \(d\)</strong>, meaning \(\omega^d=1\) and no smaller positive power equals 1. Its first \(d\) powers are all distinct and form the domain</p>
 <div class="math">\[\Omega=\{1,\omega,\omega^2,\ldots,\omega^{d-1}\}.\]</div>
-<p>For a concrete twelve-point example, use \(\mathbb F_{97}\) and \(\omega=6\). It has order 12. The interactive figure shows the twelve distinct values \(6^j\bmod97\). The choice of field and root is illustrative; a real scheme chooses parameters appropriate to the circuit and security requirements.</p>
+<p>Such a choice requires a field containing an element of order \(d\); for a prime field \(\mathbb F_p\), one convenient condition is \(d\mid(p-1)\). For \(d=12\), the figure uses \(\mathbb F_{97}\) with \(\omega=6\), which indeed has order 12. Negative powers are legitimate because \(\omega^{-j}=\omega^{d-j}\).</p>
 <div class="lab" data-lab="unity"><div class="lab-top"><strong>Verify the twelve distinct evaluation points</strong><p>Change exponent \(j\). Each point is \(6^j\bmod97\). After exponent 11, the next power returns to 1.</p></div><div class="lab-content"><label class="range-label">Exponent \(j\) <output class="range-value" data-live-for="j">3</output><input data-key="j" type="range" min="0" max="11" value="3"></label><div class="lab-output" aria-live="polite"></div></div></div>
-<h2>Where does each trace entry go?</h2>
-<p>Call the interpolating polynomial \(f_{\rm trace}(X)\). The lecture assigns the original input numbered \(j\) to \(\omega^{-j}\). Negative powers are valid because \(\omega^{-j}=\omega^{d-j}\) when \(\omega^d=1\). For each gate numbered \(l=0,\ldots,|C|-1\), three consecutive powers store its left input, right input and output:</p>
+<p>These points are useful because their full-domain vanishing polynomial has the compact form \(X^d-1\), which we will derive shortly. First we must specify which trace values each power represents.</p>
+<div class="bridge">The next card assigns inputs and gate entries to these twelve points, then uses interpolation to show that one polynomial can encode the resulting table.</div>
+<p class="source">Lecture §5.1: \(d=3|C|+|I|\), roots-of-unity domain and the arithmetic-circuit trace.</p>
+</article>
+
+<article class="lesson" data-id="trace-mapping" data-title="Interpolate the original three-gate trace">
+<p class="chapter-tag">Lecture §5.1 · Exact trace encoding</p>
+<h1>Where do the inputs and gate values go?</h1>
+<p>We now use the domain of twelve powers of \(\omega\). Write \(f_{\rm trace}(X)\) for the polynomial that will store the values. Number the original inputs \(j=1,\ldots,|I|\). Their values occupy \(\omega^{-j}\). Number the gates \(l=0,\ldots,|C|-1\). Each gate's left input, right input, and output occupy three consecutive powers:</p>
 <div class="math">\[
 \begin{aligned}
 f_{\rm trace}(\omega^{-j})&=\text{original input }j,\\
-f_{\rm trace}(\omega^{3l})&=\text{left input of gate }l,\\
-f_{\rm trace}(\omega^{3l+1})&=\text{right input of gate }l,\\
-f_{\rm trace}(\omega^{3l+2})&=\text{output of gate }l.
+f_{\rm trace}(\omega^{3l})&=\text{gate }l\text{ left input},\\
+f_{\rm trace}(\omega^{3l+1})&=\text{gate }l\text{ right input},\\
+f_{\rm trace}(\omega^{3l+2})&=\text{gate }l\text{ output}.
 \end{aligned}
 \]</div>
-<div class="table-scroll"><table><thead><tr><th>Trace entry</th><th>Polynomial positions</th><th>Values</th></tr></thead><tbody>
+<p>For the lecture's circuit, the public inputs are \(x_1=2,x_2=4\), the private input is \(w_1=3\), and the gates compute \(2\cdot4=8\), \(4+3=7\), then \(8\cdot7=56\). The complete encoded table is:</p>
+<div class="table-scroll"><table><thead><tr><th>Occurrences</th><th>Evaluation points</th><th>Values</th></tr></thead><tbody>
 <tr><td>Original inputs</td><td>\(\omega^{-1},\omega^{-2},\omega^{-3}\)</td><td>2, 4, 3</td></tr>
 <tr><td>Gate 0</td><td>\(\omega^0,\omega^1,\omega^2\)</td><td>2, 4, 8</td></tr>
 <tr><td>Gate 1</td><td>\(\omega^3,\omega^4,\omega^5\)</td><td>4, 3, 7</td></tr>
 <tr><td>Gate 2</td><td>\(\omega^6,\omega^7,\omega^8\)</td><td>8, 7, 56</td></tr>
 </tbody></table></div>
-<div class="proof"><h3>Why does such a polynomial exist and why is it unique?</h3>
-<p>We have prescribed twelve values at twelve distinct field points. Interpolation constructs a polynomial of degree at most 11 through those values. If two degree-at-most-11 polynomials agreed at all twelve points, their difference would have twelve roots but degree at most 11, contradicting the root theorem. Therefore the trace polynomial is unique for the proposed table. \(\square\)</p></div>
-<p>Uniqueness does not imply correctness. Any dishonest table also has a unique interpolating polynomial. The verifier must still check whether the stored numbers describe a genuine execution.</p>
-<div class="bridge">We chose the powers of \(\omega\) partly to make a vanishing polynomial cheap to evaluate. Before deriving the four circuit checks, let's prove that advantage: for the complete set of these powers, the vanishing polynomial is simply \(X^d-1\).</div>
-<p class="source">Official lecture §5.1, trace size, roots-of-unity domain, and the exact encoding of all original inputs and gate entries.</p>
-
+<p>The powers \(\omega^{-1},\omega^{-2},\omega^{-3}\) are the same as \(\omega^{11},\omega^{10},\omega^9\), so they do not overlap the gate entries at powers 0 through 8.</p>
+<p>We prescribed \(d=12\) values at 12 distinct points. Interpolation therefore gives a polynomial of degree at most \(d-1=11\) matching them. It is unique within this degree bound: two distinct degree-at-most-11 polynomials agreeing at twelve points would have a nonzero difference with twelve roots, contradicting the root theorem. The lecture allows the slightly looser bound \(\deg f_{\rm trace}\le d\).</p>
+<p>Importantly, an <em>incorrect</em> execution also has a polynomial fitting its table. Interpolation is only a way of storing a proposed computation; the proof must still enforce all the correct relationships between its entries.</p>
+<div class="bridge">Before deriving those constraints, we will prove why the chosen points were helpful: for the complete domain, the vanishing polynomial is \(X^d-1\), whose value can be calculated using only logarithmically many field multiplications.</div>
+<p class="source">Lecture §5.1, exact three-gate trace and interpolation map.</p>
 </article>
+
 
 <article class="lesson" data-id="roots-unity-cost" data-title="Why roots of unity make verification faster">
 
