@@ -6,13 +6,16 @@ const byId=id=>document.getElementById(id);
 const main=byId("lesson"), select=byId("lesson-select"), chapter=byId("chapter-select");
 const prev=byId("previous"), next=byId("next");
 let cards=[],current=0,req=0,mathReady=false,readingMode="guided";
-/* Main teaching route. Every other card is still available at its lesson link. */
+/* Guided route includes every original lecture and relevant original homework/midterm card. Only source indexes and constructed extra practice are supplemental. */
 const coreIds=new Set([
- "the-question","succinctness","pcp-box","pcp-theorem","pcp-oracle","merkle","merkle-binding","hw1-vectors","hw3-pcp-argument","hw3-pcp-proof","iop-types",
- "fib-goal","field-foundation","interpolation","interpolation-general","root-bound","equality-proof","schwartz-zippel","schwartz-proof","midterm-polynomial","vanishing-polynomial",
- "zerotest-protocol","zerotest-proof","fibonacci-protocol","fibonacci-correctness","polynomial-commitments","polycommit-security",
- "fiat-shamir","hw3-fs-pcp","circuits-meaning","trace-encoding","roots-unity-cost","plonk-output-input",
- "plonk-gates","plonk-wiring","plonk-rotation","plonk-correctness","plonk-final","plonk-proof"
+ "the-question","succinctness","pcp-box","pcp-theorem","pcp-oracle","merkle","merkle-binding",
+ "hw1-vectors","hw3-pcp-argument","hw3-pcp-proof","iop-types","fib-goal","field-foundation","interpolation",
+ "interpolation-general","root-bound","equality-proof","schwartz-zippel","schwartz-proof","midterm-polynomial","vanishing-polynomial",
+ "zerotest-protocol","zerotest-proof","fibonacci-protocol","fibonacci-correctness","polynomial-commitments","polycommit-security","midterm-interpolation",
+ "schnorr-recall","schnorr-homework","repetition-hw2","repetition-parallel","fiat-shamir","fiat-shamir-security","hw3-schnorr-fs",
+ "hw3-schnorr-attacks","hw3-conceptual","hw3-amplification","hw3-fs-pcp","circuits-meaning","hw2-circuit-sat","hw2-circuit-soundness",
+ "hw2-circuit-simulation","trace-encoding","roots-unity-cost","plonk-output-input","plonk-gates","plonk-wiring","plonk-rotation",
+ "plonk-correctness","plonk-final","plonk-proof"
 ]);
 const exerciseSources={
  "hw1-vectors":"merkle",
