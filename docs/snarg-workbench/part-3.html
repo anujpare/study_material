@@ -64,6 +64,15 @@
 <label class="range-label">Prover's randomness \(r\) <output class="range-value" data-live-for="r">4</output><input data-key="r" type="range" min="0" max="10" value="4"></label>
 <label class="range-label">Verifier challenge \(c\) <output class="range-value" data-live-for="c">2</output><input data-key="c" type="range" min="0" max="10" value="2"></label><div class="lab-output" aria-live="polite"></div></div></div>
 <p><strong>A note about symbols:</strong> in Schnorr, \(r\) is the prover's private randomness and \(c\) is the verifier's random challenge. In the earlier Fibonacci proof, \(r\) was the <em>verifier's evaluation challenge</em>. The letters happen to be reused in two protocols; their roles are defined by the protocol messages, not by the letter itself.</p>
+<div class="practice-link"><span class="practice-tag">HW2 Problem 3(a–c)</span><a href="#schnorr-homework">Prove completeness, simulation and extraction</a></div>
+<div class="bridge">We have defined the three messages and verified the honest response equation. The homework now asks for two stronger arguments: a simulator that doesn't know the secret, and an extractor that recovers it from two accepted challenges.</div>
+<p class="source">Earlier Sigma-protocol material; Schnorr protocol and completeness.</p>
+</article>
+
+<article class="lesson" data-id="schnorr-homework" data-title="HW2: prove Schnorr's security properties">
+<p class="chapter-tag">HW2 Problem 3(a–c) · Worked proofs</p>
+<h1>Can Schnorr be simulated and its witness extracted?</h1>
+<p class="aim">The previous card established the protocol and its honest verification equation. Now prove honest-verifier zero knowledge by constructing a matching transcript without the secret, and special soundness by extracting the secret from two accepted responses to different challenges.</p>
 <div class="exercise"><span class="exercise-kicker">HW2 · Problem 3(a–c)</span>
 <h3>Complete the three Schnorr proofs</h3>
 <p>Show (a) perfect completeness, (b) honest-verifier zero knowledge, and (c) extraction of a secret exponent from two accepted answers for the same first message \(u\) and different challenges.</p>
