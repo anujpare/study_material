@@ -10,9 +10,9 @@ let cards=[],current=0,req=0,mathReady=false,readingMode="guided";
 const coreIds=new Set([
  "the-question","succinctness","pcp-box","pcp-oracle","merkle","merkle-binding","hw1-vectors","hw3-pcp-argument","hw3-pcp-proof","iop-types",
  "field-foundation","interpolation","root-bound","equality-proof","schwartz-zippel","midterm-polynomial","vanishing-polynomial",
- "zerotest-proof","fibonacci-protocol","polynomial-commitments","polycommit-security",
+ "zerotest-proof","fibonacci-protocol","fibonacci-correctness","polynomial-commitments","polycommit-security",
  "fiat-shamir","hw3-fs-pcp","circuits-meaning","trace-encoding","roots-unity-cost","plonk-output-input",
- "plonk-gates","plonk-wiring","plonk-correctness","plonk-final","plonk-proof"
+ "plonk-gates","plonk-wiring","plonk-rotation","plonk-correctness","plonk-final","plonk-proof"
 ]);
 const exerciseSources={
  "hw1-vectors":"merkle",
