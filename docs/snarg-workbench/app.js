@@ -18,7 +18,9 @@ const exerciseSources={
  "hw1-vectors":"merkle",
  "midterm-polynomial":"schwartz-zippel",
  "schnorr-recall":"fiat-shamir",
+ "schnorr-homework":"schnorr-recall",
  "repetition-hw2":"fiat-shamir",
+ "repetition-parallel":"repetition-hw2",
  "hw3-schnorr-fs":"fiat-shamir",
  "hw3-schnorr-attacks":"fiat-shamir",
  "hw3-conceptual":"fiat-shamir",
@@ -31,6 +33,7 @@ const exerciseSources={
  "exam-fake-trace":"plonk-wiring",
  "exam-security-proof":"zerotest-proof",
  "coverage":"plonk-proof",
+ "coverage-plonk":"coverage",
  "exercise-index":"coverage"
 };
 function routeCards(){return readingMode==="all"?cards:cards.filter(c=>coreIds.has(c.id));}
