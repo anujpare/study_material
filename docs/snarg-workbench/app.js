@@ -25,10 +25,13 @@ const exerciseSources={
  "hw3-amplification":"fiat-shamir",
  "hw3-fs-pcp":"fiat-shamir",
  "hw2-circuit-sat":"circuits-meaning",
+ "hw2-circuit-soundness":"hw2-circuit-sat",
+ "hw2-circuit-simulation":"hw2-circuit-soundness",
  "midterm-interpolation":"polynomial-commitments",
  "exam-fake-trace":"plonk-wiring",
  "exam-security-proof":"zerotest-proof",
- "coverage":"plonk-proof"
+ "coverage":"plonk-proof",
+ "exercise-index":"coverage"
 };
 function routeCards(){return readingMode==="all"?cards:cards.filter(c=>coreIds.has(c.id));}
 function neighbor(delta){
