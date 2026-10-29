@@ -290,7 +290,7 @@ r=H(\operatorname{Encode}(x,c_f,c_q,pp)).
 <p>In the random-oracle model, a polynomial number of tries at different first-message batches still gives only a negligible probability of finding a batch whose hashed challenge can be answered.</p>
 <p class="qed">This closes both parts of the question. Parallel repetition makes the answerable portion of the challenge space exponentially small; Fiat–Shamir then removes the message that carried that challenge, without enlarging the cheating chance to a constant. \(\square\)</p>
 </div></details></div>
-<div class="lab" data-lab="challenges"><div class="lab-top"><strong>How many challenge vectors could pass?</strong><p>Choose the number of challenge bits. For a false statement with special soundness, a fixed first-message batch can answer at most one entire vector.</p></div><div class="lab-content"><label>Number of challenge bits \(t\)<input data-key="t" type="range" min="1" max="6" value="3"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<div class="lab" data-lab="challenges"><div class="lab-top"><strong>How many challenge vectors could pass?</strong><p>Choose the number of challenge bits. For a false statement with special soundness, a fixed first-message batch can answer at most one entire vector.</p></div><div class="lab-content"><label class="range-label">Number of challenge bits \(t\) <output class="range-value" data-live-for="t">3</output><input data-key="t" type="range" min="1" max="6" value="3"></label><div class="lab-output" aria-live="polite"></div></div></div>
 <p class="source">Original HW3, Problem 3(a–b); earlier HW2 repetition exercise.</p>
 </article>
 
