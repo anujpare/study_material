@@ -7,6 +7,7 @@
 <details><summary>Solution</summary><div class="inside">
 <p><strong>True.</strong> If \(\mathrm P=\mathrm{NP}\), membership in every NP language can be decided by a deterministic efficient algorithm. A verifier can simply run that algorithm without asking the prover for anything. That <strong>empty proof</strong> is perfectly complete and sound, and is zero knowledge because no secret witness or other information is transmitted. Here \(\mathrm P\) means efficiently decidable languages, while NP means efficiently verifiable YES certificates.</p>
 </div></details></div>
+<p>For both parts (b.i) and (b.ii), the original question assumes that \(\langle P,V\rangle\) is an interactive zero-knowledge protocol with <strong>perfect completeness</strong> and <strong>soundness error \(1/3\)</strong>. Neither condition changes what an arbitrarily malicious party can choose to reveal or output.</p>
 <div class="exercise"><div class="tag">HW2 Problem 1(b.i) · True or false?</div>
 <h3>A malicious verifier interacting with an honest prover always accepts a true statement when the protocol has perfect completeness.</h3>
 <details><summary>Solution</summary><div class="inside">
