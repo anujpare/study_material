@@ -1,59 +1,73 @@
 <!doctype html><html lang="en"><meta charset="utf-8"><title>SNARGs · Part II</title><body>
-<article class="lesson" data-id="field-foundation" data-title="Why the polynomial method needs a field">
-<p class="chapter-tag">Lecture §3 · The Magic of Polynomials</p>
-<h1>Can we check the hundredth Fibonacci number without computing it?</h1>
-<p class="aim">The PCP construction showed that a verifier can sometimes check a long proof by asking only a few questions. The lecture now develops a different method for arithmetic computations. We will represent the computation's intermediate values by a polynomial, then try to check their relationships without reading every value.</p>
-<p>The prover claims that the hundredth Fibonacci number is \(354\,224\,848\,179\,261\,915\,075\). Every Fibonacci number is the sum of the preceding two. We could calculate all the numbers ourselves, but that defeats our purpose.</p>
-<h2>What must a convincing proof establish?</h2>
-<p>Imagine a function \(f_{\rm fib}\) whose value at position \(i\) is the number the prover claims for that step. We need three conditions: the first two values are correct, the value at position 100 is the public target, and every intervening value follows the recurrence.</p>
+<article class="lesson" data-id="fib-goal" data-title="What exactly must a Fibonacci proof establish?">
+<p class="chapter-tag">Lecture §3 · The computation to certify</p>
+<h1>From a long computation to equations we can check</h1>
+<p>After the PCP construction, the lecture changes the representation of the evidence. To see why, suppose a prover claims that the hundredth Fibonacci number is \(354\,224\,848\,179\,261\,915\,075\). Recomputing the hundred steps would establish the result, but we want the verifier to avoid performing every step.</p>
+<p>The Fibonacci sequence begins \(0,1,1,2,3,5,\ldots\). Each value after the first two is the sum of its two predecessors. Let \(y_i\) denote the prover's proposed value at position \(i\), for \(i=0,\ldots,100\). To establish the claim we need exactly three kinds of facts:</p>
 <div class="math">\[
-\begin{aligned}
-f_{\rm fib}(0)&=0,\qquad f_{\rm fib}(1)=1,\\
-f_{\rm fib}(100)&=354\,224\,848\,179\,261\,915\,075,\\
-f_{\rm fib}(i+2)&=f_{\rm fib}(i+1)+f_{\rm fib}(i)
-\qquad(i=0,\ldots,98).
-\end{aligned}
+y_0=0,\quad y_1=1;\qquad
+y_{100}=354\,224\,848\,179\,261\,915\,075;\qquad
+y_{i+2}=y_{i+1}+y_i\ (0\le i\le98).
 \]</div>
-<p>Why are these conditions sufficient? Starting with 0 and 1, the recurrence forces the value at 2, then at 3, and so on. No later value can be chosen independently. Thus, if all the equations hold, the value at position 100 must be the actual hundredth Fibonacci number.</p>
-<p><strong>Inconsistency in the official notes:</strong> the lecture writes \(f_{\rm fib}(0)=f_{\rm fib}(1)=1\), but its numerical target uses the convention \(F_0=0,F_1=1\). We use the latter so the stated numerical claim is consistent. The verification argument works under either convention, but the indexed final value changes.</p>
-<p>We have not yet saved work. Checking the 99 recurrence equations directly is still expensive. The proposed shortcut is to encode the entire sequence in a polynomial and then test a small number of polynomial equations.</p>
-<h2>Why does the arithmetic use a finite field?</h2>
-<p>A polynomial is an expression such as \(f(X)=a_0+a_1X+\cdots+a_dX^d\). The coefficients are \(a_0,\ldots,a_d\); the degree is the highest exponent with a nonzero coefficient. Evaluating at \(r\) means substituting \(X=r\).</p>
-<p>We will need to construct a polynomial through prescribed values, which requires dividing by nonzero numbers. Later, the verifier will choose a random evaluation point, so we need a finite set of equally likely possibilities. A <strong>finite field</strong> gives us both ordinary division by nonzero elements and a finite set from which to sample.</p>
-<p>For a prime \(p\), the field \(\mathbb F_p\) consists of \(0,1,\ldots,p-1\), with arithmetic modulo \(p\). For example, \(15+5=3\) in \(\mathbb F_{17}\), because 20 has remainder 3. Also, \(5^{-1}=7\) in this field, because \(5\cdot7\equiv1\pmod{17}\). An inverse lets us divide without leaving the field.</p>
-<p>For the real Fibonacci example, the positions 0 through 100 must be distinct field elements, so \(p>100\). To prove the displayed integer value rather than only its remainder modulo \(p\), we can choose a field large enough to avoid wraparound of the relevant sequence values. The small fields in our figures illustrate the algebra only.</p>
-<div class="bridge">The field gives us the arithmetic needed to construct and test a polynomial. Next we will actually construct one through the first Fibonacci values. That solves the representation problem, not yet the problem of proving the recurrence.</div>
-<p class="source">Official lecture §3, Fibonacci example and field-based polynomial representation; the conflicting initial conditions are noted explicitly.</p>
+<p>The first two conditions fix the endpoints. The last condition forces every intermediate value: from 0 and 1 it forces \(y_2=1\), then \(y_3=2\), and continues uniquely through \(y_{100}\). Without the last condition, the prover could simply write down the target and arbitrary intermediate values.</p>
+<p><strong>Source correction.</strong> The lecture states both initial values as 1 but quotes the conventional value of \(F_{100}\), which uses \(F_0=0,F_1=1\). We consistently use the latter convention. The proof method does not depend on which convention is chosen, provided the target matches it.</p>
+<p>Checking 99 separate recurrence equations would still require work proportional to the computation. The polynomial approach will express the whole proposed sequence as one algebraic object and then reduce these many conditions to a test at a random point.</p>
+<div class="bridge">Before constructing that polynomial, we need arithmetic in which interpolation is possible and the verifier can choose a genuinely random evaluation point. That is why the lecture works over a finite field.</div>
+<p class="source">Lecture §3, 100th Fibonacci example and the three required conditions; numerical/initial-condition inconsistency identified.</p>
 </article>
 
-<article class="lesson" data-id="interpolation" data-title="How one polynomial stores many values">
-<p class="chapter-tag">Lecture §3 · Interpolating the computation</p>
-<h1>How can one polynomial represent the Fibonacci sequence?</h1>
-<p class="aim">The prover has a proposed value at every Fibonacci position. We want one polynomial that returns those values when evaluated at the corresponding positions. We will construct it for three values first, then extend the same argument to all 101 values.</p>
-<h2>Fit the first three values</h2>
-<p>We need \(f_2(0)=0\), \(f_2(1)=1\), and \(f_2(2)=1\). Try a line \(f_2(X)=aX+b\). The first condition gives \(b=0\), and the second gives \(a=1\). But the resulting line \(X\) gives 2 at position 2, not 1.</p>
-<p>We need to correct the value at 2 without changing the first two. The product \(X(X-1)\) equals zero at positions 0 and 1. Adding a multiple of it therefore preserves those two values:</p>
-<div class="math">\[f_2(X)=X+cX(X-1).\]</div>
-<p>The new condition \(f_2(2)=1\) gives \(2+2c=1\), so \(c=-1/2\). Division by 2 is permitted in a field of characteristic different from 2. Therefore</p>
-<div class="math">\[\boxed{f_2(X)=X-\frac12X(X-1).}\]</div>
-<p>Substitution gives \(f_2(0)=0\), \(f_2(1)=1\), and \(f_2(2)=1\). We have fitted the three values. We have not proved that they satisfy the Fibonacci recurrence.</p>
+<article class="lesson" data-id="field-foundation" data-title="Why do the calculations use a finite field?">
+<p class="chapter-tag">Lecture §3 · Field arithmetic as a prerequisite</p>
+<h1>Why finite-field arithmetic is needed</h1>
+<p>We want a polynomial whose value at each integer position matches one proposed Fibonacci value. A polynomial is an expression \(f(X)=a_0+a_1X+\cdots+a_dX^d\): each \(a_j\) is a coefficient and its degree \(d\) is the largest exponent with nonzero coefficient. Evaluating \(f(r)\) means replacing \(X\) with \(r\) and calculating.</p>
+<p>Constructing a polynomial through chosen points requires division, while testing it probabilistically requires a finite collection of equally likely challenges. A <strong>finite field</strong> supplies both. The example we use is \(\mathbb F_p\), the set \(\{0,1,\ldots,p-1\}\) with addition and multiplication modulo a prime \(p\). In this field every nonzero element has a multiplicative inverse, so division by it is possible.</p>
+<p>For example, in \(\mathbb F_{17}\), \(15+5=3\), because 20 leaves remainder 3 when divided by 17. Also, \(2^{-1}=9\), because \(2\cdot9=18\equiv1\pmod{17}\). Thus the expression \(1/2\) means the field element 9 in this example; it does not mean the real number 0.5.</p>
+<p>To represent the 101 Fibonacci positions without two different positions collapsing into the same field element, choose \(p>100\). To interpret the final result as the displayed integer rather than merely its residue modulo \(p\), choose \(p\) larger than the claimed Fibonacci values. Later, a much larger field will also make accidental agreement of two different polynomials unlikely.</p>
+<p>All subsequent polynomial equations use field arithmetic, even when we write familiar integer symbols. We may use the small field \(\mathbb F_{17}\) in a figure to make the arithmetic visible, but that figure is not a proof of the 100th integer value.</p>
+<div class="bridge">Now we have the operations needed to fit a polynomial through several specified points. We start with three Fibonacci values, where the entire construction can be written explicitly.</div>
+<p class="source">Lecture §3, field-valued polynomial representation; explanatory prerequisite for interpolation and random evaluation.</p>
+</article>
+
+
+<article class="lesson" data-id="interpolation" data-title="Build a polynomial through three Fibonacci values">
+<p class="chapter-tag">Lecture §3 · Polynomial interpolation</p>
+<h1>Construct the first three encoded values</h1>
+<p>The prover wants a polynomial \(f(X)\) satisfying \(f(0)=0\), \(f(1)=1\), and \(f(2)=1\), the first three Fibonacci values. The simplest attempt is the line \(f(X)=aX+b\). The condition at 0 forces \(b=0\); the condition at 1 then forces \(a=1\). But the line \(f(X)=X\) gives \(f(2)=2\), not 1.</p>
+<p>We need to alter the value at 2 <em>without disturbing</em> the values at 0 and 1. The product \(X(X-1)\) is zero at both earlier positions, so adding any multiple of that product leaves them unchanged. Write</p>
+<div class="math">\[f(X)=X+cX(X-1).\]</div>
+<p>At \(X=2\), this becomes \(2+2c=1\), so \(c=-1/2\). Because our field has characteristic different from 2, division by 2 is allowed. The resulting polynomial is</p>
+<div class="math">\[\boxed{f(X)=X-\tfrac12X(X-1).}\]</div>
+<p>Direct substitution verifies \(f(0)=0\), \(f(1)=1\), and \(f(2)=1\). The polynomial therefore <em>records</em> the proposed values. It does not prove they are correct: the same procedure fits any three values, even a dishonest proposal.</p>
 <div class="lab" data-lab="interp"><div class="lab-top"><strong>Interpolation fits honest and dishonest values</strong><p>Start with 0, 1, 1. Change a claimed value and see that a different polynomial still fits all three points. This is why interpolation alone is not a proof.</p></div><div class="lab-content">
 <label class="range-label">Claimed \(f(0)\) <output class="range-value" data-live-for="a">0</output><input data-key="a" type="range" min="0" max="16" value="0"></label>
 <label class="range-label">Claimed \(f(1)\) <output class="range-value" data-live-for="b">1</output><input data-key="b" type="range" min="0" max="16" value="1"></label>
 <label class="range-label">Claimed \(f(2)\) <output class="range-value" data-live-for="c">1</output><input data-key="c" type="range" min="0" max="16" value="1"></label>
 <div class="lab-output" aria-live="polite"></div></div></div>
-<h2>Extend the construction to all 101 values</h2>
-<p>Suppose a polynomial \(f_j\) already fits positions \(0,\ldots,j\). To fit the next position \(j+1\), add a multiple of the product that vanishes at every earlier position:</p>
-<div class="math">\[f_{j+1}(X)=f_j(X)+c_j\prod_{i=0}^{j}(X-i).\]</div>
-<p>The product is zero at positions \(0,\ldots,j\), so those values do not change. At \(j+1\), the product is nonzero because the positions are distinct field elements. We can divide the required correction by that product to choose \(c_j\). Repeating this gives a polynomial of degree at most 100 through all 101 values. This construction is called <strong>interpolation</strong>.</p>
-<p>We will prove later that the degree-at-most-100 polynomial is unique. More importantly, it need not be short: it can have 101 coefficients. The benefit is not compression. The benefit is that the verifier can now describe the recurrence as an equation involving evaluations of one polynomial.</p>
-<h2>What remains to be checked?</h2>
-<p>For each step \(i\), define the <strong>recurrence discrepancy</strong> as the amount by which the claimed next value differs from the sum of its two predecessors:</p>
-<div class="math">\[D(i)=f_{\rm fib}(i+2)-f_{\rm fib}(i+1)-f_{\rm fib}(i).\]</div>
-<p>The recurrence holds precisely when \(D(i)=0\) for every \(i=0,\ldots,98\). A dishonest sequence can be interpolated, but it cannot make these equations true unless it follows the recurrence.</p>
-<div class="bridge">We still cannot afford to check 99 discrepancies separately. The next theorem tells us why a single random evaluation can test a polynomial identity with a small error probability. After proving that, we will turn the 99 required zeros into one identity.</div>
-<p class="source">Official lecture §3, encoding the Fibonacci computation; interpolation steps supplied as mathematical prerequisites.</p>
+<div class="bridge">The construction succeeded because the correction term vanished at every position we had already fitted. That gives a procedure for extending the polynomial from three values to all 101, which we derive next.</div>
+<p class="source">Lecture §3, polynomial encoding of Fibonacci; explicit three-point interpolation prerequisite.</p>
 </article>
+
+<article class="lesson" data-id="interpolation-general" data-title="Extend interpolation to the complete trace">
+<p class="chapter-tag">Lecture §3 · Interpolation through arbitrary points</p>
+<h1>One polynomial can record the entire proposed sequence</h1>
+<p>Suppose we have already built a polynomial \(f_j(X)\) matching the prover's proposed values \(y_0,\ldots,y_j\) at positions \(0,\ldots,j\). We now want its value at the next position \(j+1\) to be \(y_{j+1}\), while keeping all earlier values fixed.</p>
+<p>Multiply together one factor for each earlier point:</p>
+<div class="math">\[P_j(X)=\prod_{i=0}^{j}(X-i).\]</div>
+<p>At every earlier position \(i\), the factor \(X-i\) becomes zero, so \(P_j(i)=0\). At position \(j+1\), all factors are nonzero and the field permits division by their product. Thus choose the correction coefficient</p>
+<div class="math">\[
+c_j=\frac{y_{j+1}-f_j(j+1)}{P_j(j+1)},\qquad
+f_{j+1}(X)=f_j(X)+c_jP_j(X).
+\]</div>
+<p>The numerator is precisely the value we need to add at the new position. Multiplying \(c_j\) by \(P_j(j+1)\) produces that correction. At earlier positions the added term is zero. This proves that \(f_{j+1}\) matches all \(j+2\) values. Repeating gives a degree-at-most-100 polynomial \(f_{\rm fib}\) through the proposed 101 values. This is <strong>polynomial interpolation</strong>.</p>
+<p>But the polynomial can equally well encode a false sequence. To test the <em>recurrence</em>, we define the discrepancy polynomial</p>
+<div class="math">\[
+D(X)=f_{\rm fib}(X+2)-f_{\rm fib}(X+1)-f_{\rm fib}(X).
+\]</div>
+<p>At each step position \(i=0,\ldots,98\), the required recurrence is equivalent to \(D(i)=0\). We have represented 99 checks as 99 required zeros of one polynomial, but we still need to test them without evaluating at 99 points.</p>
+<div class="bridge">A random evaluation can distinguish different polynomials only if they cannot coincide at too many points. The next theorem establishes exactly how many roots a nonzero polynomial can have.</div>
+<p class="source">Lecture §3, polynomial representation of all Fibonacci steps; interpolation and discrepancy derivation.</p>
+</article>
+
 
 <article class="lesson" data-id="root-bound" data-title="Theorem 1 · Why a false polynomial has few roots">
 
