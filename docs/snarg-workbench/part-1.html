@@ -54,33 +54,43 @@ T_V=O\bigl(\lambda,|x|,\operatorname{polylog}(|w|)\bigr).
 
 </article>
 
-<article class="lesson" data-id="pcp-box" data-title="Why checking three encoded bits can work">
-
-<p class="chapter-tag">Lecture §2 · The box game and PCP theorem</p>
-<h1>Could three checks ever convince us?</h1>
-<p class="aim">Our goal is to verify a long computation without checking every step. Could we simply inspect a few randomly chosen steps? First we need to find out whether a false computation could escape such a test.</p>
-<p>Suppose the prover gives us all the intermediate results and cheats only at the very last step, replacing the correct final value with a different one. There might be a million transitions to check, with just <em>one</em> inconsistent transition. Three uniformly chosen different transitions would catch that particular lie with probability only about \(3/1{,}000{,}000\). Sending short questions is easy; making those questions <em>reveal an error</em> is the hard part.</p>
-<p>So the problem is the <em>representation of the evidence</em>. A false claim can have a trace that agrees with nearly every locally checked step. We need to arrange the proof so that false claims cannot hide behind just a few bad positions.</p>
-<h2>What if the proof were encoded differently?</h2>
-<p>Instead of using the original computation trace, we could <strong>encode</strong> its evidence: construct a new bit string with extra relations that the verifier can test. The question is whether an encoding exists for which a few carefully selected checks detect false claims reliably.</p>
-<p>The surprising answer is yes. The <strong>PCP theorem</strong>—Probabilistically Checkable Proofs—says that every true NP statement has a specially encoded proof that can be verified by reading only a constant number of its bits: three in the version used by this lecture.</p>
-<p>This is a theorem the course gives us, not something proved by the check-digit analogy. The verifier uses the prescribed randomized PCP test; it does not simply pick any three positions from the ordinary witness. For a true statement, an honest prover can construct an encoded proof that always passes; an arbitrary string need not pass. For a false statement, <em>every fixed proof string</em> passes with probability at most \(1/2\), where the probability comes from the verifier's random choice of test:</p>
+<article class="lesson" data-id="pcp-box" data-title="Why ordinary sampling fails">
+<p class="chapter-tag">Lecture §2 · The box game, first question</p>
+<h1>Can three checks detect a false computation?</h1>
+<p class="aim">We want to avoid checking every step of a long computation. Could the verifier inspect only three randomly selected steps and still trust the final result? We should test that idea before looking for a more elaborate proof.</p>
+<p>Suppose the prover supplies a list of \(N\) intermediate transitions, with exactly one incorrect transition. If the verifier chooses three <em>different</em> positions uniformly, the probability of selecting the bad one is \(3/N\). Therefore the probability of missing it is</p>
+<div class="math">\[\Pr[\text{miss the error}]=1-\frac{3}{N}.\]</div>
+<p>For a million transitions, that is \(0.999997\). The verifier would almost always accept this particular false trace. The difficulty is not choosing random positions; it is that the ordinary trace allows a false result to be concentrated in one location.</p>
+<div class="lab" data-lab="naive"><div class="lab-top"><strong>Check the failed sampling method</strong><p>There is exactly one invalid transition. Move \(N\) to see how often three uniform, distinct checks miss it. This is <em>not</em> a PCP test.</p></div><div class="lab-content"><label class="range-label">Number of transitions \(N\) <output class="range-value" data-live-for="n">100</output><input data-key="n" type="range" min="10" max="1000" step="10" value="100"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<h2>What would have to change?</h2>
+<p>Instead of checking the original trace, imagine constructing a <strong>new bit string</strong> from the evidence, with extra relations chosen for a special verification test. We call that construction an <strong>encoding</strong>. Encoding does not mean encryption or compression: the new string may be longer. Its purpose is to make local checks informative.</p>
+<p>The <strong>PCP theorem</strong> (Probabilistically Checkable Proofs) says such an encoding exists for every NP statement. In the version stated by the lecture, the verifier reads <strong>three bits</strong> per test. Three is a <em>constant</em>: it does not increase with the computation's size. The verifier uses randomness to choose a test, and that test determines the three queried positions and how their values are checked. These are not three arbitrary samples from the original trace.</p>
+<p>The theorem gives two guarantees. For every true statement, there is an encoded proof that the verifier always accepts. For every false statement, <em>every fixed encoded proof</em> is accepted with probability at most \(1/2\). An arbitrary string for a true statement need not pass; completeness promises an honest one exists.</p>
 <div class="math">\[
-\Pr[\text{accept}\mid\text{true statement, honest proof}]=1,\qquad
-\Pr[\text{accept}\mid\text{false statement}]\le\tfrac12.
+\begin{aligned}
+x\in L&\ \Longrightarrow\ \exists\pi:\Pr[V^\pi(x)=1]=1,\\
+x\notin L&\ \Longrightarrow\ \forall\pi:\Pr[V^\pi(x)=1]\le\tfrac12.
+\end{aligned}
 \]</div>
-<p>Call the encoded proof \(\pi_{\mathrm{PCP}}\), and let \(M\) be its length in bits. The theorem lets \(M\) grow polynomially with the size of the statement. It's not claiming that the full encoded proof is short; indeed it may be <em>longer</em> than the original witness. The verifier reads only three proof bits per test. Later, when we turn this ideal test into a real protocol, we will account for the cost of identifying their positions.</p>
-<h2>One hidden assumption matters enormously</h2>
-<p>The verifier's guarantees assume it is testing <em>one fixed encoded proof</em>. If we tell a dishonest prover which positions we're about to inspect and let it invent the corresponding answers afterward, we are no longer testing one string. It can supply whatever answers suit those particular questions.</p>
-<p>For the moment, imagine a magic <strong>proof box</strong>. The prover places all of \(\pi_{\mathrm{PCP}}\) inside and locks it before the verifier chooses its questions. The box answers each position query from that same fixed string. We can now apply the PCP theorem honestly.</p>
-<div class="diagram"><div class="flow"><div class="stage"><strong>Prover</strong><p>Fixes the entire encoded string.</p></div><div class="arrow">⟶</div><div class="stage"><strong>Locked proof box</strong><p>Returns bits from the same string.</p></div><div class="arrow">⟷</div><div class="stage"><strong>Verifier</strong><p>Chooses a local randomized PCP test.</p></div></div></div>
-<p>How do we get a smaller error than \(1/2\)? Run \(t\) independent tests against that same fixed proof, using fresh verifier randomness, and accept only when every test passes. For a false statement the acceptance probability is at most</p>
-<div class="math">\[\left(\frac12\right)^t=2^{-t}.\]</div>
-<div class="lab" data-lab="pcp"><div class="lab-top"><strong>Why repeating the random test helps</strong><p>Change the number of independent tests \(t\). The figure shows the proved upper bound, not a simulation of the PCP encoding.</p></div><div class="lab-content"><label class="range-label">Tests \(t\) <output class="range-value" data-live-for="t">4</output><input data-key="t" type="range" min="1" max="10" value="4"></label><div class="lab-output" aria-live="polite"></div></div></div>
-<p>We have overcome the first obstacle <em>only inside the imaginary box model</em>: specially encoded evidence lets a verifier read very little while detecting false claims with bounded error.</p>
-<div class="bridge">There is now exactly one obstacle to making this into a real protocol. Sending the entire PCP string to the verifier would defeat succinctness. Asking the prover directly for three bits would let it adapt its answers. We need to <em>fix a long list with one short commitment and later authenticate a few chosen entries</em>. That's the problem solved by a vector commitment.</div>
-<p class="source">Original lecture §2: box game, three-query PCP theorem, information-theoretic soundness and the reason commitments are needed.</p>
+<p>Here \(x\) is the public statement, \(L\) is the set of true statements, \(\pi\) is the encoded bit string, and \(V^\pi\) denotes the verifier's access to its bits. The probability comes from the verifier's random test.</p>
+<div class="bridge">The theorem solves the <em>testing</em> problem, but its guarantee refers to one fixed encoded proof. A real prover could answer each query differently after learning the test. The next card explains why the lecture introduces a proof oracle to prevent that behavior.</div>
+<p class="source">Official lecture §2, box game and three-query PCP theorem. The theorem's proof is not part of these notes.</p>
+</article>
 
+<article class="lesson" data-id="pcp-oracle" data-title="Why the PCP proof must stay fixed">
+<p class="chapter-tag">Lecture §2 · The box game, fixed-proof model</p>
+<h1>Who ensures that the three answers belong to one proof?</h1>
+<p class="aim">The PCP theorem bounds the chance that a <em>fixed</em> encoded proof passes a random test for a false statement. If the prover learns the queried positions before deciding their values, the theorem's assumption is lost. We need to enforce the fixed-proof rule.</p>
+<p>The lecture first enforces it in an <strong>ideal model</strong>. Imagine a proof box: the prover deposits the entire encoded string \(\pi\) <em>before</em the verifier chooses its test. The box then answers a query at position \(i\) with the stored bit \(\pi_i\). The prover cannot replace that bit after learning \(i\).</p>
+<p>Such a box is called a <strong>proof oracle</strong>. An oracle here means an ideal object that answers permitted queries consistently, not a new cryptographic algorithm. We use it to separate the mathematical test from the later task of enforcing honest answers.</p>
+<div class="diagram"><div class="flow"><div class="stage"><strong>Prover</strong><p>Deposits fixed \(\pi\).</p></div><div class="arrow">⟶</div><div class="stage"><strong>Proof oracle</strong><p>Stores \(\pi\); answers position queries.</p></div><div class="arrow">⟷</div><div class="stage"><strong>Verifier</strong><p>Randomly chooses a PCP test.</p></div></div></div>
+<h2>Can we reduce the remaining soundness error?</h2>
+<p>One PCP test accepts a false statement with probability at most \(1/2\). Run \(t\) tests with fresh independent randomness against the <em>same fixed proof</em>, and accept only if all pass. For a fixed false proof, the probability of passing every test is at most</p>
+<div class="math">\[\Pr[\text{all tests accept}]\le (1/2)^t=2^{-t}.\]</div>
+<div class="lab" data-lab="pcp"><div class="lab-top"><strong>Amplify the soundness guarantee</strong><p>The slider changes the number of independent tests. The output is the proved upper bound, not a simulation of the PCP encoding.</p></div><div class="lab-content"><label class="range-label">Tests \(t\) <output class="range-value" data-live-for="t">4</output><input data-key="t" type="range" min="1" max="10" value="4"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<p>So the ideal verifier reads only three encoded bits per test, and repeating tests makes the soundness error small. But the full encoded string can be very long. Sending it to the verifier would defeat our communication goal, while letting the prover answer queries directly would lose the fixed-proof guarantee.</p>
+<div class="bridge">We therefore need a real cryptographic tool with one precise job: fix a long bit string using a short value, then authenticate a queried bit without revealing the entire string. That is the purpose of a vector commitment.</div>
+<p class="source">Official lecture §2, the fixed-proof box, information-theoretic soundness and repetition.</p>
 </article>
 
 
