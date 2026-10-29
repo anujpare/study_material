@@ -118,31 +118,45 @@ D(X)=f_{\rm fib}(X+2)-f_{\rm fib}(X+1)-f_{\rm fib}(X).
 
 </article>
 
-<article class="lesson" data-id="schwartz-zippel" data-title="Schwartz–Zippel: the same test in several variables">
-
-<p class="chapter-tag">Lecture §3 · Lemma 2, Schwartz–Zippel</p>
-<h1>What changes when the equation has more than one variable?</h1>
-<p class="aim">EqualityTest gives the bound we need when an identity depends on one variable. Before we apply it to Fibonacci, the lecture establishes the more general Schwartz–Zippel lemma for equations involving several variables. This is a generalization, not a new requirement of Fibonacci: our recurrence polynomial still has only one variable. We prove the general result because the same reasoning is useful in other polynomial verification problems.</p>
-<p>Take \(h(X,Y)=XY\) over \(\mathbb F_7\). The polynomial is zero if \(X=0\) or \(Y=0\). If we choose each coordinate independently from the seven field elements, there are \(7\times7=49\) equally likely pairs. Seven have \(X=0\), seven have \(Y=0\), and \((0,0)\) was counted twice. So exactly 13 pairs make this nonzero polynomial zero.</p>
-<p>For multivariable polynomials, we need a measure of degree. In each term, add the exponents of its variables, then take the largest result. For instance \(3X^2Y^3Z+2XY^2\) has <strong>total degree</strong> \(2+3+1=6\).</p>
-<p>Now we can state <strong>Lemma 2, Schwartz–Zippel</strong>. Let \(h(X_1,\ldots,X_m)\) be a <em>nonzero</em> polynomial in \(m\) variables, of total degree at most \(d\). Choose each \(r_i\) independently and uniformly from a finite subset \(\Omega\) of the field. Then</p>
+<article class="lesson" data-id="schwartz-zippel" data-title="Schwartz–Zippel: random tests for many variables">
+<p class="chapter-tag">Lecture §3 · Lemma 2</p>
+<h1>When an identity contains several variables</h1>
+<p>The root bound tells us why a single random evaluation detects a false identity between <em>one-variable</em> polynomials. The lecture also states the more general Schwartz–Zippel lemma. It is not required for the Fibonacci recurrence, which has one variable, but it is useful when a later cryptographic check involves several independently chosen values.</p>
+<p>Consider \(h(X,Y)=XY\) over \(\mathbb F_7\). This nonzero polynomial evaluates to zero whenever either input equals zero. If \(X\) and \(Y\) are sampled independently, there are \(7^2=49\) equally likely pairs. Seven have \(X=0\), seven have \(Y=0\), and \((0,0)\) belongs to both groups. Thus 13 of the 49 choices produce a zero even though \(h\) is not the zero polynomial.</p>
+<p>To bound such accidents we use <strong>total degree</strong>. For a term \(X^aY^bZ^c\), add the exponents \(a+b+c\). The polynomial's total degree is the largest such sum across its nonzero terms; for instance \(3X^2Y^3Z+2XY^2\) has total degree 6.</p>
+<p><strong>Lemma 2 (Schwartz–Zippel).</strong> Let \(h(X_1,\ldots,X_m)\) be a nonzero polynomial of total degree at most \(d\), and let \(\Omega\) be a finite subset of a field \(\mathbb F\). Choose each \(r_i\) independently and uniformly from \(\Omega\). Then</p>
 <div class="math">\[\boxed{\Pr[h(r_1,\ldots,r_m)=0]\le\frac{d}{|\Omega|}.}\]</div>
-<p>It is the same sort of bound as before. The proof explains why the number of variables does not suddenly make the chance of a false acceptance large.</p>
-<div class="proof"><h3>Proof: remove one variable at a time</h3>
-<p>For one variable, this is the root-count result we've already proved. Suppose the result holds for \(m-1\) variables. Collect the powers of the last variable \(X_m\):</p>
-<div class="math">\[h(X_1,\ldots,X_m)=\sum_{j=0}^{t}g_j(X_1,\ldots,X_{m-1})X_m^j,\qquad g_t\ne0.\]</div>
-<p>The last coefficient \(g_t\) is nonzero, because \(t\) is the highest power that actually occurs. Since \(h\) has total degree at most \(d\), \(g_t\) has degree at most \(d-t\).</p>
-<p>First choose random values for the first \(m-1\) variables. There is a chance that \(g_t\) evaluates to zero; by our induction assumption, that chance is at most \((d-t)/|\Omega|\).</p>
-<p>Otherwise \(g_t\) remains nonzero. Once those first values are fixed, the original \(h\) becomes a nonzero polynomial of degree \(t\) in the single variable \(X_m\). The ordinary root bound says the last random choice \(r_m\) can make it zero with conditional probability at most \(t/|\Omega|\).</p>
-<p>Every way the full expression can become zero falls into these cases. Adding their probability bounds gives</p>
-<div class="math">\[\Pr[h(\mathbf r)=0]\le\frac{d-t}{|\Omega|}+\frac{t}{|\Omega|}=\frac{d}{|\Omega|}.\]</div>
-<p class="qed">We have proved the lemma by induction from the one-variable root theorem. As before, a soundness proof must first establish that a false claim produces a <em>nonzero</em> polynomial. \(\square\)</p></div>
-<p>For the example \(XY\), the total degree is 2, so the lemma gives the bound \(2/7=14/49\). We counted 13 zeros. The bound is correct, and it applies to every nonzero polynomial with the stated total degree, not just this example.</p>
-<div class="practice-link"><span class="practice-tag">Use the lemma in an exam problem</span><a href="#midterm-polynomial">Previous midterm 3(c.1): derive a soundness bound for a vector test</a></div>
-<div class="bridge">Schwartz–Zippel gives the same type of guarantee when a false statement produces a nonzero polynomial of several variables. It also supports the related midterm question. But the Fibonacci proof has one variable, so we return to its concrete unresolved task: the discrepancy \(D(X)\) must equal zero at the 99 specific points \(0,1,\ldots,98\). How can we turn all those local equalities into one identity that EqualityTest can check?</div>
-<p class="source">Lecture §3, Lemma 2, including the total-degree definition; its full induction proof is supplied here rather than treating the lemma as unexplained.</p>
-
+<p>Here \(m\) is the number of variables, \(d\) is the total-degree bound, and \(|\Omega|\) is the number of possible values for each random choice. For \(XY\) over \(\mathbb F_7\), this gives \(2/7=14/49\), consistent with our exact count of 13 zeros.</p>
+<div class="bridge">The bound looks like the single-variable root bound, but counting roots directly is no longer enough: a polynomial can vanish on many pairs. The next lesson proves the lemma by reducing one variable at a time to the theorem we already know.</div>
+<p class="source">Lecture §3, Lemma 2 and definition of total degree.</p>
 </article>
+
+<article class="lesson" data-id="schwartz-proof" data-title="Derive the Schwartz–Zippel bound">
+<p class="chapter-tag">Lecture §3 · Proof of Lemma 2</p>
+<h1>Why the multivariable error bound is still \(d/|\Omega|\)</h1>
+<p>The key observation is that after we choose values for all but one variable, the polynomial becomes an ordinary one-variable polynomial. We need to account for the possibility that the coefficient of its highest power becomes zero.</p>
+<div class="proof"><h3>Proof by induction on the number of variables</h3>
+<p>For one variable, the statement follows from the root bound: a nonzero degree-at-most-\(d\) polynomial has at most \(d\) roots among the \(|\Omega|\) possible challenges.</p>
+<p>Suppose the lemma holds for polynomials in \(m-1\) variables. Collect the powers of the last variable \(X_m\) in a nonzero polynomial \(h\):</p>
+<div class="math">\[
+h(X_1,\ldots,X_m)
+=\sum_{j=0}^{t}g_j(X_1,\ldots,X_{m-1})X_m^j,
+\qquad g_t\ne0.
+\]</div>
+<p>The exponent \(t\) is the highest power of \(X_m\) that occurs, and \(g_t\) is its nonzero coefficient polynomial. Since the full polynomial has total degree at most \(d\), this coefficient has total degree at most \(d-t\).</p>
+<p>First choose \(r_1,\ldots,r_{m-1}\). By the induction assumption, the chance that \(g_t(r_1,\ldots,r_{m-1})=0\) is at most \((d-t)/|\Omega|\). Call that the first bad event.</p>
+<p>If the first bad event does <em>not</em> occur, the remaining expression in \(X_m\) has degree exactly \(t\) and a nonzero leading coefficient. Choosing \(r_m\) then makes it zero with probability at most \(t/|\Omega|\), by the one-variable root theorem. These are the only two ways the full expression can become zero, so adding the upper bounds gives</p>
+<div class="math">\[
+\Pr[h(r_1,\ldots,r_m)=0]
+\le\frac{d-t}{|\Omega|}+\frac{t}{|\Omega|}
+=\frac{d}{|\Omega|}.
+\]</div>
+<p class="qed">The induction proves the lemma. It also shows the essential first step in a soundness proof: demonstrate that the cheating claim gives a <em>nonzero</em> polynomial, rather than merely writing down this probability bound. \(\square\)</p></div>
+<div class="practice-link"><span class="practice-tag">Related exam proof</span><a href="#midterm-polynomial">Midterm 3(c.1): bound acceptance of a false vector claim</a></div>
+<div class="bridge">For the Fibonacci recurrence we now return to a single variable. Our unresolved problem is that its discrepancy polynomial must vanish at the <em>99 designated positions</em>, rather than everywhere. A vanishing polynomial will convert these local conditions into one identity that EqualityTest can check.</div>
+<p class="source">Lecture §3, Lemma 2; complete induction argument expanding the lecture's stated result.</p>
+</article>
+
 
 <article class="lesson" data-id="midterm-polynomial" data-title="Midterm 3(c.1) · Full soundness proof">
 <p class="chapter-tag">II · Polynomial reasoning · 2025 midterm, Problem 3(c.1)</p>
@@ -219,32 +233,41 @@ D(X)=\left(\prod_{a\in\Omega}(X-a)\right)q(X)
 <p class="source">Official lecture §3, Theorem 2, the vanishing polynomial and the polynomial divisibility example.</p>
 </article>
 
-<article class="lesson" data-id="zerotest-proof" data-title="ZeroTest: the verifier's actual check">
-<p class="chapter-tag">Lecture §3 · ZeroTest and Lemma 3</p>
-<h1>How can the verifier check the quotient identity?</h1>
-<p class="aim">The vanishing-polynomial theorem tells us that all required zeros are present exactly when \(f(X)=Z_\Omega(X)q(X)\) for some polynomial \(q\). The prover can supply a proposed quotient. Now we must check that the identity is genuine without reading every coefficient or testing every required point.</p>
-<h2>The protocol in the ideal polynomial oracle</h2>
-<p>The lecture states the test for a general polynomial \(f\) of degree at most \(d\) and a set \(\Omega\) of \(k\le d\) field points. The prover fixes \(f\) and a claimed quotient \(q\) in the oracle, with degree at most \(d\) for the quotient. The verifier chooses a uniformly random field point \(r\), requests \(f(r)\) and \(q(r)\), computes the known vanishing polynomial \(Z_\Omega(r)\), and accepts if</p>
+<article class="lesson" data-id="zerotest-protocol" data-title="ZeroTest: check all prescribed roots at one point">
+<p class="chapter-tag">Lecture §3 · ZeroTest construction</p>
+<h1>Turn the vanishing condition into a random check</h1>
+<p>Theorem 2 established that a polynomial \(f(X)\) is zero at every point of a designated set \(\Omega\) exactly when it can be written as \(f(X)=Z_\Omega(X)q(X)\), where \(Z_\Omega\) contains one factor \(X-a\) per required point \(a\). We can now ask the prover to supply the quotient polynomial \(q\), rather than separately checking every zero.</p>
+<p>Assume \(f\) has degree at most \(d\) and \(\Omega\) contains \(k\le d\) distinct field elements. The prover fixes \(f\) and \(q\) in the ideal polynomial oracle, with the quotient degree bounded by \(d\). The verifier then samples \(r\) uniformly from the field, asks the oracle for \(f(r)\) and \(q(r)\), computes the publicly known \(Z_\Omega(r)\), and accepts precisely when</p>
 <div class="math">\[\boxed{f(r)=q(r)Z_\Omega(r).}\]</div>
-<p>Why choose \(r\) only <em>after</em> the polynomials are fixed? If the prover learned \(r\) first, it could invent a quotient whose value at that point makes the equation pass. The random-root bound applies only to one fixed difference polynomial.</p>
+<p>If the required zeros are present, the genuine quotient makes this identity hold for every \(r\). If they are absent, no polynomial quotient can make it hold everywhere. The verifier is therefore using EqualityTest on the two polynomials \(f\) and \(qZ_\Omega\), without having to receive all their coefficients.</p>
 <div class="lab" data-lab="zero"><div class="lab-top"><strong>Try an honest and a dishonest quotient identity</strong><p>Over \(\mathbb F_{17}\), the required zeros are at 1 and 2. Compare the honest polynomial \(f=Z_\Omega q\) with a dishonest polynomial that differs by \(X-3\). At \(r=3\), the false identity happens to pass.</p></div><div class="lab-content">
 <label class="range-label">Verifier's random point \(r\) <output class="range-value" data-live-for="r">3</output><input data-key="r" type="range" min="0" max="16" value="3"></label>
 <label style="flex-direction:row;align-items:center"><input data-key="fake" type="checkbox" checked> Use the dishonest polynomial</label>
 <div class="lab-output" aria-live="polite"></div></div></div>
-<h2>Prove completeness and soundness</h2>
-<div class="proof"><h3>Lemma 3: perfect completeness and error at most \(2d/|\mathbb F|\)</h3>
-<p><strong>Completeness.</strong> If \(f\) is zero at every point of \(\Omega\), Theorem 2 guarantees a polynomial \(q\) with \(f=Z_\Omega q\). The honest prover supplies that quotient. The identity then holds for every possible \(r\), so the verifier always accepts.</p>
-<p><strong>Soundness.</strong> Suppose \(f\) is not zero at every point of \(\Omega\). By Theorem 2, no polynomial quotient can make the identity true everywhere. For any fixed cheating quotient \(q\), define</p>
-<div class="math">\[h(X)=f(X)-q(X)Z_\Omega(X).\]</div>
-<p>This polynomial is <strong>nonzero</strong>, because otherwise \(f=Z_\Omega q\), contradicting the false claim. We must also bound its degree. The polynomial \(f\) has degree at most \(d\), the quotient \(q\) has degree at most \(d\), and \(Z_\Omega\) has degree \(k\le d\). Therefore \(qZ_\Omega\) has degree at most \(d+k\le2d\), and so does \(h\).</p>
-<p>The verifier accepts the false claim only when \(h(r)=0\). The root theorem says a nonzero polynomial of degree at most \(2d\) has at most \(2d\) roots. With \(r\) uniform in \(\mathbb F\),</p>
-<div class="math">\[\boxed{\Pr[\text{false ZeroTest acceptance}]\le\frac{2d}{|\mathbb F|}.}\]</div>
-<p>This proves the lecture's Lemma 3. The proof succeeds because a false vanishing claim produces a <em>fixed, nonzero, low-degree</em> difference polynomial. \(\square\)</p></div>
-<p>The bound may be uninformative if the field is too small. A cryptographic implementation uses a sufficiently large field and enforces the polynomial degree bounds; our small numerical example is only a demonstration.</p>
-<div class="practice-link"><span class="practice-tag">Applied exam practice</span><a href="#exam-security-proof">Derive a ZeroTest soundness bound for a new set of required zeros</a></div>
-<div class="bridge">ZeroTest now gives the verifier a sound way to check that a polynomial is zero at many prescribed points. We can apply it to the Fibonacci discrepancy \(D\), but the final protocol must also check the two starting values and the claimed output. Next we assemble those checks and prove that together they establish the original Fibonacci claim.</div>
-<p class="source">Official lecture §3, ZeroTest protocol and Lemma 3, with its \(2d/|\mathbb F|\) soundness bound.</p>
+<p>The example illustrates why random challenges matter. A dishonest polynomial can happen to satisfy the equality at one point; the theorem about polynomial roots will let us bound how often that can happen.</p>
+<div class="bridge">The remaining task is to prove the exact soundness error. To do that we must establish both that the difference polynomial is nonzero for a false claim, and that its degree is small.</div>
+<p class="source">Lecture §3, ZeroTest protocol, oracle messages and evaluation equation.</p>
 </article>
+
+<article class="lesson" data-id="zerotest-proof" data-title="Lemma 3: derive ZeroTest soundness">
+<p class="chapter-tag">Lecture §3 · Lemma 3</p>
+<h1>Why a false ZeroTest passes with probability at most \(2d/|\mathbb F|\)</h1>
+<p>We have a random test for the claim that \(f\) vanishes on \(\Omega\). Its security follows from the same root theorem as EqualityTest, once we identify the correct difference polynomial.</p>
+<div class="proof"><h3>Perfect completeness</h3>
+<p>If \(f(a)=0\) at all points \(a\in\Omega\), Theorem 2 supplies a polynomial quotient \(q\) satisfying \(f=Z_\Omega q\) everywhere. The honest oracle therefore answers every challenge with values satisfying the verifier's equation. Acceptance has probability 1.</p>
+<h3>Soundness for a false claim</h3>
+<p>Suppose instead that \(f\) is nonzero at some point of \(\Omega\). Theorem 2 tells us that no polynomial \(q\) can satisfy \(f=Z_\Omega q\) as an identity. For whatever quotient the cheating prover fixes, let</p>
+<div class="math">\[h(X)=f(X)-q(X)Z_\Omega(X).\]</div>
+<p>Then \(h\ne0\), because \(h=0\) would mean the prohibited identity holds. We also know \(\deg f\le d\), \(\deg q\le d\), and \(\deg Z_\Omega=k\le d\). Multiplying the last two polynomials gives degree at most \(d+k\le2d\); taking their difference with \(f\) cannot increase that bound. Hence \(\deg h\le2d\).</p>
+<p>The verifier accepts incorrectly exactly when \(h(r)=0\). A nonzero degree-at-most-\(2d\) polynomial has at most \(2d\) roots in a field. Since \(r\) is uniform over the \(|\mathbb F|\) field elements,</p>
+<div class="math">\[\boxed{\Pr[\text{false ZeroTest acceptance}]\le\frac{2d}{|\mathbb F|}.}\]</div>
+<p class="qed">This proves the lecture's Lemma 3, assuming the polynomials and their degree bounds are enforced before the random challenge. \(\square\)</p></div>
+<p>Notice that the statement is an <em>upper bound</em>, not necessarily the actual cheating probability; it is useful only when the field is large compared with \(d\).</p>
+<div class="practice-link"><span class="practice-tag">Applied exam practice</span><a href="#exam-security-proof">Prove the bound for a different collection of required zeros</a></div>
+<div class="bridge">The verifier can now check all 99 Fibonacci recurrence positions with one randomized identity. We still need to check the two starting values and the claimed final value. Those parts combine into the complete polynomial oracle protocol next.</div>
+<p class="source">Lecture §3, ZeroTest and Lemma 3; explicit proof of the \(2d/|\mathbb F|\) error bound.</p>
+</article>
+
 
 <article class="lesson" data-id="fibonacci-protocol" data-title="The complete Fibonacci polynomial IOP">
 <p class="chapter-tag">Lecture §3 · The complete Fibonacci Poly-IOP</p>
