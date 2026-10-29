@@ -197,6 +197,32 @@ function initLab(lab){
     svg+='</svg>';lab.querySelector("#merkle-svg").innerHTML=svg;
     txt(lab,'To open proof entry <b>\\(\\pi_{'+selected+'}\\)</b>, send its value and '+sib.length+' sibling hashes (amber). The verifier hashes upward along the blue branch and compares the resulting root with commitment \\(c\\). Only '+sib.length+' hashes are needed because each sibling authenticates an entire subtree.');
   }
+  if(type==="rotation"){
+    const wire=lab.querySelector('[data-key="wire"]')?.value||"x2";
+    const altered=lab.querySelector('[data-key="alter"]')?.checked??false;
+    const groups={
+      x1:{name:"x₁",value:2,points:["\\omega^{-1}","\\omega^{0}"]},
+      x2:{name:"x₂",value:4,points:["\\omega^{-2}","\\omega^{1}","\\omega^{3}"]},
+      w1:{name:"w₁",value:3,points:["\\omega^{-3}","\\omega^{4}"]},
+      g0:{name:"Gate 0 output",value:8,points:["\\omega^{2}","\\omega^{6}"]},
+      g1:{name:"Gate 1 output",value:7,points:["\\omega^{5}","\\omega^{7}"]}
+    };
+    const g=groups[wire],values=g.points.map(()=>g.value);
+    if(altered)values[values.length-1]=mod(g.value+1,97);
+    const edges=g.points.map((point,i)=>{
+      const j=(i+1)%g.points.length,ok=values[i]===values[j];
+      return {from:point,to:g.points[j],a:values[i],b:values[j],ok};
+    });
+    const rows=edges.map(e=>'<tr><td>\\('+e.from+'\\)</td><td>\\('+e.to+'\\)</td>'+
+      '<td>'+e.a+' = '+e.b+'</td><td>'+(e.ok?'✓':'✕')+'</td></tr>').join("");
+    const broken=edges.filter(e=>!e.ok).length;
+    txt(lab,'<p>The rotation polynomial sends each position to the next position of '+g.name+'.</p>'+
+      '<div class="table-scroll"><table><thead><tr><th>From</th><th>To</th><th>Required values</th><th>Equal?</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+      '<p class="viz-insight">'+(broken===0?
+        'Every equality in this cycle holds, so all occurrences of this logical wire carry one value.':
+        broken+' cycle equalit'+(broken===1?'y fails':'ies fail')+'. Therefore the trace does not represent consistent copies of this wire.')+
+      ' This is precisely the condition \\(f_{\\rm trace}(a)=f_{\\rm trace}(f_{\\rm rot}(a))\\).</p>');
+  }
   if(type==="trace"){
     const mode=lab.querySelector('[data-key="mode"]')?.value??"honest";
     const rows=[[2,4,8,0],[4,3,7,1],[8,7,56,0]];
