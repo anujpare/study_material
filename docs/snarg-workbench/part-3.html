@@ -109,7 +109,8 @@
 <p>The simulator deals with the first session before the second starts. It simulates that session against the verifier in its current state, then continues to the next session and uses the same simulation method again. A malicious verifier might remember the earlier messages, so we must respect its state; we cannot simply say that its sessions are independent.</p>
 <p>Each replacement of a real session by a simulated one is indistinguishable under the original zero-knowledge guarantee. Replacing a polynomial number of sessions one at a time preserves indistinguishability by a <em>hybrid argument</em>: if the first and last transcript distributions were distinguishable, some neighboring replacement would also have to be distinguishable.</p>
 <p class="qed">The simulator can finish and justify each session before the next begins. That is why the ordinary sequential composition proof works. \(\square\)</p>
-</div></details><div class="practice-link"><span class="practice-tag">HW2 Problem 2(b–c)</span><a href="#repetition-parallel">Why parallel simulation is different</a></div>
+</div></details></div>
+<div class="practice-link"><span class="practice-tag">HW2 Problem 2(b–c)</span><a href="#repetition-parallel">Why parallel simulation is different</a></div>
 <div class="bridge">Sequential composition lets the simulator finish one interaction before the next begins. Parallel composition fixes all first messages before any challenge is known. The next card shows why that timing changes the simulator's work.</div>
 <p class="source">Original HW2 Problem 2(a–c), sequential composition argument.</p>
 </article>
