@@ -261,6 +261,14 @@ f_{\rm fib}(r+2)-f_{\rm fib}(r+1)-f_{\rm fib}(r)
 \]</div>
 <p>The left side is exactly \(D(r)\); the right side is exactly \(q(r)Z_\Omega(r)\). We have not invented a new test here: we are applying the ZeroTest whose soundness was proved in the preceding lesson.</p>
 <div class="lab" data-lab="fib"><div class="lab-top"><strong>Why the recurrence fixes every subsequent value</strong><p>Starting from 0 and 1, move through a short Fibonacci sequence. Each new value is forced by the preceding two; there is no freedom to change one value while keeping all recurrence equations true.</p></div><div class="lab-content"><label class="range-label">Step \(i\) <output class="range-value" data-live-for="n">6</output><input data-key="n" type="range" min="0" max="8" value="6"></label><div class="lab-output" aria-live="polite"></div></div></div>
+<div class="bridge">We have specified exactly what the prover fixes and what the verifier checks. But a protocol description is not a proof. Next we show that passing these conditions forces the claimed Fibonacci value, and identify why the ideal protocol is not yet a SNARG.</div>
+<p class="source">Official lecture §3: Fibonacci Poly-IOP messages and verifier equation.</p>
+</article>
+
+<article class="lesson" data-id="fibonacci-correctness" data-title="Why the Fibonacci protocol proves its claim">
+<p class="chapter-tag">Lecture §3 · Completeness, soundness and remaining costs</p>
+<h1>Why does the verifier's check establish the claimed value?</h1>
+<p class="aim">The verifier checks the starting values, the claimed final value, and one random recurrence identity. We must show why these checks force the intended sequence, then identify which parts of the ideal protocol still require cryptography or faster arithmetic.</p>
 <div class="proof"><h3>Why the checks establish the public statement</h3>
 <p>Suppose the endpoint checks hold and the recurrence identity holds as a polynomial identity. By Theorem 2, the discrepancy is zero at every required step. Starting with \(f_{\rm fib}(0)=0\) and \(f_{\rm fib}(1)=1\), the recurrence forces \(f_{\rm fib}(2)=1\). Once positions 0 through \(i+1\) are fixed, the recurrence at position \(i\) forces the value at \(i+2\). By induction, the polynomial's values at all positions through 100 equal the Fibonacci sequence.</p>
 <p>The final endpoint check then establishes that the actual hundredth value equals the public target. Conversely, if the public target is false, the verifier cannot have both correct endpoints and all correct recurrence equations. A false endpoint is rejected directly; otherwise the recurrence is false somewhere and the ZeroTest soundness bound applies.</p>
