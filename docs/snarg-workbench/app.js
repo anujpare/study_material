@@ -10,9 +10,9 @@ let cards=[],current=0,req=0,mathReady=false,readingMode="guided";
 const coreIds=new Set([
  "the-question","succinctness","pcp-box","pcp-oracle","merkle","merkle-binding","hw1-vectors","hw3-pcp-argument","hw3-pcp-proof","iop-types",
  "field-foundation","interpolation","root-bound","equality-proof","schwartz-zippel","midterm-polynomial","vanishing-polynomial",
- "zerotest-proof","fibonacci-protocol","polynomial-commitments",
+ "zerotest-proof","fibonacci-protocol","polynomial-commitments","polycommit-security",
  "fiat-shamir","hw3-fs-pcp","circuits-meaning","trace-encoding","roots-unity-cost","plonk-output-input",
- "plonk-gates","plonk-wiring","plonk-correctness","plonk-final"
+ "plonk-gates","plonk-wiring","plonk-correctness","plonk-final","plonk-proof"
 ]);
 const exerciseSources={
  "hw1-vectors":"merkle",
@@ -28,7 +28,7 @@ const exerciseSources={
  "midterm-interpolation":"polynomial-commitments",
  "exam-fake-trace":"plonk-wiring",
  "exam-security-proof":"zerotest-proof",
- "coverage":"plonk-final"
+ "coverage":"plonk-proof"
 };
 function routeCards(){return readingMode==="all"?cards:cards.filter(c=>coreIds.has(c.id));}
 function neighbor(delta){
