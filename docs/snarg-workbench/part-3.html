@@ -42,6 +42,21 @@
 <p class="source">Official lecture §4, Definition 1: correctness, evaluation binding and the Fibonacci commitment protocol.</p>
 </article>
 
+<article class="lesson" data-id="midterm-interpolation" data-title="Midterm 1(c) · Polynomial to vector commitment">
+<p class="chapter-tag">V · Examination workshop · Previous midterm, Problem 1(c)</p>
+<h1>Midterm: use a polynomial to commit to a list</h1>
+<p class="aim">We saw that interpolation makes one polynomial remember a list of values. So if we can commit to a polynomial, can we also commit to a list by first turning it into a polynomial?</p>
+<div class="exercise"><span class="exercise-kicker">2025 midterm · Problem 1(c) · Two marks</span>
+<p>True or false: given a polynomial commitment for polynomials of degree at most \(d-1\) over a field \(\mathbb F\), we can construct a vector commitment for vectors in \(\mathbb F^d\), keeping the same commitment and opening sizes.</p>
+<details class="worked"><summary>Show the construction and binding proof</summary><div class="answer">
+<p><strong>True</strong>, provided the field has at least \(d\) distinct elements. Given the vector \(\mathbf v=(v_1,\ldots,v_d)\), interpolate the unique polynomial \(f\) of degree at most \(d-1\) satisfying \(f(i)=v_i\) for \(i=1,\ldots,d\).</p>
+<p>Commit to \(f\) using the polynomial commitment. To open vector entry \(i\), open that polynomial commitment at point \(i\). The evaluation value is exactly \(v_i\).</p>
+<p>Why is this binding? If two different vector values \(v_i\ne v_i'\) could both be opened at position \(i\) under the same commitment, they would give two accepted polynomial openings with different values at the same point \(i\). That contradicts polynomial evaluation binding.</p>
+<p class="qed">So the polynomial commitment becomes a position-binding vector commitment, using the very same commitment and opening objects. Their sizes are therefore unchanged. \(\square\)</p>
+</div></details></div>
+<p class="source">Previous midterm Problem 1(c), provided solutions.</p>
+</article>
+
 <article class="lesson" data-id="schnorr-recall" data-title="Why the lecture calls this a Sigma protocol">
 
 <p class="chapter-tag">Prerequisite · Earlier Sigma-protocol coursework for Lecture §4</p>
