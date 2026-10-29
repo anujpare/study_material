@@ -1,0 +1,27 @@
+<article class="lesson">
+<p class="chapter">Homework 2 · Problem 1(a–c) · Conceptual questions</p>
+<h1>Who must behave honestly in a proof's security guarantee?</h1>
+<p class="lead">Completeness, soundness and zero knowledge are three different promises, with different parties required to behave honestly. The first exercise of Homework 2 checks whether we understand those quantifiers before studying repetition and the Hamiltonicity simulator.</p>
+<div class="exercise"><div class="tag">HW2 Problem 1(a) · True or false?</div>
+<h3>If \(\mathrm P=\mathrm{NP}\), then zero-knowledge proofs exist for every NP language.</h3>
+<details><summary>Solution</summary><div class="inside">
+<p><strong>True.</strong> If \(\mathrm P=\mathrm{NP}\), membership in every NP language can be decided by a deterministic efficient algorithm. A verifier can simply run that algorithm without asking the prover for anything. That <strong>empty proof</strong> is perfectly complete and sound, and is zero knowledge because no secret witness or other information is transmitted. Here \(\mathrm P\) means efficiently decidable languages, while NP means efficiently verifiable YES certificates.</p>
+</div></details></div>
+<div class="exercise"><div class="tag">HW2 Problem 1(b.i) · True or false?</div>
+<h3>A malicious verifier interacting with an honest prover always accepts a true statement when the protocol has perfect completeness.</h3>
+<details><summary>Solution</summary><div class="inside">
+<p><strong>False.</strong> Completeness promises acceptance when <em>both parties follow the prescribed protocol</em>. A malicious verifier can ignore every message and output reject. Zero knowledge protects the honest prover's witness against such a verifier, but does not force the verifier to make an honest decision.</p>
+</div></details></div>
+<div class="exercise"><div class="tag">HW2 Problem 1(b.ii) · True or false?</div>
+<h3>An honest verifier interacting with a malicious prover must learn nothing except whether the statement is valid.</h3>
+<details><summary>Solution</summary><div class="inside">
+<p><strong>False.</strong> The zero-knowledge guarantee considers an <em>honest prover</em> interacting with any efficient verifier, including a malicious one. It does not constrain a malicious prover's choice to reveal secrets. A cheating prover could simply send the entire witness to an honest verifier, so the verifier's view would contain information beyond the statement's validity.</p>
+</div></details></div>
+<div class="exercise"><div class="tag">HW2 Problem 1(c) · True or false?</div>
+<h3>Non-interactive zero-knowledge proofs for languages in \(\mathrm P\) exist in the standard model without random oracles.</h3>
+<details><summary>Solution</summary><div class="inside">
+<p><strong>True.</strong> The verifier can decide membership by itself in polynomial time, and the prover sends an empty proof. Because there is no witness-dependent message, simulation is immediate. This does <em>not</em> imply that plain-model non-interactive ZK exists for every NP language; the later NIZK lesson explains why that stronger claim would have major complexity consequences.</p>
+</div></details></div>
+<div class="transition"><p>These answers clarify the security experiments: completeness assumes both parties are honest; soundness allows a malicious prover but uses the prescribed verifier; zero knowledge allows a malicious verifier but uses the prescribed prover. We can now study how those guarantees behave when the interaction is repeated.</p></div>
+<p class="source">Original PETS Exercise Sheet 2 (FS2025, version 1), Problem 1(a–c) and its provided solutions.</p>
+</article>
