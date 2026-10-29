@@ -8,7 +8,7 @@ const prev=byId("previous"), next=byId("next");
 let cards=[],current=0,req=0,mathReady=false,readingMode="guided";
 /* Main teaching route. Every other card is still available at its lesson link. */
 const coreIds=new Set([
- "the-question","succinctness","pcp-box","pcp-oracle","merkle","merkle-binding","hw1-vectors","hw3-pcp-argument","hw3-pcp-proof","iop-types",
+ "the-question","succinctness","pcp-box","pcp-theorem","pcp-oracle","merkle","merkle-binding","hw1-vectors","hw3-pcp-argument","hw3-pcp-proof","iop-types",
  "field-foundation","interpolation","root-bound","equality-proof","schwartz-zippel","midterm-polynomial","vanishing-polynomial",
  "zerotest-proof","fibonacci-protocol","fibonacci-correctness","polynomial-commitments","polycommit-security",
  "fiat-shamir","hw3-fs-pcp","circuits-meaning","trace-encoding","roots-unity-cost","plonk-output-input",
