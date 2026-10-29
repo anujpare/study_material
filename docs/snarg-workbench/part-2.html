@@ -268,6 +268,38 @@ D(X)=\left(\prod_{a\in\Omega}(X-a)\right)q(X)
 <p class="source">Lecture §3, ZeroTest and Lemma 3; explicit proof of the \(2d/|\mathbb F|\) error bound.</p>
 </article>
 
+<article class="lesson" data-id="exam-security-proof" data-title="Applied exercise · Build a ZeroTest soundness proof">
+<p class="chapter-tag">V · Examination workshop · Constructed polynomial problem</p>
+<h1>Exam exercise: prove the error bound yourself</h1>
+<p class="aim">Suppose the verifier checks one random equation. You know about roots and ZeroTest. The trick is to connect the verifier's actual acceptance condition to those theorems without skipping any step.</p>
+<p>Work over a finite field \(\mathbb F\) of prime size \(p>3\). A prover claims a polynomial \(f\), with degree at most 5, is zero at every point in \(\Omega=\{1,2,3\}\). The prover supplies a polynomial \(q\) of degree at most 5. The verifier chooses uniform \(r\in\mathbb F\) and accepts if</p>
+<div class="math">\[f(r)=q(r)(r-1)(r-2)(r-3).\]</div>
+<div class="exercise"><span class="exercise-kicker">Constructed written-exam exercise</span>
+<p>(a) Show perfect completeness. (b) Write a polynomial whose roots are precisely the challenges that could make the verifier accept. (c) Prove that this polynomial is nonzero when the claim is false. (d) Bound its degree and the chance of false acceptance. (e) Explain why the prover must fix \(q\) before seeing \(r\).</p>
+<details class="worked"><summary>Show the complete soundness proof</summary><div class="answer">
+<h3>(a) Completeness</h3>
+<p>If \(f\) really is zero at 1, 2, and 3, the vanishing-polynomial theorem says it has the factor \((X-1)(X-2)(X-3)\). Thus the honest quotient \(q\) makes the verifier's equation true at every point.</p>
+<h3>(b) Make the acceptance condition a zero</h3>
+<p>Define</p>
+<div class="math">\[
+h(X)=f(X)-q(X)(X-1)(X-2)(X-3).
+\]</div>
+<p>By moving the right side of the verifier's equation to the left, we see that the verifier accepts <em>exactly when</em> \(h(r)=0\).</p>
+<h3>(c) Why must \(h\) be nonzero for a false claim?</h3>
+<p>If the claim is false, there is some \(a\in\{1,2,3\}\) for which \(f(a)\ne0\). But at that same \(a\), one factor \((a-a)\) of the product is zero. Therefore</p>
+<div class="math">\[h(a)=f(a)-q(a)\cdot0=f(a)\ne0.\]</div>
+<p>So \(h\) cannot be the zero polynomial, no matter what quotient \(q\) the cheater supplied. This is the key soundness step.</p>
+<h3>(d) How many bad challenges exist?</h3>
+<p>The degree of \(f\) is at most 5. The quotient has degree at most 5, and the product of three linear factors has degree 3, so that whole product has degree at most 8. Therefore \(\deg h\le8\).</p>
+<p>A nonzero degree-at-most-eight polynomial has at most eight roots. Uniform \(r\) is one of those roots with probability at most \(8/p\). Since every probability is also at most 1, the bound is</p>
+<div class="math">\[\boxed{\Pr[\text{false acceptance}]\le\min(1,8/p).}\]</div>
+<h3>(e) Why fix the quotient first?</h3>
+<p>The root bound counts the roots of one <em>fixed</em> nonzero polynomial \(h\). If the cheater learns \(r\) before choosing \(q\), the polynomial itself can depend on \(r\). We would no longer be choosing a random point of a previously fixed polynomial, so this soundness proof would not apply.</p>
+<p class="qed">We identified false acceptance with \(h(r)=0\), proved \(h\ne0\) for a false claim, bounded its degree, and used the number of roots to obtain the exact error guarantee. \(\square\)</p>
+</div></details></div>
+<p class="source">Constructed from ZeroTest in lecture §3; not an original homework question.</p>
+</article>
+
 
 <article class="lesson" data-id="fibonacci-protocol" data-title="The complete Fibonacci polynomial IOP">
 <p class="chapter-tag">Lecture §3 · The complete Fibonacci Poly-IOP</p>
