@@ -206,6 +206,14 @@ f_{\rm trace}(\omega^5)=f_{\rm trace}(\omega^7).
 <p><strong>Universal setup.</strong> Run the polynomial commitment scheme's \(\operatorname{Setup}\) algorithm to produce public parameters \(pp\) for a supported maximum degree or circuit size. This setup does not depend on the particular circuit \(C\).</p>
 <p><strong>Circuit-specific preprocessing.</strong> From the public circuit, compute the selector polynomial \(f_{\rm sel}\) and rotation polynomial \(f_{\rm rot}\), then commit to them. Their commitments become part of the circuit's public verification information. This preprocessing takes \(O(|C|)\) time but can be reused for many proofs about the same circuit.</p>
 <p><strong>Proof for a particular instance.</strong> Given public input \(\mathbf x\) and private witness \(\mathbf w\), the prover evaluates the circuit, interpolates the trace polynomial \(f_{\rm trace}\), and commits to it. The remaining checks use polynomial identities and authenticated evaluations rather than revealing the whole trace.</p>
+<div class="bridge">The universal setup prepares the commitment system, while preprocessing fixes the public circuit's selector and wiring polynomials. We can now describe the four proof components for a particular statement and see how the verifier checks them without reading the entire trace.</div>
+<p class="source">Official lecture §6: universal setup and circuit-specific preprocessing.</p>
+</article>
+
+<article class="lesson" data-id="plonk-proof" data-title="The four authenticated PLONK checks">
+<p class="chapter-tag">Lecture §6 · The final SNARG protocol</p>
+<h1>What does the prover send, and what does the verifier check?</h1>
+<p class="aim">We already proved that four circuit constraints imply a valid witness, and the setup stage has fixed the public selector and wiring polynomials. We now need to authenticate the trace and the polynomial identities that enforce those constraints.</p>
 <h2>The four checks in the final protocol</h2>
 <p><strong>1. Output.</strong> Authenticate the trace evaluation at the last gate's output position and require it to be zero.</p>
 <p><strong>2. Public inputs.</strong> Build \(f_{\rm in}\) from the public statement. The prover commits to \(f_{\rm trace}-f_{\rm in}\) and the quotient for its ZeroTest over the public-input positions. The verifier checks consistency and the vanishing identity at random points.</p>
