@@ -2,7 +2,7 @@
 
 Canonical tutorial: https://anujpare.github.io/study_material/zk-workbench/
 
-This is the permanent one-tutorial coverage map, prepared 2026-10-28. **The 31 navigable lessons cover every subpart of Homework 2 and Homework 3**, including explicitly marked next-chapter HW3 exercises. From Homework 1, all commitment problems needed for the ZK and adjacent Merkle/PCP constructions are included; unrelated FHE and PRF-reduction tasks remain in the separate original HW1 deck rather than interrupting the ZK teaching sequence.
+This is the permanent one-tutorial coverage map, updated 2026-10-29. **The 35 navigable cards (32 in guided reading) cover every subpart of Homework 2 and Homework 3**, including explicitly marked next-chapter HW3 exercises. From Homework 1, all commitment problems needed for the ZK and adjacent Merkle/PCP constructions are included; unrelated FHE and PRF-reduction tasks remain in the separate original HW1 deck rather than interrupting the ZK teaching sequence.
 
 ## Homework 1 — FS2026 v1.2
 
@@ -25,10 +25,10 @@ This is the permanent one-tutorial coverage map, prepared 2026-10-28. **The 31 n
 
 | Part | Subject | Tutorial coverage |
 |---|---|---|
-| 1(a) | P=NP gives empty ZK | [ZK definition](https://anujpare.github.io/study_material/zk-workbench/#zk) |
-| 1(b)(i) | Malicious verifier may reject | [Completeness/soundness](https://anujpare.github.io/study_material/zk-workbench/#guarantees) |
-| 1(b)(ii) | Malicious prover may reveal witness | [Completeness/soundness](https://anujpare.github.io/study_material/zk-workbench/#guarantees) |
-| 1(c) | Empty NIZK for P languages | [ZK definition](https://anujpare.github.io/study_material/zk-workbench/#zk) |
+| 1(a) | P=NP gives empty ZK | [ZK definition](https://anujpare.github.io/study_material/zk-workbench/#hw2-conceptual2-conceptual) |
+| 1(b)(i) | Malicious verifier may reject | [Completeness/soundness](https://anujpare.github.io/study_material/zk-workbench/#hw2-conceptual) |
+| 1(b)(ii) | Malicious prover may reveal witness | [Completeness/soundness](https://anujpare.github.io/study_material/zk-workbench/#hw2-conceptual) |
+| 1(c) | Empty NIZK for P languages | [ZK definition](https://anujpare.github.io/study_material/zk-workbench/#hw2-conceptual) |
 | 2(a) | Sequential simulator | [Composition worked proof](https://anujpare.github.io/study_material/zk-workbench/#homework2) |
 | 2(b) | Parallel malicious-verifier challenge | [Composition worked proof](https://anujpare.github.io/study_material/zk-workbench/#homework2) |
 | 2(c) | Parallel honest-verifier ZK | [Composition worked proof](https://anujpare.github.io/study_material/zk-workbench/#homework2) |
@@ -43,10 +43,10 @@ This is the permanent one-tutorial coverage map, prepared 2026-10-28. **The 31 n
 
 | Part | Subject | Tutorial coverage |
 |---|---|---|
-| 1(a) | Knowledge error implies soundness | [PoK](https://anujpare.github.io/study_material/zk-workbench/#knowledge) |
-| 1(b) | Plain model/CRS qualification | [NIZK](https://anujpare.github.io/study_material/zk-workbench/#fiat-shamir) |
+| 1(a) | Knowledge error implies soundness | [PoK](https://anujpare.github.io/study_material/zk-workbench/#knowledge-extraction) |
+| 1(b) | Plain model/CRS qualification | [NIZK](https://anujpare.github.io/study_material/zk-workbench/#nizk-limits) |
 | 1(c) | Polynomial root bound modulo 6 | [Optional SNARK prerequisite](https://anujpare.github.io/study_material/zk-workbench/#hw3-roots) |
-| 1(d) | FS does not upgrade to statistical ZK | [NIZK](https://anujpare.github.io/study_material/zk-workbench/#fiat-shamir) |
+| 1(d) | FS does not upgrade to statistical ZK | [NIZK](https://anujpare.github.io/study_material/zk-workbench/#fiat-shamir-security) |
 | 2(a) | Noninteractive Schnorr proof | [FS–Schnorr](https://anujpare.github.io/study_material/zk-workbench/#hw3-fs-schnorr) |
 | 2(b) | Public Schnorr verifier | [FS–Schnorr](https://anujpare.github.io/study_material/zk-workbench/#hw3-fs-schnorr) |
 | 2(c) | Q/q restricted guessing bound | [Guessing lab](https://anujpare.github.io/study_material/zk-workbench/#hw3-fs-attacks) |
@@ -63,7 +63,7 @@ This is the permanent one-tutorial coverage map, prepared 2026-10-28. **The 31 n
 | 1–2 | Witnesses and NP, interactive proofs, IP=PSPACE, completeness/soundness | [Witnesses](https://anujpare.github.io/study_material/zk-workbench/#witness); [NP](https://anujpare.github.io/study_material/zk-workbench/#np); [IP/PSPACE](https://anujpare.github.io/study_material/zk-workbench/#lecture-power); [Interaction](https://anujpare.github.io/study_material/zk-workbench/#interaction); [Security](https://anujpare.github.io/study_material/zk-workbench/#guarantees) |
 | 3–5 | Applications, verifier views, ZK and simulation | [Applications](https://anujpare.github.io/study_material/zk-workbench/#lecture-applications); [ZK definition](https://anujpare.github.io/study_material/zk-workbench/#zk) |
 | 5–7 | Commitments, Hamiltonicity, soundness, simulator, repetition | [Commitments](https://anujpare.github.io/study_material/zk-workbench/#commitments); [Hamiltonicity](https://anujpare.github.io/study_material/zk-workbench/#permutation); [Protocol](https://anujpare.github.io/study_material/zk-workbench/#ham-protocol); [Proof](https://anujpare.github.io/study_material/zk-workbench/#ham-proof); [Simulator](https://anujpare.github.io/study_material/zk-workbench/#simulation); [Simulation analysis](https://anujpare.github.io/study_material/zk-workbench/#zk-proof); [Composition](https://anujpare.github.io/study_material/zk-workbench/#repetition); [Cost](https://anujpare.github.io/study_material/zk-workbench/#cost) |
-| 7–8 | Proof of knowledge, extractor, rewinding | [Knowledge](https://anujpare.github.io/study_material/zk-workbench/#knowledge) |
+| 7–8 | Proof of knowledge, extractor, rewinding | [Knowledge definition](https://anujpare.github.io/study_material/zk-workbench/#knowledge); [Hamiltonicity extractor](https://anujpare.github.io/study_material/zk-workbench/#knowledge-extraction) |
 | 8–9 | Sigma protocols, special soundness, HVZK, Schnorr | [Sigma](https://anujpare.github.io/study_material/zk-workbench/#sigma); [Schnorr](https://anujpare.github.io/study_material/zk-workbench/#schnorr); [HVZK](https://anujpare.github.io/study_material/zk-workbench/#schnorr-zk); [Extraction](https://anujpare.github.io/study_material/zk-workbench/#schnorr-ext) |
 | 10–11 | NIZK, plain-model limits, Fiat–Shamir and ROM | [Fiat–Shamir](https://anujpare.github.io/study_material/zk-workbench/#fiat-shamir); [HW3 FS](https://anujpare.github.io/study_material/zk-workbench/#hw3-fs-schnorr); [Attack bounds](https://anujpare.github.io/study_material/zk-workbench/#hw3-fs-attacks); [Amplification](https://anujpare.github.io/study_material/zk-workbench/#hw3-amplify) |
 
