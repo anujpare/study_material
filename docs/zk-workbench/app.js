@@ -19,7 +19,8 @@
     ["repetition","Sequential versus parallel messages","card-12.html"],
     ["cost","Why parallel simulation is hard","card-13.html"],
     ["homework2","Homework: composition proof","card-14.html"],
-    ["knowledge","Proof of knowledge and rewinding","card-15.html"],
+    ["knowledge","Proof of knowledge: what must be extracted?","card-15.html"],
+    ["knowledge-extraction","Extract a Hamiltonian cycle by rewinding","knowledge-extraction.html"],
     ["sigma","Sigma protocols and soundness","card-16.html"],
     ["schnorr","Schnorr’s protocol and completeness","card-17.html"],
     ["schnorr-zk","Schnorr’s zero-knowledge simulator","card-18.html"],
@@ -40,7 +41,7 @@
   const coreIds=new Set([
     "witness","np","interaction","guarantees","lecture-power","lecture-applications",
     "zk","commitments","permutation","ham-protocol","ham-proof","simulation","zk-proof",
-    "repetition","cost","homework2","knowledge","sigma","schnorr","schnorr-zk","schnorr-ext",
+    "repetition","cost","homework2","knowledge","knowledge-extraction","sigma","schnorr","schnorr-zk","schnorr-ext",
     "circuits","fiat-shamir","hw3-fs-schnorr","hw3-amplify"
   ]);
   const exerciseOrigins={
