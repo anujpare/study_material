@@ -16,6 +16,7 @@
 <p>The verifier accepts only if the final output opens to 1 <em>and</em> every gate Sigma proof verifies.</p>
 <p class="qed">An honest satisfying assignment makes every committed gate relation true and the final output 1. Correct openings and perfect completeness of the gate protocols therefore make the circuit proof complete. \(\square\)</p>
 </div></details></div>
+<div class="practice-link"><span class="practice-tag">Continue HW2 Problem 4</span><a href="#hw2-circuit-soundness">Part (b): prove soundness</a> · <a href="#hw2-circuit-simulation">Part (c): simulate the proof</a></div>
 <div class="bridge">This constructs the three-message protocol and proves honest acceptance. The next question is soundness: why must an unsatisfiable circuit make at least one gate relation false?</div>
 <p class="source">HW2 Problem 4(a), original task and worked solution.</p>
 </article>
@@ -34,6 +35,7 @@
 <p>Since \(N\) is polynomial in the input size, a non-negligible \(\varepsilon\) would give a non-negligible soundness failure for one gate proof.</p>
 <p class="qed">Thus an accepted proof for an unsatisfiable circuit would break an underlying gate protocol. The reason we can reach this conclusion is that binding and shared wire commitments force a <em>single</em> wire assignment. \(\square\)</p>
 </div></details></div>
+<div class="practice-link"><span class="practice-tag">Continue HW2 Problem 4</span><a href="#hw2-circuit-simulation">Part (c): zero-knowledge simulation</a></div>
 <div class="bridge">Binding and shared commitments connect all local gate checks to one global assignment. The remaining homework question is different: can we simulate the verifier's view without knowing a satisfying assignment?</div>
 <p class="source">HW2 Problem 4(b), original task and worked solution.</p>
 </article>
