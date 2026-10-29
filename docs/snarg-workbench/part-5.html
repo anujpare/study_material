@@ -16,6 +16,14 @@
 <p>The verifier accepts only if the final output opens to 1 <em>and</em> every gate Sigma proof verifies.</p>
 <p class="qed">An honest satisfying assignment makes every committed gate relation true and the final output 1. Correct openings and perfect completeness of the gate protocols therefore make the circuit proof complete. \(\square\)</p>
 </div></details></div>
+<div class="bridge">This constructs the three-message protocol and proves honest acceptance. The next question is soundness: why must an unsatisfiable circuit make at least one gate relation false?</div>
+<p class="source">HW2 Problem 4(a), original task and worked solution.</p>
+</article>
+
+<article class="lesson" data-id="hw2-circuit-soundness" data-title="HW2 4(b): prove circuit soundness">
+<p class="chapter-tag">HW2 · Problem 4(b)</p>
+<h1>Why must an unsatisfiable circuit fail a gate check?</h1>
+<p class="aim">The preceding construction commits to each logical wire once and proves every gate relation. To establish soundness, we must show that a false circuit statement forces at least one of those gate relations to be false, then use the gate protocols' soundness guarantees.</p>
 <div class="exercise"><span class="exercise-kicker">HW2 · Problem 4(b)</span>
 <h3>Why can't this prove a false circuit?</h3>
 <p>Prove that if a dishonest prover convinces the verifier that an unsatisfiable circuit is satisfiable with non-negligible probability, one of the underlying gate Sigma protocols must violate its soundness guarantee.</p>
@@ -26,6 +34,14 @@
 <p>Since \(N\) is polynomial in the input size, a non-negligible \(\varepsilon\) would give a non-negligible soundness failure for one gate proof.</p>
 <p class="qed">Thus an accepted proof for an unsatisfiable circuit would break an underlying gate protocol. The reason we can reach this conclusion is that binding and shared wire commitments force a <em>single</em> wire assignment. \(\square\)</p>
 </div></details></div>
+<div class="bridge">Binding and shared commitments connect all local gate checks to one global assignment. The remaining homework question is different: can we simulate the verifier's view without knowing a satisfying assignment?</div>
+<p class="source">HW2 Problem 4(b), original task and worked solution.</p>
+</article>
+
+<article class="lesson" data-id="hw2-circuit-simulation" data-title="HW2 4(c): simulate the circuit proof">
+<p class="chapter-tag">HW2 · Problem 4(c)</p>
+<h1>Can the gate proofs be simulated without a witness?</h1>
+<p class="aim">Completeness and soundness establish that the verifier accepts exactly the right kind of circuit statement. Zero knowledge asks a different question: can the verifier's view be reproduced without knowing the satisfying assignment? We must examine whether the proposed gate simulators actually apply to the commitments used.</p>
 <div class="exercise"><span class="exercise-kicker">HW2 · Problem 4(c)</span>
 <h3>Could we simulate the proof without the satisfying assignment?</h3>
 <p>The homework asks for an informal honest-verifier zero-knowledge simulator. Explain the intended construction and where an additional justification is needed.</p>
@@ -35,7 +51,7 @@
 <p>The ordinary definition of honest-verifier zero knowledge only guarantees a simulator for true statements. It doesn't automatically say that the gate simulator produces accepting transcripts for false dummy triples. A rigorous proof would need an additional property of the particular gate protocol, or a justified simulation technique that handles those false dummy statements.</p>
 <p class="qed">The homework's intended high-level strategy is to hide the wires and simulate the gate transcripts. The provided assumptions alone do not complete the simulation proof when the dummy gate statements are false. That missing condition must be stated rather than skipped. \(\square\)</p>
 </div></details></div>
-<p class="source">HW2, Problem 4(a–c), and its provided solutions. The caveat in (c) keeps the original informal solution distinct from a fully justified theorem.</p>
+<p class="source">HW2 Problem 4(c), original task and worked solution. The stated limitation is preserved explicitly.</p>
 </article>
 
 <article class="lesson" data-id="midterm-interpolation" data-title="Midterm 1(c) · Polynomial to vector commitment">
