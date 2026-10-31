@@ -102,3 +102,11 @@
 #lessons .reading .zk-world-steps{display:grid;gap:5px;text-align:center;padding:10px 5px;border:1px solid #d8dfdb;border-radius:9px;background:white;font-size:17.33px}
 #lessons .reading .zk-world-steps span:nth-child(2){font-weight:700;color:#647068}
 @media(max-width:600px){#lessons .reading .zk-worlds{grid-template-columns:1fr}#lessons .reading .zk-world>p{font-size:15.83px!important}#lessons .reading .zk-world>strong,#lessons .reading .zk-world-steps{font-size:15.83px}}
+
+/* Two-gate circuit: one visual object for the shared wire and commitment. */
+#lessons .reading .zk-circuit{display:flex;flex-direction:column;align-items:center;gap:4px;padding:13px;border:1px solid #d0d9d2;border-radius:12px;background:#f8faf8;margin:15px 0}
+#lessons .reading .zk-circuit-stage,#lessons .reading .zk-circuit-wire{border:1px solid #cbd6d0;background:white;border-radius:9px;max-width:100%;width:min(100%,400px);padding:10px 14px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;line-height:1.5;font-size:15.83px}
+#lessons .reading .zk-circuit-stage>strong,#lessons .reading .zk-circuit-wire>strong{font-size:19px}
+#lessons .reading .zk-circuit-wire{border:2px solid #238666;background:#e5f3ea}
+#lessons .reading .zk-circuit-meta{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#5b6d64;font-weight:730}
+#lessons .reading .zk-circuit-arrow{font-weight:800;color:#238666;font-size:22px;line-height:1.1}

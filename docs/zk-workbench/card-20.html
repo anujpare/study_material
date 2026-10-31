@@ -9,9 +9,42 @@
 <div class="control-row"><button data-demo="gate" data-value="XOR" aria-pressed="true">XOR</button><button data-demo="gate" data-value="AND">AND</button></div>
 <div class="control-row"><label for="gate-a">Input \(a\): <strong id="gate-a-label">1</strong></label><input id="gate-a" data-demo="gate-slider" type="range" min="0" max="1" value="1"></div>
 <div class="control-row"><label for="gate-b">Input \(b\): <strong id="gate-b-label">0</strong></label><input id="gate-b" data-demo="gate-slider" type="range" min="0" max="1" value="0"></div>
+<div class="control-row"><label for="gate-t">Second gate's other input \(t\): <strong id="gate-t-label">1</strong></label><input id="gate-t" data-demo="gate-slider" type="range" min="0" max="1" value="1"></div>
+<div class="zk-circuit" role="group" aria-label="Two-gate Boolean circuit with one shared committed wire">
+<div class="zk-circuit-stage">
+ <span class="zk-circuit-meta">Inputs to gate 0</span>
+ <strong id="gate-diagram-inputs">a=1, b=0</strong>
+ <span>Committed separately as \(c_a,c_b\)</span>
+</div>
+<div class="zk-circuit-arrow">↓</div>
+<div class="zk-circuit-stage">
+ <span class="zk-circuit-meta">Gate 0</span>
+ <strong id="gate-diagram-type">XOR</strong>
+ <span>Checks relation \(d=a\oplus b\) or \(d=a\land b\)</span>
+</div>
+<div class="zk-circuit-arrow">↓</div>
+<div class="zk-circuit-wire">
+ <span class="zk-circuit-meta">ONE shared wire, ONE commitment</span>
+ <strong id="gate-diagram-shared">d=1</strong>
+ <span>Use the SAME \(c_d\) for output of gate 0 and input of gate 1.</span>
+</div>
+<div class="zk-circuit-arrow">↓</div>
+<div class="zk-circuit-stage">
+ <span class="zk-circuit-meta">Gate 1</span>
+ <strong id="gate-diagram-second">AND(d, t=1)</strong>
+ <span>Checks \(e=d\land t\)</span>
+</div>
+<div class="zk-circuit-arrow">↓</div>
+<div class="zk-circuit-stage">
+ <span class="zk-circuit-meta">Final output (opened by prover)</span>
+ <strong id="gate-diagram-final">e=1</strong>
+ <span>The verifier requires the opened output to be 1.</span>
+</div>
+</div>
+<p class="small">The diagram reveals bit values for teaching. The verifier normally sees commitments, not the hidden wire bits. The final output is deliberately opened.</p>
 <div class="feedback" id="gate-result" aria-live="polite"></div>
 </div></section>
-<p>The crucial detail is wiring. If gate 0's output feeds gate 1, the value at those two positions must be the <em>same bit</em>. Use one commitment for each logical wire and reuse it wherever that wire appears. Otherwise the prover could use different values at the two ends of the same wire.</p>
+<p>Follow the shared wire in the diagram: gate 0 computes bit \(d\), and gate 1 uses that <em>same</em> bit as an input. If gate 0's output feeds gate 1, the value at those two positions must be the <em>same bit</em>. Use one commitment for each logical wire and reuse it wherever that wire appears. Otherwise the prover could use different values at the two ends of the same wire.</p>
 <div class="exercise"><div class="tag">Homework 2 · Problem 4(a)</div><h3>Construct a Sigma protocol using \(N\) parallel gate proofs</h3><p>Assume we already have perfectly binding, computationally hiding bit commitments and Sigma proofs for the XOR and AND relations. The question is how to combine one gate proof per gate into a proof for the entire circuit.</p>
 <details><summary>Protocol · commitment, challenge, response and verification</summary><div class="inside">
 <p><strong>First message.</strong> Starting from a satisfying assignment, calculate every wire bit \(m_w\), choose fresh randomness \(r_w\), and commit once per wire: \(c_w=\mathrm{Commit}(m_w;r_w)\). For each gate \(j\), make the first message \(u_j\) of its XOR or AND Sigma proof using the commitments to its three wires. Send all commitments and \(u_j\) messages together.</p>

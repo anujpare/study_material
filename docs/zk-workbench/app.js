@@ -445,10 +445,25 @@
   function gateUpdate(){
     if(!$("gate-result"))return;
     const gate=document.querySelector("[data-demo='gate'][aria-pressed='true']")?.dataset.value||"XOR";
-    const a=Number($("gate-a")?.value||0),b=Number($("gate-b")?.value||0);
-    const out=gate==="XOR"?(a^b):(a&b);
-    $("gate-result").textContent="Gate "+gate+": input bits "+a+" and "+b+" determine output bit "+out+". A gate-level proof must establish that the commitments to its two inputs and its output satisfy this exact relation. Reusing the SAME wire commitment in neighboring gates prevents inconsistent claims about a shared wire.";
-    $("gate-a-label").textContent=a;$("gate-b-label").textContent=b;
+    const a=Number($("gate-a")?.value||0),b=Number($("gate-b")?.value||0),t=Number($("gate-t")?.value||0);
+    const d=gate==="XOR"?(a^b):(a&b);
+    const e=d&t;
+    $("gate-a-label").textContent=a;
+    $("gate-b-label").textContent=b;
+    if($("gate-t-label"))$("gate-t-label").textContent=t;
+    if($("gate-diagram-inputs")){
+      $("gate-diagram-inputs").textContent="a="+a+", b="+b;
+      $("gate-diagram-type").textContent=gate;
+      $("gate-diagram-shared").textContent="d="+d;
+      $("gate-diagram-second").textContent="AND(d="+d+", t="+t+")";
+      $("gate-diagram-final").textContent="e="+e+(e===1?" · required output":" · would be rejected");
+    }
+    feedback("gate-result",
+      "Gate 0 checks "+gate+"("+a+","+b+")="+d+". Gate 1 checks AND("+d+","+t+")="+e+
+      ". Both gates use the SAME shared wire commitment c_d. "+
+      (e===1?"Opening the final output gives 1; the verifier must ALSO validate both gate proofs.":
+      "The output opens to 0, so the verifier rejects a claim that this assignment satisfies the circuit."),
+      e===1?"good":"bad");
   }
   function fsUpdate(mode){
     const flow=$("fs-flow");

@@ -68,3 +68,7 @@ The standalone lab now has test scripts for stable 35-card URLs, lecture-ordered
 
 ### Lecture-aligned opening correction (2026-10-31)
 The first lesson now uses the lecture's prime-product example to define public statement, witness and verifier with a working two-factor check. Hamiltonian-cycle terminology and the graph-specific exhaustive-search slider are introduced only when that application appears in its own lesson, immediately before the graph proof.
+
+
+### Circuit wire continuity (2026-10-31)
+The Homework 2 circuit lesson now shows two connected gates with one shared committed wire. Inputs and gate types update actual values in both gates, making the reason to reuse a wire commitment observable before proving circuit soundness.
