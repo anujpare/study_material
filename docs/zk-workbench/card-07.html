@@ -4,16 +4,23 @@
 <p class="lead">In the Hamiltonicity proof, the prover knows a Hamiltonian cycle of the public graph \(G\). Revealing that cycle with its original vertex labels would reveal the witness. We therefore need to preserve the mathematical claim while concealing the correspondence between the proof's vertex labels and those of \(G\).</p>
 <h2>Relabeling a graph without changing its edges</h2>
 <p>Write \(G=(V,E)\), where \(V=\{1,2,3,4,5\}\) is the vertex set and \(E\) is the set of undirected edges. The lecture uses a <strong>permutation</strong> \(\Pi:V\to V\) to map each <em>new</em> vertex label back to its original label. Because \(\Pi\) is a bijection, the inverse \(\Pi^{-1}\) maps original labels to new labels.</p>
-<p>Suppose the prover knows the Hamiltonian cycle \(1\to2\to3\to4\to5\to1\). Here is one possible permutation:</p>
-<div class="math">\[\Pi(1)=3,\quad\Pi(2)=1,\quad\Pi(3)=5,\quad\Pi(4)=2,\quad\Pi(5)=4\]<p class="math-caption">The demonstration fixes this permutation so you can inspect its effect. The honest prover chooses a fresh random permutation in each protocol execution.</p></div>
+<p>Suppose the prover knows cycle \(1\to2\to3\to4\to5\to1\). The lecture's notation \(\Pi(i)\) means: <strong>if the relabeled graph uses vertex label \(i\), which vertex of the original graph does that label represent?</strong> Its inverse \(\Pi^{-1}(j)\) answers the opposite question: where did original vertex \(j\) move in the relabeled graph? These are addresses (vertex labels), not secret data values.</p>
+<div id="perm-table" class="diagram" aria-live="polite">
+<p class="diagram-note">Initially, the lecture's mapping \(\Pi\) is: 1→3, 2→1, 3→5, 4→2, 5→4. The lab will show both directions in a table.</p>
+</div>
 <p>Construct a new graph \(B\) by assigning its edge \(\{i,j\}\) exactly when the original graph has edge \(\{\Pi(i),\Pi(j)\}\). Equivalently, each original edge \(\{u,v\}\) becomes \(\{\Pi^{-1}(u),\Pi^{-1}(v)\}\) in \(B\). This is a graph <strong>isomorphism</strong>. An edge remains an edge; only its endpoints' labels change.</p>
 <div class="two-diagrams">
 <div class="diagram"><div class="graph-title">Original public graph \(G\)</div><div id="graph-original"></div></div>
 <div class="diagram"><div class="graph-title">Relabeled graph \(B\)</div><div id="graph-permuted"></div></div>
 </div>
 <div class="graph-legend"><span>Edges of the known Hamiltonian cycle</span><span class="gray">Other edges in the same graph</span></div>
-<p>Follow one edge through the permutation. The original edge \(\{1,2\}\) becomes \(\{\Pi^{-1}(1),\Pi^{-1}(2)\}=\{2,4\}\). Applying \(\Pi^{-1}\) to every vertex of the known cycle gives \(2\to4\to1\to5\to3\to2\). The sequence uses the same graph structure, expressed in new vertex labels.</p>
-<section class="lab"><div class="lab-head"><div class="tag">Follow the graph isomorphism</div><h3>Why is the relabeled cycle still Hamiltonian?</h3><p>Reveal the permutation. Every green edge in the relabeled graph must correspond to an edge in the original graph.</p></div><div class="lab-body"><div class="control-row"><button data-demo="perm-view" data-value="reveal">Show the vertex permutation</button></div><div class="feedback" id="perm-result" aria-live="polite">The permutation acts on both endpoints of every edge. No edge is added or deleted by relabeling.</div></div></section>
+<p>The complete graph drawings above follow the current mapping. Changing the permutation changes which physical drawing position carries each vertex label; it <em>does not</em> add or remove edges. The table explicitly identifies both directions, so the relabelled cycle below it can be traced without guessing which direction the notation means.</p>
+<section class="lab">
+<div class="lab-head"><div class="tag">Change the actual permutation</div><h3>Which labels move, and which edges stay?</h3><p>Select two different permutations of five vertices. The table and graph both update. The honest prover would sample its permutation randomly in every execution.</p></div>
+<div class="lab-body">
+<div class="control-row"><button data-demo="perm-select" data-value="one" aria-pressed="true">Permutation 1</button><button data-demo="perm-select" data-value="two">Permutation 2</button></div>
+<div id="perm-result" class="feedback" aria-live="polite">Choose a permutation to inspect how the original cycle is relabeled.</div>
+</div></section>
 <h2>Express the relabeling using an adjacency matrix</h2>
 <p>Let \(B_{ij}\) denote the adjacency-matrix entry for the relabeled graph. It equals 1 precisely when vertices \(i\) and \(j\) are adjacent in \(B\). To determine whether that edge exists, use \(\Pi\) to recover the two original vertices and check membership in \(E\):</p>
 <div class="math">\[B_{ij}=1\quad\Longleftrightarrow\quad

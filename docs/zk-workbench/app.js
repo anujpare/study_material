@@ -177,9 +177,9 @@
   const fixedPermRoute=fixedRoute.map(v=>permutation[v]);
   const point={1:[180,27],2:[325,135],3:[270,285],4:[90,285],5:[35,135]};
   const edgeKey=(a,b)=>[Number(a),Number(b)].sort((x,y)=>x-y).join("-");
-  function drawGraph(id,{permuted=false,route=null}={}){
+  function drawGraph(id,{permuted=false,route=null,mapping=permutation}={}){
     const container=$(id);if(!container)return;
-    const map=x=>permuted?permutation[x]:x;
+    const map=x=>permuted?mapping[x]:x;
     const active=new Set((route||[]).slice(1).map((v,i)=>edgeKey(route[i],v)));
     const real=new Set(edges.map(([a,b])=>edgeKey(map(a),map(b))));
     const pos=v=>point[v];
@@ -230,11 +230,30 @@
       feedback("commit-result","REJECT. The prover tries to open the same commitment as "+(1-lockedBit)+", but it was fixed to "+lockedBit+". Perfect binding forbids two valid openings of one commitment to different values.","bad");
     }
   }
-  function permute(reveal){
+  /* The lecture's Π maps NEW vertex labels back to OLD labels.
+     "permutation" is explicitly the inverse Π^{-1}: OLD label -> NEW label.
+     This choice makes the graph drawing operation a direct original-to-new mapping. */
+  const alternateOriginalToNew={1:5,2:3,3:2,4:1,5:4};
+  function permute(choice="one"){
+    const originalToNew=choice==="two"?alternateOriginalToNew:permutation;
+    const newToOriginal={};
+    for(let original=1;original<=5;original++)newToOriginal[originalToNew[original]]=original;
+    const route=fixedRoute.map(original=>originalToNew[original]);
     drawGraph("graph-original",{route:fixedRoute});
-    drawGraph("graph-permuted",{permuted:true,route:fixedPermRoute});
+    drawGraph("graph-permuted",{permuted:true,route,mapping:originalToNew});
+    const table=$("perm-table");
+    if(table){
+      let markup='<div class="table-wrap"><table class="matrix" aria-label="Two directions of the vertex permutation"><thead><tr><th>New label i in B</th>';
+      for(let i=1;i<=5;i++)markup+='<th>'+i+'</th>';
+      markup+='</tr></thead><tbody><tr><th>Original label Π(i) in G</th>';
+      for(let i=1;i<=5;i++)markup+='<td>'+newToOriginal[i]+'</td>';
+      markup+='</tr><tr><th>New label Π⁻¹(j) for original j</th>';
+      for(let i=1;i<=5;i++)markup+='<td>'+originalToNew[i]+'</td>';
+      markup+='</tr></tbody></table></div>';
+      table.innerHTML=markup;
+    }
     const info=$("perm-result");
-    if(info)info.textContent=reveal?"The lecture maps new labels back to original labels: Π(1)=3, Π(2)=1, Π(3)=5, Π(4)=2, Π(5)=4. Applying the inverse permutation to the original cycle 1→2→3→4→5→1 yields 2→4→1→5→3→2. Every mapped pair remains an edge, so the two graphs are isomorphic.":"The green edges represent the same Hamiltonian cycle under a permutation of the vertex labels. Choose “Show the vertex permutation” to inspect the mapping.";
+    if(info)info.textContent="Original edge {1,2} becomes edge {"+originalToNew[1]+","+originalToNew[2]+"} in B. The full cycle 1→2→3→4→5→1 becomes "+route.join("→")+". Each edge and each distinct vertex is preserved, so the relabeled graph is isomorphic to G. The verifier does not learn these mappings in the c=1 branch.";
   }
   function matrixForChallenge(c){
     const permEdges=new Set(edges.map(([a,b])=>edgeKey(permutation[a],permutation[b])));
@@ -507,7 +526,7 @@
   }
   function initializeLab(){
     drawFalseGraph("ham-false-public",false);drawFalseGraph("ham-false-hidden",null);
-    drawGraph("witness-graph");npUpdate();drawGraph("graph-original",{route:fixedRoute});drawGraph("graph-permuted",{permuted:true,route:fixedPermRoute});
+    drawGraph("witness-graph");npUpdate();permute("one");
     drawGraph("extract-b",{permuted:true});drawGraph("extract-g");
     scheduleUpdate();compareCost();schnorrUpdate();schnorrExtract();gateUpdate();oddsUpdate();pedersenUpdate();fsQueryUpdate();fsAmplifyUpdate();merkleUpdate();pspaceUpdate();
   }
@@ -521,7 +540,8 @@
       case"toy-trial":toyTrial();break;
       case"security":securityCase(v);break;
       case"commit":commitment(v);break;
-      case"perm-view":permute(true);break;
+      case"perm-view":permute("one");break;
+      case"perm-select":permute(v);break;
       case"ham-challenge":matrixForChallenge(Number(v));break;
       case"ham-false":hamCase(v);break;
       case"ham-false-challenge":hamFalseChallenge(Number(v));break;
