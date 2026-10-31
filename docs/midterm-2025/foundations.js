@@ -1,4 +1,4 @@
-/* Beginner prerequisites for the PETS 2025 midterm. Each card teaches a concrete example before the source-based formal lesson. */
+/* Beginner prerequisites for the PETS 2025 midterm. */
 window.MIDTERM_FOUNDATIONS = {
   "1a": [
     [
@@ -26,6 +26,10 @@ window.MIDTERM_FOUNDATIONS = {
     [
       "What simulation adds",
       "Zero knowledge asks whether the verifier could have seen an equally plausible conversation without receiving the witness. Its <b>simulator</b> produces that view. If the prover simply sends 3, extraction is easy but the secret is exposed."
+    ],
+    [
+      "Why the knowledge-error qualifier matters",
+      "Knowledge error measures how often a prover might convince the verifier without meeting the extractor's knowledge requirement. Saying it is negligible means this exceptional probability becomes extremely small as the security parameter λ increases. It does <b>not</b> add a privacy requirement."
     ]
   ],
   "1c": [
@@ -161,7 +165,7 @@ window.MIDTERM_FOUNDATIONS = {
   "2e": [
     [
       "What the group notation means",
-      "In a cyclic group G, raising a group element g to exponent t means combining g with itself t times using the group operation. The rule <code>(g^r)^k = g^(rk)</code> is what makes blinding reversible. Because the group has prime order p, exponents are calculated modulo p."
+      "A <b>cyclic group</b> has a generator g: every element can be written as g raised to some exponent. <b>Order p</b> means the group has p elements. The exponent rule <code>(g^r)^k = g^(rk)</code> makes blinding reversible, and exponents are reduced modulo p. The exam lets us assume the PRF is secure, so we do not need to prove the DDH assumption implies it."
     ],
     [
       "Why a modular inverse exists",
@@ -177,7 +181,7 @@ window.MIDTERM_FOUNDATIONS = {
     ],
     [
       "How programming the random oracle helps",
-      "In the Random Oracle Model, a simulator may choose the oracle's answer at an input not already fixed. It can set H(x) to the value needed to make its fabricated messages consistent. A negligible exceptional event occurs when H(x) is the identity element; treat the server-privacy statement as holding up to this event."
+      "In the Random Oracle Model, a simulator may select the oracle answer at an input that has not already been fixed, allowing it to build a consistent transcript backwards. There is one rare special case for <b>client-input privacy</b>: H(x) might be the group's identity element, in which case blinding does not hide it. This event has probability 1/p per new hash value."
     ]
   ],
   "3a": [
@@ -241,7 +245,7 @@ window.MIDTERM_FOUNDATIONS = {
     ],
     [
       "Why randomness turns this into a proof",
-      "For a fixed invalid x, the difference between the two sides is a nonzero polynomial f in the random coordinates. The <b>Schwartz–Zippel lemma</b> says that a nonzero polynomial of total degree at most d, evaluated at uniform independent field values, equals zero with probability at most d/p. Here d = 2."
+      "For a fixed invalid x, subtract the right side from the left: this is a polynomial f in the random coordinates. <b>Nonzero polynomial</b> means at least one coefficient is nonzero; it may still evaluate to zero on some inputs. The <b>Schwartz–Zippel lemma</b> says that a nonzero polynomial of total degree at most d, evaluated at independent uniform field values, equals zero with probability at most d/p. Here d = 2."
     ],
     [
       "Why the field characteristic matters",
@@ -249,6 +253,10 @@ window.MIDTERM_FOUNDATIONS = {
     ]
   ],
   "3c2": [
+    [
+      "What a 'language' means here",
+      "In proof systems, a <b>language L</b> is simply the collection of allowed inputs. Here L consists of the N possible vectors with exactly one 1 and all other coordinates 0, such as <code>[0,1,0]</code>. The all-zero vector is <b>not</b> allowed for this final voting check."
+    ],
     [
       "What changes from the previous exercise",
       "Question (c.1) checked a simple equation but did not hide the vote. Now the vote vector x and the proof vector π are shared across two servers, and the verifier must work without reconstructing either secret vector."
