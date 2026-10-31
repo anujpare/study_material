@@ -3,7 +3,7 @@
 **Permanent URL:** https://anujpare.github.io/study_material/zk-workbench/
 **GitHub repo:** anujpare/study_material
 **Landing page:** docs/index.html
-**Content coverage:** 31 integrated navigable lessons. Full PETS Zero Knowledge Lecture 5–8, all HW2 subquestions, all HW3 subquestions (including optional next-chapter overlap), plus relevant HW1 commitment and Merkle prerequisites.
+**Content coverage:** 35 integrated navigable lessons. Full PETS Zero Knowledge Lecture 5–8, all HW2 subquestions, all HW3 subquestions (including optional next-chapter overlap), plus relevant HW1 commitment and Merkle prerequisites.
 
 See [HOMEWORK_COVERAGE.md](HOMEWORK_COVERAGE.md) for a subpart-by-subpart audit, exclusions and source provenance.
 
@@ -48,3 +48,7 @@ See [HOMEWORK_COVERAGE.md](HOMEWORK_COVERAGE.md) for a subpart-by-subpart audit,
 ### Audit status (2026-10-28)
 
 GitHub connector writes and readbacks succeeded. All 31 manifest lesson files were inspected for source presence, balanced article/details/paragraph tags, balanced inline/display LaTeX delimiters, and duplicate element IDs; no problems were detected. JavaScript syntax parsed successfully. Mocked interaction tests verified the witness checker, Hamiltonicity opening matrix and four soundness challenge cases, fixed first-message behavior, sequential scheduling, simulator mismatch, Schnorr verification/simulation/extraction, Pedersen double openings, Merkle authentication paths, IP/PSPACE counter, and Fiat–Shamir probability calculations. These are source/logic tests, not an actual screen rendering. Independently verified live browser rendering of the latest GitHub Pages deployment remains outstanding; do not claim visual QA is complete.
+
+
+### Rebuild in progress (2026-10-31)
+The guided reading order begins with the lecture's statements, witnesses and interactive proofs, before Hamiltonicity. The navigation counts, participant diagrams and repetition schedule are corrected. Homework and stable lesson IDs are retained. This entry records changes actually committed; full browser and pedagogy verification remain separate.

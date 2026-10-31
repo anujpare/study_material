@@ -1,7 +1,7 @@
 <article class="lesson">
 <p class="chapter">Part V · Repeating a proof</p>
 <h1>What changes when we repeat the proof in parallel?</h1>
-<p class="lead">The Hamiltonicity proof has soundness error \(1/2\) in one execution. To make a false claim less likely to pass, we need repeated independent challenges. But we have <em>two</em> requirements to preserve: soundness against a cheating prover and efficient simulation without the witness. The way we schedule repeated messages can affect the second requirement. Suppose we repeat the same proof three times. We could finish one proof before starting the next, or send all three first messages together. These may sound equivalent, but a simulator has very different information at each moment.</p>
+<p class="lead">One Hamiltonicity execution has the messages first commitment \(u\), then verifier challenge \(c\), then prover answer \(z\). To reduce the chance that a false claim passes, we repeat this interaction. The mathematical difference between sequential and parallel repetition is not the number of challenges; it is <em>when the verifier sends them</em>.</p>
 <h2>First fix what one execution looks like</h2>
 <p>One execution has the order \(u\to c\to z\): commitment, challenge, response. The first message \(u\) contains the committed graph information. The verifier must choose \(c\) only after receiving \(u\).</p>
 <div class="math">\[\underbrace{P\rightarrow V:u}_{\text{commit}}\quad\longrightarrow\quad\underbrace{V\rightarrow P:c}_{\text{challenge}}\quad\longrightarrow\quad\underbrace{P\rightarrow V:z}_{\text{response}}\]<p class="math-caption">For repetition \(i\), write these messages as \(u_i,c_i,z_i\). The subscript \(i\) simply tells us which copy of the protocol we are discussing.</p></div>
@@ -13,7 +13,11 @@
 <div id="schedule-messages" class="timeline"></div>
 <div id="schedule-explain" class="feedback" aria-live="polite"></div>
 </div></section>
-<h2>Now identify the mathematical difference</h2>
+<div class="zk-dual-schedule">
+<div><strong>Sequential: finish each run first</strong><div class="zk-schedule-line">\(u_1\to c_1\to z_1\)</div><div class="zk-schedule-line">\(u_2\to c_2\to z_2\)</div><div class="zk-schedule-line">\(u_3\to c_3\to z_3\)</div></div>
+<div><strong>Parallel: finish each message stage first</strong><div class="zk-schedule-line">\(u_1,u_2,u_3\)</div><div class="zk-schedule-line">\(c_1,c_2,c_3\)</div><div class="zk-schedule-line">\(z_1,z_2,z_3\)</div></div>
+</div>
+<p>For either schedule there are three runs and three challenge bits. The subscripts 1, 2, and 3 label the runs. The server-side verifier does not magically know the answers: in parallel it merely sends its challenges after receiving all three first messages.</p><h2>Now identify the mathematical difference</h2>
 <p><strong>Sequential:</strong> \(u_1,c_1,z_1,u_2,c_2,z_2,\ldots\). The simulator can finish, including any rewinds, the first session before constructing the first message of the second.</p>
 <p><strong>Parallel:</strong> send all \((u_1,\ldots,u_n)\) first, then receive all \((c_1,\ldots,c_n)\), then send all \((z_1,\ldots,z_n)\). Now the simulator has to prepare every first message before learning <em>any</em> challenge.</p>
 <div class="role risk"><div class="tag">Why “three challenges” alone is not a complete description</div><p>The number of repetitions hasn't changed. The difference is precisely which messages must be fixed before the verifier reveals its questions.</p></div>

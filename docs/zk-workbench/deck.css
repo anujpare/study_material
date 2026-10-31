@@ -58,3 +58,37 @@
 .reading .math{font-size:17px}
 #merkle-tree svg{width:590px;min-width:590px}
 @media(max-width:460px){.reading .message{grid-template-columns:68px minmax(0,1fr);font-size:14px}}
+
+/* Connected-explanation redesign: source-faithful message exchanges and readable mobile typography. */
+#lessons .reading .lesson{max-width:770px;margin-inline:auto}
+#lessons .reading .lesson h1{line-height:1.18;letter-spacing:-.02em;margin-bottom:18px}
+#lessons .reading .lesson p{max-width:72ch;line-height:1.6}
+#lessons .reading .lesson p.lead{font-size:20px;line-height:1.6;color:#344441}
+#lessons .reading .lesson p:not(.chapter):not(.source):not(.diagram-note):not(.math-caption):not(.small){font-size:20px;line-height:1.62}
+#lessons .reading .lesson .source,#lessons .reading .lesson .diagram-note,#lessons .reading .lesson .math-caption,#lessons .reading .lesson .lab p,#lessons .reading .lesson .lab .feedback,#lessons .reading .zk-actors,#lessons .reading .zk-exchange{font-size:17.33px!important;line-height:1.55!important}
+#lessons .reading .lesson .lab .control-row button{font-size:17.33px;min-height:44px}
+#lessons .reading .zk-actors{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:20px 0 0}
+#lessons .reading .zk-actors>div{border:1px solid #ccd6cf;border-radius:12px 12px 0 0;padding:12px;background:#eff5f0;min-width:0}
+#lessons .reading .zk-actors>div+div{background:#edf3f7;border-color:#ccd6e0}
+#lessons .reading .zk-actors strong{display:block;font-weight:750}
+#lessons .reading .zk-actors span{display:block;color:#54635c;margin-top:4px}
+#lessons .reading .zk-exchange{border:1px solid #ccd7cf;border-top:0;border-radius:0 0 12px 12px;margin:0 0 22px;overflow:hidden}
+#lessons .reading .zk-exchange-row{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #dce5df}
+#lessons .reading .zk-exchange-row:first-child{border-top:0}
+#lessons .reading .zk-exchange-row>div{padding:12px;min-width:0}
+#lessons .reading .zk-exchange-row>div:first-child{background:#f8faf8;border-right:1px solid #dce5df}
+#lessons .reading .zk-exchange-row>div:last-child{background:#f7f9fa}
+#lessons .reading .zk-exchange-row b{display:block;font-weight:700;color:#285473;margin-bottom:5px}
+#lessons .reading .zk-exchange-row.zk-from-right b{color:#29654c}
+#lessons .reading .zk-dual-schedule{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+#lessons .reading .zk-dual-schedule>div{padding:13px;border:1px solid #ccd8d0;background:#f6f9f6;border-radius:12px;min-width:0}
+#lessons .reading .zk-dual-schedule strong{font-size:17.33px;display:block;margin-bottom:9px}
+#lessons .reading .zk-schedule-line{padding:9px 0;border-top:1px solid #d9e1dc;text-align:center}
+#lessons .reading .zk-exchange mjx-container,#lessons .reading .zk-schedule-line mjx-container{max-width:100%;overflow-x:auto}
+@media(max-width:600px){#lessons .reading .lesson p.lead,#lessons .reading .lesson p:not(.chapter):not(.source):not(.diagram-note):not(.math-caption):not(.small){font-size:18.5px;line-height:1.57}
+#lessons .reading .lesson .source,#lessons .reading .lesson .diagram-note,#lessons .reading .lesson .math-caption,#lessons .reading .lesson .lab p,#lessons .reading .lesson .lab .feedback,#lessons .reading .zk-actors,#lessons .reading .zk-exchange{font-size:15.83px!important}
+#lessons .reading .zk-exchange-row>div,#lessons .reading .zk-actors>div{padding:9px}
+#lessons .reading .zk-dual-schedule{gap:7px}
+#lessons .reading .zk-dual-schedule>div{padding:8px}
+#lessons .reading .zk-dual-schedule strong,#lessons .reading .zk-schedule-line{font-size:15.83px}
+}

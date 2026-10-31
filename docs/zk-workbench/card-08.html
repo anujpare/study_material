@@ -1,11 +1,12 @@
 <article class="lesson">
 <p class="chapter">Part III · Graph Hamiltonicity</p>
 <h1>Two questions about the same hidden graph</h1>
-<p class="lead">Relabeling preserves a Hamiltonian cycle, but sending a relabeled graph alone proves nothing: the prover could choose any graph that happens to contain a cycle. We need to verify <em>both</em> that the committed graph \(B\) is an isomorphic copy of the public graph \(G\), and that \(B\) contains a Hamiltonian cycle. Revealing everything would expose the witness, so the verifier randomly asks for just one of these two checks. The commitments force both possible answers to refer to the same \(B\).</p>
-<div class="timeline">
-<div class="message prover"><span class="who">Prover</span><span>Selects one random \(\Pi\), defines \(B\) by \(B_{ij}=1\ \Longleftrightarrow\ \{\Pi(i),\Pi(j)\}\in E\), and sends \(\mathrm{Commit}(\Pi)\) plus commitments to every \(B_{ij}\).</span></div>
-<div class="message"><span class="who">Verifier</span><span>Samples a single fair bit \(c\in\{0,1\}\). Only one branch is requested in any real execution.</span></div>
-<div class="message prover"><span class="who">Prover</span><span>Provides the openings requested by the chosen \(c\), without altering the original commitments.</span></div>
+<p class="lead">The prover knows a Hamiltonian cycle in the public graph \(G\). It commits to a randomly relabeled graph \(B\) without revealing it. The verifier needs evidence that \(B\) is a relabeling of \(G\) and that \(B\) contains a cycle. The protocol arranges these two checks so that the verifier asks for only one per execution.</p>
+<div class="zk-actors"><div><strong>Prover \(P(G,\mathrm{HamCycle})\)</strong><span>Has a cycle in \(G\), and picks secret random permutation \(\Pi\).</span></div><div><strong>Verifier \(V(G)\)</strong><span>Knows the public graph \(G\), not the cycle.</span></div></div>
+<div class="zk-exchange">
+<div class="zk-exchange-row"><div>Construct relabeled graph \(B\). Commit to its adjacency bits \(B_{ij}\) and to \(\Pi\).</div><div><b>\(P\longrightarrow V:\mathrm{Commit}(B_{ij}),\mathrm{Commit}(\Pi)\)</b> See commitments, not hidden values.</div></div>
+<div class="zk-exchange-row zk-from-right"><div><b>\(V\longrightarrow P:c\)</b> Receive a bit \(c\).</div><div>Sample uniform \(c\in\{0,1\}\).</div></div>
+<div class="zk-exchange-row"><div>If \(c=0\), open all graph entries and \(\Pi\). If \(c=1\), open the committed cycle edges.</div><div><b>\(P\longrightarrow V:\mathrm{Openings}\)</b> Check relabeling if \(c=0\); check a cycle if \(c=1\).</div></div>
 </div>
 <section class="lab">
 <div class="lab-head"><div class="tag">Two hypothetical challenges · fixed first message</div><h3>What exactly does the verifier inspect?</h3><p>Try both challenges in the diagram. We are changing what the verifier asks to reveal, not changing the committed graph. A real verifier sends just one challenge in any execution.</p></div>

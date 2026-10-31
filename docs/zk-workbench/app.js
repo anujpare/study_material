@@ -1,7 +1,6 @@
 (() => {
   "use strict";
   const cards = [
-    ["witness","A claim and its witness","card-01.html"],
     ["np","Why checking is different from finding","card-02.html"],
     ["interaction","The verifier asks a question","card-03.html"],
     ["guarantees","Completeness and soundness","card-04.html"],
@@ -11,6 +10,7 @@
     ["commitments","Hiding and binding","card-06.html"],
     ["hw1-security","HW1 · Hiding and binding","hw1-security.html"],
     ["hw1-pedersen","HW1 · Pedersen and ElGamal","hw1-pedersen.html"],
+    ["witness","A claim and its witness","card-01.html"],
     ["permutation","Relabeling a Hamiltonian graph","card-07.html"],
     ["ham-protocol","The two Hamiltonicity challenges","card-08.html"],
     ["ham-proof","Proving the protocol works","card-09.html"],

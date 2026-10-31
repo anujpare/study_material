@@ -1,13 +1,16 @@
 <article class="lesson">
 <p class="chapter">Part I · Interactive proofs</p>
 <h1>Why the verifier asks a surprise question</h1>
-<p class="lead">In the Hamiltonian-cycle example, a witness can be checked once it is revealed. But our larger goal is to convince the verifier <em>without simply handing over the witness</em>. We need another way to distinguish a prover who knows the witness from one who merely guesses convincing messages. An interactive proof lets the verifier choose an unpredictable challenge <em>after</em> the prover has committed to its first message. We will first study why this timing helps, then construct the actual graph protocol.</p>
+<p class="lead">An interactive proof lets the verifier ask questions instead of receiving only a single completed proof. The lecture's definition allows several messages. We first inspect one three-message example, which later becomes the structure of Hamiltonicity and Sigma protocols. The important issue is the order in which information becomes known.</p>
 <h2>The order of the messages creates the security</h2>
-<div class="timeline">
-<div class="message prover"><span class="who">Prover P</span><span>Prepares and sends a first message \(u\), before knowing the verifier's question.</span></div>
-<div class="message"><span class="who">Verifier V</span><span>Samples a challenge \(c\) and sends it to the prover. In our simple example, \(c\) is either 0 or 1.</span></div>
-<div class="message prover"><span class="who">Prover P</span><span>Returns a response \(z\). The verifier checks whether \((u,c,z)\) is consistent with a true statement.</span></div>
+<div class="zk-actors"><div><strong>Prover \(P\)</strong><span>Knows public statement \(x\), prepares first message.</span></div><div><strong>Verifier \(V\)</strong><span>Knows \(x\), chooses challenge after first message.</span></div></div>
+<div class="zk-exchange">
+<div class="zk-exchange-row"><div>Prepare first message \(u\) without seeing the challenge.</div><div><b>\(P\longrightarrow V: u\)</b> Receive fixed first message.</div></div>
+<div class="zk-exchange-row zk-from-right"><div><b>\(V\longrightarrow P: c\)</b> Receive challenge \(c\).</div><div>Choose fresh challenge \(c\in\{0,1\}\).</div></div>
+<div class="zk-exchange-row"><div>Compute response \(z\) to that challenge.</div><div><b>\(P\longrightarrow V: z\)</b> Check \((x,u,c,z)\).</div></div>
 </div>
+<p>The symbols \(u\), \(c\), and \(z\) label the first message, challenge, and answer. This is one example of an interactive proof, not a requirement that every interactive proof has exactly three messages.</p>
+
 <p>That's the useful feature of interaction. The prover sends a first message that it cannot change. The verifier then chooses a challenge using fresh randomness. Only then may the prover answer. The order matters because the challenge was unknown when the first message was fixed.</p>
 <section class="lab">
 <div class="lab-head"><div class="tag">Toy challenge game</div><h3>Make one preparation before the verifier draws its challenge</h3><p>For this toy experiment, assume the cheater can answer either question 0 or question 1, but not both. This is a model of the timing rule, not yet a real cryptographic proof.</p></div>
