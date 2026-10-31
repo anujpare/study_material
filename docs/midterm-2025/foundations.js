@@ -29,7 +29,7 @@ window.MIDTERM_FOUNDATIONS = {
     ],
     [
       "Why the knowledge-error qualifier matters",
-      "Knowledge error measures how often a prover might convince the verifier without meeting the extractor's knowledge requirement. Saying it is negligible means this exceptional probability becomes extremely small as the security parameter λ increases. It does <b>not</b> add a privacy requirement."
+      "Knowledge error κ is a threshold: when a prover convinces the verifier with probability greater than κ, the proof-of-knowledge property requires an efficient extractor to obtain a witness. Negligible κ makes this exceptional threshold tiny as the security parameter λ grows; it says nothing about hiding the witness."
     ]
   ],
   "1c": [
@@ -268,6 +268,10 @@ window.MIDTERM_FOUNDATIONS = {
     [
       "Linearity is the trick",
       "With p = 11, take the hidden combined vector <code>[0,1,2]</code> split into <code>[4,3,7]</code> and <code>[7,9,6]</code>. For query <code><b>q</b> = [1,3,2]</code>, the servers get local inner products 5 and 2 modulo 11. Their sum 7 equals the direct inner product <code>0×1 + 1×3 + 2×2 = 7</code>."
+    ],
+    [
+      "The privacy simulator in ordinary arithmetic",
+      "Suppose the simulated full answer to a linear query is 7 modulo 11, while server S₀'s own answer is 5. A simulator can invent the other server's answer as <code>(7 − 5) mod 11 = 2</code>. The pair of answers is consistent, yet the simulator never needed the hidden vote or proof."
     ],
     [
       "Why a common seed is enough",
