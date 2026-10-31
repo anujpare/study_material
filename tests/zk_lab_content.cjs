@@ -31,7 +31,7 @@ for(const card of cards){
  assert.equal(new Set(ids).size,ids.length,card.id+" duplicate element id");
 }
 const np=read("card-02.html");
-assert(np.toLowerCase().includes("a particular input"));
+assert(np.includes("public <strong>input"),"The public input must be named before NP");
 assert(np.indexOf("a <strong>witness")<np.toLowerCase().indexOf("definition of np"));
 assert(np.includes("factor-p")&&np.includes("factor-q"),"Prime-factor witness control must remain in the opening lesson");
 assert(read("card-01.html").includes("np-slider"),"Graph search control belongs in Hamiltonicity lesson");
