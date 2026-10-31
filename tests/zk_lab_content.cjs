@@ -35,6 +35,7 @@ assert(np.includes("public <strong>input"),"The public input must be named befor
 assert(np.indexOf("a <strong>witness")<np.toLowerCase().indexOf("definition of np"));
 assert(np.includes("factor-p")&&np.includes("factor-q"),"Prime-factor witness control must remain in the opening lesson");
 assert(read("card-01.html").includes("np-slider"),"Graph search control belongs in Hamiltonicity lesson");
+assert(read("card-20.html").includes("gate-diagram-shared"),"Two gate circuit requires one shared committed wire");
 const per=read("card-07.html");
 assert(per.includes("perm-select")&&per.includes("perm-table"));
 assert(app.includes('case"perm-select"'));
