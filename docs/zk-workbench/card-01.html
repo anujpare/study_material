@@ -1,7 +1,7 @@
 <article class="lesson">
 <p class="chapter">Part I · What counts as a proof?</p>
 <h1>How do we verify a claimed Hamiltonian cycle?</h1>
-<p class="lead">Consider a graph \(G\) with five vertices. Someone claims that \(G\) contains a Hamiltonian cycle. We want to understand what evidence would establish that claim, and what the verifier actually needs to check.</p>
+<p class="lead">The lecture's zero-knowledge example uses a graph that may contain a Hamiltonian cycle. We already know what a statement, witness, prover, and verifier are. Before constructing that protocol, let's inspect precisely how a cycle can serve as a witness and what the verifier checks.</p>
 <h2>Define the graph and the claim</h2>
 <p>Write \(G=(V,E)\). The set \(V\) contains the <strong>vertices</strong>, and \(E\) contains the <strong>edges</strong>. In this example, \(V=\{1,2,3,4,5\}\). An undirected edge \(\{u,v\}\in E\) means that vertices \(u\) and \(v\) are adjacent. The graph is undirected, so \(\{u,v\}\) and \(\{v,u\}\) refer to the same edge.</p>
 <p>A <strong>Hamiltonian cycle</strong> is a sequence \(v_1,v_2,\ldots,v_n,v_1\) in which \(v_1,\ldots,v_n\) are all distinct, cover every vertex of the graph, and every consecutive pair—including \(\{v_n,v_1\}\)—belongs to \(E\). We repeat \(v_1\) at the end only to indicate that the sequence forms a cycle.</p>
@@ -18,7 +18,16 @@
 <h2>Now identify the statement, witness, and verifier</h2>
 <p>The <strong>statement</strong> \(x\) is the public graph \(G\) together with the claim that it has a Hamiltonian cycle. The <strong>witness</strong> \(w\) is a proposed sequence of vertices. A deterministic checking algorithm \(M\) examines \(x\) and \(w\), checks the distinct-vertex and edge conditions above, and returns 1 only if all conditions hold.</p>
 <div class="math">\[M(x,w)=1\]<p class="math-caption">The value 1 means that this witness is accepted; 0 means that this witness is rejected. One rejected witness does not prove that the statement is false.</p></div>
-<p>The verifier doesn't need to know how the prover found the cycle. It checks the witness against a public mathematical definition. This distinction between <em>finding</em> a witness and <em>verifying</em> a supplied witness is the starting point for the complexity class NP.</p>
-<div class="transition"><p>For this five-vertex graph, both tasks are manageable. For a large graph, however, finding a Hamiltonian cycle can require much more work than checking one that has already been supplied. The next lesson makes that distinction precise.</p></div>
+<p>The verifier does not need to know how the prover found the cycle. It checks only whether the offered vertex sequence satisfies the public definition. That is exactly the witness-checking role we established in the opening lesson.</p>
+<h2>How many candidate cycles might an exhaustive search try?</h2>
+<p>To find a witness without receiving one, an elementary method can fix the first vertex and try different orders of the remaining vertices. With \(n\) vertices, this yields \((n-1)!\) candidate orders. Here \(!\) denotes factorial: \(4!=4\cdot3\cdot2\cdot1=24\). Checking one proposed cycle takes \(n\) consecutive-edge checks plus checking that no vertex is missing or repeated.</p>
+<section class="lab">
+<div class="lab-head"><div class="tag">Search compared with verification</div><h3>How many candidates does this exhaustive method consider?</h3><p>This counts one simple search method, not a lower bound for every possible algorithm.</p></div>
+<div class="lab-body">
+<div class="control-row"><label for="np-n">Number of vertices \(n\): <strong id="np-n-label">5</strong></label><input id="np-n" data-demo="np-slider" type="range" min="3" max="10" value="5"></div>
+<div class="data-grid"><div class="data-box"><span class="label">Candidate orders</span><strong id="np-candidates">24</strong></div><div class="data-box verifier"><span class="label">Edge checks for one candidate</span><strong id="np-checks">5</strong></div></div>
+<div id="np-bound" class="feedback" aria-live="polite"></div>
+</div></section>
+<div class="transition"><p>We now know exactly what a verifier must check if a prover supplies a Hamiltonian cycle. The next lesson asks how a prover can conceal the original cycle while still preparing a graph the verifier can check.</p></div>
 <p class="source">PETS · ZK lecture notes, p. 1, with standard graph-theoretic terminology used throughout the example.</p>
 </article>

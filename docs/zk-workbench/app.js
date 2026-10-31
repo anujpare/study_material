@@ -206,6 +206,25 @@
     feedback("route-result",(correct?"ACCEPT. ":"REJECT. ")+list.join("; ")+". "+(correct?"Each vertex occurs exactly once before returning to vertex 1.":"This candidate vertex sequence is not a Hamiltonian cycle because a required consecutive pair is not an edge."),correct?"good":"bad");
   }
   function npUpdate(){const node=$("np-n");if(!node)return;const n=Number(node.value);$("np-n-label").textContent=n;const f=factorial(n-1);$("np-candidates").textContent=f.toLocaleString("en-US");$("np-checks").textContent=n.toLocaleString("en-US");$("np-bound").textContent="For "+n+" vertices, an elementary exhaustive search may inspect up to "+f.toLocaleString("en-US")+" different orderings after fixing the start. Given one proposed cyclic ordering, checking its "+n+" consecutive vertex pairs requires "+n+" edge-membership tests, plus the distinctness and coverage checks. This comparison concerns the simple exhaustive algorithm; it does not prove that every algorithm needs factorial time.";}
+  function factorUpdate(){
+    const first=$("factor-p"),second=$("factor-q");
+    if(!first||!second)return;
+    const p=Number(first.value),q=Number(second.value),N=21;
+    const isPrime=n=>{
+      if(n<2)return false;
+      for(let i=2;i*i<=n;i++)if(n%i===0)return false;
+      return true;
+    };
+    const correctProduct=p*q===N,prime1=isPrime(p),prime2=isPrime(q);
+    $("factor-multiply").textContent=p+" × "+q+" = "+(p*q);
+    const ok=correctProduct&&prime1&&prime2;
+    feedback("factor-result",
+      "The verifier checks (1) that "+p+" × "+q+" = 21 and (2) that both numbers are prime. "+
+      (ok?"Both checks pass. The offered pair is a valid witness for this statement.":
+      (correctProduct?"The product is correct, but ":"The product is not 21, and ")+
+      (prime1&&prime2?"both factors happen to be prime.":"at least one of the proposed factors is not prime.")),
+      ok?"good":"bad");
+  }
   function toyTrial(){const chosen=document.querySelector("[data-demo='toy-prepare'][aria-pressed='true']");if(!chosen){feedback("toy-result","Choose the challenge your hypothetical cheater prepared an answer for before drawing the verifier’s challenge.","bad");return;}
     const prepared=Number(chosen.dataset.value),c=Math.random()<.5?0:1;
     feedback("toy-result","The prover prepared for c="+prepared+". The verifier now independently drew c="+c+". "+(c===prepared?"The prepared answer matched, so the cheater got lucky.":"The challenge differed, so this cheater cannot answer.")+" This toy illustrates why the order of messages matters; it is not itself a proof system.",c===prepared?"good":"bad");}
@@ -559,7 +578,7 @@
   }
   function initializeLab(){
     drawFalseGraph("ham-false-public",false);drawFalseGraph("ham-false-hidden",null);
-    drawGraph("witness-graph");npUpdate();permute("one");
+    drawGraph("witness-graph");npUpdate();factorUpdate();permute("one");
     drawGraph("extract-b",{permuted:true});drawGraph("extract-g");
     scheduleUpdate();compareCost();fsUpdate("interactive");schnorrUpdate();schnorrExtract();gateUpdate();oddsUpdate();pedersenUpdate();fsQueryUpdate();fsAmplifyUpdate();merkleUpdate();pspaceUpdate();
   }
@@ -593,6 +612,7 @@
     if(!content.contains(e.target))return;
     switch(e.target.dataset.demo){
       case"np-slider":npUpdate();break;
+      case"factor-choice":factorUpdate();break;
       case"odds-slider":oddsUpdate();break;
       case"schedule-slider":scheduleUpdate();break;
       case"cost-slider":compareCost();break;
@@ -606,7 +626,7 @@
       case"pspace-slider":pspaceUpdate();break;
     }
   });
-  document.addEventListener("change",e=>{if(content.contains(e.target)&&e.target.dataset.demo==="merkle-leaf")merkleUpdate();});
+  document.addEventListener("change",e=>{if(!content.contains(e.target))return;if(e.target.dataset.demo==="merkle-leaf")merkleUpdate();if(e.target.dataset.demo==="factor-choice")factorUpdate();});
   select.innerHTML=cards.map((card,i)=>'<option value="'+card.id+'">'+String(i+1).padStart(2,"0")+" · "+card.title+"</option>").join("");
   render();
 })();

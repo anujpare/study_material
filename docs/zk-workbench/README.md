@@ -64,3 +64,7 @@ The ZK definition now contrasts the real and simulated verifier views with their
 
 ### Quality checks added (2026-10-31)
 The standalone lab now has test scripts for stable 35-card URLs, lecture-ordered guided navigation, markup/math integrity, five-vertex permutation switching, message schedule differences, numerical Schnorr messages, Fiat–Shamir conversation structure, and mobile viewport behavior. Run node tests/zk_lab_content.cjs for source checks and node tests/zk_lab_browser.cjs with a locally served docs/ folder for browser checks. Their presence does not mean an actual browser run has been completed in this editing session.
+
+
+### Lecture-aligned opening correction (2026-10-31)
+The first lesson now uses the lecture's prime-product example to define public statement, witness and verifier with a working two-factor check. Hamiltonian-cycle terminology and the graph-specific exhaustive-search slider are introduced only when that application appears in its own lesson, immediately before the graph proof.
