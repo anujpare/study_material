@@ -10,14 +10,10 @@
 <div class="lab-body">
 <div class="control-row"><button data-demo="schedule" data-value="sequential" aria-pressed="true">Sequential</button><button data-demo="schedule" data-value="parallel">Parallel</button></div>
 <div class="control-row"><label for="schedule-n">Number of instances: <strong id="schedule-n-label">3</strong></label><input id="schedule-n" data-demo="schedule-slider" type="range" min="2" max="5" value="3"></div>
-<div id="schedule-messages" class="timeline"></div>
+<div class="zk-actors"><div><strong>Prover \(P\)</strong><span>Creates \(u_i\) and \(z_i\)</span></div><div><strong>Verifier \(V\)</strong><span>Sends challenge bits \(c_i\)</span></div></div><div id="schedule-messages" class="zk-exchange" aria-live="polite"><div class="zk-exchange-row"><div>Send \(u_1\)</div><div>Receive \(u_1\)</div></div></div>
 <div id="schedule-explain" class="feedback" aria-live="polite"></div>
 </div></section>
-<div class="zk-dual-schedule">
-<div><strong>Sequential: finish each run first</strong><div class="zk-schedule-line">\(u_1\to c_1\to z_1\)</div><div class="zk-schedule-line">\(u_2\to c_2\to z_2\)</div><div class="zk-schedule-line">\(u_3\to c_3\to z_3\)</div></div>
-<div><strong>Parallel: finish each message stage first</strong><div class="zk-schedule-line">\(u_1,u_2,u_3\)</div><div class="zk-schedule-line">\(c_1,c_2,c_3\)</div><div class="zk-schedule-line">\(z_1,z_2,z_3\)</div></div>
-</div>
-<p>For either schedule there are three runs and three challenge bits. The subscripts 1, 2, and 3 label the runs. The server-side verifier does not magically know the answers: in parallel it merely sends its challenges after receiving all three first messages.</p><h2>Now identify the mathematical difference</h2>
+<h2>Now identify the mathematical difference</h2>
 <p><strong>Sequential:</strong> \(u_1,c_1,z_1,u_2,c_2,z_2,\ldots\). The simulator can finish, including any rewinds, the first session before constructing the first message of the second.</p>
 <p><strong>Parallel:</strong> send all \((u_1,\ldots,u_n)\) first, then receive all \((c_1,\ldots,c_n)\), then send all \((z_1,\ldots,z_n)\). Now the simulator has to prepare every first message before learning <em>any</em> challenge.</p>
 <div class="role risk"><div class="tag">Why “three challenges” alone is not a complete description</div><p>The number of repetitions hasn't changed. The difference is precisely which messages must be fixed before the verifier reveals its questions.</p></div>

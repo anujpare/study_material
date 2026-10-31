@@ -52,3 +52,7 @@ GitHub connector writes and readbacks succeeded. All 31 manifest lesson files we
 
 ### Rebuild in progress (2026-10-31)
 The guided reading order begins with the lecture's statements, witnesses and interactive proofs, before Hamiltonicity. The navigation counts, participant diagrams and repetition schedule are corrected. Homework and stable lesson IDs are retained. This entry records changes actually committed; full browser and pedagogy verification remain separate.
+
+
+### Additional teaching controls (2026-10-31)
+The repeated-proof viewer now draws the exact prover–verifier message order in two columns for sequential and parallel scheduling. The Fiat–Shamir control switches between the interactive three-message protocol and the actual one-message noninteractive proof. The proof-of-knowledge introduction separates knowing a witness from the truth of an existential statement.

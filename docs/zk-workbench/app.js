@@ -348,18 +348,30 @@
   }
   function scheduleUpdate(){
     if(!$("schedule-messages"))return;
-    const mode=document.querySelector("[data-demo='schedule'][aria-pressed='true']")?.dataset.value||"sequential",n=Number($("schedule-n")?.value||3);
-    if($("schedule-n-label"))$("schedule-n-label").textContent=n;
-    let msg=[];
-    if(mode==="sequential"){
-      for(let k=1;k<=n;k++){msg.push(["prover","P","Commitment u"+k]);msg.push(["verifier","V","Challenge c"+k+" (after seeing u"+k+")"]);msg.push(["prover","P","Response z"+k+"; round "+k+" completes"]);}
-    }else{
-      msg=[["prover","P","ALL commitments u1, …, u"+n+" sent together"],["verifier","V","ONE challenge vector (c1, …, c"+n+") after seeing ALL commitments"],["prover","P","ALL responses z1, …, z"+n+" sent together"]];
+    const mode=document.querySelector("[data-demo='schedule'][aria-pressed='true']")?.dataset.value||"sequential";
+    const n=Number($("schedule-n")?.value||3);
+    if($("schedule-n-label"))$("schedule-n-label").textContent=String(n);
+    const messages=[];
+    function add(sender,payload,action){
+      const left=sender==="P"?"<b>P → V: "+payload+"</b>"+action:"<b>V → P: "+payload+"</b>Prover receives the challenge.";
+      const right=sender==="V"?"<b>V → P: "+payload+"</b>Verifier chooses and sends the challenge.":"<b>P → V: "+payload+"</b>Verifier receives and "+(payload.startsWith("z")?"checks the response.":"keeps the first message.");
+      messages.push('<div class="zk-exchange-row'+(sender==="V"?' zk-from-right':'')+'"><div>'+left+'</div><div>'+right+'</div></div>');
     }
-    $("schedule-messages").innerHTML=msg.map(([kind,who,message])=>'<div class="message '+(kind==="prover"?"prover":"")+'"><span class="who">'+who+'</span><span>'+message+'</span></div>').join("");
+    if(mode==="sequential"){
+      for(let i=1;i<=n;i++){
+        add("P","u"+i,"Prover prepares first message for run "+i+".");
+        add("V","c"+i,"");
+        add("P","z"+i,"Prover responds to challenge "+i+".");
+      }
+    }else{
+      add("P","(u1,…,u"+n+")","Prover prepares ALL "+n+" first messages.");
+      add("V","(c1,…,c"+n+")","");
+      add("P","(z1,…,z"+n+")","Prover responds to the entire challenge vector.");
+    }
+    $("schedule-messages").innerHTML=messages.join("");
     $("schedule-explain").textContent=mode==="sequential"?
-      "There are "+(3*n)+" messages across "+n+" completed rounds. After the simulator finishes round 1, it can prepare round 2. It has to guess only one challenge at a time.":
-      "There are still "+n+" internal instances, but only three batches of messages. The prover must commit to all "+n+" instances before learning any challenge, so the usual simulator must guess an entire "+n+"-bit challenge vector before the verifier responds.";
+      "The first complete conversation finishes before the next begins. A simulator may retry that conversation without restarting later ones, because they have not begun.":
+      "Every first message is fixed before the verifier reveals any challenge. The simple simulator that guesses each challenge must now prepare all "+n+" guesses together.";
   }
   function compareCost(){
     const n=Number($("cost-n")?.value||4);if(!$("cost-n"))return;
@@ -412,10 +424,23 @@
     $("gate-a-label").textContent=a;$("gate-b-label").textContent=b;
   }
   function fsUpdate(mode){
-    const text=mode==="interactive"?
-      "Interactive Σ protocol: P sends u → V chooses a random challenge c → P sends z → V checks verif(x,u,c,z). The verifier is an active participant and supplies fresh unpredictability.":
-      "Fiat–Shamir: P computes c=H(x,u) locally and sends only (u,z). V independently computes the same H(x,u) and checks verif(x,u,H(x,u),z). The hash plays the role of the challenge; security arguments here use the random-oracle model.";
-    feedback("fs-result",text);
+    const flow=$("fs-flow");
+    if(!flow)return;
+    const interactive=mode!=="noninteractive";
+    const parts=interactive?[
+      ["P","u","Prover computes u, then sends it.","Verifier receives the first message."],
+      ["V","c","Prover receives c only after sending u.","Verifier samples and sends a uniformly random challenge c."],
+      ["P","z","Prover computes the response z.","Verifier checks verif(x,u,c,z)."]
+    ]:[
+      ["P","π = (u,z)","Prover computes u, sets c=H(x,u), computes z and sends both u and z.","Verifier receives the proof, recomputes c=H(x,u), and checks verif(x,u,c,z)."]
+    ];
+    flow.innerHTML=parts.map(function(p){
+      const label=(p[0]==="P"?"P → V":"V → P")+": "+p[1];
+      return '<div class="zk-exchange-row'+(p[0]==="V"?' zk-from-right':'')+'"><div><b>'+label+'</b>'+p[2]+'</div><div><b>'+label+'</b>'+p[3]+'</div></div>';
+    }).join("");
+    feedback("fs-result",interactive?
+      "Three transmitted messages. The verifier chooses c after seeing u; the prover can compute z only after receiving c.":
+      "One transmitted proof with two values, u and z. Both parties calculate the challenge c independently using the same public hash rule.");
   }
   function pedersenUpdate(){
     const select=$("pedersen-new");if(!select)return;
@@ -528,7 +553,7 @@
     drawFalseGraph("ham-false-public",false);drawFalseGraph("ham-false-hidden",null);
     drawGraph("witness-graph");npUpdate();permute("one");
     drawGraph("extract-b",{permuted:true});drawGraph("extract-g");
-    scheduleUpdate();compareCost();schnorrUpdate();schnorrExtract();gateUpdate();oddsUpdate();pedersenUpdate();fsQueryUpdate();fsAmplifyUpdate();merkleUpdate();pspaceUpdate();
+    scheduleUpdate();compareCost();fsUpdate("interactive");schnorrUpdate();schnorrExtract();gateUpdate();oddsUpdate();pedersenUpdate();fsQueryUpdate();fsAmplifyUpdate();merkleUpdate();pspaceUpdate();
   }
   document.addEventListener("click",e=>{
     const b=e.target.closest("button[data-demo]");if(!b||!content.contains(b))return;
