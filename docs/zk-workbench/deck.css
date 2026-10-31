@@ -92,3 +92,13 @@
 #lessons .reading .zk-dual-schedule>div{padding:8px}
 #lessons .reading .zk-dual-schedule strong,#lessons .reading .zk-schedule-line{font-size:15.83px}
 }
+
+/* Real and simulated verifier views: static comparison remains available without JS. */
+#lessons .reading .zk-worlds{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:17px 0}
+#lessons .reading .zk-world{border:1px solid #ccd8d7;background:#f8faf9;border-radius:12px;padding:16px;min-width:0}
+#lessons .reading .zk-world:nth-child(2){border-color:#d6cbe5;background:#f8f6fa}
+#lessons .reading .zk-world>strong{font-size:17.33px;color:#314d41;display:block;margin-bottom:9px}
+#lessons .reading .zk-world>p{font-size:17.33px!important;line-height:1.55!important;margin:9px 0}
+#lessons .reading .zk-world-steps{display:grid;gap:5px;text-align:center;padding:10px 5px;border:1px solid #d8dfdb;border-radius:9px;background:white;font-size:17.33px}
+#lessons .reading .zk-world-steps span:nth-child(2){font-weight:700;color:#647068}
+@media(max-width:600px){#lessons .reading .zk-worlds{grid-template-columns:1fr}#lessons .reading .zk-world>p{font-size:15.83px!important}#lessons .reading .zk-world>strong,#lessons .reading .zk-world-steps{font-size:15.83px}}

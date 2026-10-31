@@ -56,3 +56,7 @@ The guided reading order begins with the lecture's statements, witnesses and int
 
 ### Additional teaching controls (2026-10-31)
 The repeated-proof viewer now draws the exact prover–verifier message order in two columns for sequential and parallel scheduling. The Fiat–Shamir control switches between the interactive three-message protocol and the actual one-message noninteractive proof. The proof-of-knowledge introduction separates knowing a witness from the truth of an existential statement.
+
+
+### Witness and message-source clarity (2026-10-31)
+The ZK definition now contrasts the real and simulated verifier views with their distinct inputs. Schnorr explicitly calls out the lecture's reuse of x for the secret exponent instead of the earlier public statement and shows numerical P/V messages alongside its existing slider.

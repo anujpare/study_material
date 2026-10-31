@@ -4,13 +4,15 @@
 <p class="lead">The Sigma-protocol definition tells us which guarantees to prove, but we still need a concrete example where the extraction equations can be calculated explicitly. Schnorr supplies one: the public statement is a group element, and the private witness is its discrete logarithm. The Hamiltonicity protocol used an adjacency relation, a random permutation of vertices, and a verifier challenge. Schnorr proves knowledge of a discrete logarithm instead, using a different algebraic relation but the same three-message pattern: commitment, challenge, response. We'll verify its equation step by step.</p>
 <h2>The public claim and the secret exponent</h2>
 <p>Work with multiplication modulo a prime \(p\): multiply ordinary integers and keep the remainder on division by \(p\). Choose a generator \(g\) whose powers form a cyclic group \(G\) of prime order \(q\). It has \(q\) distinct elements, and \(g^q=1_G\).</p>
+<p><strong>Notation warning:</strong> In the earlier lecture, \(x\) meant the public statement. In the Schnorr protocol the lecture uses \(x\) for the <em>secret exponent</em>. The public value is now \(h\). We keep the lecture's notation, but these are different roles.</p>
 <p>The prover knows a secret exponent \(x\in\mathbb Z_q\), where \(\mathbb Z_q=\{0,\ldots,q-1\}\) with arithmetic modulo \(q\). The public value is \(h=g^x\). The goal is to convince the verifier that the prover <em>knows</em> \(x\), without revealing it.</p>
 <p>Why ask for knowledge rather than ordinary soundness? Every element \(h\) of this cyclic group has some exponent \(x\), because \(g\) generates the whole group. So the claim “an \(x\) exists” is always true for a valid \(h\). Authentication must tell us that this prover knows that exponent.</p>
 <div class="math">\[h=g^x,\qquad u=g^r,\qquad z=r+cx\pmod q\]<p class="math-caption">The prover chooses fresh random \(r\), sends \(u=g^r\), receives random challenge \(c\), and answers \(z=r+cx\pmod q\). The prover keeps \(x,r\) secret. The verifier knows \(g,q,h,u,c,z\).</p></div>
-<div class="timeline">
-<div class="message prover"><span class="who">Prover</span><span>Samples \(r\) uniformly and sends \(u=g^r\).</span></div>
-<div class="message"><span class="who">Verifier</span><span>Samples \(c\) uniformly from \(\mathbb Z_q\) and sends it.</span></div>
-<div class="message prover"><span class="who">Prover</span><span>Returns \(z=(r+cx)\bmod q\). The verifier checks \(g^z=u\,h^c\).</span></div>
+<div class="zk-actors"><div><strong>Prover \(P(x,h)\)</strong><span>Knows secret exponent \(x\), and public \(g,q,h\)</span></div><div><strong>Verifier \(V(h)\)</strong><span>Knows public \(g,q,h\), but does not know \(x\)</span></div></div>
+<div class="zk-exchange">
+<div class="zk-exchange-row"><div>Choose fresh random \(r\), then compute \(u=g^r\).</div><div><b>\(P\longrightarrow V: u\)</b> Receive \(u\).</div></div>
+<div class="zk-exchange-row zk-from-right"><div><b>\(V\longrightarrow P: c\)</b> Receive random challenge \(c\).</div><div>Choose \(c\) uniformly from \(\mathbb Z_q\).</div></div>
+<div class="zk-exchange-row"><div>Compute \(z=r+cx\bmod q\).</div><div><b>\(P\longrightarrow V: z\)</b> Verify whether \(g^z=u\,h^c\).</div></div>
 </div>
 <h2>A fully computed example</h2>
 <p>To see the arithmetic, let \(p=23\) and \(g=2\). Since \(2^{11}\equiv1\pmod{23}\), \(2\ne1\), and 11 is prime, \(g\) has order \(q=11\). We reduce exponents modulo 11 and group products modulo 23.</p>
@@ -19,6 +21,12 @@
 <div class="control-row"><label for="schnorr-x">Secret \(x\): <strong id="sx">3</strong></label><input id="schnorr-x" data-demo="schnorr-slider" type="range" min="0" max="10" value="3"></div>
 <div class="control-row"><label for="schnorr-r">Randomness \(r\): <strong id="sr">4</strong></label><input id="schnorr-r" data-demo="schnorr-slider" type="range" min="0" max="10" value="4"></div>
 <div class="control-row"><label for="schnorr-c">Challenge \(c\): <strong id="sc">2</strong></label><input id="schnorr-c" data-demo="schnorr-slider" type="range" min="0" max="10" value="2"></div>
+<div class="zk-actors"><div><strong>Prover's calculations</strong><span>These use the secret exponent and private randomness.</span></div><div><strong>Verifier's calculations</strong><span>These use only public data and received messages.</span></div></div>
+<div class="zk-exchange">
+<div class="zk-exchange-row"><div id="schnorr-msg-u-p">Compute \(u=g^r\).</div><div id="schnorr-msg-u-v">Receive \(u\).</div></div>
+<div class="zk-exchange-row zk-from-right"><div id="schnorr-msg-c-p">Receive \(c\).</div><div id="schnorr-msg-c-v">Choose \(c\).</div></div>
+<div class="zk-exchange-row"><div id="schnorr-msg-z-p">Compute \(z=r+cx\).</div><div id="schnorr-msg-z-v">Check \(g^z=u\,h^c\).</div></div>
+</div>
 <div class="data-box prover"><span class="label">Computed transcript</span><p id="schnorr-public" class="readout">Public and response values appear here.</p></div>
 <div class="feedback" id="schnorr-result" aria-live="polite"></div>
 </div></section>

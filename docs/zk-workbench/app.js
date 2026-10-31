@@ -399,6 +399,14 @@
     const l=powmod(2,z,23),right=(u*powmod(h,c,23))%23;
     $("sx").textContent=x;$("sr").textContent=r;$("sc").textContent=c;
     $("schnorr-public").textContent="Public h = 2^"+x+" mod 23 = "+h+"; commitment u = 2^"+r+" mod 23 = "+u+"; response z = ("+r+" + "+c+"×"+x+") mod 11 = "+z+".";
+    if($("schnorr-msg-u-p")){
+      $("schnorr-msg-u-p").textContent="Secret r="+r+". Compute u = 2^"+r+" mod 23 = "+u+". Send u="+u+".";
+      $("schnorr-msg-u-v").textContent="Receive u="+u+". The verifier does not know r.";
+      $("schnorr-msg-c-p").textContent="Receive c="+c+" after u was already sent.";
+      $("schnorr-msg-c-v").textContent="Send challenge c="+c+" (selected from 0,…,10).";
+      $("schnorr-msg-z-p").textContent="Compute z=("+r+"+"+c+"×"+x+") mod 11 = "+z+". Send z="+z+".";
+      $("schnorr-msg-z-v").textContent="Check 2^"+z+" mod 23 = "+l+" and ("+u+"×"+h+"^"+c+") mod 23 = "+right+". They match: ACCEPT.";
+    }
     feedback("schnorr-result","Verifier computes g^z mod 23 = "+l+" and (u × h^c) mod 23 = "+right+". They are equal, so the honest response is ACCEPTED. This is one numerical instance of the algebraic proof below.","good");
   }
   function zkSchnorr(){
