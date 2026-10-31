@@ -7,6 +7,7 @@ Connected explanations, worked exercises and visual experiments for undergraduat
 - [All PETS decks](https://anujpare.github.io/study_material/)
 - [Chapter 1 — Commitment](https://anujpare.github.io/study_material/commitment/)
 - [Chapter 2 — Zero Knowledge](https://anujpare.github.io/study_material/zero-knowledge/)
+- [Zero Knowledge · Interactive Learning Lab](https://anujpare.github.io/study_material/zk-workbench/) — pedagogical lessons, message-flow diagrams and worked exercises
 - [SNARGs → PLONK · rigorous learning lab](https://anujpare.github.io/study_material/snarg-workbench/) — 36 connected lessons, all HW3 and relevant HW1/HW2, interactive proofs and PLONK trace
 - [Chapter 3 — SNARKs](https://anujpare.github.io/study_material/snarks/)
 - [Chapter 4 — PIR and midterm review](https://anujpare.github.io/study_material/pir/)

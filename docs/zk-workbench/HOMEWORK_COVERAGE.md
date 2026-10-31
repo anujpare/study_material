@@ -2,7 +2,7 @@
 
 Canonical tutorial: https://anujpare.github.io/study_material/zk-workbench/
 
-This is the permanent one-tutorial coverage map, updated 2026-10-29. **The 35 navigable cards (32 in guided reading) cover every subpart of Homework 2 and Homework 3**, including explicitly marked next-chapter HW3 exercises. From Homework 1, all commitment problems needed for the ZK and adjacent Merkle/PCP constructions are included; unrelated FHE and PRF-reduction tasks remain in the separate original HW1 deck rather than interrupting the ZK teaching sequence.
+This is the permanent one-tutorial coverage map, updated 2026-10-31. **The 35 navigable cards (32 in guided reading) cover every subpart of Homework 2 and Homework 3**, including explicitly marked next-chapter HW3 exercises. From Homework 1, all commitment problems needed for the ZK and adjacent Merkle/PCP constructions are included; unrelated FHE and PRF-reduction tasks remain in the separate original HW1 deck rather than interrupting the ZK teaching sequence.
 
 ## Homework 1 — FS2026 v1.2
 
@@ -25,7 +25,7 @@ This is the permanent one-tutorial coverage map, updated 2026-10-29. **The 35 na
 
 | Part | Subject | Tutorial coverage |
 |---|---|---|
-| 1(a) | P=NP gives empty ZK | [ZK definition](https://anujpare.github.io/study_material/zk-workbench/#hw2-conceptual2-conceptual) |
+| 1(a) | P=NP gives empty ZK | [ZK definition](https://anujpare.github.io/study_material/zk-workbench/#hw2-conceptual) |
 | 1(b)(i) | Malicious verifier may reject | [Completeness/soundness](https://anujpare.github.io/study_material/zk-workbench/#hw2-conceptual) |
 | 1(b)(ii) | Malicious prover may reveal witness | [Completeness/soundness](https://anujpare.github.io/study_material/zk-workbench/#hw2-conceptual) |
 | 1(c) | Empty NIZK for P languages | [ZK definition](https://anujpare.github.io/study_material/zk-workbench/#hw2-conceptual) |

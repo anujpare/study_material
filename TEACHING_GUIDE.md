@@ -69,3 +69,19 @@ This is an editable agreement about how PETS teaches. Read it before changing a 
 | Elementary fraction/bit/exponential lessons repeated across decks. | S1 was too broad and the insertion rules enforced the wrong learner model. | Replace automatic primers with course-specific explanations; merge duplicate cards and retain bookmark redirects. |
 | Definitions were reduced to vague intuition and explanations were hard to read. | E1/E2 were not enforced; formal coverage was confused with teachability. | E8 requires the full definition and a sentence-by-sentence reading; audit every retained lesson and homework solution. |
 | Visual cards hid the teaching prose, and message exchanges appeared as stacked text. | V6 was too permissive and V1 was not carried through to protocol diagrams. | Keep prose visible; V8 requires participant columns, message arrows, local computations and checks. |
+
+
+## Zero Knowledge Lab: safeguards from 2026-10-31 feedback
+
+These rules strengthen S2/S3/S4, E1/E2/E4, and V1/V2/V8 for editing the stand-alone Zero Knowledge Lab.
+
+1. **Anchor every participant and object before the mathematics.** Say who knows what, who controls it, what is public, what is secret, and what changes during the operation. Never silently switch the owner of a value or change the meaning of a symbol.
+2. **Stay with the actual lecture.** Follow the source's conceptual order and notation. Introduce any prerequisite immediately before first use. When a letter is reused (for example public statement x earlier versus Schnorr's secret exponent x), explicitly name that change of meaning.
+3. **Keep separate identities, addresses, contents, and indices.** Do not call a numerical address the value stored there. Show both directions of a permutation, and distinguish original from relabeled vertices.
+4. **Teach the mechanism before its complexity.** Begin with concrete actions and their consequences, including who initiates each message. Only then calculate resource costs, security probabilities, or introduce recursive improvements. Explain why a divisor, count, or numerical constant arises.
+5. **Give each visualization a real purpose.** A permutation example should move at least four objects and show genuine changes, not just a no-op or two-item swap. A protocol diagram should visibly distinguish prover and verifier, their initial information, message direction, contents, local calculations, and final verification.
+6. **Never oversell an illustration.** A numerical execution is not a security proof. A naïve simulator's cost is not a lower bound for every simulator. Specify when adversaries are honest versus malicious and when assumptions are used.
+7. **Respect the source's figures.** Read each figure's labels, arrows, objects, and mathematical meaning. Establish that setup visually before deriving from it. Keep source coverage and homework intact during editorial improvements.
+8. **Test structure and behavior separately.** Run the dedicated ZK source and browser tests, verify phones and expanded exercises, and report honestly whether mathematical review, actual rendered testing, and source completeness have been carried out.
+
+Concrete failure record: previous explanations confused an identifier with its value, mixed forward and inverse permutations, omitted the setup of a cryptographic protocol, used trivial controls without visible changes, and introduced asymptotic formulas before a working example. This is a combination of ignored S2/S4/E2 and too-weak V1. The rebuild addresses these patterns with source-first explanations, explicit role/message diagrams, nontrivial permutation controls, and dedicated regression tests.

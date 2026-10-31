@@ -60,3 +60,7 @@ The repeated-proof viewer now draws the exact prover–verifier message order in
 
 ### Witness and message-source clarity (2026-10-31)
 The ZK definition now contrasts the real and simulated verifier views with their distinct inputs. Schnorr explicitly calls out the lecture's reuse of x for the secret exponent instead of the earlier public statement and shows numerical P/V messages alongside its existing slider.
+
+
+### Quality checks added (2026-10-31)
+The standalone lab now has test scripts for stable 35-card URLs, lecture-ordered guided navigation, markup/math integrity, five-vertex permutation switching, message schedule differences, numerical Schnorr messages, Fiat–Shamir conversation structure, and mobile viewport behavior. Run node tests/zk_lab_content.cjs for source checks and node tests/zk_lab_browser.cjs with a locally served docs/ folder for browser checks. Their presence does not mean an actual browser run has been completed in this editing session.
