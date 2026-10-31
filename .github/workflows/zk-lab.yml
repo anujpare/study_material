@@ -1,0 +1,30 @@
+name: ZK lab learning checks
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "docs/zk-workbench/**"
+      - "tests/zk_lab_*.cjs"
+      - ".github/workflows/zk-lab.yml"
+      - "package.json"
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install JavaScript dependencies
+        run: npm ci
+      - name: Check lesson content and notation
+        run: node tests/zk_lab_content.cjs
+      - name: Install Chromium for UI checks
+        run: npx playwright install --with-deps chromium
+      - name: Start local static site
+        run: |
+          python3 -m http.server 8765 --directory docs > /tmp/pets-http.log 2>&1 &
+          sleep 2
+      - name: Exercise ZK interactive lessons
+        run: node tests/zk_lab_browser.cjs
