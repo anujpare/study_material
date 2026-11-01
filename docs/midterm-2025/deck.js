@@ -7,7 +7,7 @@ if(!root||qs.length!==17){if(root)root.textContent='The original exam questions 
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
 const prevIcon='<svg aria-hidden="true" viewBox="0 0 24 24"><path d="m14.5 6.5-5.5 5.5 5.5 5.5"/></svg>';
 const nextIcon='<svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9.5 6.5 5.5 5.5-5.5 5.5"/></svg>';
-const cards=[];for(const q of qs){for(const d of defs.filter(d=>d.before===q.id))cards.push({id:d.id,title:d.title,page:d.page,type:'definition',def:d});cards.push({id:'exam-'+q.id,title:'Midterm Q'+q.group+'('+q.id.slice(1)+') · '+q.title,page:q.page,type:'question',q});}
+const cards=[];for(const q of qs){for(const d of defs.filter(d=>d.before===q.id))cards.push({id:d.id,title:d.title,page:d.page,type:'definition',def:d});cards.push({id:'exam-'+q.id,title:'Midterm Q'+q.group+'('+q.id.slice(1).replace(/([bcd])([12])$/,'$1.$2')+') · '+q.title,page:q.page,type:'question',q});}
 function questionHTML(q){
  const prereq=foundations[q.id]||[],steps=solutions[q.id]||[];
  const choices=q.group===1?'<div class="exam-choice" role="group" aria-label="Choose true or false"><button type="button" data-answer="true">TRUE</button><button type="button" data-answer="false">FALSE</button><output aria-live="polite">Choose an answer before opening the solution.</output></div>':'';
