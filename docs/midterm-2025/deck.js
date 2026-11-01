@@ -30,7 +30,7 @@ const slide=(card,i)=>{
  return '<section class="slide '+(card.type==='definition'?'midterm-definition':'homework midterm-question')+'" id="'+card.id+'" data-source="Midterm 2025 page '+card.page+'"><header class="head"><div class="section">'+esc(card.title)+'</div></header><article class="reading">'+body+'</article><nav aria-label="Card navigation" class="nav">'+back+next+'</nav></section>';
 };
 const footer=root.querySelector('.deck-jump');if(!footer)throw Error('Shared PETS card slider missing');
-footer.insertAdjacentHTML('beforebegin',cards.map(slide).join(''));
+if(!root.querySelector('section.slide'))footer.insertAdjacentHTML('beforebegin',cards.map(slide).join(''));
 for(const section of root.querySelectorAll('.midterm-question')){
  const id=section.id.replace('exam-',''),prep=foundations[id]||[],mini=section.querySelector('.mini-lesson');
  if(prep.length&&mini){
