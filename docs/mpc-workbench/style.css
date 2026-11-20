@@ -12,3 +12,5 @@
 .broadcast-row{padding:12px 8px;border-top:1px solid var(--line)}.broadcast-row.active{background:#edf6e9;box-shadow:inset 3px 0 #587e63}.broadcast-row p{margin:0 4px 2px}.broadcast-row svg{display:block;width:100%;height:34px}.broadcast-cells{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));text-align:center;gap:6px}.broadcast-cells span{min-width:0;overflow-wrap:anywhere}
 
 .reading .mi{display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle;scrollbar-width:thin;touch-action:pan-x}
+
+.rubric label>span,.choice-list button>span:last-child{min-width:0;max-width:100%;overflow-wrap:anywhere}
