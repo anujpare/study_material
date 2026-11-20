@@ -16,13 +16,14 @@ function updateStatus(card){
 }
 function updateNav(){
  const list=route(),i=list.indexOf(current);empty=list.length===0;
- $('#counter').textContent=empty?'0 / 0':i>=0?`${i+1} / ${list.length}`:'Linked lesson';
+ const justChecked=state.mode==='review'&&!current?.hidden&&i<0&&['correct','ready'].includes(status(current?.id));
+ $('#counter').textContent=justChecked?'Checked':empty?'0 / 0':i>=0?`${i+1} / ${list.length}`:'Linked lesson';
  $('#position').textContent=$('#counter').textContent;
  $('#deck-slider').max=String(Math.max(1,list.length));$('#deck-slider').value=String(Math.max(1,i+1));$('#deck-slider').disabled=empty;
  $('#deck-slider').setAttribute('aria-valuetext',empty?'No cards need another attempt':`${i+1} of ${list.length}: ${current?.dataset.title||''}`);
  $('#previous').disabled=empty||i<=0;$('#next').disabled=empty||i===list.length-1;
  const learned=cards.filter(c=>['correct','ready'].includes(status(c.id))).length;
- $('#route-status').textContent=state.mode==='homework'?'HW6 · assignment practice':state.mode==='review'?'Questions to revisit':`${learned} / ${cards.length} checked`;
+ $('#route-status').textContent=state.mode==='homework'?'HW6 · assignment practice':state.mode==='review'?(list.length?`${list.length} questions to revisit`:'All marked questions checked'):`${learned} / ${cards.length} checked`;
  $('#mode').value=state.mode;$('#lesson-select').value=current?.id||'';
  $('#saved-progress').textContent=`${learned} checks completed · ${cards.filter(c=>status(c.id)==='practice').length} marked to revisit. Answers stay in this browser.`;
 }
@@ -52,7 +53,8 @@ function record(card,good,manual=false){state.checks[card.id]={status:good?(manu
 for(const card of cards){
  const check=card.querySelector('.checkpoint');if(!check)continue;
  const feedback=check.querySelector('.answer-feedback'),data=JSON.parse(check.querySelector('script.check-data').textContent);
- const showFeedback=(html,good)=>{feedback.hidden=false;feedback.innerHTML=html;feedback.classList.toggle('good',good);feedback.classList.toggle('bad',!good);};
+ const showFeedback=(html,good)=>{feedback.hidden=false;feedback.innerHTML=html+(good&&state.mode==='review'?'<p><button type="button" data-review-next>Continue reviewing</button></p>':'');feedback.classList.toggle('good',good);feedback.classList.toggle('bad',!good);};
+ check.addEventListener('click',e=>{if(e.target.closest('[data-review-next]'))setMode('review');});
  check.querySelectorAll('[data-choice]').forEach(btn=>btn.addEventListener('click',()=>{const chosen=Number(btn.dataset.choice),good=chosen===data.answer;check.querySelectorAll('[data-choice]').forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));showFeedback(data.feedback?.[chosen]||'<p>Compare your reasoning with the worked solution.</p>',good);record(card,good);}));
  const form=check.querySelector('form.number-answer');if(form)form.addEventListener('submit',e=>{e.preventDefault();const input=form.querySelector('input'),v=input.value.trim();if(v===''||!Number.isFinite(Number(v))){input.focus();return;}const good=Math.abs(Number(v)-data.answer)<1e-9;showFeedback(good?(data.correctFeedback||'<p>Correct. Open the worked solution to compare the calculation.</p>'):(data.wrongFeedback||'<p>That value does not satisfy the required relation. Try the hint, then check the algebra in the solution.</p>'),good);record(card,good);});
  const draft=check.querySelector('textarea');if(draft){draft.value=state.drafts[card.id]||'';draft.addEventListener('input',()=>{state.drafts[card.id]=draft.value;save();});}
