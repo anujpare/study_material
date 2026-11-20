@@ -47,6 +47,8 @@ lab_proc=subprocess.run(['node','-e',"const x=require('./docs/mpc-workbench/labs
 LABS=json.loads(lab_proc.stdout)
 
 def math(text):
+ # Author-supplied tables may be wider than a phone. Keep them locally scrollable.
+ text=re.sub(r'<table\b.*?</table>', lambda m:'<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable mathematical table">'+m[0]+'</div>', text, flags=re.S)
  def repl(m):
   t=m[1] or m[2];tag='span' if m[1] is not None else 'div';cls='mi' if tag=='span' else 'math'
   svg=rendered[t].replace('<mjx-container ','<mjx-container aria-hidden="true" ')
@@ -83,7 +85,7 @@ def article(c,index,cards,homework=False):
   req='<p>Review the preparation: '+', '.join(f'<a href="../mpc-workbench/#{k}">{e(ALL[k]["title"])}</a>' for k in c['requires'])+'.</p>'
  prev=f'<a href="#{cards[index-1]["id"]}">← Previous card</a>' if index else '<span></span>'
  nxt=f'<a href="#{cards[index+1]["id"]}">Next card →</a>' if index+1<len(cards) else '<a href="../">PETS chapters →</a>'
- return f'''<article class="lesson" id="{id}" data-title="{e(c['title'],quote=True)}" data-kind="{c['kind']}" data-homework-order="{HW_ORDER.index(id) if id in HW_ORDER else -1}" data-requires="{' '.join(c['requires'])}" aria-labelledby="title-{id}"><p class="eyebrow">{e(c['section'])}</p><h1 id="title-{id}">{e(c['title'])}</h1><div class="lesson-meta">{meta}</div>{math(c['body'])}{checkpoint(c)}<footer class="source"><p>Source: {e(c['source'])}. <a href="../mpc-workbench/sources.html">Coverage and clarifications</a>.</p>{req}</footer><nav class="static-nav" aria-label="Card navigation">{prev}{nxt}</nav></article>'''
+ return f'''<article class="lesson" id="{id}" data-title="{e(c['title'],quote=True)}" data-kind="{c['kind']}" data-homework-order="{HW_ORDER.index(id) if id in HW_ORDER else -1}" data-requires="{' '.join(c['requires'])}" aria-labelledby="title-{id}"><p class="eyebrow">{e(c['section'])}</p><h1 id="title-{id}">{e(c['title'])}</h1><div class="lesson-meta">{meta}</div>{math(c['body'])}{checkpoint(c)}<footer class="source"><p>Source: {e(c['source'].rstrip('.'))}. <a href="../mpc-workbench/sources.html">Coverage and clarifications</a>.</p>{req}</footer><nav class="static-nav" aria-label="Card navigation">{prev}{nxt}</nav></article>'''
 
 def build(cards,target,homework=False):
  title='HW6 · MPC exercises' if homework else 'Secure MPC · Learning Lab';assets='../mpc-workbench/' if homework else './';n=len(cards)
