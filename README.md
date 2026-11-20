@@ -11,6 +11,8 @@ Connected explanations, worked exercises and visual experiments for undergraduat
 - [SNARGs → PLONK · rigorous learning lab](https://anujpare.github.io/study_material/snarg-workbench/) — 36 connected lessons, all HW3 and relevant HW1/HW2, interactive proofs and PLONK trace
 - [Chapter 3 — SNARKs](https://anujpare.github.io/study_material/snarks/)
 - [Chapter 4 — PIR and midterm review](https://anujpare.github.io/study_material/pir/)
+- [Secure MPC · Interactive Learning Lab](https://anujpare.github.io/study_material/mpc-workbench/) — 48 cards, 21 experiments and a question on every card
+- [HW6 — secure MPC exercises](https://anujpare.github.io/study_material/hw6/) — all 16 assigned subquestions in assignment order
 - [HW1 — exercises and solutions](https://anujpare.github.io/study_material/hw1/)
 - [HW2 — exercises and solutions](https://anujpare.github.io/study_material/hw2/)
 - [HW3 — exercises and solutions](https://anujpare.github.io/study_material/hw3/)
@@ -86,3 +88,17 @@ npm run test:browser
 ```
 
 Set `CHROMIUM_PATH` to an installed Chromium executable or `PETS_TEST_URL` to another local server. Checks cover all eight decks, stable links, sliders and history, popup menus, no-JavaScript navigation, expanded math, two text sizes, mobile layouts and numerical behavior of the visualizations. Browser automation uses Chromium; physical Safari/iOS device testing is not included.
+
+## Secure MPC interactive learning lab
+
+The [MPC lab](https://anujpare.github.io/study_material/mpc-workbench/) follows lectures 17–19 and the supplied handwritten notes. Its 48 cards develop the real/ideal definition, additive sharing, circuit evaluation, Beaver triples, malicious security, Shamir sharing and threshold BLS. All 16 HW6 subquestions appear after their prerequisites and also in a separate assignment-order HW6 deck, built from the same canonical sources.
+
+Every card asks a bounded application question. Numerical and choice answers receive feedback; written answers stay editable, with an initially concealed worked solution and explicit self-check criteria. The menu offers the complete route, HW6 only, and questions marked for another attempt. Answers, drafts and progress stay in local storage on the current browser. No answers are transmitted to a server.
+
+Twenty-one experiment types show consequences: inspect who holds each share, follow each Beaver broadcast, add a public constant incorrectly, reuse masks, rush an opening, forge a MAC, count communication, vary a Shamir secret while observations remain fixed, reconstruct from different subsets, and combine or reject symbolic signature shares. The experiments use toy values for instruction; they are not cryptographic implementations.
+
+The supplied HS2025 endterm concerns differential privacy. Its subquestion structure informs practice design; the MPC practice is not mislabelled as an actual question from that paper. See [the source map and corrections](docs/mpc-workbench/sources.html).
+
+Authoring sources are `scripts/mpc_core.py`, `scripts/mpc_exercises.py`, and `scripts/mpc_shamir.py`. `scripts/build-mpc.py` generates both readers, the source page and the coverage map. Mathematical notation is rendered during the build, so the new readers need no external math service and retain their full text and static examples without JavaScript. `docs/mpc-workbench/labs.js` supplies both static lab defaults and live behavior.
+
+Run `npm run build` and `npm run test:content`. To check the new browser flows, serve `docs` at port 8765 and run `npm run test:mpc` (set `CHROMIUM_PATH` only when using a system browser). The MPC-specific GitHub Actions workflow checks all cards and expanded solutions, functional experiments, navigation, local progress, small-screen layouts and no-JavaScript content. It retains mobile screenshots as a run artifact. Chromium emulation does not replace testing on a physical iPhone or Safari.

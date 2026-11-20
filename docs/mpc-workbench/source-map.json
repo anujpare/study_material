@@ -1,0 +1,767 @@
+[
+  {
+    "position": 1,
+    "id": "mpc-goal",
+    "title": "Compute the agreed output without revealing extra information",
+    "kind": "lesson",
+    "section": "I · What MPC protects",
+    "source": "Lecture 17–19, pp. 1–3 and 9.",
+    "source_ref": "lecture",
+    "requires": [],
+    "exercise": null,
+    "check_type": "number",
+    "labs": [
+      "ideal-world"
+    ]
+  },
+  {
+    "position": 2,
+    "id": "mpc-models",
+    "title": "Decide what a corrupted party is allowed to do",
+    "kind": "lesson",
+    "section": "I · What MPC protects",
+    "source": "Lecture 17–19, §1.1, p. 3.",
+    "source_ref": "lecture",
+    "requires": [
+      "mpc-goal"
+    ],
+    "exercise": null,
+    "check_type": "choice",
+    "labs": []
+  },
+  {
+    "position": 3,
+    "id": "simulation-definition",
+    "title": "Read the exact simulation requirement",
+    "kind": "lesson",
+    "section": "I · What MPC protects",
+    "source": "Lecture 17–19, Definition 1 and real/ideal diagram, p. 3.",
+    "source_ref": "lecture",
+    "requires": [
+      "mpc-models"
+    ],
+    "exercise": null,
+    "check_type": "choice",
+    "labs": []
+  },
+  {
+    "position": 4,
+    "id": "simulation-test",
+    "title": "Break privacy with two indistinguishable ideal inputs",
+    "kind": "lesson",
+    "section": "I · What MPC protects",
+    "source": "Lecture 17–19, Definition 1, p. 3, and circuit example, p. 5; distinguishing example added for practice.",
+    "source_ref": "lecture",
+    "requires": [
+      "simulation-definition"
+    ],
+    "exercise": null,
+    "check_type": "written",
+    "labs": []
+  },
+  {
+    "position": 5,
+    "id": "hw6-1b",
+    "title": "Can equality disclose an extra input?",
+    "kind": "homework",
+    "section": "I · What MPC protects",
+    "source": "HW6, p. 1, Problem 1(b)",
+    "source_ref": "hw6",
+    "requires": [
+      "simulation-test"
+    ],
+    "exercise": "HW6 1(b)",
+    "check_type": "written",
+    "labs": []
+  },
+  {
+    "position": 6,
+    "id": "additive-sharing",
+    "title": "Split a value into shares that add back to it",
+    "kind": "lesson",
+    "section": "II · Computing on shares",
+    "source": "Lecture 17–19, Definition 2, p. 4.",
+    "source_ref": "lecture",
+    "requires": [
+      "simulation-test"
+    ],
+    "exercise": null,
+    "check_type": "number",
+    "labs": [
+      "shares"
+    ]
+  },
+  {
+    "position": 7,
+    "id": "additive-privacy",
+    "title": "Prove privacy for the whole coalition view",
+    "kind": "lesson",
+    "section": "II · Computing on shares",
+    "source": "Lecture 17–19, Lemma 1, p. 4; expanded joint-distribution argument.",
+    "source_ref": "lecture",
+    "requires": [
+      "additive-sharing"
+    ],
+    "exercise": null,
+    "check_type": "written",
+    "labs": []
+  },
+  {
+    "position": 8,
+    "id": "hw6-1ai",
+    "title": "Does sharing rely on a hard problem?",
+    "kind": "homework",
+    "section": "II · Computing on shares",
+    "source": "HW6, p. 1, Problem 1(a.i)",
+    "source_ref": "hw6",
+    "requires": [
+      "additive-privacy"
+    ],
+    "exercise": "HW6 1(a.i)",
+    "check_type": "written",
+    "labs": []
+  },
+  {
+    "position": 9,
+    "id": "input-sharing",
+    "title": "Distinguish the input owner from the share holder",
+    "kind": "lesson",
+    "section": "II · Computing on shares",
+    "source": "Lecture 17–19, §2.1, pp. 4–5, including the input-sharing diagram.",
+    "source_ref": "lecture",
+    "requires": [
+      "additive-privacy"
+    ],
+    "exercise": null,
+    "check_type": "choice",
+    "labs": [
+      "input-sharing"
+    ]
+  },
+  {
+    "position": 10,
+    "id": "shared-circuit",
+    "title": "Keep every intermediate wire secret-shared",
+    "kind": "lesson",
+    "section": "II · Computing on shares",
+    "source": "Lecture 17–19, §2 and §2.2, pp. 4–5.",
+    "source_ref": "lecture",
+    "requires": [
+      "input-sharing"
+    ],
+    "exercise": null,
+    "check_type": "choice",
+    "labs": []
+  },
+  {
+    "position": 11,
+    "id": "local-addition",
+    "title": "Add shares locally and prove the sum is right",
+    "kind": "lesson",
+    "section": "II · Computing on shares",
+    "source": "Lecture 17–19, §2.3, p. 5.",
+    "source_ref": "lecture",
+    "requires": [
+      "shared-circuit"
+    ],
+    "exercise": null,
+    "check_type": "number",
+    "labs": [
+      "addition"
+    ]
+  },
+  {
+    "position": 12,
+    "id": "hw6-1aii",
+    "title": "A two-party sum can reveal the other input",
+    "kind": "homework",
+    "section": "II · Computing on shares",
+    "source": "HW6, p. 1, Problem 1(a.ii)",
+    "source_ref": "hw6",
+    "requires": [
+      "local-addition",
+      "simulation-definition"
+    ],
+    "exercise": "HW6 1(a.ii)",
+    "check_type": "written",
+    "labs": []
+  },
+  {
+    "position": 13,
+    "id": "public-constants",
+    "title": "Treat a public constant differently from a secret wire",
+    "kind": "lesson",
+    "section": "II · Computing on shares",
+    "source": "Lecture 17–19, §2.4, p. 6.",
+    "source_ref": "lecture",
+    "requires": [
+      "local-addition"
+    ],
+    "exercise": null,
+    "check_type": "choice",
+    "labs": [
+      "constants"
+    ]
+  },
+  {
+    "position": 14,
+    "id": "multiplication-obstacle",
+    "title": "Find the cross terms that local multiplication misses",
+    "kind": "lesson",
+    "section": "III · Private multiplication",
+    "source": "Lecture 17–19, §2.5, p. 6.",
+    "source_ref": "lecture",
+    "requires": [
+      "public-constants"
+    ],
+    "exercise": null,
+    "check_type": "number",
+    "labs": [
+      "cross-terms"
+    ]
+  },
+  {
+    "position": 15,
+    "id": "beaver-triple",
+    "title": "Prepare shares of one random product",
+    "kind": "lesson",
+    "section": "III · Private multiplication",
+    "source": "Lecture 17–19, §2.5.1, p. 6.",
+    "source_ref": "lecture",
+    "requires": [
+      "multiplication-obstacle"
+    ],
+    "exercise": null,
+    "check_type": "choice",
+    "labs": [
+      "triple"
+    ]
+  },
+  {
+    "position": 16,
+    "id": "beaver-identity",
+    "title": "Rewrite the secret product into operations we can perform",
+    "kind": "lesson",
+    "section": "III · Private multiplication",
+    "source": "Lecture 17–19, §2.5.1, equation (1), p. 6.",
+    "source_ref": "lecture",
+    "requires": [
+      "beaver-triple"
+    ],
+    "exercise": null,
+    "check_type": "written",
+    "labs": []
+  },
+  {
+    "position": 17,
+    "id": "beaver-opening",
+    "title": "Open the masked differences, not the input wires",
+    "kind": "lesson",
+    "section": "III · Private multiplication",
+    "source": "Lecture 17–19, §2.5.1, Step 1, p. 7.",
+    "source_ref": "lecture",
+    "requires": [
+      "beaver-identity"
+    ],
+    "exercise": null,
+    "check_type": "number",
+    "labs": [
+      "beaver"
+    ]
+  },
+  {
+    "position": 18,
+    "id": "beaver-combine",
+    "title": "Construct the output share held by each party",
+    "kind": "lesson",
+    "section": "III · Private multiplication",
+    "source": "Lecture 17–19, §2.5.1, Steps 2–3, p. 7.",
+    "source_ref": "lecture",
+    "requires": [
+      "beaver-opening"
+    ],
+    "exercise": null,
+    "check_type": "number",
+    "labs": []
+  },
+  {
+    "position": 19,
+    "id": "mask-privacy",
+    "title": "Explain why opening a fresh masked value is private",
+    "kind": "lesson",
+    "section": "III · Private multiplication",
+    "source": "Lecture 17–19, §2.5.1 and §2.6, pp. 7–8; expanded masking and simulation argument.",
+    "source_ref": "lecture",
+    "requires": [
+      "beaver-combine"
+    ],
+    "exercise": null,
+    "check_type": "written",
+    "labs": [
+      "masks"
+    ]
+  },
+  {
+    "position": 20,
+    "id": "mask-reuse",
+    "title": "Use a triple once, even when the product stays secret",
+    "kind": "lesson",
+    "section": "III · Private multiplication",
+    "source": "Lecture 17–19, single-use condition in §2.5.1, p. 7; explicit reuse attack added.",
+    "source_ref": "lecture",
+    "requires": [
+      "mask-privacy"
+    ],
+    "exercise": null,
+    "check_type": "number",
+    "labs": [
+      "reuse"
+    ]
+  },
+  {
+    "position": 21,
+    "id": "remove-dealer",
+    "title": "Move expensive cryptography into preprocessing",
+    "kind": "lesson",
+    "section": "III · Private multiplication",
+    "source": "Lecture 17–19, §2.5.2 and §2.6, pp. 7–8.",
+    "source_ref": "lecture",
+    "requires": [
+      "mask-reuse"
+    ],
+    "exercise": null,
+    "check_type": "choice",
+    "labs": []
+  },
+  {
+    "position": 22,
+    "id": "mpc-cost",
+    "title": "Count messages from the gates that need interaction",
+    "kind": "lesson",
+    "section": "III · Private multiplication",
+    "source": "Lecture 17–19, §2.6, p. 8; explicit communication units and setup qualifications.",
+    "source_ref": "lecture",
+    "requires": [
+      "remove-dealer"
+    ],
+    "exercise": null,
+    "check_type": "number",
+    "labs": [
+      "cost"
+    ]
+  },
+  {
+    "position": 23,
+    "id": "hw6-3a",
+    "title": "Use an ordinary triple to square a secret",
+    "kind": "homework",
+    "section": "III · Private multiplication",
+    "source": "HW6, p. 3, Problem 3(a)",
+    "source_ref": "hw6",
+    "requires": [
+      "beaver-combine",
+      "mask-privacy",
+      "mpc-cost"
+    ],
+    "exercise": "HW6 3(a)",
+    "check_type": "written",
+    "labs": []
+  },
+  {
+    "position": 24,
+    "id": "hw6-3b",
+    "title": "A correlated square saves one opening",
+    "kind": "homework",
+    "section": "III · Private multiplication",
+    "source": "HW6, pp. 3–4, Problem 3(b)",
+    "source_ref": "hw6",
+    "requires": [
+      "hw6-3a"
+    ],
+    "exercise": "HW6 3(b)",
+    "check_type": "written",
+    "labs": [
+      "square"
+    ]
+  },
+  {
+    "position": 25,
+    "id": "hw6-3c",
+    "title": "Evaluate a polynomial after one opening",
+    "kind": "homework",
+    "section": "III · Private multiplication",
+    "source": "HW6, p. 4, Problem 3(c)",
+    "source_ref": "hw6",
+    "requires": [
+      "hw6-3b",
+      "public-constants"
+    ],
+    "exercise": "HW6 3(c)",
+    "check_type": "written",
+    "labs": [
+      "polynomial"
+    ]
+  },
+  {
+    "position": 26,
+    "id": "malicious-guarantees",
+    "title": "What changes when a party cheats?",
+    "kind": "lesson",
+    "section": "IV · Malicious parties and authentication",
+    "source": "Lecture 17–19, pp. 8–9; HW6, pp. 1–2",
+    "source_ref": "lecture",
+    "requires": [
+      "mpc-cost"
+    ],
+    "exercise": null,
+    "check_type": "choice",
+    "labs": [
+      "rushing"
+    ]
+  },
+  {
+    "position": 27,
+    "id": "hw6-2a",
+    "title": "Force a chosen reconstructed output",
+    "kind": "homework",
+    "section": "IV · Malicious parties and authentication",
+    "source": "HW6, pp. 1–2, Problem 2(a)",
+    "source_ref": "hw6",
+    "requires": [
+      "malicious-guarantees"
+    ],
+    "exercise": "HW6 2(a)",
+    "check_type": "written",
+    "labs": []
+  },
+  {
+    "position": 28,
+    "id": "commitments-channel",
+    "title": "Fix a message before learning others",
+    "kind": "lesson",
+    "section": "IV · Malicious parties and authentication",
+    "source": "HW6, p. 2, Problem 2(b); lecture commitment prerequisite",
+    "source_ref": "hw6",
+    "requires": [
+      "hw6-2a"
+    ],
+    "exercise": null,
+    "check_type": "choice",
+    "labs": [
+      "fair-channel"
+    ]
+  },
+  {
+    "position": 29,
+    "id": "hw6-2b",
+    "title": "Implement Push and Pull",
+    "kind": "homework",
+    "section": "IV · Malicious parties and authentication",
+    "source": "HW6, p. 2, Problem 2(b)",
+    "source_ref": "hw6",
+    "requires": [
+      "commitments-channel"
+    ],
+    "exercise": "HW6 2(b)",
+    "check_type": "written",
+    "labs": []
+  },
+  {
+    "position": 30,
+    "id": "hw6-2c",
+    "title": "Cheat even when all shares are fixed",
+    "kind": "homework",
+    "section": "IV · Malicious parties and authentication",
+    "source": "HW6, p. 2, Problem 2(c)",
+    "source_ref": "hw6",
+    "requires": [
+      "hw6-2b"
+    ],
+    "exercise": "HW6 2(c)",
+    "check_type": "written",
+    "labs": []
+  },
+  {
+    "position": 31,
+    "id": "authenticated-shares",
+    "title": "Attach a secret check to each shared value",
+    "kind": "lesson",
+    "section": "IV · Malicious parties and authentication",
+    "source": "Lecture 17–19, p. 9; HW6, pp. 2–3, Problem 2(d–e)",
+    "source_ref": "hw6",
+    "requires": [
+      "hw6-2c",
+      "beaver-combine"
+    ],
+    "exercise": null,
+    "check_type": "choice",
+    "labs": []
+  },
+  {
+    "position": 32,
+    "id": "hw6-2d",
+    "title": "Carry the tag through arithmetic",
+    "kind": "homework",
+    "section": "IV · Malicious parties and authentication",
+    "source": "HW6, pp. 2–3, Problem 2(d)",
+    "source_ref": "hw6",
+    "requires": [
+      "authenticated-shares"
+    ],
+    "exercise": "HW6 2(d)",
+    "check_type": "written",
+    "labs": []
+  },
+  {
+    "position": 33,
+    "id": "mac-security",
+    "title": "Check a tag without opening the key",
+    "kind": "lesson",
+    "section": "IV · Malicious parties and authentication",
+    "source": "HW6, p. 3, Problem 2(e), with explicit sharing and scheduling assumptions",
+    "source_ref": "hw6",
+    "requires": [
+      "hw6-2d"
+    ],
+    "exercise": null,
+    "check_type": "number",
+    "labs": [
+      "mac"
+    ]
+  },
+  {
+    "position": 34,
+    "id": "hw6-2e",
+    "title": "Prove the authentication check works",
+    "kind": "homework",
+    "section": "IV · Malicious parties and authentication",
+    "source": "HW6, p. 3, Problem 2(e)",
+    "source_ref": "hw6",
+    "requires": [
+      "mac-security"
+    ],
+    "exercise": "HW6 2(e)",
+    "check_type": "written",
+    "labs": []
+  },
+  {
+    "position": 35,
+    "id": "threshold-definition",
+    "title": "How many shares should reconstruction require?",
+    "kind": "lesson",
+    "section": "V · Threshold secret sharing",
+    "source": "Lecture 17–19, p. 9, Definition 3; handwritten notes, pp. 13–14",
+    "source_ref": "lecture",
+    "requires": [
+      "additive-privacy"
+    ],
+    "exercise": null,
+    "check_type": "choice",
+    "labs": [
+      "threshold"
+    ]
+  },
+  {
+    "position": 36,
+    "id": "shamir-generation",
+    "title": "Put the secret at a polynomial’s value at zero",
+    "kind": "lesson",
+    "section": "V · Threshold secret sharing",
+    "source": "Lecture 17–19, p. 10, Definition 4; handwritten notes, pp. 14–15",
+    "source_ref": "lecture",
+    "requires": [
+      "threshold-definition"
+    ],
+    "exercise": null,
+    "check_type": "number",
+    "labs": [
+      "shamir"
+    ]
+  },
+  {
+    "position": 37,
+    "id": "interpolation-lemma",
+    "title": "What makes a polynomial reconstructible?",
+    "kind": "lesson",
+    "section": "V · Threshold secret sharing",
+    "source": "Lecture 17–19, p. 10, Lemma 2; handwritten notes, pp. 15–16",
+    "source_ref": "lecture",
+    "requires": [
+      "shamir-generation"
+    ],
+    "exercise": null,
+    "check_type": "choice",
+    "labs": []
+  },
+  {
+    "position": 38,
+    "id": "hw6-1c",
+    "title": "HW6 1(c) · Find the missing interpolation conditions",
+    "kind": "homework",
+    "section": "V · Threshold secret sharing",
+    "source": "HW6, p. 1, Problem 1(c)",
+    "source_ref": "hw6",
+    "requires": [
+      "interpolation-lemma"
+    ],
+    "exercise": "HW6 1(c)",
+    "check_type": "written",
+    "labs": []
+  },
+  {
+    "position": 39,
+    "id": "vandermonde",
+    "title": "Read the Vandermonde matrix as simultaneous equations",
+    "kind": "lesson",
+    "section": "V · Threshold secret sharing",
+    "source": "Lecture 17–19, p. 10, proof of Lemma 2; handwritten notes, pp. 16–17",
+    "source_ref": "lecture",
+    "requires": [
+      "interpolation-lemma"
+    ],
+    "exercise": null,
+    "check_type": "number",
+    "labs": []
+  },
+  {
+    "position": 40,
+    "id": "shamir-reconstruction",
+    "title": "Reconstruct the secret without guessing the polynomial",
+    "kind": "lesson",
+    "section": "V · Threshold secret sharing",
+    "source": "Lecture 17–19, pp. 10–11, reconstruction and Lemma 3 correctness; handwritten notes, pp. 15–17",
+    "source_ref": "lecture",
+    "requires": [
+      "vandermonde"
+    ],
+    "exercise": null,
+    "check_type": "number",
+    "labs": [
+      "interpolate"
+    ]
+  },
+  {
+    "position": 41,
+    "id": "shamir-privacy",
+    "title": "Prove privacy by counting equally likely coefficient choices",
+    "kind": "lesson",
+    "section": "V · Threshold secret sharing",
+    "source": "Lecture 17–19, p. 11, Lemma 3 privacy; handwritten notes, p. 17",
+    "source_ref": "lecture",
+    "requires": [
+      "shamir-reconstruction"
+    ],
+    "exercise": null,
+    "check_type": "choice",
+    "labs": []
+  },
+  {
+    "position": 42,
+    "id": "shamir-linearity",
+    "title": "Which computations preserve the Shamir degree bound?",
+    "kind": "lesson",
+    "section": "V · Threshold secret sharing",
+    "source": "Handwritten notes, p. 17, linearity observation; derived examples using Lecture 17–19, Definition 4",
+    "source_ref": "notes",
+    "requires": [
+      "shamir-privacy"
+    ],
+    "exercise": null,
+    "check_type": "number",
+    "labs": []
+  },
+  {
+    "position": 43,
+    "id": "hw6-4a",
+    "title": "HW6 4(a) · Build the interpolation formula",
+    "kind": "homework",
+    "section": "VI · Threshold signatures",
+    "source": "HW6, p. 4, Problem 4(a)",
+    "source_ref": "hw6",
+    "requires": [
+      "shamir-linearity"
+    ],
+    "exercise": "HW6 4(a)",
+    "check_type": "written",
+    "labs": []
+  },
+  {
+    "position": 44,
+    "id": "exponent-interpolation",
+    "title": "Apply known weights while values remain in exponents",
+    "kind": "lesson",
+    "section": "VI · Threshold signatures",
+    "source": "Prerequisite bridge for HW6, pp. 5–6, Problems 4(b–d)",
+    "source_ref": "hw6",
+    "requires": [
+      "hw6-4a"
+    ],
+    "exercise": null,
+    "check_type": "number",
+    "labs": [
+      "exponent"
+    ]
+  },
+  {
+    "position": 45,
+    "id": "hw6-4b",
+    "title": "HW6 4(b) · Interpolate without taking discrete logarithms",
+    "kind": "homework",
+    "section": "VI · Threshold signatures",
+    "source": "HW6, p. 5, Problem 4(b)",
+    "source_ref": "hw6",
+    "requires": [
+      "exponent-interpolation"
+    ],
+    "exercise": "HW6 4(b)",
+    "check_type": "written",
+    "labs": []
+  },
+  {
+    "position": 46,
+    "id": "bls-interface",
+    "title": "Understand the signature that the parties will share",
+    "kind": "lesson",
+    "section": "VI · Threshold signatures",
+    "source": "HW6, p. 5, Definition 1, BLS signature scheme",
+    "source_ref": "hw6",
+    "requires": [
+      "hw6-4b"
+    ],
+    "exercise": null,
+    "check_type": "choice",
+    "labs": []
+  },
+  {
+    "position": 47,
+    "id": "hw6-4c",
+    "title": "HW6 4(c) · Construct a threshold BLS signature",
+    "kind": "homework",
+    "section": "VI · Threshold signatures",
+    "source": "HW6, pp. 5–6, Problem 4(c)",
+    "source_ref": "hw6",
+    "requires": [
+      "bls-interface"
+    ],
+    "exercise": "HW6 4(c)",
+    "check_type": "written",
+    "labs": []
+  },
+  {
+    "position": 48,
+    "id": "hw6-4d",
+    "title": "HW6 4(d) · Reject a bad signature share before combining",
+    "kind": "homework",
+    "section": "VI · Threshold signatures",
+    "source": "HW6, p. 6, Problem 4(d)",
+    "source_ref": "hw6",
+    "requires": [
+      "hw6-4c"
+    ],
+    "exercise": "HW6 4(d)",
+    "check_type": "written",
+    "labs": [
+      "signature"
+    ]
+  }
+]

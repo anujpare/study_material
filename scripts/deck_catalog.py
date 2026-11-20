@@ -13,7 +13,9 @@ DECKS = {
  'hw4': ('Homework 4', 'HW4', 15),
 }
 def links(current):
- return ''.join(f'<a href="../{key}/"'+(' aria-current="page"' if key==current else '')+f'><small>{kind} · {count} cards</small>{title}</a>' for key,(kind,title,count) in DECKS.items())
+ return ''.join(f'<a href="../{key}/"'+(' aria-current="page"' if key==current else '')+f'><small>{kind} · {count} cards</small>{title}</a>' for key,(kind,title,count) in DECKS.items()) + EXTRA_LINKS
+
+EXTRA_LINKS = '<a href="../mpc-workbench/"><small>Interactive learning lab · 48 cards</small>Secure MPC</a><a href="../hw6/"><small>Homework 6 · 16 questions</small>HW6</a>'
 
 def refresh_menus():
  for deck in DECKS:

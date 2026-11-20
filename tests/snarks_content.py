@@ -57,6 +57,6 @@ assert a==354224848179261915075
 readme=(ROOT/'README.md').read_text()
 for deck in DECKS:assert f'https://anujpare.github.io/study_material/{deck}/' in readme
 guide=(ROOT/'TEACHING_GUIDE.md').read_text()
-assert len(re.findall(r'^## ',guide,re.M))==5
+assert len(re.findall(r'^## [1-5]\. ',guide,re.M))==5
 print('PASS 48-card dependency order, all 12 interleaved/shared solutions, all deck menus, math generation and numerical examples')
 

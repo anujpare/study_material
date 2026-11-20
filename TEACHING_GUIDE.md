@@ -85,3 +85,9 @@ These rules strengthen S2/S3/S4, E1/E2/E4, and V1/V2/V8 for editing the stand-al
 8. **Test structure and behavior separately.** Run the dedicated ZK source and browser tests, verify phones and expanded exercises, and report honestly whether mathematical review, actual rendered testing, and source completeness have been carried out.
 
 Concrete failure record: previous explanations confused an identifier with its value, mixed forward and inverse permutations, omitted the setup of a cryptographic protocol, used trivial controls without visible changes, and introduced asymptotic formulas before a working example. This is a combination of ignored S2/S4/E2 and too-weak V1. The rebuild addresses these patterns with source-first explanations, explicit role/message diagrams, nontrivial permutation controls, and dedicated regression tests.
+
+## Secure MPC: exam application and continuous checks
+
+The current MPC request strengthens P1/P3/P5/P6: every lesson contains one confined question that asks for a calculation, distinguishing pair, protocol step, algebraic identity, attack, or proof obligation. Keep questions close to one exam subquestion rather than building a long multi-part task inside a single check. Place the model solution and optional hint behind separate initially closed controls. For free-form reasoning, give a model argument and concrete self-check criteria; do not claim automatic proof grading.
+
+Use the supplied exam only for the topics and question types it actually contains. The HS2025 endterm supplied for this chapter concerns differential privacy, so it provides a format/difficulty reference rather than a source of MPC exam questions. In particular, test transfer by changing a threshold, changing the number of observed shares, or mixing public and secret factors; do not merely ask learners to repeat a formula with the same numbers used immediately above.

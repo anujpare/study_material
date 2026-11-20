@@ -71,12 +71,16 @@ for deck in ORDER:
  for old,target in MERGED[deck].items():AUDIT.append({'deck':deck,'id':'lesson-'+str(old),'action':'merged; repeated or elementary explanation removed','target':'lesson-'+str(target)})
 for deck,order in HW_ORDER.items():
  source='commitment' if deck=='hw1' else 'zero-knowledge'
- prefix,_,suffix=split((ROOT/'docs'/deck/'index.html').read_text())
+ prefix,original_hw,suffix=split((ROOT/'docs'/deck/'index.html').read_text())
  _,sourcecards,_=split((ROOT/'docs'/source/'index.html').read_text())
  cards=[]
  for old in order:
   n=LEGACY_HW_ORDER[deck].index(old)+1
   c=clean(sourcecards[old])
+  # Preserve exercise-specific introductions authored in the homework reader.
+  prep=re.search(r'<p class="reasoning-link">.*?</p>', original_hw.get(n,''), re.S)
+  if prep and prep[0] not in c:
+   c=c.replace('<div class="problem-statement">',prep[0]+'<div class="problem-statement">',1)
   c=c.replace(f'id="lesson-{old}"',f'id="lesson-{n}" data-source-card="{old}" data-source-chapter="{source}"',1)
   redirect={f'lesson-{k}':v for k,v in HW_ALIASES[deck].items()}
   # Old prerequisite bookmarks point into the first appropriate worked exercise.

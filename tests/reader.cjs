@@ -14,7 +14,7 @@ const base = process.env.PETS_TEST_URL || 'http://127.0.0.1:8765';
       const errors = [];
       page.on('pageerror', error => errors.push(error.message));
       await page.goto(base);
-      assert.equal(await page.locator('.card').count(), 8);
+      for(const href of ['./commitment/','./zero-knowledge/','./snarks/','./pir/','./mpc-workbench/','./hw1/','./hw2/','./hw3/','./hw4/','./hw6/']) assert.equal(await page.locator(`a.card[href="${href}"]`).count(),1);
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
       for (const [chapter, count] of [['commitment', 58], ['zero-knowledge', 46], ['hw1', 15], ['hw2', 13], ['snarks', 48], ['hw3', 12], ['pir', 44], ['hw4', 15]]) {
         await page.goto(`${base}/${chapter}/`);

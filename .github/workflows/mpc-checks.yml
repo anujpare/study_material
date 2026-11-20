@@ -1,0 +1,45 @@
+name: MPC learning lab checks
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/mpc-workbench/**'
+      - 'docs/hw6/**'
+      - 'scripts/mpc_*.py'
+      - 'scripts/build-mpc.py'
+      - 'scripts/render-math.cjs'
+      - 'scripts/render-mpc-math.cjs'
+      - 'tests/mpc_*.cjs'
+      - 'package*.json'
+      - '.github/workflows/mpc-checks.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  mobile-learning-lab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Rebuild the canonical MPC and homework content
+        run: python3 scripts/build-mpc.py
+      - name: Verify source coverage and finite-field arithmetic
+        run: node tests/mpc_content.cjs
+      - name: Verify rendered cards, interactions and mobile layouts
+        env:
+          PETS_SCREENSHOTS: test-results/mpc-screenshots
+        run: |
+          python3 -m http.server 8765 --directory docs > /tmp/pets-http.log 2>&1 &
+          node tests/mpc_browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mpc-mobile-screenshots
+          path: test-results/mpc-screenshots
+          retention-days: 14
